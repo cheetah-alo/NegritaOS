@@ -1,0 +1,59 @@
+rubric:
+  name: task_quality_rubric
+  version: "1.0.0"
+  applicable_agents: [team_lead_ds_agent]
+  description: >
+    Validates that tasks, epics, and sprint plans produced by the team_lead_ds_agent
+    meet the quality standard required for actual execution.
+
+  task_level_gates:
+    required:
+      - title_is_imperative_and_specific
+      - acceptance_criteria_are_defined
+      - output_or_deliverable_is_stated
+      - dependencies_are_listed_or_marked_none
+      - owner_is_assigned_or_marked_TBD
+      - priority_is_assigned
+    optional:
+      - story_points_or_effort_estimate
+      - labels_or_tags_applied
+
+    anti_patterns:
+      - "Task title is a noun: 'Dashboard' instead of 'Build churn dashboard for weekly review'"
+      - "Acceptance criteria: 'Done when it works'"
+      - "No output defined — what does completing this task produce?"
+      - "Owner: 'Team' — not assignable"
+
+  epic_level_gates:
+    required:
+      - epic_objective_is_stated
+      - success_metric_is_defined
+      - scope_boundary_is_explicit
+      - child_stories_are_enumerated
+      - timeline_or_target_sprint_is_stated
+      - risks_are_listed
+    anti_patterns:
+      - "Epic with more than 8 stories — likely needs splitting"
+      - "Epic without a success metric — how do you know it is done?"
+      - "Epic scope includes deliverables from multiple unrelated domains"
+
+  roadmap_level_gates:
+    required:
+      - time_horizon_is_stated
+      - milestones_are_dated_not_floating
+      - each_milestone_has_an_owner
+      - dependencies_between_milestones_are_explicit
+      - risks_at_roadmap_level_are_listed
+      - stakeholder_alignment_status_noted
+    anti_patterns:
+      - "Roadmap milestones with no dates"
+      - "Roadmap that does not account for known team capacity constraints"
+      - "No risk section"
+
+  escalation_log_gates:
+    required:
+      - blocker_is_described_specifically
+      - business_impact_of_blocker_is_stated
+      - owner_who_can_unblock_is_identified
+      - escalation_date_is_recorded
+      - resolution_criteria_are_stated

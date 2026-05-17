@@ -1,0 +1,30 @@
+archetype:
+  id: product_app
+  version: "1.0.0"
+  description: >
+    Project pattern for full product applications with frontend, backend,
+    APIs, business rules, UX decisions, release hardening, and product delivery.
+  cognitive_agents:
+    - team_lead_ds_agent
+    - decision_support_agent
+    - code_review_agent
+    - presentation_agent
+    - data_quality_sentinel_agent
+  technical_capabilities:
+    - frontend
+    - backend
+    - api
+    - business_rules
+    - testing
+    - release_management
+    - product_ux
+  expected_outputs:
+    - sprint_plan
+    - technical_debt_register
+    - release_risk_log
+    - decision_memo
+    - executive_summary
+  memory_policy:
+    canonical_home: "~/.negritaos/memory/projects/<project_id>"
+    keep_in_repo: false
+    session_close_required: true

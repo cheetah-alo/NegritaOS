@@ -1,0 +1,58 @@
+agent:
+  id: eda_reviewer_agent
+  router_mode: MR
+  version: "1.0.0"
+  layer: technical
+  description: >
+    Focused EDA review agent. Evaluates exploratory data analysis outputs for completeness,
+    correctness, and operational relevance. Checks that distributions, correlations,
+    missing value patterns, and outlier analyses are properly interpreted — not just plotted.
+    Flags orphan charts (plotted but not interpreted) as quality failures.
+
+  persona:
+    - senior_data_scientist
+    - ml_governance_reviewer
+
+  skills:
+    - skills/ml/eda_review.md
+    - skills/transversal/evidence_framing.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/ml/ml_rules.yaml
+    constraints:
+      - every_plot_must_have_operational_takeaway
+      - missing_value_patterns_must_be_explained_not_just_counted
+      - class_distribution_must_be_reviewed_before_modeling
+      - correlation_analysis_must_distinguish_spurious_from_meaningful
+      - feature_cardinality_issues_must_be_flagged
+
+  templates:
+    eda_report: templates/eda_report_template.md
+
+  output_modes:
+    - eda_review
+    - data_readiness_assessment
+    - feature_quality_report
+
+  quality_gate:
+    - target_variable_distribution_reviewed
+    - missing_value_analysis_is_interpreted
+    - class_imbalance_is_quantified
+    - no_orphan_plots
+    - feature_leakage_candidates_are_flagged
+    - data_readiness_verdict_is_explicit
+
+  input_types:
+    - EDA_notebook
+    - dataset_description
+    - column_profiling_output
+    - distribution_plots
+
+  handoff:
+    can_feed_into: [model_review_agent, technical_writer_agent]
+    context_fields_to_pass:
+      - data_quality_flags
+      - class_distribution_summary
+      - feature_leakage_candidates
+      - data_readiness_verdict

@@ -1,0 +1,76 @@
+business_rules:
+  version: "1.0.0"
+  description: >
+    Reglas operacionales para la capa de negocio de NegritaOS.
+    Aplica a entregas de cliente (CQISense → Hot/HotMobile), análisis de MoneyFlow,
+    y comunicación académica UVI. Complementa las reglas globales, no las reemplaza.
+
+  client_communication:
+    language_policy:
+      default: "español para narrativa cliente, inglés para código, SQL y configuraciones"
+      uvi_academic: "español siempre, incluyendo feedback técnico"
+      internal_cqi: "español o inglés según audiencia — adaptar"
+    tone:
+      executive_audience: "conciso, orientado a decisión, sin jerga técnica"
+      technical_audience: "preciso, estructurado, con evidencia"
+      academic_audience: "formal, constructivo, con criterio explícito"
+    avoid:
+      - "promesas de precisión no demostradas en el contexto del cliente"
+      - "comparar resultados entre Hot y HotMobile sin aclarar diferencias de negocio"
+      - "recomendar acciones sin considerar viabilidad operacional del cliente"
+
+  brand_compliance:
+    applies_to: [Hot_deliverables, client_presentations, concept_notes, business_plans]
+    cqi_brand_reference: "brands/cqi/brand_style/brand_style.md"
+    requirements:
+      - "Documentos formales de cliente deben seguir plantillas CQI"
+      - "Presentaciones ejecutivas deben usar colores y tipografía CQI"
+      - "Reportes técnicos internos pueden usar formato libre pero estructurado"
+    template_location: "brands/cqi/plantillas/"
+
+  telecom_client_rules:
+    hot_hotmobile:
+      always:
+        - "Distinguir Hot y HotMobile como líneas de negocio separadas en el análisis"
+        - "Definir ventana de predicción explícita en cualquier modelo"
+        - "Calcular lift respecto a tasa base (baseline) — no solo AUC"
+        - "Incluir impacto en revenue cuando el análisis es de churn o segmentación"
+        - "Contextualizar métricas de modelo en términos operacionales del cliente"
+      never:
+        - "Combinar métricas de Hot y HotMobile sin justificación"
+        - "Reportar AUC sin interpretación de negocio"
+        - "Entregar modelo sin plan de monitoreo"
+
+  moneyflow_rules:
+    always:
+      - "Definir claramente la métrica de revenue analizada (ARPU, MRR, revenue por segmento)"
+      - "Comparar tendencias de revenue contra baseline histórico o benchmark de segmento"
+      - "Separar análisis de volumen (número de clientes) de análisis de valor (revenue por cliente)"
+      - "Cuantificar revenue at risk cuando se detecta anomalía o tendencia negativa"
+    never:
+      - "Reportar caída de revenue sin identificar drivers (churn, downgrade, anomalía de billing)"
+      - "Proyectar revenue sin acotar la incertidumbre del forecast"
+      - "Tratar anomalías de billing como anomalías de comportamiento de cliente"
+
+  uvi_academic_rules:
+    always:
+      - "Dar feedback en español"
+      - "Incluir puntos positivos antes de las debilidades"
+      - "Cada debilidad debe ir acompañada de una acción de mejora específica y alcanzable"
+      - "Evaluar scope con criterio realista para un TFM de 6 meses"
+      - "Distinguir entre error metodológico grave (que invalida) y error menor (que se corrige)"
+    never:
+      - "Usar frases genéricas sin evidencia: 'trabajo interesante', 'buen esfuerzo' sin contexto"
+      - "Penalizar uso de datasets públicos correctamente justificados"
+      - "Exigir nivel de investigación doctoral en un TFM de máster aplicado"
+      - "Rechazar un tema por ser popular sin evaluar si el enfoque es diferenciado"
+
+  delivery_quality_standards:
+    all_client_deliverables:
+      - tldr_or_executive_summary_required: true
+      - next_actions_with_owners_required: true
+      - assumptions_must_be_explicit: true
+      - limitations_must_be_stated: true
+    internal_documents:
+      - same_standards_as_client: true
+      - language_can_be_more_technical: true

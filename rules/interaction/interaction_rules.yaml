@@ -1,0 +1,13 @@
+interaction_rules:
+
+  refinement:
+    support_iterative_refinement: true
+    adapt_to_feedback_quickly: true
+
+  communication:
+    preserve_user_voice: true
+    avoid_overformalization: true
+
+  collaboration:
+    ask_for_missing_critical_context_only: true
+    avoid_unnecessary_confirmation: true

@@ -1,0 +1,98 @@
+rubric:
+  name: model_review_rubric
+  version: "1.0.0"
+  applicable_agents: [model_review_agent]
+  description: >
+    Scoring rubric for ML model reviews. Evaluates readiness for deployment,
+    analytical quality of the modeling process, and operational viability.
+
+  scoring_scale:
+    PASS: "Criterion met without qualification"
+    CONDITIONAL: "Criterion met with stated conditions that must be resolved"
+    FAIL: "Criterion not met — blocks deployment or recommendation"
+    N/A: "Not applicable for this model type"
+
+  dimensions:
+
+    leakage_assessment:
+      blocking: true
+      description: "Any confirmed leakage is a deployment blocker."
+      gates:
+        - "Feature timestamps reviewed relative to target event"
+        - "Post-event derived features identified and assessed"
+        - "Pipeline leakage (scaler/imputer fit on full dataset) checked"
+      verdicts:
+        PASS: "No leakage detected"
+        CONDITIONAL: "Suspected leakage in [N] features — requires investigation before deployment"
+        FAIL: "Confirmed leakage — DEPLOYMENT BLOCKED"
+
+    target_definition:
+      blocking: false
+      gates:
+        - "Target variable is clearly defined with business meaning"
+        - "Prediction window is explicit"
+        - "Target event definition is unambiguous"
+      verdicts:
+        PASS: "Target definition is clear and operationally grounded"
+        CONDITIONAL: "Target definition is present but ambiguous in edge cases"
+        FAIL: "Target is not defined or differs from stated business objective"
+
+    split_strategy:
+      blocking: true
+      gates:
+        - "Split type is appropriate for data structure (temporal vs random)"
+        - "Holdout set is truly unseen"
+        - "Stratification applied for imbalanced targets"
+      verdicts:
+        PASS: "Split strategy is sound"
+        CONDITIONAL: "Split strategy has minor issues that do not invalidate results"
+        FAIL: "Random split on temporal data — results are not trustworthy"
+
+    imbalance_handling:
+      blocking: false
+      gates:
+        - "Class distribution is reported"
+        - "If imbalance > 10:1, accuracy is not used as primary metric"
+        - "Imbalance strategy is stated and justified"
+      verdicts:
+        PASS: "Imbalance addressed or not present"
+        CONDITIONAL: "Imbalance acknowledged but handling is suboptimal"
+        FAIL: "Imbalance not addressed, accuracy used as primary metric on imbalanced target"
+
+    metric_interpretation:
+      blocking: false
+      gates:
+        - "Metrics are interpreted in business context, not just reported"
+        - "Threshold is justified, not left at default 0.5"
+        - "Cost of false negatives vs. false positives is addressed"
+      verdicts:
+        PASS: "Metrics are contextually interpreted"
+        CONDITIONAL: "Metrics are present but lack business translation"
+        FAIL: "Metric dump with no interpretation"
+
+    explainability:
+      blocking: false
+      gates:
+        - "Global feature importances are available and interpreted"
+        - "Explainability limits are stated"
+        - "Top features align with domain knowledge or divergence is investigated"
+      verdicts:
+        PASS: "Explainability is adequate for operational use"
+        CONDITIONAL: "Partial explainability — SHAP or similar needed for production"
+        FAIL: "No explainability — black box in a governance-required context"
+
+    operational_readiness:
+      blocking: false
+      gates:
+        - "Model can be retrained with versioned configs"
+        - "Monitoring plan exists or is proposed"
+        - "Model decay timeline is estimated"
+      verdicts:
+        PASS: "Operationally ready"
+        CONDITIONAL: "Ready with stated gaps to be addressed before production"
+        FAIL: "Not operationally viable without significant additional work"
+
+  overall_verdict:
+    DEPLOY: "All blocking criteria PASS. Non-blocking criteria PASS or CONDITIONAL."
+    CONDITIONAL_DEPLOY: "All blocking criteria PASS. Non-blocking conditions documented and tracked."
+    DO_NOT_DEPLOY: "One or more blocking criteria FAIL."

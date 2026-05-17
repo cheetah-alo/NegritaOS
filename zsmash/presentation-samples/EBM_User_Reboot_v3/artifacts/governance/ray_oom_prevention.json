@@ -1,0 +1,13 @@
+{
+  "applied_env": {
+    "RAY_MEMORY_MONITOR_ERROR_THRESHOLD": "0.95",
+    "RAY_TMPDIR": "/tmp/ml_automl_ray_tmp",
+    "RAY_object_spilling_config": "{\"params\": {\"directory_path\": \"/tmp/ml_automl_ray_spill\"}, \"type\": \"filesystem\"}"
+  },
+  "enabled": true,
+  "memory_monitor_error_threshold": 0.95,
+  "notes": [],
+  "object_spilling_config": "{\"params\": {\"directory_path\": \"/tmp/ml_automl_ray_spill\"}, \"type\": \"filesystem\"}",
+  "object_spilling_dir": "/tmp/ml_automl_ray_spill",
+  "ray_tmpdir": "/tmp/ml_automl_ray_tmp"
+}

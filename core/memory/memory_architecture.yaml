@@ -1,0 +1,84 @@
+memory_architecture:
+  version: "1.0.0"
+  description: >
+    Defines how NegritaOS manages context, state, and knowledge across sessions.
+    Distinguishes between prompt-injected knowledge, session state, and persistent reference.
+
+  memory_types:
+
+    system_knowledge:
+      description: "Static operational knowledge baked into agent contracts, rules, and skills."
+      persistence: permanent
+      mutability: version_controlled
+      location: rules/, skills/, rubrics/, templates/
+      examples:
+        - ml_rules.yaml
+        - academic_rules.yaml
+        - model_review_report template
+
+    session_context:
+      description: >
+        Context accumulated within a single conversation or work session.
+        Not persisted across sessions unless explicitly exported.
+      persistence: session_scoped
+      mutability: append_only
+      contents:
+        - user_stated_objectives
+        - decisions_made_during_session
+        - assumptions_confirmed_or_rejected
+        - intermediate_outputs
+      expiry: end_of_session
+
+    project_context:
+      description: >
+        Persistent knowledge about a specific project, domain, or ongoing initiative.
+        Must be explicitly provided at session start or loaded from a context file.
+      persistence: explicit_load
+      mutability: user_managed
+      format: markdown or yaml
+      recommended_filename: "project_context.md"
+      contents:
+        - project_name
+        - business_objective
+        - data_sources
+        - team_members
+        - active_risks
+        - open_decisions
+        - current_sprint_or_phase
+
+    domain_ontology:
+      description: "Shared vocabulary and concept definitions used across all agents."
+      persistence: permanent
+      mutability: version_controlled
+      location: core/ontology/domain_ontology.yaml
+
+  context_injection_order:
+    description: >
+      At the start of any agent run, context is injected in this priority order.
+      Lower priority is overridden by higher priority.
+    order:
+      - priority_1_highest: user_explicit_instruction
+      - priority_2: session_context
+      - priority_3: project_context
+      - priority_4: agent_contract
+      - priority_5: domain_rules
+      - priority_6: global_rules
+      - priority_7_lowest: system_defaults
+
+  memory_anti_patterns:
+    avoid:
+      - "Assuming session context persists across sessions without explicit reload"
+      - "Treating training knowledge as current for post-2024 events"
+      - "Conflating prompt-injected rules with verified facts"
+      - "Accumulating contradictory context without surfacing the conflict"
+
+  context_handoff_protocol:
+    description: >
+      When a multi-agent pipeline is executed, each agent passes a structured
+      context handoff to the next agent.
+    handoff_fields:
+      - input_summary
+      - key_findings
+      - open_questions
+      - quality_gate_results
+      - recommended_next_agent_focus

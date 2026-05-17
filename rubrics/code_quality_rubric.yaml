@@ -1,0 +1,104 @@
+rubric:
+  name: code_quality_rubric
+  version: "1.0.0"
+  applicable_agents: [code_review_agent]
+  description: >
+    Severity-tiered rubric for Python/SQL code review in DS/ML contexts.
+    Issues are classified P0–P3. P0/P1 block merge. P2/P3 are tracked.
+
+  severity_levels:
+    P0:
+      label: "Critical — Blocks merge and deployment"
+      sla: "Must be resolved before any review approval"
+      examples:
+        - "Confirmed data leakage in feature pipeline"
+        - "Credentials hardcoded in source file"
+        - "Silent data corruption with no error raised"
+        - "Broken pipeline with no error handling"
+    P1:
+      label: "High — Must resolve before merge"
+      sla: "Addressed in same PR or immediate follow-up"
+      examples:
+        - "No logging in production pipeline"
+        - "Hardcoded data paths or environment values"
+        - "Non-reproducible experiment (no seed, no versioned config)"
+        - "Missing error handling on critical paths"
+        - "Scaler or imputer fit on full dataset (pipeline leakage)"
+    P2:
+      label: "Medium — Fix in next sprint"
+      sla: "Tracked in technical debt register"
+      examples:
+        - "Functions with no docstrings on public interfaces"
+        - "Duplicated logic across modules"
+        - "Overly long functions (>50 lines)"
+        - "Suboptimal BigQuery query (no partition pruning)"
+        - "Poor variable naming"
+    P3:
+      label: "Low — Improvement backlog"
+      sla: "Addressed at team discretion"
+      examples:
+        - "Style inconsistencies (formatting, spacing)"
+        - "Minor refactor opportunities"
+        - "Optional performance optimization"
+
+  review_dimensions:
+
+    reproducibility:
+      description: "Can another practitioner reproduce the output with the same data and configs?"
+      gates:
+        - random_seeds_fixed_and_configurable
+        - dependencies_versioned
+        - data_paths_configurable
+        - experiment_configs_in_files_not_inline
+
+    logging:
+      description: "Is the code observable in production without a debugger?"
+      gates:
+        - uses_logging_module_not_print
+        - log_levels_appropriate
+        - run_start_parameters_logged
+        - errors_logged_with_stack_trace
+
+    configuration_management:
+      description: "Are all environment-specific values externalized?"
+      gates:
+        - no_hardcoded_paths
+        - no_hardcoded_credentials
+        - no_hardcoded_dates_or_thresholds
+        - config_validated_at_startup
+
+    error_handling:
+      description: "Does the code fail explicitly and informatively?"
+      gates:
+        - expected_failures_handled
+        - no_bare_except_clauses
+        - failure_messages_are_diagnostic
+
+    data_safety:
+      description: "Does the code protect against data quality and schema issues?"
+      gates:
+        - input_data_validated_before_processing
+        - schema_assumptions_checked_explicitly
+        - missing_value_handling_is_explicit
+
+    code_structure:
+      description: "Is the code maintainable by another team member?"
+      gates:
+        - single_responsibility_per_function
+        - no_duplicated_logic
+        - docstrings_on_public_interfaces
+        - function_length_under_50_lines
+
+  output_format:
+    per_issue:
+      - severity: P0/P1/P2/P3
+      - location: file:function or file:line
+      - issue: description
+      - risk: production risk
+      - fix: specific recommendation
+    summary:
+      - P0_count
+      - P1_count
+      - P2_count
+      - P3_count
+      - overall_verdict: [APPROVE / APPROVE_WITH_CONDITIONS / REQUEST_CHANGES / BLOCK]

@@ -1,0 +1,31 @@
+archetype:
+  id: eda_analytics
+  version: "1.0.0"
+  description: >
+    Project pattern for EDA, SQL-derived analytics, plots, causal analysis,
+    client-ready analytical reports, and production audit follow-up.
+  cognitive_agents:
+    - eda_reviewer_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - team_lead_ds_agent
+    - presentation_agent
+  technical_capabilities:
+    - eda
+    - analytics
+    - plots
+    - causal_analysis
+    - bigquery
+    - local_files
+    - production_audit
+  expected_outputs:
+    - eda_report
+    - analytical_report
+    - plot_interpretation
+    - dq_incident
+    - executive_summary
+    - task_register
+  memory_policy:
+    canonical_home: "~/.negritaos/memory/projects/<project_id>"
+    keep_in_repo: false
+    session_close_required: true

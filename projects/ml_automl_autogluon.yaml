@@ -1,0 +1,44 @@
+project:
+  id: ml_automl_autogluon
+  name: "ML AutoML AutoGluon"
+  version: "1.0.0"
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/backup_repos/ml_automl_autogluon"
+  memory_home: "~/.negritaos/memory/projects/ml_automl_autogluon"
+  archetypes:
+    - ml_automl
+  capabilities:
+    - data_contracts
+    - data_loading
+    - feature_engineering
+    - automl
+    - mlflow
+    - trainer
+    - inference_serialization
+    - governance_artifacts
+    - production_readiness
+  agents:
+    - model_review_agent
+    - eda_reviewer_agent
+    - data_quality_sentinel_agent
+    - team_lead_ds_agent
+    - technical_writer_agent
+    - presentation_agent
+  codex_profiles:
+    - automl_pipeline
+    - review
+    - refactor
+  expected_outputs:
+    - model_review_report
+    - governance_summary
+    - experiment_traceability
+    - production_readiness_review
+    - notion_doc
+    - executive_presentation
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "tracked_dirty_deferred"
+    canonical_memory_outside_repo: true
+    latest_preservation_backup: "~/.negritaos/backups/2026-05-17_150934/ml_automl_autogluon"
+  notes:
+    - "Do not rewrite this repo's .codex until dirty tracked changes are classified and preserved."

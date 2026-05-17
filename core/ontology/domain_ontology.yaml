@@ -1,0 +1,128 @@
+domain_ontology:
+  version: "1.0.0"
+  description: >
+    Shared vocabulary for NegritaOS. Defines core concepts used across agents to ensure
+    consistent interpretation. All agents inherit these definitions unless explicitly overridden
+    in their domain contract.
+
+  general_concepts:
+
+    claim:
+      definition: "A statement asserted as true."
+      classification:
+        - evidence_backed: "Supported by data, citations, or reproducible observations."
+        - hypothesis: "Plausible but lacking direct evidence. Must be labeled."
+        - speculation: "Not grounded in evidence. Must be avoided or explicitly rejected."
+
+    finding:
+      definition: "A claim derived directly from analyzed data or reviewed material."
+      requirement: "Must be traceable to a specific data point, metric, or source."
+
+    recommendation:
+      definition: "An action proposed based on one or more findings."
+      requirement: "Must reference the finding(s) it is based on. Must be actionable."
+
+    risk:
+      definition: "A condition that may negatively affect outcome, quality, or delivery."
+      required_fields: [description, severity, likelihood, mitigation]
+
+    assumption:
+      definition: "An unverified premise that the analysis depends on."
+      requirement: "Must be stated explicitly. Must be testable where possible."
+
+    limitation:
+      definition: "A constraint on the validity or scope of an output."
+      requirement: "Must be stated. Cannot be omitted to improve appearance of output."
+
+  ml_concepts:
+
+    target_leakage:
+      definition: >
+        When information unavailable at prediction time is included in model training,
+        inflating performance metrics artificially.
+      severity: critical
+      detection_steps:
+        - Check feature timestamps relative to target event
+        - Check for post-event derived features
+        - Cross-validate with time-based splits
+
+    operational_rule:
+      definition: >
+        A human-interpretable threshold or condition derived from model behavior
+        that can be implemented in a business process without model dependency.
+      requirement: "Must include confidence interval or support metric. Must not be overclaimed."
+
+    model_readiness:
+      levels:
+        - experimental: "Proof of concept. Not validated for production."
+        - validated: "Backtested on holdout. Ready for staging."
+        - production_ready: "Monitored, documented, reproducible, approved by governance."
+
+    imbalance_awareness:
+      definition: >
+        Recognition that class distribution affects metric interpretation.
+        Accuracy alone is insufficient for imbalanced targets.
+      required_alternative_metrics: [precision, recall, F1, AUC-ROC, AUC-PR]
+
+  academic_concepts:
+
+    research_objective:
+      definition: "A specific, measurable statement of what the research aims to demonstrate or produce."
+      anti_pattern: "Using a method name as an objective (e.g., 'apply machine learning')."
+      valid_pattern: "Predict X using Y in context Z, measured by metric M."
+
+    tfm:
+      definition: "Trabajo Fin de Máster — Spanish Master's Thesis."
+      evaluation_dimensions:
+        - title_problem_alignment
+        - objective_measurability
+        - methodology_appropriateness
+        - dataset_feasibility
+        - conclusion_support
+
+    academic_rigor:
+      definition: "Adherence to systematic, evidence-based methodology with explicit limitations."
+      minimum_requirements:
+        - reproducible_experiment_design
+        - cited_sources
+        - explicit_limitations
+        - conclusions_bounded_by_evidence
+
+  data_quality_concepts:
+
+    dq_severity:
+      levels:
+        P1:
+          label: Critical
+          definition: "Production KPIs affected. Immediate escalation required."
+        P2:
+          label: High
+          definition: "Significant data gaps. Analysis may be invalid. Same-day resolution."
+        P3:
+          label: Medium
+          definition: "Partial data issues. Analysis degraded but usable with caveats."
+        P4:
+          label: Low
+          definition: "Minor inconsistencies. Tracked for remediation in next cycle."
+
+    schema_drift:
+      definition: "Unexpected change in upstream data structure, types, or cardinality."
+      detection: "Compare current schema snapshot against baseline. Alert on delta."
+
+  governance_concepts:
+
+    auditability:
+      definition: >
+        The ability to reconstruct how a decision, model, or output was produced,
+        including data sources, methods, assumptions, and decision points.
+      requirement: "Every production-facing output must be auditable."
+
+    traceability:
+      definition: "Linkage from output back to its inputs, transformations, and decisions."
+      implementation: "Experiment tracking, versioned configs, structured logs."
+
+    reproducibility:
+      definition: >
+        Given the same inputs and configs, the same output can be generated
+        by any team member with access to the environment.
+      requirement: "All ML experiments must be reproducible. Notebooks alone are insufficient."

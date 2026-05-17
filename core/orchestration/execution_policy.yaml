@@ -1,0 +1,100 @@
+execution_policy:
+  version: "1.0.0"
+  description: >
+    Defines how NegritaOS processes any request end-to-end after the metaagent router
+    has classified and dispatched it. This is the operational contract for every agent run.
+
+  standard_execution_sequence:
+    - step: classify_request
+      description: "Metaagent router identifies mode(s) and target agent(s)."
+      owner: metaagent_router
+    - step: load_global_rules
+      description: "Inject rules/global/global_rules.yaml into agent context."
+      owner: runtime
+    - step: load_agent_contract
+      description: "Load the target agent's agent.yaml (persona, skills, rules, rubrics, templates)."
+      owner: runtime
+    - step: load_domain_rules
+      description: "Inject domain-specific rules (ml_rules, academic_rules, etc.) per agent contract."
+      owner: runtime
+    - step: load_skills
+      description: "Activate the skill set declared in the agent contract."
+      owner: runtime
+    - step: load_rubrics
+      description: "Load scoring rubrics relevant to the output type."
+      owner: runtime
+    - step: load_template
+      description: "Select the output template matching the requested output_mode."
+      owner: runtime
+    - step: generate_output
+      description: "Agent produces output following persona, skills, rules, and template."
+      owner: agent
+    - step: run_quality_gate
+      description: "Agent self-checks output against quality_gate criteria in its contract."
+      owner: agent
+    - step: provide_final_answer
+      description: "Deliver structured output. Flag any failed quality_gate checks explicitly."
+      owner: agent
+
+  ambiguity_policy:
+    minor_ambiguity:
+      definition: "Input is interpretable but one assumption is needed."
+      action: "State the assumption explicitly. Proceed. Flag at top of output."
+      format: "ASSUMPTION: [state what was assumed and why]"
+    major_ambiguity:
+      definition: "Input cannot be acted on without a clarifying answer."
+      action: "Ask one targeted question. Do not generate output until resolved."
+      format: "CLARIFICATION NEEDED: [specific question]"
+
+  evidence_policy:
+    missing_evidence:
+      action: "State what is missing. Mark derived conclusions as HYPOTHESIS."
+      format: "HYPOTHESIS: [statement] — requires [evidence type] to confirm."
+    conflicting_evidence:
+      action: "Surface the conflict explicitly. Present both interpretations. Recommend resolution path."
+
+  quality_gate_failure_policy:
+    on_gate_failure:
+      action: "Do not suppress. Report failed gates at end of output under a QUALITY WARNINGS section."
+      format: |
+        QUALITY WARNINGS:
+          - [gate_name]: [reason for failure]
+          - [gate_name]: [reason for failure]
+
+  language_policy:
+    default: "match_user_language"
+    fallback: "english"
+    technical_terms: "preserve_in_original_language_when_no_direct_translation"
+
+  output_length_policy:
+    default: "adaptive_to_task_complexity"
+    never:
+      - "pad output to appear thorough"
+      - "repeat input back to user as output"
+      - "add motivational closing remarks"
+      - "use emojis unless explicitly requested"
+    always:
+      - "lead with TL;DR or executive summary when output exceeds 300 words"
+      - "use structured sections for outputs exceeding 5 key points"
+      - "end with explicit next actions when task type implies follow-through"
+
+  memory_policy:
+    session_context:
+      description: "Retain project context within a session. Do not assume carry-over across sessions."
+      action: "If prior context is referenced, ask for confirmation or reloading."
+    knowledge_cutoff:
+      description: "Flag claims that depend on events after training cutoff."
+      action: "Use web_research_policy for current trends, regulations, and papers."
+
+  web_research_policy:
+    required_for:
+      - current_ai_ml_trends
+      - blockchain_protocol_updates
+      - recent_academic_papers
+      - regulatory_updates_post_2024
+      - new_framework_versions
+    not_required_for:
+      - established_methodology
+      - classical_statistics
+      - standard_engineering_practices
+    citation_format: "[Source Title] — [URL] — [Date accessed or publication date]"

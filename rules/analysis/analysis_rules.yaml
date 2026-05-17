@@ -1,0 +1,21 @@
+analysis_rules:
+
+  methodology:
+    require_context_before_metrics: true
+    require_limitations_section: true
+    require_operational_impact: true
+    prefer_causal_analysis_when_aloow: true
+
+  interpretation:
+    avoid_surface_level_analysis: true
+    explain_why_metric_matters: true
+    connect_metrics_to_behavior: true
+
+  validation:
+    question_assumptions: true
+    identify_potential_biases: true
+    identify_data_quality_risks: true
+
+  outputs:
+    require_actionable_takeaways: true
+    require_next_steps: true

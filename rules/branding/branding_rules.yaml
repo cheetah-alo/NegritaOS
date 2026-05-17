@@ -1,0 +1,12 @@
+branding_rules:
+
+  visual_identity:
+    use_clean_professional_style: true
+    avoid_excessive_colors: true
+
+  tone:
+    technical_but_accessible: true
+    executive_ready: true
+
+  outputs:
+    notion_ready_format_when_ask_for_reports: true

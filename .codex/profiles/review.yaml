@@ -1,0 +1,21 @@
+name: review
+mode: audit
+description: Code + data analytics governance review (SQL/EDA/plots/tests + ML when present)
+
+uses:
+  - ai-behavior
+  - coding-standards
+  - naming-guidelines
+  - error-handling
+  - logging
+
+  - data-contracts
+  - data-validation
+  - data-sql-governance
+
+  # Execution & plotting discipline
+  - notebooks
+  - plotting-guidelines
+
+  # Testing
+  - tests-unittest-standards

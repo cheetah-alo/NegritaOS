@@ -1,0 +1,28 @@
+archetype:
+  id: data_platform
+  version: "1.0.0"
+  description: >
+    Project pattern for local data tooling, orchestration helpers, CLI/runtime
+    workflows, package compatibility, and operational developer experience.
+  cognitive_agents:
+    - code_review_agent
+    - data_quality_sentinel_agent
+    - team_lead_ds_agent
+    - technical_writer_agent
+  technical_capabilities:
+    - python_package
+    - cli
+    - local_runtime
+    - tests
+    - docker_or_local_services
+    - compatibility
+  expected_outputs:
+    - runbook
+    - compatibility_note
+    - refactor_plan
+    - code_review_report
+    - task_register
+  memory_policy:
+    canonical_home: "~/.negritaos/memory/projects/<project_id>"
+    keep_in_repo: false
+    session_close_required: true

@@ -1,0 +1,16 @@
+governance_rules:
+
+  auditability:
+    require_traceability: true
+    require_decision_visibility: true
+
+  experimentation:
+    require_config_tracking: true
+    require_metric_tracking: true
+
+  operational_risk:
+    identify_scalability_risk: true
+    identify_maintenance_risk: true
+
+  explainability:
+    require_human_interpretability: true

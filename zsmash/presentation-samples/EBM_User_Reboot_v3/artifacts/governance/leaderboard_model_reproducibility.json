@@ -1,0 +1,157 @@
+{
+  "automl_backend": "autogluon_tabular",
+  "best_model": "WeightedEnsemble_L2",
+  "generated_at": "2026-05-12T18:26:48.621048",
+  "num_models": 2,
+  "models": [
+    {
+      "leaderboard_rank": 1,
+      "model": "EBM",
+      "model_family": "EBM",
+      "learner_type": "EBMModel",
+      "problem_type": "binary",
+      "can_infer": true,
+      "fit_time": 4612.741680860519,
+      "pred_time_val": 0.04219865798950195,
+      "score_val": 0.62808533719459,
+      "stack_level": 1,
+      "reproducibility": {
+        "hyperparameters": {
+          "outer_bags": 1,
+          "inner_bags": 0,
+          "interactions": 0,
+          "learning_rate": 0.01,
+          "validation_size": 0.15,
+          "greedy_ratio": 0.0,
+          "cyclic_progress": false,
+          "max_rounds": 3500,
+          "early_stopping_rounds": 100,
+          "max_bins": 128,
+          "min_samples_leaf": 150,
+          "max_leaves": 3
+        },
+        "ag_args_fit": {
+          "max_memory_usage_ratio": 0.42,
+          "max_time_limit_ratio": 1.0,
+          "max_time_limit": null,
+          "min_time_limit": 0,
+          "valid_raw_types": [
+            "int",
+            "float",
+            "category"
+          ],
+          "valid_special_types": null,
+          "ignored_type_group_special": null,
+          "ignored_type_group_raw": null,
+          "get_features_kwargs": null,
+          "get_features_kwargs_extra": null,
+          "predict_1_batch_size": null,
+          "temperature_scalar": null
+        },
+        "source_field_used": "hyperparameters_user",
+        "ag_args_fit_source_field_used": "ag_args_fit",
+        "hyperparameters_user": {
+          "outer_bags": 1,
+          "inner_bags": 0,
+          "interactions": 0,
+          "learning_rate": 0.01,
+          "validation_size": 0.15,
+          "greedy_ratio": 0.0,
+          "cyclic_progress": false,
+          "max_rounds": 3500,
+          "early_stopping_rounds": 100,
+          "max_bins": 128,
+          "min_samples_leaf": 150,
+          "max_leaves": 3,
+          "ag_args_fit": {
+            "max_memory_usage_ratio": 0.42
+          }
+        },
+        "hyperparameters_fit": {},
+        "hyperparameters_nondefault": [
+          "outer_bags",
+          "inner_bags",
+          "interactions",
+          "learning_rate",
+          "validation_size",
+          "greedy_ratio",
+          "cyclic_progress",
+          "max_rounds",
+          "early_stopping_rounds",
+          "max_bins",
+          "min_samples_leaf",
+          "max_leaves"
+        ]
+      }
+    },
+    {
+      "leaderboard_rank": 2,
+      "model": "WeightedEnsemble_L2",
+      "model_family": "WEIGHTED_ENSEMBLE",
+      "learner_type": "WeightedEnsembleModel",
+      "problem_type": "binary",
+      "can_infer": true,
+      "fit_time": 4612.763672590256,
+      "pred_time_val": 0.058635711669921875,
+      "score_val": 0.62808533719459,
+      "stack_level": 2,
+      "reproducibility": {
+        "hyperparameters": {
+          "ensemble_size": 25,
+          "subsample_size": 1000000
+        },
+        "ag_args_fit": {
+          "max_memory_usage_ratio": 1.0,
+          "max_time_limit_ratio": 1.0,
+          "max_time_limit": null,
+          "min_time_limit": 0,
+          "valid_raw_types": null,
+          "valid_special_types": null,
+          "ignored_type_group_special": null,
+          "ignored_type_group_raw": null,
+          "get_features_kwargs": null,
+          "get_features_kwargs_extra": null,
+          "predict_1_batch_size": null,
+          "temperature_scalar": null,
+          "drop_unique": false
+        },
+        "source_field_used": "bagged_info.child_hyperparameters",
+        "ag_args_fit_source_field_used": "bagged_info.child_ag_args_fit",
+        "hyperparameters_user": {
+          "save_bag_folds": true
+        },
+        "hyperparameters_fit": {},
+        "hyperparameters_nondefault": [
+          "save_bag_folds"
+        ]
+      }
+    }
+  ],
+  "leaderboard_context": {
+    "problem_type": "binary",
+    "eval_metric": "roc_auc"
+  },
+  "tracked_evaluation_metrics": {
+    "eval_metric": "roc_auc",
+    "train": {
+      "roc_auc": 0.6269723767260112,
+      "pr_auc": 0.3516464545615361,
+      "accuracy": 0.7469304053482634,
+      "balanced_accuracy": 0.5105440332501974,
+      "f1": 0.05891370325274781,
+      "precision": 0.5105203741258563,
+      "recall": 0.03126057622230633,
+      "mcc": 0.07421396749687206
+    },
+    "test": {
+      "roc_auc": 0.6350001460864528,
+      "pr_auc": 0.3821811284902611,
+      "accuracy": 0.7323160238868532,
+      "balanced_accuracy": 0.5120383245665866,
+      "f1": 0.06427085902553843,
+      "precision": 0.5565458141067897,
+      "recall": 0.034104661740635235,
+      "mcc": 0.08382065565892358
+    }
+  }
+}

@@ -1,0 +1,211 @@
+version: 1
+rules:
+  - id: ai-behavior
+    path: rules/ai-behavior.md
+    domain: meta
+    enforcement: strict
+    priority: critical
+    depends_on: []
+    version: 1.1.0
+
+  - id: naming-guidelines
+    path: rules/dev-naming-conventions.md
+    domain: dev
+    enforcement: strict
+    priority: critical
+    depends_on: []
+    version: 1.0.2
+
+  - id: logging
+    path: rules/dev-logging.md
+    domain: dev
+    enforcement: strict
+    priority: critical
+    depends_on: []
+    version: 1.0.2
+
+  - id: data-contracts
+    path: rules/data-contracts.md
+    domain: data-governance
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - naming-guidelines
+      - logging
+    version: 1.1.0
+
+  - id: error-handling
+    path: rules/dev-error-handling.md
+    domain: dev
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - logging
+      - naming-guidelines
+      - data-contracts
+    version: 1.1.0
+
+  - id: coding-standards
+    path: rules/dev-coding-standards.md
+    domain: dev
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - ai-behavior
+      - naming-guidelines
+      - error-handling
+      - logging
+    version: 1.2.0
+
+  - id: object-orientation
+    path: rules/dev-object-orientation.md
+    domain: dev
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - coding-standards
+      - naming-guidelines
+    version: 1.0.1
+
+  - id: data-validation
+    path: rules/data-validation.md
+    domain: data-governance
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - data-contracts
+      - error-handling
+      - logging
+      - naming-guidelines
+    version: 1.1.0
+
+  - id: data-sql-governance
+    path: rules/data-sql-governance.md
+    domain: data-engineering
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - data-contracts
+      - naming-guidelines
+      - logging
+    version: 1.0.0
+
+  - id: notebooks
+    path: rules/notebooks.md
+    domain: governance
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - ai-behavior
+      - coding-standards
+      - naming-guidelines
+      - logging
+      - error-handling
+    version: 1.0.0
+
+  - id: tests-unittest-standards
+    path: rules/tests-unittest-standards.md
+    domain: testing
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - coding-standards
+      - naming-guidelines
+      - dev-python
+      - error-handling
+    version: 1.2.0
+
+  - id: learnings
+    path: rules/dev-learnings.md
+    domain: meta
+    enforcement: advisory
+    priority: warning
+    depends_on:
+      - ai-behavior
+      - coding-standards
+    version: 1.1.0
+
+  - id: plotting-guidelines
+    path: rules/plotting-guidelines.md
+    domain: ml-eda
+    enforcement: advisory
+    priority: warning
+    depends_on:
+      - coding-standards
+      - naming-guidelines
+      - object-orientation
+      - dev-python
+    
+    version: 1.0.0
+
+  - id: dev-python
+    path: rules/dev-python.md
+    domain: dev
+    enforcement: advisory
+    priority: warning
+    depends_on:
+      - coding-standards
+      - naming-guidelines
+      - error-handling
+      - logging
+    version: 1.0.0
+
+  - id: data-contracts-lite
+    path: rules/data-contracts-lite.md
+    domain: data-governance
+    enforcement: advisory
+    priority: warning
+    depends_on:
+      - data-contracts
+      - data-validation
+      - naming-guidelines
+      - logging
+    version: 1.0.0
+
+  - id: observables
+    path: rules/dev-observables.md
+    domain: ml
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - coding-standards
+      - object-orientation
+      - logging
+    version: 1.0.0
+
+  - id: tree-widgets
+    path: rules/dev-tree-widgets.md
+    domain: ml
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - coding-standards
+      - naming-guidelines
+      - logging
+    version: 1.0.0
+
+  - id: telemetry
+    path: rules/ml-telemetry.md
+    domain: ml
+    enforcement: advisory
+    priority: warning
+    depends_on:
+      - logging
+      - observables
+      - ml-pipelines
+      - ml-disposables
+    version: 1.0.0
+
+
+  - id: pipelines
+    path: rules/pipelines.md
+    domain: ml
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - coding-standards
+      - naming-guidelines
+      - disposables
+      - observables
+      - telemetry
+    version: 1.0.0

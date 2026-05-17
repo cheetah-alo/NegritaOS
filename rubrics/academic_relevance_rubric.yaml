@@ -1,0 +1,13 @@
+rubric:
+  name: academic_relevance_rubric
+  version: "1.0.0"
+  applicable_agents: [paper_review_agent, ai_trend_radar_agent]
+  required:
+    - source_quality_is_classified
+    - contribution_is_stated
+    - relevance_to_user_context_is_explained
+    - limitations_are_explicit
+  fail_conditions:
+    - unsupported_academic_claims
+    - missing_source_metadata
+    - relevance_claim_without_application_context

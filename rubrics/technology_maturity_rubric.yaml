@@ -1,0 +1,15 @@
+rubric:
+  name: technology_maturity_rubric
+  version: "1.0.0"
+  applicable_agents: [ai_trend_radar_agent]
+  maturity_levels:
+    - research_only
+    - prototype
+    - early_production
+    - production_ready
+    - commoditized
+  required:
+    - maturity_level_is_assigned
+    - evidence_for_maturity_is_cited
+    - adoption_risk_is_explained
+    - implementation_dependency_is_named

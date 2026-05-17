@@ -1,0 +1,20 @@
+academic_rules:
+
+  objectives:
+    objectives_must_be_measurable: true
+    objectives_must_align_with_title: true
+    avoid_methodological_objectives: true
+
+  methodology:
+    require_clear_hypothesis: true
+    require_dataset_justification: true
+    require_model_justification: true
+
+  rigor:
+    identify_weak_claims: true
+    require_citations_for_key_claims: true
+
+  evaluation:
+    evaluate_novelty: true
+    evaluate_feasibility: true
+    evaluate_reproducibility: true

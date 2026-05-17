@@ -1,0 +1,217 @@
+{
+  "model_name": "EBM",
+  "explanation_class": "EBMExplanation",
+  "global_scores": [
+    {
+      "feature": "level_distinct_ipaddress_count_1h",
+      "score": 1.4231306798992478e-05
+    },
+    {
+      "feature": "level_distinct_proxy_count_1h",
+      "score": 0.06777165485302539
+    },
+    {
+      "feature": "level_rxlevel_avg_1h",
+      "score": 0.02618390230259933
+    },
+    {
+      "feature": "level_rxlevel_range_1h",
+      "score": 0.0003846705441727557
+    },
+    {
+      "feature": "gateway_cpu_avg_1h",
+      "score": 0.07383142334229155
+    },
+    {
+      "feature": "gateway_memory_utilization_avg_1h",
+      "score": 0.21642442263419143
+    },
+    {
+      "feature": "gateway_temperature_avg_1h",
+      "score": 0.010805692404872795
+    },
+    {
+      "feature": "gateway_client_associations_sum_1h",
+      "score": 0.05051128488327099
+    },
+    {
+      "feature": "gateway_band_steering_requests_sum_1h",
+      "score": 0.0026128024326431748
+    },
+    {
+      "feature": "gateway_band_steering_no_response_sum_1h",
+      "score": 0.0248407869963709
+    },
+    {
+      "feature": "gateway_ap_steering_requests_sum_1h",
+      "score": 0.0016022132376047101
+    },
+    {
+      "feature": "gateway_ap_steering_no_response_sum_1h",
+      "score": 0.00227836290483693
+    },
+    {
+      "feature": "gateway_band_steering_succ_rate_avg_1h",
+      "score": 0.003105583972541813
+    },
+    {
+      "feature": "gateway_ap_steering_succ_rate_avg_1h",
+      "score": 0.00025100536513146017
+    },
+    {
+      "feature": "gateway_tx_op_band_avg_1h",
+      "score": 0.020955861471224378
+    },
+    {
+      "feature": "gateway_noise_band_avg_1h",
+      "score": 0.017173349756354952
+    },
+    {
+      "feature": "gateway_channel_automatic_change_24_sum_1h",
+      "score": 0.0018795261677953194
+    },
+    {
+      "feature": "extender_device_count_1h",
+      "score": 0.023876436321619933
+    },
+    {
+      "feature": "has_extender",
+      "score": 0.002500467963752558
+    },
+    {
+      "feature": "has_wireless_backhaul",
+      "score": 0.0017304470046602387
+    },
+    {
+      "feature": "has_eth_backhaul",
+      "score": 0.013075199303847424
+    },
+    {
+      "feature": "extender_cpu_avg_1h",
+      "score": 0.013729065759184634
+    },
+    {
+      "feature": "extender_memory_utilization_avg_1h",
+      "score": 0.0399404790268826
+    },
+    {
+      "feature": "extender_client_associations_sum_1h",
+      "score": 0.020088922979701364
+    },
+    {
+      "feature": "extender_bh_uplink_rssi_5_avg_1h",
+      "score": 0.009929450286986703
+    },
+    {
+      "feature": "extender_bh_retransmissions_rate_5_avg_1h",
+      "score": 0.004490378305658825
+    },
+    {
+      "feature": "level_distinct_ipaddress_count_1h_was_missing",
+      "score": 0.10549726362221534
+    },
+    {
+      "feature": "gateway_cpu_avg_1h_was_missing",
+      "score": 0.05057819972760466
+    },
+    {
+      "feature": "gateway_band_steering_succ_rate_avg_1h_was_missing",
+      "score": 0.007672815657691956
+    },
+    {
+      "feature": "gateway_ap_steering_succ_rate_avg_1h_was_missing",
+      "score": 0.0017335833264786713
+    },
+    {
+      "feature": "gateway_tx_op_band_avg_1h_was_missing",
+      "score": 0.05458581662078052
+    },
+    {
+      "feature": "gateway_noise_band_avg_1h_was_missing",
+      "score": 0.03577422117413577
+    },
+    {
+      "feature": "extender_bh_uplink_rssi_5_avg_1h_was_missing",
+      "score": 0.0018493264867125061
+    },
+    {
+      "feature": "extender_bh_retransmissions_rate_5_avg_1h_was_missing",
+      "score": 0.0008769469781563056
+    }
+  ],
+  "raw_overview": {
+    "type": "univariate",
+    "names": [
+      "level_distinct_ipaddress_count_1h",
+      "level_distinct_proxy_count_1h",
+      "level_rxlevel_avg_1h",
+      "level_rxlevel_range_1h",
+      "gateway_cpu_avg_1h",
+      "gateway_memory_utilization_avg_1h",
+      "gateway_temperature_avg_1h",
+      "gateway_client_associations_sum_1h",
+      "gateway_band_steering_requests_sum_1h",
+      "gateway_band_steering_no_response_sum_1h",
+      "gateway_ap_steering_requests_sum_1h",
+      "gateway_ap_steering_no_response_sum_1h",
+      "gateway_band_steering_succ_rate_avg_1h",
+      "gateway_ap_steering_succ_rate_avg_1h",
+      "gateway_tx_op_band_avg_1h",
+      "gateway_noise_band_avg_1h",
+      "gateway_channel_automatic_change_24_sum_1h",
+      "extender_device_count_1h",
+      "has_extender",
+      "has_wireless_backhaul",
+      "has_eth_backhaul",
+      "extender_cpu_avg_1h",
+      "extender_memory_utilization_avg_1h",
+      "extender_client_associations_sum_1h",
+      "extender_bh_uplink_rssi_5_avg_1h",
+      "extender_bh_retransmissions_rate_5_avg_1h",
+      "level_distinct_ipaddress_count_1h_was_missing",
+      "gateway_cpu_avg_1h_was_missing",
+      "gateway_band_steering_succ_rate_avg_1h_was_missing",
+      "gateway_ap_steering_succ_rate_avg_1h_was_missing",
+      "gateway_tx_op_band_avg_1h_was_missing",
+      "gateway_noise_band_avg_1h_was_missing",
+      "extender_bh_uplink_rssi_5_avg_1h_was_missing",
+      "extender_bh_retransmissions_rate_5_avg_1h_was_missing"
+    ],
+    "scores": [
+      1.4231306798992478e-05,
+      0.06777165485302539,
+      0.02618390230259933,
+      0.0003846705441727557,
+      0.07383142334229155,
+      0.21642442263419143,
+      0.010805692404872795,
+      0.05051128488327099,
+      0.0026128024326431748,
+      0.0248407869963709,
+      0.0016022132376047101,
+      0.00227836290483693,
+      0.003105583972541813,
+      0.00025100536513146017,
+      0.020955861471224378,
+      0.017173349756354952,
+      0.0018795261677953194,
+      0.023876436321619933,
+      0.002500467963752558,
+      0.0017304470046602387,
+      0.013075199303847424,
+      0.013729065759184634,
+      0.0399404790268826,
+      0.020088922979701364,
+      0.009929450286986703,
+      0.004490378305658825,
+      0.10549726362221534,
+      0.05057819972760466,
+      0.007672815657691956,
+      0.0017335833264786713,
+      0.05458581662078052,
+      0.03577422117413577,
+      0.0018493264867125061,
+      0.0008769469781563056
+    ]
+  }
+}

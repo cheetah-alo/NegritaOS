@@ -1,0 +1,14 @@
+rubric:
+  name: eda_rubric
+  version: "1.0.0"
+  applicable_agents: [eda_review_agent, model_review_agent]
+  required:
+    - data_scope_is_defined
+    - missingness_is_reported
+    - distributions_are_interpreted
+    - target_or_outcome_context_is_explained
+    - caveats_are_named
+  fail_conditions:
+    - metric_dump_without_interpretation
+    - charts_without_takeaways
+    - no_data_quality_assessment

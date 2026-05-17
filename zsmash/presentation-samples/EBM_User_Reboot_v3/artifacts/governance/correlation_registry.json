@@ -1,0 +1,8 @@
+{
+  "dataset_version": "1.0.0",
+  "correlation_method": "pearson",
+  "threshold": 0.97,
+  "timestamp": "2026-05-12T17:00:55.971662+00:00",
+  "rule_or_approver_id": "governance_auto",
+  "correlated_pairs": []
+}

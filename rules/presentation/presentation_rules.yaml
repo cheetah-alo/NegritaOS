@@ -1,0 +1,43 @@
+presentation_rules:
+
+  language:
+    default_for_generated_decks: english
+    preserve_domain_terms_when_clearer: true
+
+  storytelling:
+    prioritize_executive_summary: true
+    top_down_structure: true
+    business_impact_first: true
+    use_claim_evidence_implication_caveat: true
+
+  visuals:
+    avoid_decorative_plots: true
+    every_visual_requires_takeaway: true
+    allow_theme_presets:
+      - white_background
+      - black_background
+    default_theme_preset: white_background
+
+  communication:
+    explain_risk_clearly: true
+    explain_tradeoffs: true
+    avoid_overly_academic_language: true
+    default_tone: concise_decision_oriented
+
+  structure:
+    one_main_message_per_slide: true
+    speaker_notes_required: true
+    appendix_separates_methodology: true
+
+  brand:
+    cqi_brand_reference: brands/cqi/brand_style/brand_style.md
+    cqi_template_pptx: brands/cqi/plantillas/Template_CQISense.pptx
+    primary_color: "#0044ff"
+    dark_neutral: "#111827"
+    light_neutral: "#ffffff"
+    avoid_improvised_palettes: true
+
+  required_source_contract:
+    every_claim_requires_source_path: true
+    every_recommendation_requires_prior_finding: true
+    missing_evidence_must_be_marked_as_hypothesis: true

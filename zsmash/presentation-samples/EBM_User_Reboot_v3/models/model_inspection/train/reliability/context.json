@@ -1,0 +1,12 @@
+{
+  "split_name": "train",
+  "model_name": "EBM",
+  "model_state": "pre_refit",
+  "training_scope": "effective_training_partition",
+  "rank_source": "external_validation",
+  "rows": 12616731,
+  "rank": 1,
+  "positive_class": "1",
+  "status": "computed",
+  "note": "Champion diagnostics for this split. Use the rank_* subfolders to inspect the global external-validation ordering."
+}

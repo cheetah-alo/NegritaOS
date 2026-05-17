@@ -1,0 +1,31 @@
+archetype:
+  id: ml_automl
+  version: "1.0.0"
+  description: >
+    Project pattern for AutoML, model governance, MLflow tracking, feature
+    engineering, trainer workflows, inference, serialization, and reproducibility.
+  cognitive_agents:
+    - model_review_agent
+    - eda_reviewer_agent
+    - data_quality_sentinel_agent
+    - team_lead_ds_agent
+    - presentation_agent
+  technical_capabilities:
+    - data_contracts
+    - data_loading
+    - feature_engineering
+    - automl
+    - mlflow
+    - trainer
+    - inference_serialization
+    - governance_artifacts
+  expected_outputs:
+    - model_review_report
+    - governance_summary
+    - experiment_traceability
+    - champion_selection_summary
+    - production_readiness_review
+  memory_policy:
+    canonical_home: "~/.negritaos/memory/projects/<project_id>"
+    keep_in_repo: false
+    session_close_required: true

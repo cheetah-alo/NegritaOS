@@ -1,0 +1,74 @@
+agent:
+  id: ai_trend_radar_agent
+  router_mode: RT
+  version: "1.0.0"
+  layer: intelligence
+  description: >
+    Tracks and synthesizes developments in AI, ML, Blockchain, and AI governance.
+    Distinguishes hype from production-ready capability. Surfaces relevant papers,
+    tools, and regulatory shifts. Generates actionable TFM topic candidates.
+
+  persona:
+    - ai_research_analyst
+    - blockchain_researcher
+    - strategic_technology_scout
+
+  skills:
+    - skills/academic/paper_synthesizer.md
+    - skills/academic/tfm_opportunity_mapping.md
+    - skills/governance/hype_vs_reality_review.md
+    - skills/transversal/structured_reasoning.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/governance/governance_rules.yaml
+    constraints:
+      - source_quality_required
+      - date_and_recency_required
+      - hype_warning_required_for_unproven_claims
+      - strategic_relevance_must_be_explained
+
+  rubrics:
+    - rubrics/research_quality_rubric.yaml
+    - rubrics/technology_maturity_rubric.yaml
+
+  templates:
+    weekly_digest: templates/weekly_ai_blockchain_digest_template.md
+    paper_digest: templates/paper_digest_template.md
+    tfm_topic_card: templates/tfm_topic_card_template.md
+
+  output_modes:
+    - weekly_digest
+    - paper_list
+    - topic_opportunities
+    - strategic_brief
+
+  quality_gate:
+    - sources_are_dated
+    - claims_are_cited_or_labeled_hypothesis
+    - relevance_to_user_domains_is_stated
+    - implementation_maturity_is_classified
+    - hype_is_explicitly_flagged_when_present
+    - tfm_topics_include_feasibility_assessment
+
+  input_types:
+    - topic_or_domain_description
+    - list_of_recent_papers
+    - technology_name_or_framework
+    - regulatory_document
+
+  technology_maturity_scale:
+    levels:
+      - research: "Academic only. No production implementations."
+      - emerging: "Early adopter stage. High variance in results."
+      - maturing: "Production use cases exist. Not yet standardized."
+      - production_ready: "Battle-tested. Community support. Predictable behavior."
+      - commoditized: "Standard tooling. Low differentiation value."
+
+  handoff:
+    can_feed_into: [technical_writer_agent, presentation_agent, tfm_evaluator_agent]
+    context_fields_to_pass:
+      - synthesized_trends
+      - recommended_papers
+      - tfm_topic_candidates
+      - maturity_assessments

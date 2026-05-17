@@ -1,0 +1,55 @@
+rubric:
+  name: data_quality_rubric
+  version: "1.0.0"
+  applicable_agents: [data_quality_sentinel_agent]
+  description: >
+    Evaluation rubric for data quality incident documentation and escalation quality.
+    An incident report is only valid if it meets all required criteria.
+
+  incident_completeness_gates:
+    blocking:
+      - affected_tables_and_fields_named
+      - affected_time_period_bounded
+      - severity_assigned_with_justification
+      - evidence_is_reproducible
+      - business_impact_stated
+      - resolution_criteria_are_measurable
+    recommended:
+      - root_cause_stated_or_hypothesis_labeled
+      - escalation_path_defined
+      - monitoring_check_proposed
+
+  severity_assignment_criteria:
+    P1:
+      required_conditions:
+        - "Production KPI or dashboard is producing incorrect values"
+        - "Model predictions are corrupted by bad input data"
+        - "Real-time data pipeline has failed and is not recovering"
+    P2:
+      required_conditions:
+        - "Significant data gaps in reporting period"
+        - "Multiple tables or pipelines affected"
+        - "Analysis produced from this data is unreliable"
+    P3:
+      required_conditions:
+        - "Partial data issues that degrade but do not invalidate analysis"
+        - "Workaround is available"
+    P4:
+      required_conditions:
+        - "Minor inconsistencies with no immediate decision impact"
+
+  evidence_quality_gates:
+    - "Evidence is a reproducible SQL query or explicit data observation"
+    - "Evidence includes affected row counts or percentage where applicable"
+    - "Evidence is not a screenshot alone — must be paired with reproducible query"
+    - "Time period of evidence matches stated incident period"
+
+  resolution_criteria_gates:
+    - "Criteria use measurable language: 'zero null values in field X', not 'data is fixed'"
+    - "Criteria can be verified by a person who did not write the report"
+    - "Success state is defined, not just the action to take"
+
+  escalation_quality_gates:
+    - "Escalation path names a role, not just a team"
+    - "SLA matches severity (P1: 1h, P2: 4h, P3: sprint, P4: backlog)"
+    - "Each escalation recipient has a defined action"

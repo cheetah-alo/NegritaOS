@@ -1,0 +1,32 @@
+writing_rules:
+
+  structure:
+    require_tldr: true
+    require_section_hierarchy: true
+    require_summary_before_details: true
+
+  plots:
+    every_plot_requires:
+      - what we are looking on the plot
+      - explanation of kpis or calculations on the plot
+      - interpretation
+      - operational_takeaway
+
+  language:
+    prefer_short_sentences: true
+    avoid_marketing_language: true
+    avoid_generic_ai_phrases: true
+    prefer_brene_brown_style: true
+    prefer_canidian_tone_when_on_english: true
+
+
+  storytelling:
+    use_problem_to_solution_flow: true
+    connect_sections_logically: true
+    avoid_orphan_sections: true
+    align_notion_docs_with_presentation_storyline_when_same_source: true
+    use_findings_contract_for_analytical_outputs: rules/presentation/findings_contract.yaml
+
+  formatting:
+    prefer_dense_information: true
+    avoid_visual_noise: true

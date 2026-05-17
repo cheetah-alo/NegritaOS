@@ -1,0 +1,16 @@
+rubric:
+  name: documentation_quality_rubric
+  version: "1.0.0"
+  applicable_agents: [technical_writer_agent]
+  required:
+    - tldr_is_first
+    - objective_is_explicit
+    - findings_are_interpreted
+    - risks_and_caveats_are_visible
+    - recommendations_are_actionable
+    - next_actions_have_owner_or_role
+  fail_conditions:
+    - orphan_sections
+    - metric_dump_without_interpretation
+    - unsupported_recommendations
+    - missing_source_traceability_for_claims

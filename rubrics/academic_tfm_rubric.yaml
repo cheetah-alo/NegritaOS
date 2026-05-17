@@ -1,0 +1,87 @@
+rubric:
+  name: academic_tfm_rubric
+  version: "1.0.0"
+  applicable_agents: [tfm_evaluator_agent, proposal_validator_agent]
+  description: >
+    Scoring rubric for TFM (Trabajo Fin de Máster) evaluation.
+    Applied to proposals, milestone reviews, and final defense documents.
+
+  scoring_scale:
+    4: "Excellent — meets all criteria, no revision needed"
+    3: "Satisfactory — meets core criteria, minor clarification needed"
+    2: "Needs Revision — structural issues, specific revisions required"
+    1: "Insufficient — fundamental defect, major rework required"
+
+  dimensions:
+
+    title_problem_objective_alignment:
+      weight: 0.20
+      criteria:
+        4: "Title precisely reflects problem and scope. Problem is specific and contextualized. Objectives are measurable, achievable, and each maps to a deliverable."
+        3: "Alignment is present but one element needs clarification. Objectives are mostly measurable."
+        2: "Partial alignment. One or more objectives are vague or method-centric. Problem statement needs sharper framing."
+        1: "No clear alignment. Objectives describe methods, not outcomes. Title does not match problem."
+      red_flags:
+        - "Objective starts with: 'Apply', 'Use', 'Implement' without stating the outcome"
+        - "Title contains dataset name but not problem type"
+        - "Multiple unrelated objectives"
+
+    methodology_appropriateness:
+      weight: 0.25
+      criteria:
+        4: "Method is explicitly justified for the problem and data type. Alternatives were considered. Validation strategy is correct (time-based split for temporal data). Metrics match problem type."
+        3: "Method is appropriate but justification is brief. Validation strategy is acceptable."
+        2: "Method may be appropriate but is not justified. Validation strategy has issues (random split on temporal data, no holdout)."
+        1: "Method does not match problem. No validation strategy. Evaluation metrics are inappropriate."
+      red_flags:
+        - "Random split on temporal prediction problem"
+        - "Accuracy as sole metric for imbalanced target"
+        - "No baseline model for comparison"
+
+    dataset_feasibility:
+      weight: 0.20
+      criteria:
+        4: "Dataset is named, sourced, accessible (link or confirmed access), and size is appropriate for method. Temporal coverage matches prediction window."
+        3: "Dataset is identified and likely accessible. Minor uncertainties about size or coverage."
+        2: "Dataset is named but access is unclear or size may be insufficient. No backup plan."
+        1: "Dataset is not identified, or access is implausible, or not suitable for stated method."
+      red_flags:
+        - "Dataset requires institutional access with no letter of support"
+        - "Dataset size too small for deep learning method proposed"
+        - "No dataset mentioned at proposal stage"
+
+    conclusions_supported_by_results:
+      weight: 0.20
+      criteria:
+        4: "All conclusions directly reference results. Limitations are explicit and bounded. No overclaiming."
+        3: "Most conclusions are supported. One or two minor overclaims that need qualification."
+        2: "Some conclusions are not supported by results. Limitations are acknowledged but not bounded."
+        1: "Conclusions overclaim results significantly. Limitations absent or trivial."
+      red_flags:
+        - "'The model works well' without a benchmark or context"
+        - "Generalizability claimed from a single dataset"
+        - "Limitations section is copy-pasted boilerplate"
+
+    academic_rigor:
+      weight: 0.15
+      criteria:
+        4: "Citations are relevant, correctly formatted, and up to date. Related work positions the thesis in the literature. Code or methodology is reproducible."
+        3: "Citations are mostly correct. Related work is present but could be stronger."
+        2: "Citations have errors or gaps. Related work is superficial. Reproducibility unclear."
+        1: "Citations are absent or incorrect. No related work. No reproducibility path."
+
+  passing_threshold:
+    minimum_average_score: 2.5
+    no_dimension_below: 2
+    note: "A score of 1 in any dimension is grounds for rejection regardless of average."
+
+  output_format:
+    per_dimension:
+      - score
+      - verdict
+      - evidence_from_document
+      - required_action
+    overall:
+      - weighted_average_score
+      - milestone_decision
+      - blocking_issues

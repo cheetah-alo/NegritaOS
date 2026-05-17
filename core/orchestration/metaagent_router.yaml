@@ -1,0 +1,395 @@
+metaagent_router:
+  version: "1.0.0"
+  description: >
+    Classification and dispatch layer for NegritaOS. Receives any incoming request,
+    classifies it into one or more operational modes, selects the appropriate agent(s),
+    and defines the execution sequence for mixed-mode requests.
+    No request enters an agent without passing through this router.
+
+  classification_policy:
+    ambiguity_handling: "classify_to_closest_mode_and_state_assumption"
+    multi_mode_threshold: "if_two_or_more_modes_detected_use_pipeline"
+    fallback_mode: "technical_documentation"
+
+  modes:
+
+    leadership_planning:
+      id: LP
+      label: "Leadership Planning"
+      agent: team_lead_ds_agent
+      trigger_signals:
+        - roadmap
+        - sprint planning
+        - task breakdown
+        - jira epic
+        - team escalation
+        - OKR alignment
+        - delivery risk
+        - blocker identification
+        - meeting to tasks
+        - requirement clarification
+        - quarterly planning
+        - weekly summary
+      input_types:
+        - meeting notes
+        - verbal description of initiative
+        - problem statement
+        - slack thread
+      output_types:
+        - requirement_breakdown
+        - jira_epic
+        - sprint_plan
+        - escalation_register
+        - weekly_summary
+        - four_month_roadmap
+
+    academic_evaluation:
+      id: AE
+      label: "Academic Evaluation"
+      agent: tfm_evaluator_agent
+      trigger_signals:
+        - thesis review
+        - TFM evaluation
+        - master thesis
+        - research proposal
+        - academic defense
+        - tribunal report
+        - student feedback
+        - methodology review
+        - objective alignment
+        - academic score
+      input_types:
+        - thesis document
+        - proposal draft
+        - milestone document
+        - abstract
+      output_types:
+        - section_by_section_review
+        - tribunal_report
+        - improvement_plan
+        - scorecard
+
+    technical_documentation:
+      id: TD
+      label: "Technical Documentation"
+      agent: technical_writer_agent
+      trigger_signals:
+        - write a notion doc
+        - confluence page
+        - technical memo
+        - document this analysis
+        - write up findings
+        - report for the team
+        - architecture note
+        - postmortem
+        - decision record
+      input_types:
+        - analytical results
+        - raw notes
+        - plots or charts
+        - verbal summary
+      output_types:
+        - notion_doc
+        - confluence_doc
+        - technical_memo
+        - executive_brief
+
+    ml_eda_model_review:
+      id: MR
+      label: "ML / EDA / Model Review"
+      agent: model_review_agent
+      trigger_signals:
+        - review this model
+        - EDA report
+        - feature importance
+        - model performance
+        - SHAP analysis
+        - leakage check
+        - class imbalance
+        - XGBoost
+        - AutoGluon
+        - EBM
+        - LightGBM
+        - churn model
+        - classification report
+        - confusion matrix
+        - operational rules
+        - segmentation
+        - clustering review
+      input_types:
+        - model outputs
+        - EDA notebook
+        - classification report
+        - feature importance table
+        - SHAP values
+      output_types:
+        - notion_report
+        - technical_review
+        - executive_model_summary
+        - operational_recommendations
+
+    code_repository_work:
+      id: CR
+      label: "Code / Repository Work"
+      agent: code_review_agent
+      trigger_signals:
+        - review this code
+        - PR review
+        - refactor
+        - BigQuery SQL
+        - Python script
+        - pipeline review
+        - logging review
+        - config management
+        - reproducibility
+        - MLflow
+        - DAG review
+        - data pipeline
+        - technical debt
+        - anti-patterns
+      input_types:
+        - Python file
+        - SQL query
+        - repository link
+        - notebook
+        - DAG definition
+      output_types:
+        - code_review_report
+        - refactor_plan
+        - pull_request_comments
+        - technical_debt_register
+
+    executive_presentation:
+      id: EP
+      label: "Executive Presentation"
+      agent: presentation_agent
+      trigger_signals:
+        - make a deck
+        - presentation slides
+        - executive slides
+        - leadership summary
+        - board presentation
+        - storytelling structure
+        - top-down narrative
+        - one-pager
+        - stakeholder brief
+      input_types:
+        - analytical report
+        - raw findings
+        - model review output
+        - research synthesis
+      output_types:
+        - slide_outline
+        - full_slide_content
+        - speaker_notes
+        - executive_summary
+
+    data_quality_escalation:
+      id: DQ
+      label: "Data Quality / Escalation"
+      agent: data_quality_sentinel_agent
+      trigger_signals:
+        - data quality issue
+        - null values
+        - schema drift
+        - KPI anomaly
+        - pipeline failure
+        - data incident
+        - escalate to data team
+        - root cause analysis
+        - monitoring alert
+        - data SLA breach
+      input_types:
+        - anomaly report
+        - pipeline logs
+        - KPI dashboard anomaly
+        - schema diff
+      output_types:
+        - dq_incident
+        - escalation_note
+        - root_cause_report
+        - monitoring_checklist
+
+    research_tfm_generation:
+      id: RT
+      label: "Research / TFM Topic Generation"
+      agent: ai_trend_radar_agent
+      trigger_signals:
+        - TFM topic ideas
+        - research opportunities
+        - AI trends
+        - blockchain AI research
+        - paper synthesis
+        - hype vs reality
+        - technology radar
+        - what's new in ML
+        - research gap
+        - frontier models
+        - governance trends
+        - LLM research
+      input_types:
+        - topic description
+        - domain of interest
+        - research question
+        - paper reference
+      output_types:
+        - weekly_digest
+        - paper_list
+        - topic_opportunities
+        - strategic_brief
+
+  mixed_mode_pipeline:
+    description: >
+      When a request triggers two or more modes, apply agents in the following
+      canonical sequence. Each agent receives the output of the previous as input.
+      Skip agents whose mode was not triggered.
+    sequence:
+      - step: 1
+        role: reviewer
+        modes_applicable: [MR, CR, AE]
+        action: "Analyze and critique the input material. Surface issues, risks, assumptions."
+      - step: 2
+        role: structurer
+        modes_applicable: [LP, TD, RT]
+        action: "Organize findings into a structured skeleton. Define sections, hierarchy, key points."
+      - step: 3
+        role: writer
+        modes_applicable: [TD, EP]
+        action: "Draft full content from structured skeleton. Apply output standards and templates."
+      - step: 4
+        role: executive_summarizer
+        modes_applicable: [EP]
+        action: "Compress written content into executive narrative. Top-down, decision-oriented."
+      - step: 5
+        role: task_generator
+        modes_applicable: [LP, DQ]
+        action: "Extract actionable next steps. Assign owners where known. Flag blockers."
+
+    pipeline_examples:
+      - label: "Model Review → Notion Doc → Executive Slides"
+        modes: [MR, TD, EP]
+        sequence: [reviewer, writer, executive_summarizer]
+      - label: "Code Review → Technical Memo → Task List"
+        modes: [CR, TD, LP]
+        sequence: [reviewer, structurer, writer, task_generator]
+      - label: "Paper Synthesis → TFM Topic → Research Brief"
+        modes: [RT, AE]
+        sequence: [structurer, writer]
+      - label: "Data Quality Incident → Escalation Note → DQ Tasks"
+        modes: [DQ, LP]
+        sequence: [reviewer, structurer, task_generator]
+
+  # ─── BUSINESS LAYER MODES ───────────────────────────────────────────────────
+
+  business_modes:
+
+    moneyflow:
+      id: BZ_MF
+      label: "MoneyFlow Analytics"
+      agent: moneyflow_analyst_agent
+      trigger_signals:
+        - MoneyFlow
+        - revenue analysis
+        - ARPU
+        - MRR
+        - billing anomaly
+        - revenue at risk
+        - plan migration
+        - revenue forecast
+        - plan mix
+        - upsell revenue
+        - revenue por segmento
+        - análisis de ingresos
+        - facturación
+      input_types:
+        - billing_data_summary
+        - arpu_table
+        - revenue_kpi_observation
+        - plan_migration_data
+      output_types:
+        - revenue_analysis_report
+        - arpu_segmentation_report
+        - billing_anomaly_incident
+        - forecast_brief
+        - executive_revenue_summary
+
+    hot_operations:
+      id: BZ_HOT
+      label: "Hot / HotMobile Operations"
+      agent: hot_operations_agent
+      trigger_signals:
+        - Hot
+        - HotMobile
+        - churn Hot
+        - churn HotMobile
+        - cliente Hot
+        - segmentación Hot
+        - NPS Hot
+        - modelo de churn
+        - propensión
+        - retención de clientes
+        - análisis de cliente telecom
+        - entregable cliente
+        - informe cliente
+        - presentación Hot
+      input_types:
+        - churn_model_output
+        - segmentation_results
+        - nps_data
+        - client_request
+        - model_performance_metrics
+      output_types:
+        - churn_model_review
+        - segmentation_analysis
+        - nps_report
+        - operational_rules_brief
+        - client_executive_summary
+        - client_deliverable
+
+    uvi_master_ia:
+      id: BZ_UVI
+      label: "UVI Máster IA — Evaluación y Tutoría"
+      agent: uvi_master_ia_agent
+      trigger_signals:
+        - UVI
+        - Universidad Internacional de Valencia
+        - Máster IA
+        - TFM UVI
+        - evaluar TFM
+        - nota TFM
+        - feedback estudiante
+        - propuesta TFM UVI
+        - tutor TFM
+        - tribunal UVI
+        - calificación TFM
+      input_types:
+        - documento_tfm
+        - propuesta_tfm
+        - abstract
+        - milestone_intermedio
+      output_types:
+        - evaluacion_tfm_completa
+        - feedback_estudiante
+        - informe_tribunal_uvi
+        - nota_y_justificacion
+        - plan_mejora_tfm
+
+  # ─── ROUTING RESOLUTION ──────────────────────────────────────────────────────
+
+  routing_resolution:
+    priority_override:
+      description: >
+        If the user explicitly names an agent or mode, bypass classification
+        and route directly. Explicit routing always wins.
+      syntax: "@agent:<agent_id> <request>"
+      examples:
+        - "@agent:MR review this churn model output"
+        - "@agent:AE evaluate this thesis abstract"
+        - "@agent:LP convert this meeting to Jira tasks"
+
+    confidence_threshold:
+      description: >
+        If signal match is weak (fewer than 2 trigger signals matched),
+        state the assumed mode and confirm before proceeding.
+      threshold: 2
+      action_below_threshold: "state_assumed_mode_and_ask_to_confirm"

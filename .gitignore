@@ -1,0 +1,28 @@
+# macOS/local filesystem noise
+.DS_Store
+**/.DS_Store
+
+# Local Codex state and private memory adapters
+.codex/config.toml
+.codex/memory/
+
+# Runtime/cache artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local environment and credentials
+.env
+.env.*
+*.pem
+*.key
+
+# Generated outputs and scratch material
+outputs/
+*.log
+
+# Large local presentation samples and generated analytical artifacts
+zsmash/presentation-samples/**/*.zip
+zsmash/presentation-samples/**/*.pptx
+zsmash/presentation-samples/**/*.parquet

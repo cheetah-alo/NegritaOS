@@ -1,0 +1,158 @@
+rubric:
+  name: uvi_master_rubric
+  version: "1.0.0"
+  applicable_agents: [uvi_master_ia_agent]
+  description: >
+    Rúbrica de evaluación específica para el Máster en Inteligencia Artificial
+    de la Universidad Internacional de Valencia (UVI).
+    Calibrada para TFMs de tipo aplicado con enfoque práctico.
+    Escala: 0-10. Aprobado >= 5. Matrícula de Honor >= 9.5.
+
+  program_context:
+    type: applied_master
+    duration: 6_months_tfm
+    profile: professionals_in_active_employment
+    expectation: rigorous_applied_work_not_phd_level_research
+
+  dimensions:
+
+    OBJ:
+      name: "Objetivos y planteamiento"
+      weight: 0.20
+      scoring:
+        9_10: >
+          Título preciso, refleja dominio + problema + alcance.
+          Problema claramente contextualizado con evidencia de la necesidad.
+          Objetivos específicos, medibles, con métrica de éxito definida.
+          Alineación perfecta título-problema-objetivos.
+        7_8: >
+          Alineación presente pero uno de los elementos necesita más precisión.
+          Objetivos medibles en su mayoría; uno puede ser más específico.
+        5_6: >
+          El tema es reconocible pero la formulación es imprecisa.
+          Al menos un objetivo describe el método en lugar del resultado.
+          Alineación parcial entre los elementos.
+        3_4: >
+          Objetivos vagos o circulares. Problema sin contextualizar.
+          El estudiante no puede demostrar que alcanzó los objetivos porque no son medibles.
+        0_2: >
+          Sin objetivo claro o con objetivos que describen únicamente herramientas.
+          Problema no identificado. Título no conecta con el trabajo.
+      red_flags_uvi:
+        - "Objetivo: 'Aplicar redes neuronales a imágenes médicas' → no measurable"
+        - "Título contiene nombre del dataset pero no el problema"
+        - "Tres objetivos que son el mismo objetivo con distinta granularidad"
+
+    MET:
+      name: "Metodología"
+      weight: 0.25
+      scoring:
+        9_10: >
+          Método justificado explícitamente para el problema y el tipo de datos.
+          Se comparó con al menos una alternativa.
+          Estrategia de validación adecuada (temporal si los datos son temporales).
+          Métricas de evaluación correctas y justificadas.
+          Baseline de comparación definido.
+        7_8: >
+          Método apropiado, con justificación breve pero suficiente.
+          Validación aceptable con alguna limitación menor.
+        5_6: >
+          Método técnicamente aplicable pero no justificado.
+          Validación con issues que no invalidan los resultados (ej: random split donde temporal sería mejor).
+        3_4: >
+          Método no justificado y con validación incorrecta.
+          Sin baseline. Métricas no alineadas al problema.
+        0_2: >
+          Método inapropiado para el problema. Sin validación real. Resultados no interpretables.
+      critical_failures:
+        - "Split aleatorio en problema temporal (puede invalidar los resultados)"
+        - "Accuracy como única métrica en problema con desbalanceo > 10:1"
+        - "Sin baseline de comparación (no se puede evaluar si el modelo aporta)"
+
+    DATA:
+      name: "Datos y experimentación"
+      weight: 0.20
+      scoring:
+        9_10: >
+          Dataset nombrado, con fuente, accesible (link o confirmado).
+          Tamaño adecuado para el método.
+          EDA documentado con interpretaciones.
+          Leakage evaluado y descartado (o gestionado).
+          Código reproducible disponible.
+        7_8: >
+          Dataset identificado y accesible. EDA básico. Sin leakage aparente.
+          Reproducibilidad parcial (notebook con steps).
+        5_6: >
+          Dataset identificado pero con acceso incierto o EDA muy superficial.
+          No se evalúa leakage pero tampoco hay indicios de él.
+        3_4: >
+          Dataset mal definido. Acceso improbable. Sin EDA.
+        0_2: >
+          Sin dataset real. Datos ficticios o sintéticos sin justificación.
+          Resultados no reproducibles.
+      note_on_public_datasets: >
+        Los datasets públicos correctamente justificados son perfectamente válidos en UVI.
+        No penalizar el uso de Kaggle, UCI, HuggingFace si el problema está bien planteado.
+
+    RES:
+      name: "Resultados y análisis"
+      weight: 0.20
+      scoring:
+        9_10: >
+          Resultados interpretados en profundidad con contexto de negocio o aplicación.
+          Conclusiones rigurosamente acotadas a lo demostrado.
+          Limitaciones reconocidas y contextualizadas.
+          Trabajo de análisis va más allá de reportar la métrica.
+        7_8: >
+          Resultados correctamente reportados con alguna interpretación.
+          Conclusiones mayormente acotadas, con uno o dos overclaims menores.
+        5_6: >
+          Resultados presentes pero con interpretación superficial.
+          Algún overclaiming ("el modelo es eficaz" sin benchmark).
+        3_4: >
+          Resultados reportados sin interpretación. Conclusiones no soportadas por evidencia.
+        0_2: >
+          Resultados ausentes, ininterpretables o claramente incorrectos.
+      critical_failures:
+        - "Afirmar que el modelo 'funciona bien' sin benchmark ni contexto"
+        - "Conclusiones que generalizan más allá del dataset usado"
+        - "Limitaciones ausentes en trabajo con dataset pequeño o muy específico"
+
+    PRES:
+      name: "Presentación y redacción"
+      weight: 0.15
+      scoring:
+        9_10: >
+          Estructura lógica y bien jerarquizada. Redacción académica clara.
+          Referencias completas y en formato correcto.
+          Sin secciones huérfanas. Figuras todas interpretadas.
+        7_8: >
+          Estructura correcta con algún elemento de formato menor a mejorar.
+          Referencias mayormente correctas.
+        5_6: >
+          Estructura reconocible pero con secciones mal articuladas.
+          Algunos errores de referenciación.
+        3_4: >
+          Estructura confusa. Figuras sin interpretar. Referencias incorrectas o ausentes.
+        0_2: >
+          Sin estructura reconocible. Redacción que impide comprensión del trabajo.
+
+  passing_thresholds:
+    aprobado: 5.0
+    notable: 7.0
+    sobresaliente: 9.0
+    matricula_honor: 9.5
+    blocking_condition: >
+      Una nota de 0-2 en MET o DATA puede ser suficiente para reprobar aunque
+      la media sea >= 5, si el error es crítico (leakage confirmado, datos inaccesibles).
+
+  feedback_protocol:
+    always_include:
+      - puntos_fuertes_con_evidencia
+      - debilidades_con_accion_concreta
+      - nota_propuesta_con_justificacion
+    forbidden:
+      - elogios_genericos_sin_evidencia
+      - critica_sin_accion_de_mejora
+      - penalizar_datasets_publicos_bien_justificados
+      - exigir_novedad_teorica_en_tfm_aplicado

@@ -1,0 +1,14 @@
+rubric:
+  name: mlops_readiness_rubric
+  version: "1.0.0"
+  applicable_agents: [code_review_agent, model_review_agent]
+  required:
+    - reproducible_training_or_execution_path
+    - configuration_is_externalized
+    - logging_and_error_handling_are_operational
+    - validation_or_tests_are_present
+    - deployment_risks_are_explicit
+  fail_conditions:
+    - silent_failure_modes
+    - manual_only_reproduction
+    - untracked_runtime_assumptions

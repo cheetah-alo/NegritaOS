@@ -1,0 +1,50 @@
+{
+  "autogluon_fit_kwargs": {
+    "ag_args_fit": {
+      "max_memory_usage_ratio": 0.4
+    },
+    "auto_stack": false,
+    "keep_only_best": false,
+    "num_bag_folds": 0,
+    "num_bag_sets": 1,
+    "num_cpus": 28,
+    "num_gpus": 0,
+    "num_stack_levels": 0,
+    "save_space": false
+  },
+  "autogluon_leaderboard_path": "automl_output/run_12052026_1658/artifacts/governance/autogluon_leaderboard.csv",
+  "correlated_features_removed": "automl_output/run_12052026_1658/artifacts/governance/correlation_registry.json",
+  "data_source": [
+    "gcp"
+  ],
+  "feature_lineage_summary": "automl_output/run_12052026_1658/artifacts/governance/feature_lineage_registry.json",
+  "feature_metadata_path": "automl_output/run_12052026_1658/artifacts/governance/feature_metadata.json",
+  "features_dropped_by_policy": [
+    "level_distinct_serials_count_1h"
+  ],
+  "final_model_name": "EBM",
+  "imputation_summary": "automl_output/run_12052026_1658/artifacts/governance/imputation_registry.json",
+  "output_directory": "automl_output/run_12052026_1658/models",
+  "pipeline_end_time": "2026-05-12T18:26:51.841751",
+  "pipeline_execution_seconds": 5272.209146,
+  "pipeline_start_time": "2026-05-12T16:58:59.632605",
+  "post_refit_model_name": "EBM",
+  "pre_refit_model_name": "EBM",
+  "processed_training_features_path": "automl_output/run_12052026_1658/artifacts/governance/processed_training_features.parquet",
+  "raw_column_count": 32,
+  "raw_row_count": 14912722,
+  "refit_status": null,
+  "refit_training_row_count": 12616731,
+  "run_id": "02468e38d3bf4cfeb9703d128fabf436",
+  "snapshot_date_column": "scoring_ts",
+  "target_rate_test": 0.2695520147944831,
+  "target_rate_train": 0.2533960659064539,
+  "target_rate_validation": null,
+  "test_row_count": 2295991,
+  "time_window_end": null,
+  "time_window_start": null,
+  "train_row_count": 12616731,
+  "training_end_time": "2026-05-12T18:22:53.976414",
+  "training_start_time": "2026-05-12T17:01:33.601317",
+  "validation_row_count": 0
+}

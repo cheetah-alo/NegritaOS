@@ -1,0 +1,48 @@
+project:
+  id: moneyflowlist
+  name: "MoneyFlow List"
+  version: "1.0.0"
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/backup_repos/moneyflowlist"
+  memory_home: "~/.negritaos/memory/projects/moneyflowlist"
+  archetypes:
+    - product_app
+    - eda_analytics
+  capabilities:
+    - frontend
+    - backend
+    - api
+    - business_rules
+    - product_ux
+    - kpi_analytics
+    - testing
+    - release_management
+  agents:
+    - moneyflow_analyst_agent
+    - team_lead_ds_agent
+    - decision_support_agent
+    - technical_writer_agent
+    - code_review_agent
+    - data_quality_sentinel_agent
+    - presentation_agent
+  codex_profiles:
+    - review
+    - refactor
+    - web-dev
+    - backend
+    - analysis-run
+  expected_outputs:
+    - sprint_plan
+    - release_risk_log
+    - decision_memo
+    - code_review_report
+    - notion_doc
+    - executive_summary
+    - executive_presentation
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "ignored_local"
+    canonical_memory_outside_repo: true
+    latest_preservation_backup: "~/.negritaos/backups/2026-05-17_150934/moneyflowlist"
+  notes:
+    - "MoneyFlow memory candidate lines were extracted from proj_data_analytics legacy memory for later curation."

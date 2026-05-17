@@ -1,0 +1,18 @@
+engineering_rules:
+
+  code_quality:
+    require_logging: true
+    require_type_hints: true
+    require_modularity: true
+
+  infra:
+    prioritize_reproducibility: true
+    prioritize_environment_consistency: true
+
+  documentation:
+    explain_operational_flow: true
+    explain_dependencies: true
+
+  pipelines:
+    require_observability: true
+    require_failure_visibility: true

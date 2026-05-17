@@ -1,0 +1,13 @@
+{
+  "split_name": "train",
+  "model_name": "WeightedEnsemble_L2",
+  "model_state": "pre_refit",
+  "training_scope": "effective_training_partition",
+  "rank_source": "external_validation",
+  "rows": 12616731,
+  "rank": 2,
+  "positive_class": "1",
+  "status": "computed",
+  "roc_auc": 0.6269723767260112,
+  "pr_auc": 0.3516464545615361
+}

@@ -1,0 +1,14 @@
+{
+  "feature_importance_csv": "automl_output/run_12052026_1658/models/advanced_analysis/train/feature_importance.csv",
+  "feature_importance_plot": "automl_output/run_12052026_1658/models/advanced_analysis/train/feature_importance_top10.png",
+  "shap_summary_plot": null,
+  "shap_top_features_plot": null,
+  "shap_status": "disabled (run_shap=False)",
+  "shap_sample_count": 0,
+  "model_name": "EBM",
+  "split_name": "train",
+  "model_state": "pre_refit",
+  "training_scope": "effective_training_partition",
+  "rank_source": "external_validation",
+  "epistemic_note": "Train split diagnostics use the externally selected pre-refit champion."
+}

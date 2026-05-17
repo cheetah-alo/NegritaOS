@@ -1,0 +1,55 @@
+audience_profiles:
+
+  ceo_product_owner:
+    language: english
+    tone: executive, concise, decision-oriented
+    max_main_slides: 10
+    narrative_pattern_priority:
+      - Situation-Complication-Resolution
+      - Evidence-Insight-Recommendation
+    main_deck_focus:
+      - business_impact
+      - product_implication
+      - decision_required
+      - risk_of_inaction
+      - next_actions
+    avoid:
+      - excessive_methodology
+      - raw_technical_detail
+      - metric_lists_without_implication
+    appendix_policy: keep_methodology_and_raw_tables_out_of_main_story
+
+  data_scientist_peer:
+    language: english
+    tone: technical, precise, evidence-first
+    max_main_slides: 15
+    narrative_pattern_priority:
+      - Evidence-Insight-Recommendation
+      - Options-Tradeoffs-Decision
+    main_deck_focus:
+      - methodology
+      - assumptions
+      - metrics
+      - validation
+      - caveats
+      - reproducibility
+    avoid:
+      - executive_overcompression
+      - unsupported_business_recommendations
+      - hidden_methodology
+    appendix_policy: encouraged_for_raw_outputs_and_validation_detail
+
+  mixed_leadership_technical:
+    language: english
+    tone: executive-first with technical appendix
+    max_main_slides: 12
+    narrative_pattern_priority:
+      - Situation-Complication-Resolution
+      - Evidence-Insight-Recommendation
+    main_deck_focus:
+      - decision_context
+      - key_findings
+      - business_and_product_implications
+      - technical_risks
+      - next_actions
+    appendix_policy: required_for_methodology_and_raw_evidence

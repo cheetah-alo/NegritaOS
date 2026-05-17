@@ -1,0 +1,33 @@
+project:
+  id: negritaos
+  name: "NegritaOS"
+  version: "1.0.0"
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/NegritaOS"
+  memory_home: "~/.negritaos/memory/projects/negritaos"
+  archetypes:
+    - data_platform
+  capabilities:
+    - cognitive_os
+    - agent_registry
+    - memory_governance
+    - project_routing
+    - documentation
+  agents:
+    - team_lead_ds_agent
+    - decision_support_agent
+    - technical_writer_agent
+    - presentation_agent
+    - code_review_agent
+  expected_outputs:
+    - decision_memo
+    - operating_model
+    - implementation_plan
+    - task_register
+    - notion_doc
+    - executive_presentation
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "system_local"
+    canonical_memory_outside_repo: true
+    latest_preservation_backup: "~/.negritaos/backups/2026-05-17_150934"

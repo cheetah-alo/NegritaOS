@@ -1,0 +1,202 @@
+[
+  {
+    "feature_name": "level_distinct_ipaddress_count_1h",
+    "missing_ratio": 0.09416575498043035,
+    "imputation_method": "median",
+    "flag_column_name": "level_distinct_ipaddress_count_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 1188064,
+    "timestamp": "2026-05-12T17:01:25.178086"
+  },
+  {
+    "feature_name": "level_distinct_proxy_count_1h",
+    "missing_ratio": 0.09416575498043035,
+    "imputation_method": "median",
+    "flag_column_name": "level_distinct_proxy_count_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 1188064,
+    "timestamp": "2026-05-12T17:01:25.351721"
+  },
+  {
+    "feature_name": "level_rxlevel_avg_1h",
+    "missing_ratio": 0.09416575498043035,
+    "imputation_method": "median",
+    "flag_column_name": "level_rxlevel_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 1188064,
+    "timestamp": "2026-05-12T17:01:25.570868"
+  },
+  {
+    "feature_name": "level_rxlevel_range_1h",
+    "missing_ratio": 0.09416575498043035,
+    "imputation_method": "median",
+    "flag_column_name": "level_rxlevel_range_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 1188064,
+    "timestamp": "2026-05-12T17:01:25.705406"
+  },
+  {
+    "feature_name": "gateway_cpu_avg_1h",
+    "missing_ratio": 0.18080459986029662,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_cpu_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2281163,
+    "timestamp": "2026-05-12T17:01:25.889845"
+  },
+  {
+    "feature_name": "gateway_memory_utilization_avg_1h",
+    "missing_ratio": 0.18080452060046298,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_memory_utilization_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2281162,
+    "timestamp": "2026-05-12T17:01:26.053034"
+  },
+  {
+    "feature_name": "gateway_temperature_avg_1h",
+    "missing_ratio": 0.18087965892274313,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_temperature_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2282110,
+    "timestamp": "2026-05-12T17:01:26.283681"
+  },
+  {
+    "feature_name": "gateway_client_associations_sum_1h",
+    "missing_ratio": 0.18074428312690505,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_client_associations_sum_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2280402,
+    "timestamp": "2026-05-12T17:01:26.479036"
+  },
+  {
+    "feature_name": "gateway_band_steering_requests_sum_1h",
+    "missing_ratio": 0.18074428312690505,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_band_steering_requests_sum_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2280402,
+    "timestamp": "2026-05-12T17:01:26.638419"
+  },
+  {
+    "feature_name": "gateway_band_steering_no_response_sum_1h",
+    "missing_ratio": 0.18074428312690505,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_band_steering_no_response_sum_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2280402,
+    "timestamp": "2026-05-12T17:01:26.788752"
+  },
+  {
+    "feature_name": "gateway_ap_steering_requests_sum_1h",
+    "missing_ratio": 0.18074428312690505,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_ap_steering_requests_sum_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2280402,
+    "timestamp": "2026-05-12T17:01:26.933298"
+  },
+  {
+    "feature_name": "gateway_ap_steering_no_response_sum_1h",
+    "missing_ratio": 0.18074428312690505,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_ap_steering_no_response_sum_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2280402,
+    "timestamp": "2026-05-12T17:01:27.076837"
+  },
+  {
+    "feature_name": "gateway_band_steering_succ_rate_avg_1h",
+    "missing_ratio": 0.9007051826657793,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_band_steering_succ_rate_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 11363955,
+    "timestamp": "2026-05-12T17:01:27.187285"
+  },
+  {
+    "feature_name": "gateway_ap_steering_succ_rate_avg_1h",
+    "missing_ratio": 0.9565396932057916,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_ap_steering_succ_rate_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 12068404,
+    "timestamp": "2026-05-12T17:01:27.272709"
+  },
+  {
+    "feature_name": "gateway_tx_op_band_avg_1h",
+    "missing_ratio": 0.18249901658361425,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_tx_op_band_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2302541,
+    "timestamp": "2026-05-12T17:01:27.510364"
+  },
+  {
+    "feature_name": "gateway_noise_band_avg_1h",
+    "missing_ratio": 0.18112171845464567,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_noise_band_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2285164,
+    "timestamp": "2026-05-12T17:01:27.739181"
+  },
+  {
+    "feature_name": "gateway_channel_automatic_change_24_sum_1h",
+    "missing_ratio": 0.18074428312690505,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_channel_automatic_change_24_sum_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2280402,
+    "timestamp": "2026-05-12T17:01:27.881379"
+  },
+  {
+    "feature_name": "gateway_bandwidth_automatic_change_24_sum_1h",
+    "missing_ratio": 0.18074428312690505,
+    "imputation_method": "median",
+    "flag_column_name": "gateway_bandwidth_automatic_change_24_sum_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 2280402,
+    "timestamp": "2026-05-12T17:01:28.028281"
+  },
+  {
+    "feature_name": "extender_bh_uplink_rssi_5_avg_1h",
+    "missing_ratio": 0.7818468191166159,
+    "imputation_method": "median",
+    "flag_column_name": "extender_bh_uplink_rssi_5_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 9864351,
+    "timestamp": "2026-05-12T17:01:28.190750"
+  },
+  {
+    "feature_name": "extender_bh_retransmissions_rate_5_avg_1h",
+    "missing_ratio": 0.7818759867353913,
+    "imputation_method": "median",
+    "flag_column_name": "extender_bh_retransmissions_rate_5_avg_1h_was_missing",
+    "fit_dataset_version": "1.0.0",
+    "random_seed": 42,
+    "imputed_values_count": 9864719,
+    "timestamp": "2026-05-12T17:01:28.354393"
+  }
+]

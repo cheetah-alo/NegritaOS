@@ -1,0 +1,12 @@
+{
+  "split_name": "test",
+  "model_name": "EBM",
+  "model_state": "pre_refit",
+  "training_scope": "untouched_test_holdout",
+  "rank_source": "external_validation",
+  "rows": 2295991,
+  "rank": 1,
+  "positive_class": "1",
+  "status": "computed",
+  "note": "Ranking lift/gains diagnostics for the split champion. These are observational uplift-style curves, not causal effects."
+}

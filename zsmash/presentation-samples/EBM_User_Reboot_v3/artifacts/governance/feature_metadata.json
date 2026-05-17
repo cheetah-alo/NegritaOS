@@ -1,0 +1,304 @@
+{
+  "feature_metadata_in": {
+    "level_distinct_ipaddress_count_1h": [
+      "float",
+      []
+    ],
+    "level_distinct_proxy_count_1h": [
+      "float",
+      []
+    ],
+    "level_rxlevel_avg_1h": [
+      "float",
+      []
+    ],
+    "level_rxlevel_range_1h": [
+      "float",
+      []
+    ],
+    "gateway_cpu_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_memory_utilization_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_temperature_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_client_associations_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_band_steering_requests_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_band_steering_no_response_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_ap_steering_requests_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_ap_steering_no_response_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_band_steering_succ_rate_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_ap_steering_succ_rate_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_tx_op_band_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_noise_band_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_channel_automatic_change_24_sum_1h": [
+      "float",
+      []
+    ],
+    "extender_device_count_1h": [
+      "int",
+      []
+    ],
+    "has_extender": [
+      "int",
+      []
+    ],
+    "has_wireless_backhaul": [
+      "int",
+      []
+    ],
+    "has_eth_backhaul": [
+      "int",
+      []
+    ],
+    "extender_cpu_avg_1h": [
+      "float",
+      []
+    ],
+    "extender_memory_utilization_avg_1h": [
+      "float",
+      []
+    ],
+    "extender_client_associations_sum_1h": [
+      "int",
+      []
+    ],
+    "extender_bh_uplink_rssi_5_avg_1h": [
+      "float",
+      []
+    ],
+    "extender_bh_retransmissions_rate_5_avg_1h": [
+      "float",
+      []
+    ],
+    "level_distinct_ipaddress_count_1h_was_missing": [
+      "bool",
+      []
+    ],
+    "gateway_cpu_avg_1h_was_missing": [
+      "bool",
+      []
+    ],
+    "gateway_band_steering_succ_rate_avg_1h_was_missing": [
+      "bool",
+      []
+    ],
+    "gateway_ap_steering_succ_rate_avg_1h_was_missing": [
+      "bool",
+      []
+    ],
+    "gateway_tx_op_band_avg_1h_was_missing": [
+      "bool",
+      []
+    ],
+    "gateway_noise_band_avg_1h_was_missing": [
+      "bool",
+      []
+    ],
+    "extender_bh_uplink_rssi_5_avg_1h_was_missing": [
+      "bool",
+      []
+    ],
+    "extender_bh_retransmissions_rate_5_avg_1h_was_missing": [
+      "bool",
+      []
+    ]
+  },
+  "feature_metadata_out": {
+    "level_distinct_ipaddress_count_1h": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "level_distinct_proxy_count_1h": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "level_rxlevel_avg_1h": [
+      "float",
+      []
+    ],
+    "level_rxlevel_range_1h": [
+      "float",
+      []
+    ],
+    "gateway_cpu_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_memory_utilization_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_temperature_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_client_associations_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_band_steering_requests_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_band_steering_no_response_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_ap_steering_requests_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_ap_steering_no_response_sum_1h": [
+      "float",
+      []
+    ],
+    "gateway_band_steering_succ_rate_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_ap_steering_succ_rate_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_tx_op_band_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_noise_band_avg_1h": [
+      "float",
+      []
+    ],
+    "gateway_channel_automatic_change_24_sum_1h": [
+      "float",
+      []
+    ],
+    "extender_device_count_1h": [
+      "int",
+      []
+    ],
+    "has_extender": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "has_wireless_backhaul": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "has_eth_backhaul": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "extender_cpu_avg_1h": [
+      "float",
+      []
+    ],
+    "extender_memory_utilization_avg_1h": [
+      "float",
+      []
+    ],
+    "extender_client_associations_sum_1h": [
+      "int",
+      []
+    ],
+    "extender_bh_uplink_rssi_5_avg_1h": [
+      "float",
+      []
+    ],
+    "extender_bh_retransmissions_rate_5_avg_1h": [
+      "float",
+      []
+    ],
+    "level_distinct_ipaddress_count_1h_was_missing": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "gateway_cpu_avg_1h_was_missing": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "gateway_band_steering_succ_rate_avg_1h_was_missing": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "gateway_ap_steering_succ_rate_avg_1h_was_missing": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "gateway_tx_op_band_avg_1h_was_missing": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "gateway_noise_band_avg_1h_was_missing": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "extender_bh_uplink_rssi_5_avg_1h_was_missing": [
+      "int",
+      [
+        "bool"
+      ]
+    ],
+    "extender_bh_retransmissions_rate_5_avg_1h_was_missing": [
+      "int",
+      [
+        "bool"
+      ]
+    ]
+  }
+}

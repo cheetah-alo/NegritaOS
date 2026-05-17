@@ -1,0 +1,39 @@
+project:
+  id: composer_local_dev
+  name: "Composer Local Dev"
+  version: "1.0.0"
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/composer-local-dev"
+  memory_home: "~/.negritaos/memory/projects/composer_local_dev"
+  archetypes:
+    - data_platform
+  capabilities:
+    - python_package
+    - cli
+    - local_runtime
+    - tests
+    - docker_or_local_services
+    - compatibility
+  agents:
+    - code_review_agent
+    - data_quality_sentinel_agent
+    - team_lead_ds_agent
+    - technical_writer_agent
+  codex_profiles:
+    - review
+    - refactor
+    - backend
+  expected_outputs:
+    - runbook
+    - notion_doc
+    - compatibility_note
+    - refactor_plan
+    - code_review_report
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "untracked_local"
+    canonical_memory_outside_repo: true
+    latest_preservation_backup: "~/.negritaos/backups/2026-05-17_150934/composer_local_dev"
+  notes:
+    - "Untracked .codex was backed up before any adapter work."

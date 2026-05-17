@@ -1,0 +1,118 @@
+output_standards:
+  version: "1.0.0"
+  description: >
+    Defines the structural and content requirements that all NegritaOS outputs must meet,
+    regardless of agent or mode.
+
+  universal_requirements:
+    - "Every output must have a clear purpose statement or TL;DR when length exceeds 300 words."
+    - "Every section must serve the output objective. No orphan sections."
+    - "Every chart, table, or figure reference must have an operational takeaway."
+    - "Every recommendation must trace back to a finding."
+    - "Every assumption must be explicitly labeled."
+    - "Every limitation must be stated before the conclusion section."
+    - "Quality gate failures must be reported, not suppressed."
+
+  output_type_standards:
+
+    analytical_report:
+      required_sections:
+        - TL;DR
+        - Context
+        - Objective
+        - Methodology
+        - Evidence
+        - Findings
+        - Interpretation
+        - Risks and Caveats
+        - Recommendations
+        - Next Actions
+      optional_sections:
+        - Appendix
+        - Data Sources
+        - Glossary
+      quality_gates:
+        - findings_are_numbered_and_traceable
+        - recommendations_reference_findings
+        - risks_have_severity_labels
+        - next_actions_have_owners_or_are_marked_tbd
+
+    executive_summary:
+      max_length: "1 page / ~400 words"
+      required_elements:
+        - situation_statement
+        - key_finding_or_recommendation (max 3)
+        - decision_required_or_action_to_take
+      forbidden:
+        - methodology_details
+        - raw_data_tables
+        - technical_jargon_without_definition
+
+    notion_or_confluence_doc:
+      structure: top_down
+      required_sections:
+        - TL;DR (callout block)
+        - Context
+        - Findings or Analysis
+        - Recommendations or Next Steps
+      formatting:
+        - use_headers_h1_h2_h3_only
+        - no_nested_bullets_beyond_2_levels
+        - tables_preferred_over_long_bullet_lists
+        - code_blocks_for_all_code_and_queries
+
+    slide_outline:
+      structure: top_down_narrative
+      required_per_slide:
+        - one_core_message_per_slide
+        - supporting_evidence_or_data_point
+        - speaker_note_with_context
+      forbidden:
+        - slides_without_a_stated_message
+        - charts_without_takeaway_labels
+        - appendix_slides_mixed_into_main_deck
+
+    code_review_report:
+      required_sections:
+        - Summary
+        - Critical Issues (P0/P1)
+        - High Priority Issues (P2)
+        - Medium and Low Issues
+        - Reproducibility Assessment
+        - Recommendations
+      issue_format:
+        - location: "file:line or function name"
+        - severity: "P0 / P1 / P2 / P3"
+        - description: "what the issue is"
+        - risk: "what could go wrong"
+        - fix: "specific recommendation"
+
+    dq_incident_report:
+      required_sections:
+        - Incident Summary
+        - Affected Scope (tables, pipelines, KPIs)
+        - Severity (P1–P4)
+        - Evidence (reproducible query or screenshot reference)
+        - Root Cause (confirmed or suspected)
+        - Business Impact
+        - Resolution Criteria
+        - Escalation Path
+      sla_by_severity:
+        P1: "Escalate within 1 hour"
+        P2: "Escalate within 4 hours"
+        P3: "Document and remediate within 1 sprint"
+        P4: "Track in backlog"
+
+    academic_review:
+      required_sections:
+        - Overall Assessment
+        - Title / Problem / Objective Alignment
+        - Methodology Review
+        - Dataset Feasibility
+        - Results and Conclusions
+        - Limitations Review
+        - Improvement Recommendations
+        - Score (if rubric-based)
+      forbidden:
+        - unsupported_positive_assessments
+        - vague_feedback_without_specific_improvement_path

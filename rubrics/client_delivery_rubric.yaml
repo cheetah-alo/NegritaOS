@@ -1,0 +1,69 @@
+rubric:
+  name: client_delivery_rubric
+  version: "1.0.0"
+  applicable_agents: [hot_operations_agent, moneyflow_analyst_agent]
+  description: >
+    Valida la calidad de cualquier entregable destinado a clientes (Hot, HotMobile u otros).
+    Un entregable que no pasa estos gates no debe enviarse al cliente.
+    Lenguaje de referencia: español para evaluación, aplicable a outputs en cualquier idioma.
+
+  blocking_gates:
+    - id: BG1
+      name: "TL;DR presente en documentos > 1 página"
+      failure_action: "Agregar TL;DR antes de entregar"
+    - id: BG2
+      name: "Métricas interpretadas en contexto de negocio (no solo reportadas)"
+      failure_action: "Agregar interpretación operacional a cada métrica clave"
+    - id: BG3
+      name: "Supuestos explícitos"
+      failure_action: "Listar supuestos en sección dedicada"
+    - id: BG4
+      name: "Recomendaciones accionables con propietario"
+      failure_action: "Revisar recomendaciones: cada una debe tener propietario (aunque sea TBD)"
+    - id: BG5
+      name: "Limitaciones del análisis declaradas"
+      failure_action: "Agregar sección de limitaciones o caveats"
+
+  quality_dimensions:
+
+    business_clarity:
+      description: "¿Puede un director no técnico entender el output y tomar una decisión?"
+      criteria:
+        PASS: "Narrativa clara, KPIs contextualizados, recomendaciones concretas"
+        CONDITIONAL: "Mayormente claro pero hay uno o dos términos técnicos sin traducción"
+        FAIL: "Output requiere conocimiento técnico de ML para ser interpretable"
+
+    evidence_quality:
+      description: "¿Cada hallazgo es reproducible o tiene fuente trazable?"
+      criteria:
+        PASS: "Todos los hallazgos tienen evidencia reproducible (query, tabla, referencia)"
+        CONDITIONAL: "La mayoría tiene evidencia; uno o dos son statements sin soporte"
+        FAIL: "Hallazgos sin evidencia o con evidencia no reproducible"
+
+    hot_hotmobile_separation:
+      description: "¿Se tratan Hot y HotMobile como líneas de negocio separadas cuando es relevante?"
+      criteria:
+        PASS: "Resultados separados por marca donde aplica"
+        CONDITIONAL: "Separación parcial; una métrica combina sin justificación"
+        FAIL: "Hot y HotMobile combinados sin distinción en análisis donde es material"
+      not_applicable_when: "El análisis es explícitamente a nivel de grupo consolidado"
+
+    brand_compliance:
+      description: "¿El documento sigue los estándares CQISense?"
+      criteria:
+        PASS: "Usa plantilla CQI, colores y tipografía correctos (para docs formales)"
+        CONDITIONAL: "Estructura correcta pero faltan elementos de marca (logo, footer)"
+        FAIL: "No usa plantilla; colores o fuentes incorrectos en presentación a cliente"
+      not_applicable_when: "Output es interno o es un informe técnico no formal"
+
+    action_clarity:
+      description: "¿Las próximas acciones son claras, tienen propietario y plazo?"
+      criteria:
+        PASS: "Tabla de próximos pasos con acción, propietario y plazo"
+        CONDITIONAL: "Acciones presentes pero sin propietario o sin plazo"
+        FAIL: "No hay próximos pasos o son demasiado vagos para ejecutar"
+
+  overall_delivery_verdict:
+    APPROVE: "Todos los blocking gates pasan. Quality dimensions PASS o CONDITIONAL."
+    REVISE: "Uno o más blocking gates fallan. Revisar antes de enviar."
+    REWORK: "Múltiples fallos en dimensiones de calidad. Reconstruir el output."

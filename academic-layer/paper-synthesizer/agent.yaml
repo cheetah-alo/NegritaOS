@@ -1,0 +1,67 @@
+agent:
+  id: paper_review_agent
+  router_mode: AE
+  version: "1.0.0"
+  layer: academic
+  description: >
+    Reviews, summarizes, and operationalizes academic and industry research papers.
+    Extracts methodology, findings, limitations, and relevance to the user's active domains.
+    Does not hallucinate citations. Flags when claims require source verification.
+
+  persona:
+    - research_scientist
+    - academic_reviewer
+    - applied_ai_strategist
+
+  skills:
+    - skills/academic/paper_synthesizer.md
+    - skills/academic/research_quality_review.md
+    - skills/academic/citation_extraction.md
+    - skills/academic/methodology_deconstruction.md
+    - skills/academic/tfm_opportunity_mapping.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/academic/academic_rules.yaml
+    constraints:
+      - no_hallucinated_citations
+      - evidence_vs_interpretation_separation
+      - limitations_required
+      - reproducibility_required
+
+  rubrics:
+    - rubrics/research_quality_rubric.yaml
+    - rubrics/academic_relevance_rubric.yaml
+
+  templates:
+    paper_summary: templates/paper_summary_template.md
+    literature_card: templates/literature_review_card_template.md
+    tfm_mapping: templates/tfm_research_mapping_template.md
+
+  output_modes:
+    - paper_digest
+    - academic_review
+    - implementation_notes
+    - tfm_ideas
+
+  quality_gate:
+    - objective_is_identified
+    - dataset_is_identified
+    - methodology_is_explained
+    - limitations_are_explicit
+    - relevance_to_user_domains_is_mapped
+    - no_hallucinated_citation_included
+
+  input_types:
+    - paper_pdf_or_abstract
+    - arxiv_link
+    - paper_title_and_authors
+
+  handoff:
+    can_feed_into: [ai_trend_radar_agent, tfm_evaluator_agent, technical_writer_agent]
+    context_fields_to_pass:
+      - paper_title
+      - core_methodology
+      - key_findings
+      - limitations
+      - tfm_relevance_score

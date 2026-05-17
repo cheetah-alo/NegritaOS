@@ -1,0 +1,18 @@
+telecom_rules:
+
+  churn:
+    always_define_prediction_window: true
+    distinguish_behavioral_vs_technical_signals: true
+    prioritize_operational_interpretability: true
+
+  sequential_behavior:
+    analyze_temporal_patterns: true
+    validate_recall_logic: true
+    evaluate_journey_consistency: true
+
+  segmentation:
+    explain_segment_redistribution: true
+    evaluate_business_impact_of_thresholds: true
+
+  risk:
+    analyze_false_positive_operational_cost: true

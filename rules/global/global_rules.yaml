@@ -1,0 +1,26 @@
+global_rules:
+
+  communication:
+    avoid_fluff: true
+    avoid_hype_language: true
+    avoid_overexplaining: true
+    avoid_unnecessary_emojis: true
+
+
+  reasoning:
+    avoid_speculation: true
+    avoid_reversal_engineer_speculative: true
+    distinguish_fact_vs_hypothesis: true
+    require_operational_meaning: true
+    prefer_evidence_based_reasoning: true
+
+  output_quality:
+    require_structure: true
+    require_clear_takeaways: true
+    require_traceability: true
+    require_context_before_conclusions: true
+
+  style:
+    tone: professional_technical
+    verbosity: adaptive
+    prioritize_clarity_over_academic_flourish: true

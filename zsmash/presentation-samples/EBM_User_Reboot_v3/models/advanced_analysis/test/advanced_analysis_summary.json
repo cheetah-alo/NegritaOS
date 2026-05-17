@@ -1,0 +1,14 @@
+{
+  "feature_importance_csv": "automl_output/run_12052026_1658/models/advanced_analysis/test/feature_importance.csv",
+  "feature_importance_plot": "automl_output/run_12052026_1658/models/advanced_analysis/test/feature_importance_top10.png",
+  "shap_summary_plot": null,
+  "shap_top_features_plot": null,
+  "shap_status": "disabled (run_shap=False)",
+  "shap_sample_count": 0,
+  "model_name": "EBM",
+  "split_name": "test",
+  "model_state": "pre_refit",
+  "training_scope": "untouched_test_holdout",
+  "rank_source": "external_validation",
+  "epistemic_note": "Test diagnostics use the untouched final holdout and the post-refit champion when refit_full succeeded."
+}

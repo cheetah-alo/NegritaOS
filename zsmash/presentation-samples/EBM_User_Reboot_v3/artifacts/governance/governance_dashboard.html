@@ -1,0 +1,693 @@
+<html><head><meta charset='utf-8'/><title>Governance Dashboard</title><style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:1100px;margin:24px auto;padding:0 16px;color:#111827}h1{font-size:28px;margin:0 0 8px 0}h2{margin-top:28px;border-bottom:1px solid #e5e7eb;padding-bottom:6px}code{background:#f3f4f6;padding:2px 6px;border-radius:6px}table{border-collapse:collapse;width:100%;margin:10px 0}th,td{border:1px solid #e5e7eb;padding:6px 8px;text-align:left;font-size:12px;vertical-align:top}th{background:#f9fafb}figure{margin:12px 0} figcaption{font-size:12px;color:#374151;margin-top:6px}.grid{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:920px){.grid{grid-template-columns:1fr 1fr}}</style></head><body>
+<h1>Governance Dashboard</h1>
+<p>run_dir: <code>automl_output/run_12052026_1658</code></p>
+<h2>Core Governance Artifacts</h2><ul>
+<li><a href='execution_manifest.json' target='_blank' rel='noopener'>execution_manifest.json</a></li>
+<li><a href='model_contract.json' target='_blank' rel='noopener'>model_contract.json</a></li>
+<li><a href='leaderboard_model_contracts.json' target='_blank' rel='noopener'>leaderboard_model_contracts.json</a></li>
+<li><a href='experiment_governance_summary.json' target='_blank' rel='noopener'>experiment_governance_summary.json</a></li>
+<li><a href='feature_metadata.json' target='_blank' rel='noopener'>feature_metadata.json</a></li>
+<li><a href='processed_training_features_summary.json' target='_blank' rel='noopener'>processed_training_features_summary.json</a></li>
+<li><a href='system_health_preflight.json' target='_blank' rel='noopener'>system_health_preflight.json</a></li>
+<li><a href='ray_oom_prevention.json' target='_blank' rel='noopener'>ray_oom_prevention.json</a></li>
+<li><a href='evaluation_metrics.json' target='_blank' rel='noopener'>evaluation_metrics.json</a></li>
+<li><a href='correlation_registry.json' target='_blank' rel='noopener'>correlation_registry.json</a></li>
+<li><a href='drop_decision_registry.json' target='_blank' rel='noopener'>drop_decision_registry.json</a></li>
+<li><a href='imputation_registry.json' target='_blank' rel='noopener'>imputation_registry.json</a></li>
+<li><a href='feature_lineage_registry.json' target='_blank' rel='noopener'>feature_lineage_registry.json</a></li>
+<li><a href='leakage_registry.json' target='_blank' rel='noopener'>leakage_registry.json</a></li>
+</ul>
+<h2>System Health (Preflight)</h2>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>available_gb</th>
+      <th>dataset_size_gb</th>
+      <th>is_critical</th>
+      <th>is_safe</th>
+      <th>required_gb</th>
+      <th>safety_factor</th>
+      <th>total_gb</th>
+      <th>utilization_pct</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>111.092758</td>
+      <td>2.961062</td>
+      <td>False</td>
+      <td>True</td>
+      <td>8.883186</td>
+      <td>3.0</td>
+      <td>125.892742</td>
+      <td>11.8</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Ray OOM Prevention</h2>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>applied_env</th>
+      <th>enabled</th>
+      <th>memory_monitor_error_threshold</th>
+      <th>notes</th>
+      <th>object_spilling_config</th>
+      <th>object_spilling_dir</th>
+      <th>ray_tmpdir</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{'RAY_MEMORY_MONITOR_ERROR_THRESHOLD': '0.95', 'RAY_TMPDIR': '/tmp/ml_automl_ray_tmp', 'RAY_object_spilling_config': '{"params": {"directory_path": "/tmp/ml_automl_ray_spill"}, "type": "filesystem"}'}</td>
+      <td>True</td>
+      <td>0.95</td>
+      <td>[]</td>
+      <td>{"params": {"directory_path": "/tmp/ml_automl_ray_spill"}, "type": "filesystem"}</td>
+      <td>/tmp/ml_automl_ray_spill</td>
+      <td>/tmp/ml_automl_ray_tmp</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Evaluation Metrics</h2>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>created_at</th>
+      <th>model_name</th>
+      <th>pre_refit_model_name</th>
+      <th>post_refit_model_name</th>
+      <th>eval_metric</th>
+      <th>train_rows</th>
+      <th>validation_rows</th>
+      <th>test_rows</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026-05-12T18:26:36.342959</td>
+      <td>EBM</td>
+      <td>EBM</td>
+      <td>EBM</td>
+      <td>roc_auc</td>
+      <td>12616731</td>
+      <td>0</td>
+      <td>2295991</td>
+    </tr>
+  </tbody>
+</table>
+<h3>Per-Model Metrics</h3>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>score_val</th>
+      <th>eval_metric</th>
+      <th>pred_time_val</th>
+      <th>fit_time</th>
+      <th>pred_time_val_marginal</th>
+      <th>fit_time_marginal</th>
+      <th>stack_level</th>
+      <th>can_infer</th>
+      <th>fit_order</th>
+      <th>score_train</th>
+      <th>score_test</th>
+      <th>roc_auc_train</th>
+      <th>roc_auc_test</th>
+      <th>display_metric_name</th>
+      <th>display_metric_value</th>
+      <th>train_metrics</th>
+      <th>test_metrics</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>EBM</td>
+      <td>0.628085</td>
+      <td>roc_auc</td>
+      <td>0.042199</td>
+      <td>4612.741681</td>
+      <td>0.042199</td>
+      <td>4612.741681</td>
+      <td>1</td>
+      <td>True</td>
+      <td>1</td>
+      <td>0.626972</td>
+      <td>0.635</td>
+      <td>0.626972</td>
+      <td>0.635</td>
+      <td>roc_auc_test</td>
+      <td>0.635</td>
+      <td>{'roc_auc': 0.6269723767260112, 'accuracy': 0.7469304053482634, 'balanced_accuracy': 0.5105440332501974, 'f1': 0.05891370325274781, 'precision': 0.5105203741258563, 'recall': 0.03126057622230633, 'mcc': 0.07421396749687206, 'pr_auc': 0.3516464545615361, 'positive_class': 1, 'decision_threshold': 0.5, 'threshold_metrics': [{'threshold': 0.1, 'accuracy': 0.2535141630585609, 'balanced_accuracy': 0.5000573934274463, 'f1': 0.40435746580207466, 'precision': 0.2534177853177623, 'recall': 0.9999343140352139, 'mcc': 0.004058138279466007, 'tp': 3196820, 'tn': 1700, 'fp': 9418001, 'fn': 210, 'predicted_positive_rows': 12614821, 'predicted_negative_rows': 1910}, {'threshold': 0.2, 'accuracy': 0.4379084407839083, 'balanced_accuracy': 0.5725233897745312, 'f1': 0.43255431445469184, 'precision': 0.2906207906195004, 'recall': 0.8454609434381285, 'mcc': 0.14332800049413583, 'tp': 2702964, 'tn': 2822009, 'fp': 6597692, 'fn': 494066, 'predicted_positive_rows': 9300656, 'predicted_negative_rows': 3316075}, {'threshold': 0.3, 'accuracy': 0.6920124555243351, 'balanced_accuracy': 0.558742149805836, 'f1': 0.32193107973224816, 'precision': 0.3640763325636927, 'recall': 0.2885309177580442, 'mcc': 0.12755626916696525, 'tp': 922442, 'tn': 7808493, 'fp': 1611208, 'fn': 2274588, 'predicted_positive_rows': 2533650, 'predicted_negative_rows': 10083081}, {'threshold': 0.5, 'accuracy': 0.7469304053482634, 'balanced_accuracy': 0.5105440332501974, 'f1': 0.05891370325274781, 'precision': 0.5105203741258563, 'recall': 0.03126057622230633, 'mcc': 0.07421396749687206, 'tp': 99941, 'tn': 9323879, 'fp': 95822, 'fn': 3097089, 'predicted_positive_rows': 195763, 'predicted_negative_rows': 12420968}]}</td>
+      <td>{'roc_auc': 0.6350001460864528, 'accuracy': 0.7323160238868532, 'balanced_accuracy': 0.5120383245665866, 'f1': 0.06427085902553843, 'precision': 0.5565458141067897, 'recall': 0.034104661740635235, 'mcc': 0.08382065565892358, 'pr_auc': 0.3821811284902611, 'positive_class': 1, 'decision_threshold': 0.5, 'threshold_metrics': [{'threshold': 0.1, 'accuracy': 0.26966699782359776, 'balanced_accuracy': 0.5000634142188264, 'f1': 0.4246677710086888, 'precision': 0.2695769900425454, 'recall': 0.9999515260410187, 'mcc': 0.0047377900562931225, 'tp': 618859, 'tn': 294, 'fp': 1676808, 'fn': 30, 'predicted_positive_rows': 2295667, 'predicted_negative_rows': 324}, {'threshold': 0.2, 'accuracy': 0.4157973615750236, 'balanced_accuracy': 0.5610712818896956, 'f1': 0.44709375948081415, 'precision': 0.3001079652452626, 'recall': 0.8762702197001401, 'mcc': 0.13238660665376667, 'tp': 542314, 'tn': 412353, 'fp': 1264749, 'fn': 76575, 'predicted_positive_rows': 1807063, 'predicted_negative_rows': 488928}, {'threshold': 0.3, 'accuracy': 0.6825784595845541, 'balanced_accuracy': 0.561156635889671, 'f1': 0.33582400357242126, 'precision': 0.38513103932642984, 'recall': 0.2977092822784053, 'mcc': 0.13363309585918137, 'tp': 184249, 'tn': 1382945, 'fp': 294157, 'fn': 434640, 'predicted_positive_rows': 478406, 'predicted_negative_rows': 1817585}, {'threshold': 0.5, 'accuracy': 0.7323160238868532, 'balanced_accuracy': 0.5120383245665866, 'f1': 0.06427085902553843, 'precision': 0.5565458141067897, 'recall': 0.034104661740635235, 'mcc': 0.08382065565892358, 'tp': 21107, 'tn': 1660284, 'fp': 16818, 'fn': 597782, 'predicted_positive_rows': 37925, 'predicted_negative_rows': 2258066}]}</td>
+    </tr>
+    <tr>
+      <td>WeightedEnsemble_L2</td>
+      <td>0.628085</td>
+      <td>roc_auc</td>
+      <td>0.058636</td>
+      <td>4612.763673</td>
+      <td>0.016437</td>
+      <td>0.021992</td>
+      <td>2</td>
+      <td>True</td>
+      <td>2</td>
+      <td>0.626972</td>
+      <td>0.635</td>
+      <td>0.626972</td>
+      <td>0.635</td>
+      <td>roc_auc_test</td>
+      <td>0.635</td>
+      <td>{'roc_auc': 0.6269723767260112, 'accuracy': 0.7469304053482634, 'balanced_accuracy': 0.5105440332501974, 'f1': 0.05891370325274781, 'precision': 0.5105203741258563, 'recall': 0.03126057622230633, 'mcc': 0.07421396749687206, 'pr_auc': 0.3516464545615361, 'positive_class': 1, 'decision_threshold': 0.5, 'threshold_metrics': [{'threshold': 0.1, 'accuracy': 0.2535141630585609, 'balanced_accuracy': 0.5000573934274463, 'f1': 0.40435746580207466, 'precision': 0.2534177853177623, 'recall': 0.9999343140352139, 'mcc': 0.004058138279466007, 'tp': 3196820, 'tn': 1700, 'fp': 9418001, 'fn': 210, 'predicted_positive_rows': 12614821, 'predicted_negative_rows': 1910}, {'threshold': 0.2, 'accuracy': 0.4379084407839083, 'balanced_accuracy': 0.5725233897745312, 'f1': 0.43255431445469184, 'precision': 0.2906207906195004, 'recall': 0.8454609434381285, 'mcc': 0.14332800049413583, 'tp': 2702964, 'tn': 2822009, 'fp': 6597692, 'fn': 494066, 'predicted_positive_rows': 9300656, 'predicted_negative_rows': 3316075}, {'threshold': 0.3, 'accuracy': 0.6920124555243351, 'balanced_accuracy': 0.558742149805836, 'f1': 0.32193107973224816, 'precision': 0.3640763325636927, 'recall': 0.2885309177580442, 'mcc': 0.12755626916696525, 'tp': 922442, 'tn': 7808493, 'fp': 1611208, 'fn': 2274588, 'predicted_positive_rows': 2533650, 'predicted_negative_rows': 10083081}, {'threshold': 0.5, 'accuracy': 0.7469304053482634, 'balanced_accuracy': 0.5105440332501974, 'f1': 0.05891370325274781, 'precision': 0.5105203741258563, 'recall': 0.03126057622230633, 'mcc': 0.07421396749687206, 'tp': 99941, 'tn': 9323879, 'fp': 95822, 'fn': 3097089, 'predicted_positive_rows': 195763, 'predicted_negative_rows': 12420968}]}</td>
+      <td>{'roc_auc': 0.6350001460864528, 'accuracy': 0.7323160238868532, 'balanced_accuracy': 0.5120383245665866, 'f1': 0.06427085902553843, 'precision': 0.5565458141067897, 'recall': 0.034104661740635235, 'mcc': 0.08382065565892358, 'pr_auc': 0.3821811284902611, 'positive_class': 1, 'decision_threshold': 0.5, 'threshold_metrics': [{'threshold': 0.1, 'accuracy': 0.26966699782359776, 'balanced_accuracy': 0.5000634142188264, 'f1': 0.4246677710086888, 'precision': 0.2695769900425454, 'recall': 0.9999515260410187, 'mcc': 0.0047377900562931225, 'tp': 618859, 'tn': 294, 'fp': 1676808, 'fn': 30, 'predicted_positive_rows': 2295667, 'predicted_negative_rows': 324}, {'threshold': 0.2, 'accuracy': 0.4157973615750236, 'balanced_accuracy': 0.5610712818896956, 'f1': 0.44709375948081415, 'precision': 0.3001079652452626, 'recall': 0.8762702197001401, 'mcc': 0.13238660665376667, 'tp': 542314, 'tn': 412353, 'fp': 1264749, 'fn': 76575, 'predicted_positive_rows': 1807063, 'predicted_negative_rows': 488928}, {'threshold': 0.3, 'accuracy': 0.6825784595845541, 'balanced_accuracy': 0.561156635889671, 'f1': 0.33582400357242126, 'precision': 0.38513103932642984, 'recall': 0.2977092822784053, 'mcc': 0.13363309585918137, 'tp': 184249, 'tn': 1382945, 'fp': 294157, 'fn': 434640, 'predicted_positive_rows': 478406, 'predicted_negative_rows': 1817585}, {'threshold': 0.5, 'accuracy': 0.7323160238868532, 'balanced_accuracy': 0.5120383245665866, 'f1': 0.06427085902553843, 'precision': 0.5565458141067897, 'recall': 0.034104661740635235, 'mcc': 0.08382065565892358, 'tp': 21107, 'tn': 1660284, 'fp': 16818, 'fn': 597782, 'predicted_positive_rows': 37925, 'predicted_negative_rows': 2258066}]}</td>
+    </tr>
+  </tbody>
+</table>
+<h3>Model Usage Layer</h3>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>rank</th>
+      <th>model</th>
+      <th>can_infer</th>
+      <th>is_selected_champion</th>
+      <th>predict_api</th>
+      <th>predict_proba_api</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>EBM</td>
+      <td>True</td>
+      <td>True</td>
+      <td>predict(df, model='EBM')</td>
+      <td>predict_proba(df, model='EBM')</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>WeightedEnsemble_L2</td>
+      <td>True</td>
+      <td>False</td>
+      <td>predict(df, model='WeightedEnsemble_L2')</td>
+      <td>predict_proba(df, model='WeightedEnsemble_L2')</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Dtype Integrity (Task 1)</h2>
+<p><a href='dtype_integrity/dtype_integrity_report.html' target='_blank' rel='noopener'>dtype_integrity_report.html</a></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>column</th>
+      <th>contract_dtype</th>
+      <th>contract_dtype_normalized</th>
+      <th>pandas_dtype</th>
+      <th>pandas_dtype_normalized</th>
+      <th>dtype_match</th>
+      <th>coercion_failures</th>
+      <th>is_in_contract</th>
+      <th>is_in_dataframe</th>
+      <th>ml_role</th>
+      <th>nullable_in_contract</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>account_id</td>
+      <td>object</td>
+      <td>object</td>
+      <td>string</td>
+      <td>object</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>entity_id</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>extender_bh_retransmissions_rate_5_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>wireless_backhaul_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>extender_bh_uplink_rssi_5_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>wireless_backhaul_signal_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>extender_client_associations_sum_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>extender_topology_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>extender_cpu_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>extender_operational_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>extender_device_count_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>topology_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>extender_memory_utilization_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>extender_memory_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_ap_steering_no_response_sum_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>wifi_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_ap_steering_requests_sum_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>wifi_orchestration_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_ap_steering_succ_rate_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>wifi_quality_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_band_steering_no_response_sum_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>wifi_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_band_steering_requests_sum_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>wifi_orchestration_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_band_steering_succ_rate_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>wifi_quality_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_bandwidth_automatic_change_24_sum_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>bandwidth_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_channel_automatic_change_24_sum_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>channel_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_client_associations_sum_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>topology_pressure_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_cpu_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>gateway_operational_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_memory_utilization_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>gateway_memory_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_noise_band_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>noise_environment_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_temperature_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>gateway_thermal_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>gateway_tx_op_band_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>rf_quality_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>has_eth_backhaul</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>topology_binary_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>has_extender</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>topology_binary_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>has_wireless_backhaul</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>topology_binary_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>level_distinct_ipaddress_count_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>network_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>level_distinct_proxy_count_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>network_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>level_distinct_serials_count_1h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>device_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>level_rxlevel_avg_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>signal_quality_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>level_rxlevel_range_1h</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>float64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>signal_instability_feature</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>model_split_ds</td>
+      <td>object</td>
+      <td>object</td>
+      <td>string</td>
+      <td>object</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>dataset_partition</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>scoring_ts</td>
+      <td>datetime64[ns]</td>
+      <td>datetime64[ns]</td>
+      <td>datetime64[us, UTC]</td>
+      <td>datetime64[ns]</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>temporal_reference</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>target_user_reboot_12h</td>
+      <td>int64</td>
+      <td>int64</td>
+      <td>Int64</td>
+      <td>int64</td>
+      <td>True</td>
+      <td>0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>target</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Leakage Risk (Task 2)</h2>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>severity</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>critical</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>high</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>medium</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>low</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>info</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<div class='grid'>
+<figure><img src='leakage_risk/leakage_severity_counts.png' alt='Leakage severity counts' style='max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px' /><figcaption>Leakage severity counts</figcaption></figure>
+<figure><img src='leakage_risk/leakage_severity_radar.png' alt='Leakage severity radar' style='max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px' /><figcaption>Leakage severity radar</figcaption></figure>
+<figure><img src='leakage_risk/leakage_top_risk_features.png' alt='Top leakage-risk features' style='max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px' /><figcaption>Top leakage-risk features</figcaption></figure>
+</div>
+<h2>Drop Policy Summary</h2>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>stage_of_removal</th>
+      <th>triggered_rule</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>variance</td>
+      <td>low_variance</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Explainability (Task 3)</h2>
+<p><em>advanced analysis directory not found.</em></p>
+<h2>Feature Lineage (Task 4)</h2>
+<p><em>No rows.</em></p>
+<h2>Model Reliability (Task 5)</h2>
+<p><em>reliability directory not found.</em></p>
+</body></html>

@@ -1,0 +1,49 @@
+rubric:
+  name: presentation_quality_rubric
+  version: "1.0.0"
+  applicable_agents: [presentation_agent]
+  description: >
+    Validates that a presentation deck meets narrative, structural, and content quality standards.
+
+  deck_level_gates:
+    required:
+      - audience_is_defined
+      - decision_or_action_required_is_stated
+      - narrative_pattern_is_applied
+      - executive_summary_slide_is_present_and_first
+      - appendix_is_separated_from_main_deck
+      - deck_length_matches_audience_type
+
+    audience_length_guidance:
+      c_level: "Max 10 slides (excluding appendix)"
+      senior_management: "Max 15 slides"
+      technical_team: "Max 25 slides"
+      mixed: "Split: 10 executive + N technical appendix slides"
+
+  slide_level_gates:
+    required_per_slide:
+      - one_message_per_slide
+      - message_is_a_complete_sentence_not_a_label
+      - evidence_supports_the_message
+    required_per_chart_slide:
+      - chart_headline_states_the_finding_not_the_chart_type
+      - axis_labels_are_present
+      - data_source_is_referenced
+    required_per_recommendation_slide:
+      - recommendations_reference_prior_findings
+      - each_recommendation_has_an_owner_or_TBD
+      - next_step_is_explicit
+
+  anti_patterns:
+    structural:
+      - "Slide with only a title and a chart — no message headline"
+      - "Bullet list as the entire slide — no visual hierarchy"
+      - "Methodology details in main deck (should be appendix)"
+    content:
+      - "Unsupported claims not traceable to a slide finding"
+      - "Recommendations that are not actionable"
+      - "Executive summary that repeats slide titles instead of synthesizing findings"
+    narrative:
+      - "Deck that builds up to a finding the audience already knew"
+      - "Narrative that contradicts the recommendation"
+      - "Opening slide that describes the project scope instead of the problem and its stakes"

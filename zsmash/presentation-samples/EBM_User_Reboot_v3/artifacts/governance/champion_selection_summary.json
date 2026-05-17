@@ -1,0 +1,10 @@
+{
+  "selection_split": "autogluon_internal",
+  "metric_name": "roc_auc",
+  "selection_rows": null,
+  "autogluon_internal_best_model": "EBM",
+  "external_best_model": null,
+  "selected_model": "EBM",
+  "skipped_models": 0,
+  "status": "selected"
+}

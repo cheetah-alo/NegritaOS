@@ -1,0 +1,26 @@
+ml_rules:
+
+  modeling:
+    require_baseline_model: true
+    require_leakage_review: true
+    require_feature_validation: true
+
+  evaluation:
+    require_train_vs_test_comparison: true
+    require_imbalance_awareness: true
+    require_operational_metrics: true
+
+  explainability:
+    require_model_interpretability: true
+    explain_feature_behavior: true
+    explain_model_limitations: true
+
+  deployment:
+    evaluate_runtime_cost: true
+    evaluate_maintainability: true
+    evaluate_scalability: true
+
+  governance:
+    require_reproducibility: true
+    require_traceable_configs: true
+    require_experiment_tracking: true

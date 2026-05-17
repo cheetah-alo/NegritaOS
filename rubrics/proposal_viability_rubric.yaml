@@ -1,0 +1,14 @@
+rubric:
+  name: proposal_viability_rubric
+  version: "1.0.0"
+  applicable_agents: [proposal_validator_agent, tfm_evaluator_agent]
+  required:
+    - objectives_are_measurable
+    - methodology_matches_objectives
+    - dataset_or_source_access_is_feasible
+    - evaluation_criteria_are_defined
+    - risks_are_actionable
+  fail_conditions:
+    - method_used_as_objective
+    - inaccessible_required_data
+    - no_validation_plan

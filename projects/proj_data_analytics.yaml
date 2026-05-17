@@ -1,0 +1,49 @@
+project:
+  id: proj_data_analytics
+  name: "Project Data Analytics"
+  version: "1.0.0"
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/proj_data_analytics"
+    backup: "/Users/jackyb-cqi/repos/backup_repos/data_analytics"
+  memory_home: "~/.negritaos/memory/projects/proj_data_analytics"
+  archetypes:
+    - eda_analytics
+    - ml_automl
+  capabilities:
+    - eda
+    - analytics
+    - plots
+    - causal_analysis
+    - ml
+    - automl
+    - production_audit
+    - bigquery
+    - local_files
+  agents:
+    - eda_reviewer_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - team_lead_ds_agent
+    - technical_writer_agent
+    - presentation_agent
+  codex_profiles:
+    - analysis-run
+    - eda-pre-ml
+    - review
+    - refactor
+  expected_outputs:
+    - eda_report
+    - analytical_report
+    - plot_interpretation
+    - model_review_report
+    - notion_doc
+    - executive_summary
+    - executive_presentation
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "ignored_local"
+    canonical_memory_outside_repo: true
+    latest_preservation_backup: "~/.negritaos/backups/2026-05-17_150934/proj_data_analytics"
+  notes:
+    - "Legacy .codex/memory contains MoneyFlow-like entries; curate before treating legacy import as canonical."

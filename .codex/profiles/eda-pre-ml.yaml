@@ -1,0 +1,20 @@
+name: eda-pre-ml
+mode: execute
+description: EDA + dataset hardening before ML with governed analytics checks
+
+uses:
+  - ai-behavior
+  - coding-standards
+  - naming-guidelines
+  - error-handling
+  - logging
+
+  - data-contracts
+  - data-contracts-lite
+  - data-validation
+  - data-sql-governance
+  - dev-python
+
+  - notebooks
+  - plotting-guidelines
+  - tests-unittest-standards

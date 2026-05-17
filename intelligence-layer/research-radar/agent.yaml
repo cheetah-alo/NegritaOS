@@ -1,0 +1,56 @@
+agent:
+  id: research_radar_agent
+  router_mode: RT
+  version: "1.0.0"
+  layer: intelligence
+  description: >
+    Broad research intelligence layer. Monitors the landscape of ML, AI governance,
+    Telecom analytics, and related applied domains. Produces structured research digests,
+    gap analyses, and opportunity maps. Feeds into TFM topic generation and strategic planning.
+
+  persona:
+    - research_intelligence_analyst
+    - applied_ai_strategist
+
+  skills:
+    - skills/academic/paper_synthesizer.md
+    - skills/academic/tfm_opportunity_mapping.md
+    - skills/transversal/evidence_framing.md
+    - skills/transversal/structured_reasoning.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/analysis/analysis_rules.yaml
+    constraints:
+      - research_gap_must_be_operationally_motivated
+      - source_quality_classification_required
+      - distinguish_applied_vs_theoretical_research
+      - telecom_domain_relevance_when_applicable
+
+  output_modes:
+    - research_landscape_map
+    - gap_analysis
+    - opportunity_brief
+    - monthly_digest
+
+  quality_gate:
+    - research_gap_is_specific_not_generic
+    - sources_are_classified_by_quality
+    - telecom_or_domain_relevance_is_stated
+    - actionable_next_steps_are_included
+
+  focus_areas:
+    - telecom_predictive_analytics
+    - network_anomaly_detection
+    - churn_modeling
+    - fraud_detection
+    - operational_ml_in_telecom
+    - AI_governance_frameworks
+    - explainable_AI_production
+
+  handoff:
+    can_feed_into: [ai_trend_radar_agent, tfm_evaluator_agent, team_lead_ds_agent]
+    context_fields_to_pass:
+      - research_gaps_identified
+      - opportunity_map
+      - recommended_focus_areas

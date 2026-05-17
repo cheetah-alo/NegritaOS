@@ -1,0 +1,10 @@
+{
+  "available_gb": 111.09275817871094,
+  "dataset_size_gb": 2.961062092334032,
+  "is_critical": false,
+  "is_safe": true,
+  "required_gb": 8.883186277002096,
+  "safety_factor": 3.0,
+  "total_gb": 125.89274215698242,
+  "utilization_pct": 11.8
+}

@@ -1,0 +1,32 @@
+findings_contract:
+  version: "1.0.0"
+  purpose: >
+    Common intermediate structure used to generate executive presentations and
+    Notion documentation from analytical outputs.
+
+  required_fields:
+    finding_id: "Stable identifier such as F001."
+    message: "One complete English sentence stating the claim."
+    evidence: "Metric, chart, table, log, or source excerpt supporting the claim."
+    implication: "Why the finding matters for the audience."
+    caveat: "Known limitation, uncertainty, or validation need."
+    recommendation: "Action implied by the finding, or 'None' if not actionable."
+    source_path: "Local file path or Notion/source URL used as evidence."
+
+  optional_fields:
+    owner: "Recommended role responsible for the next action."
+    timeline: "Suggested timing when available."
+    slide_candidate: "Whether the finding belongs in the main deck or appendix."
+    notion_section: "Target Notion section."
+
+  quality_rules:
+    - message_must_be_a_claim_not_a_topic
+    - evidence_must_be_traceable
+    - implication_must_be_audience_specific
+    - caveat_must_be_visible_when_uncertainty_exists
+    - recommendation_must_not_exceed_evidence
+
+  deck_mapping:
+    ceo_product_owner: "message + implication + recommendation in main deck; evidence summarized; caveat visible."
+    data_scientist_peer: "message + evidence + method caveat in main deck; raw support in appendix."
+    mixed_leadership_technical: "executive claim in main deck; technical proof in appendix."

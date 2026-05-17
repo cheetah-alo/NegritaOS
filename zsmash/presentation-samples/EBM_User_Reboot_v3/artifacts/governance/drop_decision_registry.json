@@ -1,0 +1,12 @@
+[
+  {
+    "feature_name": "level_distinct_serials_count_1h",
+    "triggered_rule": "low_variance",
+    "measured_value": 0.0,
+    "threshold": 0.0,
+    "stage_of_removal": "variance",
+    "dataset_version": "1.0.0",
+    "timestamp": "2026-05-12T17:01:02.540537",
+    "approver_id": "governance_auto"
+  }
+]

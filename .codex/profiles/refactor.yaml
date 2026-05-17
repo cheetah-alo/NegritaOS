@@ -1,0 +1,20 @@
+name: refactor
+mode: refactor
+description: Structural refactoring with architectural enforcement (analytics-oriented)
+
+uses:
+  - ai-behavior
+  - coding-standards
+  - naming-guidelines
+  - object-orientation
+  - error-handling
+  - logging
+
+  - data-contracts
+  - data-validation
+  - data-sql-governance
+
+  - plotting-guidelines
+  - notebooks
+
+  - tests-unittest-standards

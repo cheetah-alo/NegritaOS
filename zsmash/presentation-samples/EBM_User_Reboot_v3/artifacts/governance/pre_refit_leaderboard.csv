@@ -1,0 +1,3 @@
+model,score_train,score_test,score_val,roc_auc_train,roc_auc_test,fit_time,pred_time_val,fit_time_marginal,pred_time_val_marginal,stack_level,can_infer,fit_order,eval_metric
+EBM,0.62697,0.635,0.62809,0.62697,0.635,4612.74168,0.0422,4612.74168,0.0422,1,True,1,roc_auc
+WeightedEnsemble_L2,0.62697,0.635,0.62809,0.62697,0.635,4612.76367,0.05864,0.02199,0.01644,2,True,2,roc_auc

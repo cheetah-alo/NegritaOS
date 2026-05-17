@@ -1,0 +1,57 @@
+rubric:
+  name: research_quality_rubric
+  version: "1.0.0"
+  applicable_agents: [paper_review_agent, ai_trend_radar_agent]
+  description: >
+    Rates the quality and operational relevance of research papers and technology claims.
+    Used to prioritize what to read, act on, or flag as hype.
+
+  paper_quality_dimensions:
+
+    methodological_soundness:
+      description: "Is the experimental design valid and the claims defensible?"
+      signals_of_high_quality:
+        - Peer-reviewed venue (NeurIPS, ICML, AAAI, KDD, VLDB, SIGKDD)
+        - Multiple datasets evaluated
+        - Ablation studies present
+        - Baselines are competitive and relevant
+        - Code and data are publicly available
+      signals_of_low_quality:
+        - Single synthetic or curated dataset
+        - No baseline comparison
+        - Inflated benchmark claims
+        - Industry-funded with no independent validation
+
+    result_generalizability:
+      description: "Do results hold beyond the paper's specific conditions?"
+      questions:
+        - "Is the dataset domain-specific to a narrow context?"
+        - "Does the method require compute unavailable in standard production?"
+        - "Do results depend on hyperparameter settings not explored in ablation?"
+
+    operational_relevance:
+      description: "Can this be applied to the user's production domains?"
+      score_guide:
+        HIGH: "Method directly applicable to Telecom / Fraud / Churn / NLP / Governance with minimal adaptation"
+        MEDIUM: "Applicable with moderate adaptation or as a baseline for further work"
+        LOW: "Interesting but theoretical — not directly applicable"
+        NOT_APPLICABLE: "Outside operational scope"
+
+    recency:
+      description: "Is the paper current enough to reflect the state of practice?"
+      guidance:
+        - "ML paper >3 years old: verify if superseded by newer approaches"
+        - "Regulatory or governance paper: check for more recent versions"
+        - "Framework-specific paper: verify framework version compatibility"
+
+  technology_claim_evaluation:
+    dimensions:
+      - claim_is_supported_by_independent_evidence
+      - maturity_level_is_classified
+      - conflict_of_interest_is_assessed
+      - adoption_evidence_is_cited
+    hype_indicators:
+      - "Press release or blog post as primary source"
+      - "Benchmark selected to show favorable comparison only"
+      - "No production deployment examples cited"
+      - "Token or financial incentive tied to technology claim"

@@ -1,0 +1,14 @@
+{
+  "primary_train_rows": 12616731,
+  "split_column": "model_split_ds",
+  "split_method": "predefined_column",
+  "test_fraction": 0.1539618991086939,
+  "test_rows": 2295991,
+  "test_value": "test",
+  "train_fraction": 0.846038100891306,
+  "train_rows": 12616731,
+  "train_value": "train",
+  "validation_enabled": false,
+  "validation_rows": 0,
+  "validation_value": null
+}
