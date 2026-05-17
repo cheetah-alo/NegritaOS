@@ -127,6 +127,7 @@ See: `core/orchestration/metaagent_router.yaml`
 | `integrator.yaml` | Master agent definitions |
 | `projects/README.md` | Project registry and memory load order |
 | `archetypes/README.md` | Reusable project operating patterns |
+| `prompts/` | Reusable operational prompts for NegritaOS workflows |
 | `docs/daily_usage_manual.md` | Daily workflow for loading project adapters and memory |
 | `docs/presentation_and_notion_workflow.md` | Presentation and Notion output workflow |
 | `scripts/validate_registry_paths.py` | Validates that registry and governance file references resolve |
