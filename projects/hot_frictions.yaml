@@ -1,0 +1,196 @@
+project_registry:
+  project_id: hot_frictions
+  project_name: "HOT Frictions Analysis"
+  version: "1.0.0"
+  status: active
+  
+  description: >
+    Análisis de fricción de clientes, NPS, experiencia de usuario y churn para Hot Telecom.
+    Proyecto enfocado en identificar y cuantificar puntos de fricción en la customer journey
+    que impactan negativamente NPS, incrementan churn y degradan la experiencia del cliente.
+    Incluye análisis exploratorio de datos, visualizaciones, reportes técnicos,
+    presentaciones ejecutivas y recomendaciones operacionales.
+
+  owner:
+    team: CQISense
+    lead: Data Science Lead
+    client: Hot Telecommunications
+    market: Israel
+
+  repository:
+    location: /Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/HOT_Frictions
+    type: project_folder
+    adapter: .codex/project.yaml
+
+  domain:
+    industry: telecom
+    business_lines:
+      Hot:
+        - cable_tv
+        - broadband_internet
+        - home_phone
+      HotMobile:
+        - prepaid_mobile
+        - postpaid_mobile
+        - data_plans
+    
+    focus_areas:
+      - customer_friction_analysis
+      - nps_root_cause_analysis
+      - churn_triggers
+      - cx_journey_mapping
+      - call_center_friction
+      - digital_friction_web_app
+      - billing_issues_impact
+      - network_quality_complaints
+
+  agents:
+    primary:
+      - hot_operations_agent    # Hot/HotMobile specific analytics
+      - eda_reviewer_agent       # EDA quality review
+      - technical_writer_agent   # Notion/Confluence docs
+      - presentation_agent       # Executive slide decks
+    
+    secondary:
+      - model_review_agent       # Si hay modelos predictivos
+      - data_quality_sentinel_agent  # DQ incidents
+      - team_lead_ds_agent       # Task planning, escalations
+
+  skills:
+    required:
+      - skills/ml/eda_review.md
+      - skills/transversal/structured_reasoning.md
+      - skills/transversal/evidence_framing.md
+      - skills/transversal/tldr_writer.md
+      - skills/business/telecom_kpi_interpretation.md
+      - skills/business/cqi_client_reporting.md
+      - skills/executive/executive_summary.md
+      - skills/executive/presentation_storyline.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domains:
+      - rules/ml/ml_rules.yaml
+      - rules/analysis/analysis_rules.yaml
+      - rules/bussiness_awereness/telecom_rules.yaml
+      - rules/business/business_rules.yaml
+      - rules/presentation/presentation_rules.yaml
+      - rules/writing/writing_rules.yaml
+    
+    project_specific:
+      - hot_vs_hotmobile_must_be_separated
+      - nps_detractors_require_segmentation
+      - friction_events_must_be_quantified
+      - recommendations_must_be_operational
+      - client_deliverables_follow_cqi_brand
+
+  rubrics:
+    - rubrics/client_delivery_rubric.yaml
+    - rubrics/presentation_quality_rubric.yaml
+    - rubrics/data_quality_rubric.yaml
+
+  templates:
+    analysis: templates/hot_client_report_template.md
+    eda: templates/eda_report_template.md
+    presentation: templates/executive_deck_outline_template.md
+    technical: templates/analytical_report_template.md
+
+  output_standards:
+    language: español
+    code_comments: inglés
+    client_deliverables: español
+    technical_docs: español
+    brand_standards: CQI
+
+  datasets:
+    nps_surveys:
+      description: "NPS scores por segmento, línea de negocio, región"
+      frequency: monthly
+      source: Hot CRM
+    
+    friction_events:
+      description: "Eventos de fricción: call center, web, app, billing"
+      frequency: daily
+      source: Hot operational logs
+    
+    churn_data:
+      description: "Churn events con atributos de cliente y última interacción"
+      frequency: weekly
+      source: Hot CRM + Analytics
+    
+    cx_metrics:
+      description: "CSAT, resolution time, FCR, escalations"
+      frequency: daily
+      source: Hot CX dashboards
+
+  key_metrics:
+    - nps_score
+    - nps_detractor_rate
+    - churn_rate_monthly
+    - friction_event_rate
+    - call_center_contacts_per_customer
+    - digital_completion_rate
+    - billing_dispute_rate
+    - network_complaint_rate
+    - customer_effort_score
+
+  quality_gates:
+    - hot_and_hotmobile_treated_separately
+    - friction_events_quantified_with_baseline
+    - nps_segmented_by_detractors_passives_promoters
+    - recommendations_include_expected_impact
+    - visualizations_have_operational_takeaways
+    - client_format_follows_cqi_template
+
+  memory:
+    location: ~/.negritaos/memory/projects/hot_frictions
+    structure:
+      index: index.md
+      sessions: sessions/
+      decisions: decisions/
+      tasks: tasks/
+      observations: observations.jsonl
+
+  typical_workflows:
+    eda_analysis:
+      sequence:
+        - eda_reviewer_agent → reviews plots and distributions
+        - technical_writer_agent → creates Notion doc
+        - presentation_agent → creates executive deck
+    
+    friction_incident:
+      sequence:
+        - data_quality_sentinel_agent → documents incident
+        - hot_operations_agent → analyzes business impact
+        - team_lead_ds_agent → escalates and tracks resolution
+    
+    client_deliverable:
+      sequence:
+        - hot_operations_agent → generates analysis
+        - technical_writer_agent → formats for client
+        - presentation_agent → creates executive summary
+
+  handoff_contexts:
+    eda_to_doc:
+      - key_findings
+      - critical_plots
+      - data_quality_flags
+      - recommended_next_analysis
+    
+    analysis_to_presentation:
+      - executive_summary
+      - top_3_findings
+      - business_impact_quantified
+      - recommended_actions
+    
+    incident_to_escalation:
+      - severity
+      - affected_scope
+      - business_impact
+      - resolution_criteria
+
+  notes: >
+    Este proyecto es crítico para la relación con Hot Telecom.
+    Todos los outputs deben estar revisados por quality gates antes de entrega.
+    Separar claramente Hot (cable/broadband) de HotMobile (móvil) en todos los análisis.
+    Idioma de salida: español para cliente, inglés para código/configs.
