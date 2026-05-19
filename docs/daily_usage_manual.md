@@ -44,8 +44,7 @@ La memoria real vive fuera del repo.
 Cuando abras `proj_data_analytics`, di algo como:
 
 ```text
-Estoy en proj_data_analytics. Carga el adapter .codex/project.yaml,
-lee el registry de NegritaOS que apunta ahí, y usa la memoria canónica del proyecto.
+Estoy en proj_data_analytics. Carga .codex/project.yaml → lee registry NegritaOS/projects/<project_id>.yaml → activa agentes (agents/), skills (skills/), rules (rules/global + domain), templates según contract → carga memoria ~/.negritaos/memory/projects/<project_id> (index.md, sessions/, decisions/, tasks/) → aplica execution_policy + metaagent_router para clasificar request → load rubrics + quality_gates → ejecuta según persona + output_standards. Listo para trabajar con governance-first approach.
 Quiero continuar con [tu tarea].
 ```
 
