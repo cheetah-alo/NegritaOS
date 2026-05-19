@@ -1,9 +1,177 @@
 engineering_rules:
+  version: "2.0.0"
+  description: >
+    Engineering rules for code quality, Python standards, infrastructure, and ML pipelines.
+    These rules are AUTOMATICALLY ACTIVE when:
+    - Router mode is CR (Code Review)
+    - Any code file (.py, .sql, .yaml) is being reviewed or generated
+    - Code blocks appear in technical documentation
+    - Model review includes code/pipeline review
+
+  automatic_activation_triggers:
+    - router_mode: CR
+    - file_extensions: [".py", ".sql", ".ipynb", ".yaml", ".json", ".sh"]
+    - agent_ids: [code_review_agent, model_review_agent, technical_writer_agent]
+    - contexts: [code_generation, code_review, pipeline_review, reproducibility_check]
+
+  python_standards:
+    description: "PEP8 + ML/DS production best practices"
+    
+    pep8_compliance:
+      line_length:
+        max: 100
+        tolerance: 120
+        action: "Flag lines > 100 as P3, lines > 120 as P2"
+      
+      naming_conventions:
+        variables: snake_case
+        functions: snake_case
+        classes: PascalCase
+        constants: UPPER_SNAKE_CASE
+        private_methods: _leading_underscore
+        action: "Flag violations as P2"
+      
+      imports:
+        order: ["standard_library", "third_party", "local"]
+        style: "One import per line (except 'from X import A, B' for related items)"
+        unused_imports: "Flag as P2"
+        action: "Check with tools like isort, flag violations as P2"
+      
+      whitespace:
+        blank_lines_after_imports: 2
+        blank_lines_between_functions: 2
+        blank_lines_between_classes: 2
+        trailing_whitespace: "Flag as P3"
+        action: "Flag violations as P3"
+
+    docstrings:
+      requirement: "Mandatory for public functions, classes, and modules"
+      style: "Google or NumPy style"
+      minimum_content:
+        - brief_description: "One-line summary"
+        - args: "For functions with parameters"
+        - returns: "For functions that return values"
+        - raises: "For functions that raise exceptions"
+      action: "Flag missing docstrings as P2 for public APIs, P3 for internal"
+      
+    type_hints:
+      requirement: "Mandatory for function signatures"
+      style: "Use typing module (List, Dict, Optional, Union, etc.)"
+      example: "def process_data(input_path: str, threshold: float = 0.5) -> pd.DataFrame:"
+      action: "Flag missing type hints as P2"
+
+    file_organization:
+      max_lines_per_file: 500
+      max_lines_per_function: 50
+      max_function_parameters: 5
+      action_file_too_long: "Flag as P2, recommend splitting into modules"
+      action_function_too_long: "Flag as P2, recommend refactoring"
+      action_too_many_params: "Flag as P2, recommend config object or dataclass"
+
+    object_oriented_design:
+      prefer_oop_when:
+        - "State management across multiple methods"
+        - "Related functions share common configuration"
+        - "Polymorphism or inheritance is beneficial"
+      avoid_oop_when:
+        - "Simple stateless transformations"
+        - "One-off scripts"
+        - "Utility functions"
+      action: "Recommend OOP refactor when state is shared across 3+ functions (P2)"
+
+    error_handling:
+      no_bare_except: "Always specify exception types"
+      log_exceptions: "Use logging.error() with exc_info=True"
+      informative_messages: "Include context: what failed, what was expected, what to check"
+      action: "Bare except: P1. Missing error logging: P1. Vague error messages: P2"
 
   code_quality:
     require_logging: true
     require_type_hints: true
     require_modularity: true
+    require_docstrings: true
+    max_file_length: 500
+    max_function_length: 50
+    max_line_length: 100
+
+  logging_standards:
+    module: "logging (not print())"
+    levels:
+      DEBUG: "Development details, verbose output"
+      INFO: "Key milestones, start/end of processes, major decisions"
+      WARNING: "Unexpected but handled situations, deprecated usage"
+      ERROR: "Failures that prevent correct execution"
+      CRITICAL: "System-level failures"
+    required_fields:
+      - timestamp
+      - log_level
+      - module_name
+      - message
+    action: "Flag print() statements as P1. Missing logging in critical paths: P1"
+
+  configuration_management:
+    no_hardcoding:
+      forbidden: ["paths", "credentials", "API keys", "environment-specific URLs", "magic numbers"]
+      allowed_sources: ["config files (YAML/JSON)", "environment variables", "command-line args"]
+      action: "Hardcoded paths: P1. Credentials in code: P0. Magic numbers: P2"
+    
+    config_validation:
+      requirement: "Validate config schema at startup"
+      libraries: ["pydantic", "jsonschema", "dataclasses with validation"]
+      action: "Missing config validation: P2"
+
+  reproducibility:
+    random_seeds:
+      requirement: "All random operations must be seeded"
+      scope: ["numpy.random", "random", "sklearn", "tensorflow.random", "torch.manual_seed"]
+      config: "Seed value must be in config, not hardcoded"
+      action: "Unseeded randomness: P1. Hardcoded seed: P2"
+    
+    dependencies:
+      requirement: "Pin all dependency versions"
+      files: ["requirements.txt", "pyproject.toml", "environment.yml"]
+      format: "package==X.Y.Z (not package>=X.Y)"
+      action: "Unpinned dependencies: P1"
+    
+    data_versioning:
+      requirement: "Data sources must be versioned or timestamped"
+      example: "data_v2.parquet, data_2026_05_19.csv, or DVC-tracked"
+      action: "Unversioned data in production pipeline: P1"
+
+  ml_pipeline_standards:
+    train_test_split:
+      time_based_required_for_timeseries: true
+      stratification_required_for_imbalanced: true
+      test_set_min_size: "10% or 1000 samples, whichever is smaller"
+      action: "Random split for timeseries: P0. No stratification for imbalanced: P1"
+    
+    feature_engineering:
+      fit_on_train_only: "Transformers must fit on training set only"
+      prevent_leakage: "No future information in feature creation"
+      action: "Fit on full dataset: P0. Temporal leakage: P0"
+    
+    model_serialization:
+      format: "Prefer pickle, joblib, or ONNX"
+      versioning: "Include model version in filename or metadata"
+      metadata: "Save alongside: hyperparameters, training date, feature list, metrics"
+      action: "No model versioning: P2. Missing metadata: P2"
+
+  sql_bigquery_standards:
+    cost_awareness:
+      require_partitioning_filters: "Use _PARTITIONTIME or partitioned column filters"
+      require_clustering_awareness: "Filter on clustered columns when available"
+      limit_full_scans: "Avoid SELECT * on large tables without filters"
+      action: "Full table scan without partition filter: P1. SELECT * in production: P2"
+    
+    query_structure:
+      use_cte_not_subqueries: "WITH clauses preferred for readability"
+      max_query_length: "300 lines (recommend splitting into views or temp tables)"
+      action: "Nested subqueries > 3 levels: P2. Query > 300 lines: P2"
+    
+    testing:
+      validate_results: "Row counts, null checks, expected ranges"
+      dry_run_before_production: "Use --dry_run to estimate cost"
+      action: "No result validation: P2. Production query without dry run: P1"
 
   infra:
     prioritize_reproducibility: true
@@ -12,7 +180,61 @@ engineering_rules:
   documentation:
     explain_operational_flow: true
     explain_dependencies: true
+    docstrings_mandatory: true
 
   pipelines:
     require_observability: true
     require_failure_visibility: true
+    require_logging: true
+    require_monitoring: true
+
+  enforcement_policy:
+    automatic_review_mode:
+      description: >
+        When router classifies request as CR (Code Review) or when code files are detected,
+        these rules are AUTOMATICALLY applied. No need to explicitly request code review.
+      
+      trigger_conditions:
+        - "File extension is .py, .sql, .ipynb, .yaml, .sh"
+        - "Request contains 'review code', 'code review', 'check my code'"
+        - "Agent is code_review_agent"
+        - "Document type is code_review_report"
+      
+      action: "Load python_standards + logging_standards + configuration_management + reproducibility rules"
+    
+    severity_mapping:
+      P0_critical:
+        - data_leakage
+        - credentials_in_code
+        - unseeded_randomness_in_production
+        - fit_on_full_dataset_before_split
+      
+      P1_high:
+        - no_logging_in_critical_paths
+        - hardcoded_configuration
+        - bare_except_blocks
+        - missing_error_handling
+        - unpinned_dependencies
+        - full_table_scan_without_partition
+      
+      P2_medium:
+        - missing_docstrings_public_api
+        - missing_type_hints
+        - file_too_long
+        - function_too_long
+        - poor_naming_conventions
+        - magic_numbers
+      
+      P3_low:
+        - style_violations
+        - trailing_whitespace
+        - minor_formatting_issues
+
+  reporting_requirements:
+    every_code_review_must_include:
+      - python_standards_compliance_score
+      - logging_coverage_assessment
+      - reproducibility_verdict
+      - configuration_management_verdict
+      - list_of_P0_P1_issues_as_blockers
+      - list_of_P2_P3_issues_as_backlog

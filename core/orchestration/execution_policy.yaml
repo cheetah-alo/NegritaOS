@@ -1,5 +1,5 @@
 execution_policy:
-  version: "1.0.0"
+  version: "2.0.0"
   description: >
     Defines how NegritaOS processes any request end-to-end after the metaagent router
     has classified and dispatched it. This is the operational contract for every agent run.
@@ -8,32 +8,81 @@ execution_policy:
     - step: classify_request
       description: "Metaagent router identifies mode(s) and target agent(s)."
       owner: metaagent_router
+    
+    - step: detect_code_context
+      description: "Check if request involves code (.py, .sql, .ipynb, .yaml files) or code review."
+      owner: runtime
+      action: "If code detected → auto-activate engineering_rules (python_standards, logging, config, reproducibility)"
+    
     - step: load_global_rules
       description: "Inject rules/global/global_rules.yaml into agent context."
       owner: runtime
+    
     - step: load_agent_contract
       description: "Load the target agent's agent.yaml (persona, skills, rules, rubrics, templates)."
       owner: runtime
+    
     - step: load_domain_rules
       description: "Inject domain-specific rules (ml_rules, academic_rules, etc.) per agent contract."
       owner: runtime
+    
+    - step: auto_activate_engineering_rules_if_code
+      description: "If code context detected, load rules/engineering/engineering_rules.yaml automatically."
+      owner: runtime
+      triggers:
+        - router_mode: CR
+        - file_extensions: [".py", ".sql", ".ipynb", ".yaml", ".json", ".sh"]
+        - keywords_in_request: ["code review", "review code", "check code", "review pipeline"]
+      action: "Load full python_standards + logging_standards + sql_standards"
+    
     - step: load_skills
       description: "Activate the skill set declared in the agent contract."
       owner: runtime
+    
     - step: load_rubrics
       description: "Load scoring rubrics relevant to the output type."
       owner: runtime
+    
     - step: load_template
       description: "Select the output template matching the requested output_mode."
       owner: runtime
+    
+    - step: initialize_document_metadata
+      description: "Create metadata block per core/standards/document_metadata_standards.yaml"
+      owner: runtime
+      required_fields:
+        - source: "codex_claude (default) | human | codex_claude_human_reviewed | human_codex_enhanced"
+        - document_version: "1.0.0 (semantic versioning)"
+        - generated_date: "YYYY-MM-DD"
+        - last_modified_date: "YYYY-MM-DD"
+        - agent_id: "from agent contract"
+        - router_mode: "from metaagent_router"
+        - project_id: "from .codex/project.yaml"
+        - template_used: "from load_template step"
+        - quality_gates_status: "TBD (set in run_quality_gate step)"
+        - quality_warnings: "[] (populated in run_quality_gate step)"
+    
     - step: generate_output
       description: "Agent produces output following persona, skills, rules, and template."
       owner: agent
+      includes_metadata: true
+    
     - step: run_quality_gate
       description: "Agent self-checks output against quality_gate criteria in its contract."
       owner: agent
+      updates_metadata:
+        - quality_gates_status: "PASSED | PASSED_WITH_WARNINGS | FAILED"
+        - quality_warnings: "List of warnings/failures"
+    
+    - step: inject_metadata_into_output
+      description: "Add metadata YAML frontmatter (markdown) or Notion callout block."
+      owner: runtime
+      formats:
+        markdown: "YAML frontmatter at top"
+        notion: "Callout block with 📋 icon at document start"
+    
     - step: provide_final_answer
-      description: "Deliver structured output. Flag any failed quality_gate checks explicitly."
+      description: "Deliver structured output with metadata. Flag any failed quality_gate checks explicitly."
       owner: agent
 
   ambiguity_policy:

@@ -15,6 +15,10 @@ Carga .codex/project.yaml → lee registry NegritaOS/projects/<project_id>.yaml 
 activa agentes + skills + rules + templates → carga memoria ~/.negritaos/memory/projects/<project_id> → 
 aplica execution_policy + metaagent_router.
 
+DETECCIÓN AUTOMÁTICA:
+- Si hay archivos .py, .sql, .ipynb → activa engineering_rules automáticamente
+- Si router mode = CR → activa python_standards, logging, config, reproducibility
+
 CLASIFICACIÓN:
 Router mode: [LP / AE / TD / MR / CR / EP / DQ / RT]
 Agente(s): [nombre_agente]
@@ -24,7 +28,76 @@ TAREA:
 
 OUTPUT:
 [Formato esperado, idioma, quality warnings visibles]
+
+METADATOS (Generados Automáticamente):
+- Source: codex_claude | human | codex_claude_human_reviewed
+- Version: 1.0.0 (semantic versioning)
+- Generated: YYYY-MM-DD
+- Agent: [agent_id]
+- Mode: [router_mode]
+- Project: [project_id]
+- Quality Status: PASSED | PASSED_WITH_WARNINGS | FAILED
 ```
+
+---
+
+## 📋 Metadatos de Trazabilidad (Automático en Todos los Documentos)
+
+**Todos los documentos generados incluyen metadatos obligatorios:**
+
+```yaml
+---
+metadata:
+  source: codex_claude  # codex_claude | human | codex_claude_human_reviewed | human_codex_enhanced
+  document_version: "1.0.0"
+  generated_date: "2026-05-19"
+  last_modified_date: "2026-05-19"
+  agent_id: "model_review_agent"
+  router_mode: "MR"
+  project_id: "proj_data_analytics"
+  template_used: "templates/model_review_report_template.md"
+  quality_gates_status: PASSED  # PASSED | PASSED_WITH_WARNINGS | FAILED
+  quality_warnings: []
+---
+```
+
+**En Notion, aparece como callout:**
+
+> 📋 **Document Metadata**
+> - **Source:** Codex Claude
+> - **Version:** 1.0.0
+> - **Generated:** 2026-05-19
+> - **Agent:** model_review_agent (MR mode)
+> - **Project:** proj_data_analytics
+> - **Quality Status:** ✅ Passed
+
+---
+
+## 🐍 Reglas de Python (Activación Automática)
+
+**Se activan AUTOMÁTICAMENTE cuando:**
+- Router mode es CR (Code Review)
+- Archivos con extensión: `.py`, `.sql`, `.ipynb`, `.yaml`, `.sh`
+- Request contiene: "review code", "code review", "check my code"
+- Agente es: code_review_agent, model_review_agent (con código)
+
+**Estándares aplicados:**
+- **PEP8**: Line length max 100, snake_case variables, PascalCase classes, imports organizados
+- **Docstrings**: Obligatorios para funciones públicas (Google/NumPy style)
+- **Type Hints**: Obligatorios en signatures (`def func(x: int) -> str:`)
+- **File Length**: Max 500 líneas (flag P2 si excede)
+- **Function Length**: Max 50 líneas (flag P2 si excede)
+- **Max Parameters**: 5 por función (flag P2 si excede)
+- **OOP**: Recomendar cuando hay state compartido en 3+ funciones
+- **Logging**: Usar `logging`, no `print()` (P1 si falta)
+- **Config**: No hardcodear paths/credentials (P0/P1)
+- **Reproducibility**: Seeds fijos, dependencies pinned (P1 si falta)
+
+**Severidad:**
+- **P0 Critical**: Data leakage, credentials en código, fit en full dataset
+- **P1 High**: No logging, hardcoded config, bare except, unpinned deps
+- **P2 Medium**: Missing docstrings, type hints, file/function too long
+- **P3 Low**: Style violations, whitespace
 
 ---
 
@@ -334,6 +407,15 @@ Carga .codex/project.yaml → lee registry NegritaOS/projects/ml_automl_autogluo
 activa code_review_agent + skills engineering + rules/engineering →
 carga memoria ~/.negritaos/memory/projects/ml_automl_autogluon.
 
+DETECCIÓN AUTOMÁTICA:
+Archivos .py detectados → ACTIVA AUTOMÁTICAMENTE:
+- rules/engineering/engineering_rules.yaml (version 2.0.0)
+  - python_standards (PEP8, docstrings, type hints, file/function length)
+  - logging_standards (logging module, levels, structured logging)
+  - configuration_management (no hardcoding, config validation)
+  - reproducibility (seeds, pinned dependencies, data versioning)
+  - ml_pipeline_standards (train/test split, feature engineering, serialization)
+
 ROUTER: CR (Code Review)
 AGENTE: code_review_agent
 
@@ -352,19 +434,24 @@ SKILLS REQUERIDAS:
 - skills/engineering/reproducibility_review.md
 - skills/engineering/logging_config_review.md
 
-RULES:
-- structured_logging_required
-- configuration_over_hardcoding
-- reproducibility_required
-- cost_aware_bigquery_required
-- no_silent_failures
-- no_credentials_in_code
+RULES (AUTO-ACTIVATED):
+- python_standards:
+  - Line length max 100 (tolerance 120)
+  - Docstrings mandatory for public functions
+  - Type hints mandatory in signatures
+  - Max file length: 500 lines
+  - Max function length: 50 lines
+  - Max parameters: 5
+- logging_standards: logging module (not print), structured logging
+- configuration_management: no hardcoded paths/credentials
+- reproducibility: random seeds fixed, dependencies pinned
+- ml_pipeline_standards: time-based split, no leakage, versioned models
 
-SEVERITY TRIAGE:
-- P0: Critical (data leakage, credentials in code, silent corruption) → blocker
-- P1: High (no logging, hardcoded configs, non-reproducible) → must fix before merge
-- P2: Medium (poor naming, no docstrings, suboptimal query) → fix next sprint
-- P3: Low (style, minor refactor) → backlog
+SEVERITY TRIAGE (AUTOMATIC):
+- P0: Critical (data leakage, credentials in code, fit on full dataset) → blocker
+- P1: High (no logging, hardcoded configs, non-reproducible, unpinned deps) → must fix before merge
+- P2: Medium (missing docstrings, type hints, file/function too long) → fix next sprint
+- P3: Low (style, minor refactor, whitespace) → backlog
 
 QUALITY GATES:
 - P0_and_P1_issues_are_explicitly_flagged
@@ -373,17 +460,35 @@ QUALITY GATES:
 - data_leakage_paths_are_checked
 - configuration_management_is_evaluated
 - test_coverage_or_absence_is_noted
+- python_standards_compliance_score_included
 
 OUTPUT:
 Template: templates/code_review_report_template.md
 Formato: 
   - Executive summary (P0/P1 count)
-  - Issues por severity (P0 → P3)
+  - Python Standards Compliance Score (0-100)
+  - Issues por severity (P0 → P3) con file:line, risk, fix
   - Reproducibility verdict
+  - Logging coverage assessment
   - Configuration management assessment
   - Recommended refactors
 Idioma: Español (código y nombres técnicos en inglés)
 Quality warnings: visible
+
+METADATOS (Generados Automáticamente):
+---
+metadata:
+  source: codex_claude
+  document_version: "1.0.0"
+  generated_date: "2026-05-19"
+  agent_id: code_review_agent
+  router_mode: CR
+  project_id: ml_automl_autogluon
+  template_used: templates/code_review_report_template.md
+  quality_gates_status: TBD
+  python_standards_applied: true
+  engineering_rules_version: "2.0.0"
+---
 ```
 
 ### Prompt Corto
@@ -394,12 +499,16 @@ Estoy en ml_automl_autogluon. LOAD: system + memory.
 [CR/code_review_agent] Revisa training pipeline:
 - Files: train_churn_model.py, model_config.yaml, bigquery_loader.py
 - Context: Production en Cloud Run, weekly execution
-- Skills: python_quality, bigquery_review, reproducibility, logging
-- Rules: structured logging, config over hardcode, cost-aware BQ, no silent fails
-- Triage: P0-P3 severity
-- Gates: P0/P1 flagged, reproducibility assessed, leakage checked
 
-Output: Template code_review_report, español.
+AUTO-ACTIVATED (archivos .py detectados):
+- Python standards (PEP8, docstrings, type hints, max lengths)
+- Logging standards (logging module, no print)
+- Config management (no hardcoding)
+- Reproducibility (seeds, pinned deps)
+- ML pipeline standards (no leakage, time splits)
+
+Triage: P0-P3 severity
+Output: Code review report + Python compliance score + metadatos, español.
 ```
 
 ---
@@ -894,18 +1003,118 @@ Quality warnings: visible
 - No ignores los quality gates (son tu garantía de calidad)
 - No mezcles idiomas sin declararlo explícitamente
 - No asumas que el agente recuerda contexto de sesiones anteriores sin cargar memoria
+- **No especifiques manualmente engineering_rules cuando trabajas con código** — se activan automáticamente
+
+---
+
+## 🚨 IMPORTANTE: Activación Automática de Reglas
+
+### ¿Cuándo se activan automáticamente las reglas de Python/Code?
+
+**TRIGGERS AUTOMÁTICOS (No necesitas pedirlo):**
+
+1. **Por Router Mode:**
+   - Router classifica como CR (Code Review) → engineering_rules.yaml se cargan
+
+2. **Por File Extension:**
+   - Archivos .py, .sql, .ipynb, .yaml, .sh detectados → python_standards activadas
+
+3. **Por Keywords en Request:**
+   - "review code", "code review", "check my code", "review pipeline" → auto-activa
+
+4. **Por Agente:**
+   - code_review_agent invocado → engineering_rules cargadas
+   - model_review_agent + código → engineering_rules cargadas
+
+**Lo que se activa AUTOMÁTICAMENTE:**
+- ✅ PEP8 compliance (line length, naming, imports, whitespace)
+- ✅ Docstrings obligatorios (Google/NumPy style)
+- ✅ Type hints obligatorios
+- ✅ File/function length limits (500/50 lines)
+- ✅ OOP recommendations
+- ✅ Logging standards (logging module, no print)
+- ✅ Configuration management (no hardcoding)
+- ✅ Reproducibility (seeds, pinned deps)
+- ✅ ML pipeline standards (splits, leakage, serialization)
+- ✅ SQL BigQuery cost-awareness
+
+**Lo que NO necesitas especificar manualmente:**
+- ❌ "aplica PEP8"
+- ❌ "revisa docstrings"
+- ❌ "chequea line length"
+- ❌ "valida reproducibilidad"
+
+**Esto ya está en el execution_policy y se ejecuta automáticamente.**
+
+---
+
+## 📋 IMPORTANTE: Metadatos Automáticos
+
+### Todos los documentos incluyen metadatos sin pedirlos
+
+**Se generan AUTOMÁTICAMENTE:**
+
+```yaml
+---
+metadata:
+  source: codex_claude  # Siempre presente
+  document_version: "1.0.0"  # Semantic versioning
+  generated_date: "2026-05-19"
+  last_modified_date: "2026-05-19"
+  agent_id: "agent_name"  # Del agent contract
+  router_mode: "MODE_ID"  # Del metaagent_router
+  project_id: "project_name"  # Del .codex/project.yaml
+  template_used: "templates/template_name.md"
+  quality_gates_status: PASSED | PASSED_WITH_WARNINGS | FAILED
+  quality_warnings: []
+---
+```
+
+**En Notion aparece como:**
+
+> 📋 **Document Metadata**
+> - **Source:** Codex Claude
+> - **Version:** 1.0.0
+> - **Generated:** 2026-05-19
+> - **Agent:** model_review_agent (MR mode)
+> - **Project:** proj_data_analytics
+> - **Quality Status:** ✅ Passed
+
+**Valores posibles de `source`:**
+- `codex_claude` — Generado por AI (default)
+- `human` — Escrito por humano
+- `codex_claude_human_reviewed` — Generado por AI, revisado por humano
+- `human_codex_enhanced` — Escrito por humano, mejorado por AI
+
+**NO necesitas especificar metadatos en el prompt** — se inyectan automáticamente por execution_policy.
 
 ---
 
 ## 🔗 Enlaces Útiles
 
+### Core System
 - **Core Principles**: `/Users/jackyb-cqi/repos/NegritaOS/core/core-principles.md`
 - **Metaagent Router**: `/Users/jackyb-cqi/repos/NegritaOS/core/orchestration/metaagent_router.yaml`
-- **Execution Policy**: `/Users/jackyb-cqi/repos/NegritaOS/core/orchestration/execution_policy.yaml`
+- **Execution Policy v2.0**: `/Users/jackyb-cqi/repos/NegritaOS/core/orchestration/execution_policy.yaml`
 - **Agent Registry**: `/Users/jackyb-cqi/repos/NegritaOS/agents/README.md`
+
+### Standards
+- **Document Metadata Standards**: `/Users/jackyb-cqi/repos/NegritaOS/core/standards/document_metadata_standards.yaml`
+- **Output Standards**: `/Users/jackyb-cqi/repos/NegritaOS/core/standards/output_standards.yaml`
+- **Naming Conventions**: `/Users/jackyb-cqi/repos/NegritaOS/core/standards/naming_conventions.md`
+
+### Rules
+- **Global Rules**: `/Users/jackyb-cqi/repos/NegritaOS/rules/global/global_rules.yaml`
+- **Engineering Rules v2.0**: `/Users/jackyb-cqi/repos/NegritaOS/rules/engineering/engineering_rules.yaml` ⚠️ **Auto-activa con código**
+- **ML Rules**: `/Users/jackyb-cqi/repos/NegritaOS/rules/ml/`
+- **Academic Rules**: `/Users/jackyb-cqi/repos/NegritaOS/rules/academic/`
+
+### Agents
 - **All Agents**: `/Users/jackyb-cqi/repos/NegritaOS/<layer>/<agent-name>/agent.yaml`
 
 ---
 
 **Última actualización**: 19 Mayo 2026  
-**Versión del sistema**: NegritaOS 1.0.0
+**Versión del sistema**: NegritaOS 2.0.0  
+**Execution Policy**: v2.0 (metadatos automáticos + engineering rules auto-activation)  
+**Engineering Rules**: v2.0 (Python standards completos + auto-triggers)
