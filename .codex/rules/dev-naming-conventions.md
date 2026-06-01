@@ -4,7 +4,11 @@ domain: dev
 enforcement: strict
 applyTo: python, ml, automl, tests, pipelines, config, sql
 depends_on:
+  - negritaos-router
   - coding-standards
+see_also:
+  - rules/global/global_rules.yaml
+  - rules/global/negritaos_router_rule.md
 provides:
   - naming-guidelines
   - feature-name-rules
@@ -12,7 +16,8 @@ description: >
   Enforces strict naming rules across Python, SQL, ML pipelines, feature engineering,
   and configuration files for telecom churn prediction systems. Ensures minimum length,
   legible semantic units, domain alignment, and centralized constants management.
-version: 1.0.2
+  Loaded only for engineering modes MR / CR / DQ as defined by the NegritaOS router.
+version: 1.0.3
 priority: critical
 ---
 
@@ -252,6 +257,40 @@ prep_data()
 encode()
 run()
 ```
+
+## 6.1 Boolean / Predicate Functions and Flags (MANDATORY)
+
+Functions and variables that return or hold a boolean MUST be named with one
+of the following prefixes so that the call site reads as a yes/no question:
+
+* `is_*`       (state)
+* `has_*`      (possession)
+* `should_*`   (decision / policy)
+* `can_*`      (capability)
+* `was_*` / `did_*` (past-tense state)
+* `*_flag`     (allowed only for stored boolean columns / features)
+
+:
+
+```python
+is_valid_schema(df)
+has_active_contract(customer)
+should_retrain_model(metrics)
+can_score_customer(customer)
+unexpected_reboot_12h_flag
+```
+
+:
+
+```python
+validate(df)            # ambiguous: returns bool? raises? mutates?
+check_contract(c)       # "check" hides the return type
+retrain(metrics)        # looks like an action, not a predicate
+active                  # not pronounceable as a yes/no question
+```
+
+This rule applies equally to feature column names produced by SQL or pandas
+pipelines so the dataset contract and the Python code stay readable as English.
 
 ---
 

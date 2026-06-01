@@ -1,0 +1,24 @@
+project_id: negritaos
+negrita_registry: /Users/jackyb-cqi/repos/NegritaOS/projects/negritaos.yaml
+memory_home: ~/.negritaos/memory/projects/negritaos
+repo_codex_role: meta_system
+repo_codex_status: tracked_in_meta_repo
+canonical_memory_outside_repo: true
+preservation_backup: ~/.negritaos/backups/2026-06-01_alignment
+session_load_order:
+  - negrita_project_registry
+  - personal_memory
+  - project_memory
+  - repo_local_adapter
+  - task_specific_profile
+active_capabilities:
+  - cognitive_os
+  - agent_registry
+  - memory_governance
+  - project_routing
+  - documentation
+router_rule: rules/global/negritaos_router_rule.md
+router_skill: .codex/skills/negritaos-mode-router/SKILL.md
+notes:
+  - "This repo is the NegritaOS meta-repository. Unlike other adapters, its .codex/ folder is tracked in git (memory/ remains gitignored)."
+  - "Engineering-mode adapter rules under .codex/rules/dev-*.md must not load for AE/RT/EP/LP/TD requests."

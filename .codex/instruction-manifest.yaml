@@ -1,11 +1,21 @@
 version: 1
 rules:
+  - id: negritaos-router
+    path: rules/negritaos-router.md
+    canonical_path: ../rules/global/negritaos_router_rule.md
+    domain: meta
+    enforcement: strict
+    priority: critical
+    depends_on: []
+    version: 1.0.0
+
   - id: ai-behavior
     path: rules/ai-behavior.md
     domain: meta
     enforcement: strict
     priority: critical
-    depends_on: []
+    depends_on:
+      - negritaos-router
     version: 1.1.0
 
   - id: naming-guidelines
@@ -208,4 +218,27 @@ rules:
       - disposables
       - observables
       - telemetry
+    version: 1.0.0
+
+  - id: security
+    path: rules/dev-security.md
+    domain: dev
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - coding-standards
+      - logging
+      - error-handling
+    version: 1.0.0
+
+  - id: commit-hygiene
+    path: rules/dev-commit-hygiene.md
+    domain: dev
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - coding-standards
+      - tests-unittest-standards
+      - security
+      - logging
     version: 1.0.0

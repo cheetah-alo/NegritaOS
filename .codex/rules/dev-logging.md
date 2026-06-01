@@ -4,7 +4,11 @@ domain: dev
 enforcement: strict
 applyTo: python, ml, automl, pipelines, analytics, etl, governance
 depends_on:
+  - negritaos-router
   - coding-standards
+see_also:
+  - rules/global/global_rules.yaml
+  - rules/global/negritaos_router_rule.md
 provides:
   - logging-format
   - phase-logging
@@ -12,7 +16,8 @@ provides:
 description: >
   Unified logging, pipeline-phase tracking, structured governance metadata, and audit
   instrumentation across ML, AutoML, ETL, and analytics pipelines for telecom churn models.
-version: 1.0.2
+  Applies to engineering modes MR / CR / DQ as defined by the NegritaOS router.
+version: 1.0.3
 priority: critical
 ---
 

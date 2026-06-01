@@ -1,0 +1,9 @@
+# NegritaOS scaffolding — IGNORED files in target repo
+
+# Adapter scratch memory (must not pollute repo)
+.codex/memory/
+.codex/.DS_Store
+.claude/.DS_Store
+
+# Local-only backups created by the validator / bootstrap
+.negritaos-backups/

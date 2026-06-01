@@ -54,7 +54,7 @@ All thresholds (e.g., `0.9617` leakage threshold or `300s` time limit) must resi
 To maintain a lean codebase, we enforce the following hard limits:
 
 * **Complexity Gate:** Functions must have a **Cyclomatic Complexity < 10**. If your `if/else` logic branches more than 10 times, refactor into a Strategy pattern. Avoid deeply nested conditionals.
-* **Module Boundaries:** Keep `.py` files under **800 lines**. If a file exceeds this, it is likely doing too much (violating Single Responsibility) and must be split (e.g., `trainer.py` \rightarrow `trainer_utils.py`, `trainer_core.py`).
+* **Module Boundaries:** Keep `.py` files under **1500 lines** (preferred). Files between **1500 and 1700 lines** are accepted only if the additional length is justified by cohesive single-responsibility logic. Files **above 1700 lines MUST be refactored** (e.g., `trainer.py` -> `trainer_utils.py`, `trainer_core.py`). This threshold is the single source of truth for file size across this repo.
 * **Type Safety:** Mandatory Type Hints for all signatures. Use `Pandas-Type-Checks` where possible to define expected DataFrame schemas.
 
 ### 1.3 Automated Quality Enforcement (The Toolchain)
@@ -136,8 +136,8 @@ else:
 - Avoid committing ephemeral or exploratory artifacts to the repository.
 
 ## 7. File Size & Organization
-- Keep files concise and modular.
-- Split files exceeding ~300 lines into self-contained modules.
+- See §1.2 Structural Guardrails for the canonical thresholds (1500 preferred, 1700 hard cap).
+- Keep files cohesive and modular; split by responsibility, not by line count alone.
 
 ## 8. Mocking & Test Integrity
 - Mock data only within the **test** suite.
@@ -149,9 +149,7 @@ else:
 ## 9. Sensitive Files
 - Never overwrite `.env` or secrets without explicit confirmation.
 - Treat all config files as potentially sensitive—protect accordingly.
-
-## 9. Size Files
-- 800 - 900 lines of coding is the maximum acceptable size for any single file realated with the task/main functionality.
+- For the full secrets / PII / credential-scanning policy see [dev-security.md](dev-security.md).
 
 ## 10. KPI Authority Boundary (Backend Canonical)
 - Canonical financial/business KPIs MUST be computed in backend services and exposed via API contracts.

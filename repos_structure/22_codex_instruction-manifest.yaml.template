@@ -1,0 +1,47 @@
+# .codex/instruction-manifest.yaml — load order for <PROJECT_NAME>
+# The router rule MUST be first. ai-behavior MUST depend on it.
+
+rules:
+  - id: negritaos-router
+    path: rules/negritaos-router.md
+    canonical_path: ../rules/global/negritaos_router_rule.md   # adjust if NegritaOS is not vendored
+    priority: critical
+    enforcement: strict
+
+  - id: ai-behavior
+    path: rules/ai-behavior.md
+    depends_on: [negritaos-router]
+    priority: critical
+    enforcement: strict
+
+  # --- engineering adapters (loaded only by router for MR / CR / DQ modes) ---
+  - id: coding-standards
+    path: rules/dev-coding-standards.md
+    depends_on: [negritaos-router, ai-behavior]
+
+  - id: logging
+    path: rules/dev-logging.md
+    depends_on: [negritaos-router, coding-standards]
+
+  - id: error-handling
+    path: rules/dev-error-handling.md
+    depends_on: [negritaos-router, logging]
+
+  - id: naming-guidelines
+    path: rules/dev-naming-conventions.md
+    depends_on: [negritaos-router, coding-standards]
+
+  - id: python
+    path: rules/dev-python.md
+    depends_on: [negritaos-router, coding-standards, naming-guidelines]
+
+  - id: tests-unittest-standards
+    path: rules/tests-unittest-standards.md
+    depends_on: [negritaos-router, python]
+
+  # add data-contracts, data-validation, data-sql-governance, ml-*, plotting, notebooks
+  # as required by the archetype (see archetypes/<archetype>.yaml in NegritaOS).
+
+skills_root: skills/
+project_yaml: project.yaml
+local_overrides: local-overrides.md

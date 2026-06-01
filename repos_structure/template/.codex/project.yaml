@@ -1,0 +1,31 @@
+# .codex/project.yaml — repo-level project identity for NegritaOS
+# Drop-in template. Replace <ALL_CAPS> placeholders.
+
+project_id: <PROJECT_ID>            # e.g. negritaos, moneyflowlist, hot_frictions
+project_name: <PROJECT_NAME>
+archetype: <ARCHETYPE>              # one of: data-platform, eda-analytics, ml-automl, product-app
+brand: <BRAND_OR_none>              # cqi | moneyflow | viu | none
+
+# Canonical memory home (NOT inside the repo).
+memory_home: ~/.negritaos/memory/projects/<PROJECT_ID>
+
+# Router wiring
+negritaos:
+  router_rule: rules/global/negritaos_router_rule.md       # canonical in NegritaOS, or ~/.negritaos/...
+  router_stub: .codex/rules/negritaos-router.md            # local adapter pointer
+  router_skill: .codex/skills/negritaos-mode-router/SKILL.md
+
+# Engineering-mode rule set (loaded only for MR / CR / DQ)
+engineering_rules:
+  - .codex/rules/ai-behavior.md
+  - .codex/rules/dev-coding-standards.md
+  - .codex/rules/dev-logging.md
+  - .codex/rules/dev-error-handling.md
+  - .codex/rules/dev-naming-conventions.md
+  - .codex/rules/dev-python.md
+  - .codex/rules/dev-object-orientation.md
+  - .codex/rules/tests-unittest-standards.md
+  # add data-* / ml-* / notebooks / plotting as needed per archetype
+
+# Optional pin to the NegritaOS integrator version used to generate this scaffold
+integrator_version: 1.0

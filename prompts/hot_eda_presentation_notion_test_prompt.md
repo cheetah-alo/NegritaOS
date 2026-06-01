@@ -1,6 +1,6 @@
 # HOT EDA Presentation + Notion Test Prompt
 
-Use this prompt to test the NegritaOS presentation and Notion documentation workflow from two HOT Orange TSR/CSR analysis folders.
+Use this prompt to test the NegritaOS presentation and Notion documentation workflow from two HOT Orange eda TSR/CSR analysis folders.
 
 ## Prompt
 
@@ -60,6 +60,7 @@ Brand: CQI / CQISense. Use CQI blue `#0044ff`, clean white, dark neutral, and re
 4. Compare the two analyses.
    - General AI calls analysis vs. FR/PR focus.
    - Identify what is consistent, what differs, what is newly surfaced by the FR/PR focus, and what remains uncertain.
+   - what patterns, key information, or insights emerge from evaluating friction and promise with the other variables.
 
 5. Create an executive PPTX draft.
    Main deck target: 8-10 slides.

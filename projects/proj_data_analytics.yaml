@@ -23,6 +23,7 @@ project:
     - eda_reviewer_agent
     - model_review_agent
     - data_quality_sentinel_agent
+    - code_review_agent
     - team_lead_ds_agent
     - technical_writer_agent
     - presentation_agent
@@ -31,6 +32,22 @@ project:
     - eda-pre-ml
     - review
     - refactor
+  # Explicit intent -> NegritaOS mode map.
+  # Consulted by the router BEFORE the global trigger table
+  # (see rules/global/negritaos_router_rule.md §2).
+  mode_map:
+    new_feature: CR        # implement code / SQL / pipeline -> code_review_agent
+    bug_fix: CR
+    refactor: CR
+    new_analysis: MR       # EDA / model review / SHAP / leakage -> model_review_agent
+    eda: MR
+    model_review: MR
+    data_incident: DQ      # schema drift / KPI anomaly / RCA -> data_quality_sentinel_agent
+    data_quality_audit: DQ
+    planning: LP           # sprint / roadmap / OKR -> team_lead_ds_agent
+    writeup: TD            # notion / confluence / postmortem -> technical_writer_agent
+    deck: EP               # exec deck / one-pager -> presentation_agent
+    research: RT           # papers / trend scouting -> ai_trend_radar_agent
   expected_outputs:
     - eda_report
     - analytical_report

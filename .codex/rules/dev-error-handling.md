@@ -4,15 +4,20 @@ domain: dev
 enforcement: strict
 applyTo: [python, pipelines, feature-engineering, training]
 depends_on:
+  - negritaos-router
   - logging
   - naming-guidelines
   - data-contracts
+see_also:
+  - rules/global/global_rules.yaml
+  - rules/global/negritaos_router_rule.md
 provides:
   - exception-taxonomy
   - domain-errors
   - governance-propagation
 description: >
-  Centralized exception strategy for the churn ML-as-code platform.
+  Centralized exception strategy for the churn ML-as-code platform. Loaded only
+  for engineering modes MR / CR / DQ as defined by the NegritaOS router.
   Covers: telecom-specific anomaly handling, ML feature engineering failures,
   leakage detection errors, structured error propagation, and governance integration.
 version: 1.1.0

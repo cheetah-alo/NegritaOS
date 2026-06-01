@@ -1,0 +1,27 @@
+# 30 — Canonical router rule (reference)
+
+The actual canonical rule for this NegritaOS install lives at:
+
+- `/Users/jackyb-cqi/repos/NegritaOS/rules/global/negritaos_router_rule.md`
+
+For a satellite repo that does NOT vendor NegritaOS, the canonical rule must
+be available at one of:
+
+- `~/.negritaos/rules/global/negritaos_router_rule.md` (recommended)
+- A symlink in the repo: `rules/global/negritaos_router_rule.md → ~/.negritaos/...`
+
+## Why a stub + canonical split?
+- The stub at `.codex/rules/negritaos-router.md` is what each client discovers
+  by scanning `.codex/rules/`. It is intentionally tiny.
+- The canonical file is the authoritative governance contract. Updating it once
+  updates the behavior across every repo that points to it.
+
+## Bootstrap option for global install
+```bash
+# one-time, on this machine
+mkdir -p ~/.negritaos/rules/global
+ln -s /Users/jackyb-cqi/repos/NegritaOS/rules/global/negritaos_router_rule.md \
+      ~/.negritaos/rules/global/negritaos_router_rule.md
+```
+
+Then satellite repos only need the stub.

@@ -26,13 +26,13 @@ project_registry:
     industry: telecom
     business_lines:
       Hot:
-        - cable_tv
-        - broadband_internet
-        - home_phone
+        - fiber
+        - wifi
+        - calls
       HotMobile:
-        - prepaid_mobile
-        - postpaid_mobile
-        - data_plans
+        - fiber
+        - wifi
+        - calls
     
     focus_areas:
       - customer_friction_analysis

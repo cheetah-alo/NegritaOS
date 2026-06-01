@@ -300,7 +300,9 @@ assert x == y
 
 ## 9. Running Tests
 
-### Standard runner
+### 9.1 Standard runner (canonical)
+
+`unittest` is the canonical runner. All tests MUST run successfully under it:
 
 ```
 python -m unittest discover -s tests
@@ -317,6 +319,20 @@ Run a specific test:
 ```
 python -m unittest tests.test_pipeline_features.TestPipelineFeatures.test_time_split_that_no_leakage_occurs_when_split_by_date
 ```
+
+### 9.2 Pytest as coverage runner (allowed)
+
+`pytest` is allowed **only as a coverage harness** over the unittest suite.
+It MUST NOT introduce pytest-only fixtures, parametrize decorators, or any
+syntax that breaks the canonical `unittest` runner.
+
+```
+pytest --cov=src --cov=backend/app --cov=data_analytics --cov=mcp_server \
+       --cov-report=term-missing --cov-report=xml tests/
+```
+
+The same tests MUST pass under both `python -m unittest discover` and
+`pytest`. If a test only passes under one runner, it is non-compliant.
 
 ---
 
