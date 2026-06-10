@@ -2,6 +2,7 @@
 id: load-context
 mode_hint: AE   # Adapter / Environment bootstrap
 loads:
+  - README.md
   - .codex/project.yaml
   - .codex/system.md
   - .codex/instruction-manifest.yaml
@@ -16,20 +17,20 @@ any non-trivial task in a NegritaOS-managed repo.
 
 ## Procedure
 
-1. **Adapter resolution**
+1. **Repository entry points**
+   - Read `README.md` — architecture overview, skill/rule inventory, conflict-resolution order.
+   - Note any project-specific overrides in `.codex/local-overrides.md`.
+
+2. **Adapter resolution**
    - Read `.codex/project.yaml` → resolve symlink to `projects/<project>.yaml`.
    - Confirm `project_id` and `archetype`.
-
-2. **Repository entry points**
-   - Read `CODEX.md` if present (else fallback to `README.md`).
-   - Note any project-specific overrides in `.codex/local-overrides.md`.
 
 3. **System contract**
    - Read `.codex/system.md` — operator-style contract for this repo.
 
 4. **Instruction manifest**
    - Read `.codex/instruction-manifest.yaml`.
-   - List which rules will auto-load for each engineering mode (MR / CR / DQ).
+   - List `docs:` entries (always loaded) and `rules:` entries per mode.
    - Flag any rule with `version` drift or missing `depends_on` target.
 
 5. **Active profile**
@@ -74,6 +75,7 @@ Next action awaiting: <user prompt summary or "idle">
 
 ## Stop conditions
 
+- `README.md` missing → warn and continue without it.
 - `.codex/project.yaml` symlink broken → halt.
 - `instruction-manifest.yaml` references a missing rule file → halt.
 - `validate_alignment.py` exit code ≠ 0 → halt and report failing check.

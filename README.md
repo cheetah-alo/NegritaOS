@@ -1,151 +1,513 @@
 # NegritaOS
 
-**Version:** 1.0.0
-**Type:** Modular Cognitive Operating System
-
-A production-grade operating system for senior technical leadership in Data Science,
-ML governance, academic evaluation, executive communication, and AI/Blockchain research.
-
----
-
-## System Philosophy
+**Version:** 1.1.0
+**Type:** Modular Cognitive Operating System for senior technical work
+**Domains:** Data Science · ML governance · Academic evaluation · Executive communication · AI/Blockchain research
 
 > "AI should amplify expert reasoning, not replace critical thinking."
 
-NegritaOS is not a general-purpose assistant. It is a specialized system with:
-- Defined agents for defined problem types
-- Explicit quality gates on every output
-- Governance-first orientation
-- Full traceability from input to output
-
----
-
-## Architecture Overview
+NegritaOS is **not a chatbot**. It is a governance-first operating layer that sits between you and any AI client
+(Claude, Codex, Copilot, …) and forces every request through a fixed pipeline:
 
 ```
-NEGRITAOS/
+classify mode → load agent → load rules → load skills → load rubrics → generate → quality-gate → answer
+```
+
+Same prompt, same client, same answer. Drift is engineered out.
+
+---
+
+## Table of Contents
+
+1. [Mental Model — the 5 building blocks](#1-mental-model)
+2. [Repository Map](#2-repository-map)
+3. [The 8 Operational Modes](#3-the-8-operational-modes)
+4. [Agents — what each one does](#4-agents)
+5. [Skills — reusable cognitive units](#5-skills)
+6. [Rules — non-negotiable contracts](#6-rules)
+7. [Rubrics, Templates, Archetypes](#7-rubrics-templates-archetypes)
+8. [Memory Model](#8-memory-model)
+9. [Sibling-Repo Adapter (`.codex` / `.claude`)](#9-sibling-repo-adapter)
+10. [Step-by-Step — opening a project session](#10-step-by-step--opening-a-project-session)
+11. [Step-by-Step — adding a new project](#11-step-by-step--adding-a-new-project)
+12. [Step-by-Step — extending the system](#12-step-by-step--extending-the-system)
+13. [Validation & CI scripts](#13-validation--ci-scripts)
+14. [Conflict Resolution Order](#14-conflict-resolution-order)
+15. [Daily Cheat Sheet](#15-daily-cheat-sheet)
+
+---
+
+## 1. Mental Model
+
+Five building blocks. Memorize these and the rest follows.
+
+| Block | What it is | Where it lives | Mutable? |
+|---|---|---|---|
+| **Agents** | Personas with a fixed job (e.g. *code reviewer*, *model reviewer*). | [integrator.yaml](integrator.yaml) + [agents/](agents/) | Add new agents in `integrator.yaml`. |
+| **Skills** | Reusable cognitive procedures an agent can invoke (e.g. *leakage detection*, *tldr writer*). | [skills/](skills/) (cognitive layer) and [.codex/skills/](.codex/skills/) (IDE/engineering layer). | Yes — markdown files. |
+| **Rules** | Hard contracts that constrain output (style, logging, naming, security). | [rules/](rules/) (NegritaOS) and [.codex/rules/](.codex/rules/) (engineering). | Yes — versioned, never silent. |
+| **Rubrics / Templates** | Quality gates and output skeletons. | [rubrics/](rubrics/), [templates/](templates/) | Yes. |
+| **Memory** | Durable, per-project session state. | `~/.negritaos/memory/projects/<project_id>/` | Yes — outside any repo. |
+
+Analogy from [docs/daily_usage_manual.md](docs/daily_usage_manual.md): NegritaOS is the school, each project is a
+classroom, `.codex/project.yaml` is the nameplate on the classroom door, and `~/.negritaos/memory/…` is your personal
+notebook that survives any branch switch or worktree.
+
+---
+
+## 2. Repository Map
+
+```
+NegritaOS/
+├── integrator.yaml                 ⭐ master agent registry — START HERE
+├── README.md                       this file
 │
-├── core/                          System-level contracts
-│   ├── identity/                  System identity and persona definition
-│   ├── memory/                    Memory architecture and context policy
-│   ├── ontology/                  Shared vocabulary across all agents
-│   ├── orchestration/             Metaagent router + execution policy
-│   ├── principles/                15 cognitive operating principles
-│   └── standards/                 Naming conventions + output standards
+├── core/                           system-level contracts
+│   ├── identity/                   who NegritaOS is
+│   ├── memory/                     memory policy
+│   ├── ontology/                   shared vocabulary
+│   ├── orchestration/              metaagent router + execution policy
+│   ├── principles/                 15 cognitive principles
+│   └── standards/                  output standards (sections, fields)
 │
-├── academic-layer/                Academic evaluation agents
-│   ├── paper-synthesizer/
-│   ├── proposal-validator/
-│   └── tfm-evaluator/
+├── agents/                         agent registry + docs
 │
-├── intelligence-layer/            Research and trend intelligence agents
-│   ├── ai-trend-synthesizer/
-│   ├── blockchain-ai-watcher/
-│   └── research-radar/
+├── skills/                         NegritaOS cognitive skills
+│   ├── transversal/  ml/  academic/  executive/  writing/
+│   └── governance/   engineering/   business/   bussiness-teleco/
 │
-├── strategic-layer/               Leadership, communication, and decision agents
-│   ├── decision-support/
-│   ├── executive-presenter/
-│   └── team-lead-ds/
+├── rules/                          NegritaOS rules (yaml + md)
+│   ├── global/    analysis/   writing/    governance/
+│   ├── ml/        academic/   engineering/ presentation/
+│   ├── branding/  interaction/ bussiness_awereness/
 │
-├── technical-layr/                ML, code, and data quality agents
-│   ├── code-reviewer/
-│   ├── data-quality-sentinel/
-│   ├── eda-reviewer/
-│   └── model-reviewer/
+├── rubrics/                        scoring rubrics for quality gates
+├── templates/                      output templates (reports, decks, memos)
+├── archetypes/                     reusable project operating patterns
+├── projects/                       per-project registry → memory + paths
 │
-├── agents/                        Agent registry and navigation
-│   └── README.md
+├── academic-layer/                 academic agents (paper, proposal, TFM)
+├── intelligence-layer/             research / trend agents
+├── strategic-layer/                leadership / communication agents
+├── technical-layr/                 ML / code / data-quality agents
 │
-├── skills/                        Reusable cognitive skills
-│   ├── transversal/               Cross-agent skills (reasoning, evidence, TL;DR)
-│   ├── ml/                        ML-specific skills (model review, EDA, leakage)
-│   ├── academic/                  Academic skills (TFM eval, paper synthesis)
-│   ├── executive/                 Executive communication skills
-│   ├── writing/                   Documentation skills
-│   ├── governance/                Risk framing, hype review
-│   └── engineering/               Code and SQL review skills
+├── business-layer/  brands/        domain & brand packs
 │
-├── rules/                         Domain rule sets (YAML)
-│   ├── global/
-│   ├── ml/
-│   ├── academic/
-│   ├── governance/
-│   ├── engineering/
-│   ├── presentation/
-│   └── writing/
+├── .codex/                         canonical engineering adapter (loaded by Claude/Codex/Copilot)
+│   ├── rules/                      22 dev-* rules (naming, logging, errors, …)
+│   ├── skills/                     IDE-time skills (32 skills: typescript, react-19, dev-logging, plotting-guidelines, …)
+│   ├── commands/                   slash-commands (7: load-context, system-audit, commit-push-pr, run-quality-checks, …)
+│   └── instruction-manifest.yaml   manifest read by Claude/Codex/Copilot
+├── .claude -> .codex               Claude compatibility alias; never a separate source of truth
 │
-├── rubrics/                       Scoring rubrics for quality gates
-├── templates/                     Output templates by document type
-├── archetypes/                    Reusable project operating patterns
-├── projects/                      Local project registry and memory routing
-│
-├── integrator.yaml                Master agent registry (full agent definitions)
-└── core/core-principles.md        15 core operational principles
+├── prompts/                        reusable operational prompts
+├── docs/                           user-facing guides
+└── scripts/                        bootstrap + validation tooling
 ```
 
 ---
 
-## Metaagent Router — Mode Reference
+## 3. The 8 Operational Modes
 
-| Mode ID | Mode | Agent |
-|---------|------|-------|
-| LP | Leadership Planning | team_lead_ds_agent |
-| AE | Academic Evaluation | tfm_evaluator_agent |
-| TD | Technical Documentation | technical_writer_agent |
-| MR | ML / EDA / Model Review | model_review_agent |
-| CR | Code / Repository Work | code_review_agent |
-| EP | Executive Presentation | presentation_agent |
-| DQ | Data Quality / Escalation | data_quality_sentinel_agent |
-| RT | Research / TFM Generation | ai_trend_radar_agent |
+Every request is classified into exactly one mode (mixed requests run a pipeline).
 
-For mixed-mode requests, agents execute in a defined pipeline sequence.
-See: `core/orchestration/metaagent_router.yaml`
+| Mode | Label | Agent | When to use it |
+|---|---|---|---|
+| **LP** | Leadership Planning | `team_lead_ds_agent` | Roadmaps, Jira epics, sprint plans, escalations, OKRs |
+| **AE** | Academic Evaluation | `tfm_evaluator_agent` | Thesis / TFM tribunal reviews, methodology critique |
+| **TD** | Technical Documentation | `technical_writer_agent` | Notion / Confluence pages, technical memos, postmortems |
+| **MR** | ML / EDA / Model Review | `model_review_agent` | Model review, EDA, SHAP, leakage, XGBoost / AutoGluon / EBM |
+| **CR** | Code / Repository Work | `code_review_agent` | Code review, PRs, refactors, SQL, pipelines, MLflow |
+| **EP** | Executive Presentation | `presentation_agent` | Decks, board summaries, one-pagers |
+| **DQ** | Data Quality / Escalation | `data_quality_sentinel_agent` | Schema drift, KPI anomaly, RCA, incidents |
+| **RT** | Research / Trends / TFM | `ai_trend_radar_agent` | AI trend digests, paper reviews, TFM topic scouting |
 
----
+Canonical definition: [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md).
+Full trigger keywords: [core/orchestration/metaagent_router.yaml](core/orchestration/metaagent_router.yaml).
 
-## Quick Start — Invoking the System
-
-1. **Classify your request** using the mode table above (or let the router classify it)
-2. **Optionally specify an agent directly:** `@agent:MR review this churn model`
-3. **For mixed requests:** the pipeline executes automatically in sequence
-4. **Load project context** if needed: provide `project_context.md` at session start
+You can force a mode in any prompt: `@agent:MR review this churn model`.
 
 ---
 
-## Key Files
+## 4. Agents
 
-| File | Purpose |
-|------|---------|
-| `core/orchestration/metaagent_router.yaml` | Request classification and dispatch |
-| `core/orchestration/execution_policy.yaml` | End-to-end execution contract |
-| `core/identity/negrita_identity.md` | System identity and boundaries |
-| `core/ontology/domain_ontology.yaml` | Shared vocabulary |
-| `core/principles/cognitive_principles.md` | 15 operating principles |
-| `core/standards/output_standards.yaml` | Output structure requirements |
-| `agents/README.md` | Full agent registry |
-| `integrator.yaml` | Master agent definitions |
-| `projects/README.md` | Project registry and memory load order |
-| `archetypes/README.md` | Reusable project operating patterns |
-| `prompts/` | Reusable operational prompts for NegritaOS workflows |
-| `docs/daily_usage_manual.md` | Daily workflow for loading project adapters and memory |
-| `docs/presentation_and_notion_workflow.md` | Presentation and Notion output workflow |
-| `scripts/validate_registry_paths.py` | Validates that registry and governance file references resolve |
-| `scripts/bootstrap_project_adapter.sh` | Creates a new project registry, memory home, and `.codex` adapter |
+All agents are defined in [integrator.yaml](integrator.yaml) with the same shape:
+
+```yaml
+<agent_name>:
+  description:   one-line purpose
+  persona:       [who_the_agent_is]
+  skills:        [list of skills/*.md to load]
+  rules:         [list of rules/*.yaml to enforce]
+  rubrics:       [scoring rubrics applied to output]
+  templates:     [output skeletons]
+  output_modes:  [allowed output shapes]
+  quality_gate:  [boolean checks that must pass before answering]
+```
+
+| Agent | Job |
+|---|---|
+| `presentation_agent` | Executive & technical decks. Quality gate: every slide has one core message; every chart has a takeaway. |
+| `paper_review_agent` | Digests, reviews and operationalizes academic papers. |
+| `tfm_evaluator_agent` | Master's thesis proposals, milestones, tribunal reports. |
+| `model_review_agent` | ML model review with explicit leakage, split-strategy and target-definition checks. |
+| `code_review_agent` | Python / SQL / pipeline review, MLOps readiness, reproducibility. |
+| `technical_writer_agent` | Notion / Confluence docs with explicit assumptions & next actions. |
+| `team_lead_ds_agent` | Ambiguity → requirements → tasks → roadmap → escalation. |
+| `ai_trend_radar_agent` | AI / blockchain trend & paper radar with hype-vs-reality classification. |
+| `data_quality_sentinel_agent` | DQ incidents, RCAs, escalation logs. |
+
+To inspect an agent: open [integrator.yaml](integrator.yaml) and search its name.
 
 ---
 
-## Local Memory Model
+## 5. Skills
 
-NegritaOS uses a private local memory root outside project repositories:
+Skills are markdown procedures an agent reads at runtime. Two layers:
+
+### 5.1 NegritaOS skills (cognitive)
+Under [skills/](skills/). Organized by intent:
+
+```
+skills/
+  transversal/    structured_reasoning, tldr_writer, evidence_framing
+  ml/             model_review, eda_review, leakage_detection, explainability_review
+  academic/       paper_synthesizer, tfm_evaluation, methodology_review
+  executive/      presentation_storyline, executive_summary
+  writing/        notion_report, academic_feedback_writer
+  governance/     risk_framing, hype_vs_reality_review
+  engineering/    python_quality_review, sql_bigquery_review, reproducibility_review
+  business/       project-specific business skills
+```
+
+### 5.2 Engineering skills (IDE-time)
+Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copilot when working in code:
+`negritaos-mode-router`, `rule-compliance-gate`, `create-unittest`, `python-core`, `typescript`,
+`nextjs-15`, `react-19`, `zod-4`, `tailwind-4`, `playwright`, `mcp-server`, `sdd-flow`,
+`commit-hygiene`, `pr-review-deep`, `memory-protocol`, `eda-reports`, `data-contracts`,
+`dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, …
+
+Each skill is a folder with a `SKILL.md` describing **when to trigger** and **what to do**.
+
+### 5.3 IDE-time commands (slash-commands)
+Under [.codex/commands/](.codex/commands/). Available as `/command-name` in any IDE client:
+
+| Command | Purpose |
+|---|---|
+| `load-context` | Load project context at session start |
+| `system-audit` | Health check — rules, skills, memory alignment |
+| `code-review-harden` | Deep security + quality code review |
+| `confidence-gate` | Pre-answer confidence self-check |
+| `task-tracker` | In-session task planning and progress tracking |
+| `commit-push-pr` | Full commit → push → PR workflow with quality gate |
+| `run-quality-checks` | Local QA gate (unittest → coverage → ruff/mypy → gitleaks) |
+
+---
+
+## 6. Rules
+
+Rules are the **non-negotiable** layer. They live in two places:
+
+### 6.1 NegritaOS rules ([rules/](rules/))
+Cross-domain governance: writing, presentation, branding, academic, ML, business awareness.
+The most important one is [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md) —
+it binds every client to the mode/agent matrix.
+
+### 6.2 Engineering rules ([.codex/rules/](.codex/rules/))
+Loaded into IDE clients for coding tasks. 22 files total (globally loaded; several compressed to stubs that reference skills for full detail):
+
+| File | Status | Purpose |
+|---|---|---|
+| [ai-behavior.md](.codex/rules/ai-behavior.md) | full | Tone, depth, escalation rules |
+| [dev-coding-standards.md](.codex/rules/dev-coding-standards.md) | full | Python style, file-size caps, KPI boundaries |
+| [dev-naming-conventions.md](.codex/rules/dev-naming-conventions.md) | compressed | Legible-word rule, constants, booleans |
+| [dev-error-handling.md](.codex/rules/dev-error-handling.md) | compressed | No bare except, exception hierarchy, governance JSON |
+| [dev-logging.md](.codex/rules/dev-logging.md) | compressed → skill | `PhaseLogger`, governance JSON, audit dirs — full spec in `dev-logging` skill |
+| [dev-python.md](.codex/rules/dev-python.md) | compressed | Canonical ML Python (uv, mypy, ruff) |
+| [dev-object-orientation.md](.codex/rules/dev-object-orientation.md) | full | SRP, composition, ABCs, disposables |
+| [dev-observables.md](.codex/rules/dev-observables.md) | expanded | Observable contracts, state transitions, dispose rules |
+| [dev-tree-widgets.md](.codex/rules/dev-tree-widgets.md) | expanded | Tree-state purity, stable keys, virtualization |
+| [dev-commit-hygiene.md](.codex/rules/dev-commit-hygiene.md) | full | Atomic commits, trailer format, coverage reporting |
+| [dev-security.md](.codex/rules/dev-security.md) | full | Secrets, PII, OWASP, `.env` hygiene |
+| [dev-learnings.md](.codex/rules/dev-learnings.md) | full | `## Learnings` block protocol |
+| [data-contracts.md](.codex/rules/data-contracts.md) | full | Dataset schema contracts |
+| [data-contracts-lite.md](.codex/rules/data-contracts-lite.md) | stub | Quick-reference → `data-contracts` skill |
+| [data-validation.md](.codex/rules/data-validation.md) | full | Structural + domain + statistical checks |
+| [data-sql-governance.md](.codex/rules/data-sql-governance.md) | full | BigQuery CTE layering, determinism |
+| [ml-telemetry.md](.codex/rules/ml-telemetry.md) | expanded | ML run telemetry — run IDs, SHAP artifacts, drift JSON |
+| [pipelines.md](.codex/rules/pipelines.md) | expanded | Phase declarations, idempotency, observability |
+| [notebooks.md](.codex/rules/notebooks.md) | full | Notebook governance (EDA only) |
+| [plotting-guidelines.md](.codex/rules/plotting-guidelines.md) | compressed → skill | Labels readiness, title/subtitle, legend placement — full spec in `plotting-guidelines` skill |
+| [tests-unittest-standards.md](.codex/rules/tests-unittest-standards.md) | compressed | TDD, behavior-driven naming, coverage thresholds |
+| [negritaos-router.md](.codex/rules/negritaos-router.md) | stub | Adapter stub → canonical router |
+
+Every rule file has YAML frontmatter with `enforcement: strict|advisory`, `applyTo`, `depends_on`, `provides`.
+Compressed rules keep the non-negotiable bullets in global context; full detail lives in the referenced skill.
+
+---
+
+## 7. Rubrics, Templates, Archetypes
+
+- **[rubrics/](rubrics/)** — YAML scoring grids per output type (code quality, EDA, model review,
+  presentation quality, DQ, academic TFM, …). Agents apply them automatically at the quality-gate step.
+- **[templates/](templates/)** — Markdown skeletons (code review report, decision memo, escalation log,
+  Confluence page, EDA report, …). Loaded based on `output_mode`.
+- **[archetypes/](archetypes/)** — Reusable project operating patterns (`data-platform.yaml`,
+  `eda-analytics.yaml`, `ml-automl.yaml`, `product-app.yaml`). Each project's registry references one.
+
+---
+
+## 8. Memory Model
+
+Memory **never lives in a repo**. Repos may have `.codex/memory/` directories, but those are adapters.
+
+Canonical store:
+
+```
+~/.negritaos/memory/
+├── personal/                       cross-project preferences
+└── projects/
+    └── <project_id>/
+        ├── index.md                quick state snapshot
+        ├── sessions/               session-by-session notes
+        ├── decisions/              durable architectural decisions
+        └── tasks/                  in-flight tasks
+```
+
+The agent skill that governs writes is [.codex/skills/memory-protocol/SKILL.md](.codex/skills/memory-protocol/SKILL.md).
+
+Load order at session start (enforced by the router):
+
+```
+1. .codex/project.yaml                          the doormat in the current repo
+2. ~/.negritaos/memory/personal                 your preferences
+3. ~/.negritaos/memory/projects/<project_id>    durable memory
+4. .codex/local-overrides.md                    per-repo deviations (if any)
+5. Task-specific profile / archetype
+```
+
+---
+
+## 9. Sibling-Repo Adapter
+
+Every project repository that wants NegritaOS governance becomes an **adapter**:
+
+```
+<sibling-repo>/
+├── .codex/
+│   ├── project.yaml                  declares project_id + negrita_registry path
+│   ├── rules/*.md     → symlinks    →  NegritaOS/.codex/rules/*.md
+│   ├── skills/AGENTS.md             →  NegritaOS canonical
+│   ├── skills/negritaos-mode-router →  NegritaOS canonical
+│   ├── commands/      → symlink     →  NegritaOS/.codex/commands/
+│   └── instruction-manifest.yaml → symlink → NegritaOS canonical
+└── .claude -> .codex                 Claude compatibility alias
+```
+
+Why symlinks: when NegritaOS rules evolve, **every sibling sees the change instantly**. No drift.
+
+Current sibling repos (registered under [projects/](projects/)):
+
+- `proj_data_analytics` → `/Users/jackyb-cqi/repos/proj_data_analytics`
+- `composer_local_dev` → `/Users/jackyb-cqi/repos/composer-local-dev`
+- `moneyflowlist` → `/Users/jackyb-cqi/repos/backup_repos/moneyflowlist`
+- `ml_automl_autogluon` → `/Users/jackyb-cqi/repos/backup_repos/ml_automl_autogluon`
+- `hot_frictions`, `negritaos` (meta)
+
+All siblings are validated by [scripts/validate_alignment.py](scripts/validate_alignment.py) — currently 49/49 checks pass.
+
+---
+
+## 10. Step-by-Step — opening a project session
+
+This is the daily flow. Use it verbatim.
+
+### Step 1 — open the project repo (not NegritaOS)
+```bash
+cd /Users/jackyb-cqi/repos/<project_id>
+code .   # or your editor of choice
+```
+
+### Step 2 — open a chat with your AI client and paste the activation prompt
 
 ```text
-~/.negritaos/memory/
+Estoy en <project_id>.
+Carga .codex/project.yaml → lee /Users/jackyb-cqi/repos/NegritaOS/projects/<project_id>.yaml
+→ activa agentes (integrator.yaml), skills, rules (rules/global + dev-*)
+→ carga memoria ~/.negritaos/memory/projects/<project_id> (index.md, sessions/, decisions/, tasks/)
+→ aplica execution_policy + metaagent_router para clasificar la request
+→ load rubrics + quality_gates → ejecuta según persona + output_standards.
+Listo para trabajar con governance-first approach.
+Quiero continuar con [TU TAREA].
 ```
 
-Repository `.codex` folders are adapters. They may point to local memory, but
-they are not the canonical durable memory store. This prevents losing project
-history when work happens in temporary branches or worktrees.
+A shorter version works too — the router will still pick the right agent from your task description.
+
+### Step 3 — name the mode if you want full control
+- `@agent:MR …` for model review
+- `@agent:CR …` for code review
+- `@agent:DQ …` for data-quality incidents
+- `@agent:EP …` for presentations
+- … see [§3](#3-the-8-operational-modes)
+
+### Step 4 — accept the answer flow
+Every reply should follow the `default_output_contract` declared in [integrator.yaml](integrator.yaml) for its agent:
+TLDR → Context → Objective → … → Risks → Recommendations → Next_Actions.
+If a section is missing, ask the agent to re-run with the quality gate enforced.
+
+### Step 5 — close the session
+At the end, ask the agent to **persist memory**:
+
+```text
+Persist this session to ~/.negritaos/memory/projects/<project_id>/sessions/
+following memory-protocol skill. Include decisions, blockers, and next actions.
+```
+
+---
+
+## 11. Step-by-Step — adding a new project
+
+### Step 1 — bootstrap registry + adapter
+```bash
+cd /Users/jackyb-cqi/repos/NegritaOS
+./scripts/bootstrap_project_adapter.sh <project_id> /absolute/path/to/repo
+```
+This creates:
+- `projects/<project_id>.yaml` (registry entry)
+- `~/.negritaos/memory/projects/<project_id>/` (canonical memory)
+- `<repo>/.codex/project.yaml` (adapter)
+
+### Step 2 — link the adapter to NegritaOS canonical
+```bash
+./scripts/migrate_sibling_to_canonical.sh /absolute/path/to/repo
+```
+This is **idempotent and safe to re-run**. It:
+- Backs up any pre-existing `.claude/` to `.claude.bak.<timestamp>/`
+- Symlinks every `.codex/rules/*.md` to NegritaOS canonical
+- Symlinks `commands/`, `instruction-manifest.yaml`, router skill, `AGENTS.md`
+- Creates `.claude → .codex` symlink
+- Appends backup patterns to the repo's `.gitignore`
+
+### Step 3 — verify alignment
+```bash
+cd /Users/jackyb-cqi/repos/NegritaOS
+python3 scripts/validate_alignment.py --sibling /absolute/path/to/repo
+```
+Expect `10/10 OK`. If anything fails, the script prints the exact missing symlink or path.
+
+### Step 4 — commit NegritaOS changes
+The only file you should commit in NegritaOS is the new `projects/<project_id>.yaml`.
+The sibling repo gets `.codex/project.yaml` (real file) and a `.gitignore` entry — symlinks are local.
+
+---
+
+## 12. Step-by-Step — extending the system
+
+### Add a new skill
+1. Decide layer: cognitive (`skills/<bucket>/<name>.md`) vs IDE (`.codex/skills/<name>/SKILL.md`).
+2. Follow [.codex/skills/skill-creator/SKILL.md](.codex/skills/skill-creator/SKILL.md) — frontmatter is mandatory.
+3. Reference it from any agent in [integrator.yaml](integrator.yaml) under `skills:`.
+
+### Add a new rule
+1. Create `<file>.md` under [rules/](rules/) (NegritaOS) or [.codex/rules/](.codex/rules/) (engineering).
+2. Mandatory YAML frontmatter: `id`, `domain`, `enforcement`, `applyTo`, `depends_on`, `provides`, `description`, `version`, `priority`.
+3. Bump version in the file and add a `## Changelog` line.
+4. Run `python3 scripts/validate_alignment.py` to verify no sibling repo breaks.
+
+### Add a new agent
+1. Append an entry to [integrator.yaml](integrator.yaml) using the canonical shape (§4).
+2. Add a row to the mode table in [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md).
+3. Add a routing keyword block in `routing_rules.if_user_asks_for`.
+4. Provide a rubric in [rubrics/](rubrics/) and a template in [templates/](templates/) if the output is novel.
+5. Validate: `python3 scripts/validate_registry_paths.py`.
+
+### Add a new rubric / template
+1. Create the YAML / MD file in the right folder.
+2. Reference it from the agent in `integrator.yaml`.
+3. Make sure every `required_section` / `required_field` is enforceable by the agent's quality gate.
+
+---
+
+## 13. Validation & CI scripts
+
+| Script | What it does |
+|---|---|
+| [scripts/validate_alignment.py](scripts/validate_alignment.py) | Verifies NegritaOS ↔ every sibling adapter. Modes: default (all), `--only-meta`, `--sibling <path>`. **Run before every commit.** |
+| [scripts/validate_registry_paths.py](scripts/validate_registry_paths.py) | Verifies every path referenced in `integrator.yaml`, rubrics, templates, skills resolves on disk. |
+| [scripts/bootstrap_project_adapter.sh](scripts/bootstrap_project_adapter.sh) | Creates project registry + memory home + `.codex/project.yaml`. |
+| [scripts/migrate_sibling_to_canonical.sh](scripts/migrate_sibling_to_canonical.sh) | Idempotent: turns any sibling repo into a symlink-based adapter. |
+
+Recommended pre-commit:
+```bash
+python3 scripts/validate_alignment.py && python3 scripts/validate_registry_paths.py
+```
+
+---
+
+## 14. Conflict Resolution Order
+
+When two rules disagree, resolve top-down:
+
+1. **Security & correctness** ([.codex/rules/dev-security.md](.codex/rules/dev-security.md), contract validation) — always wins.
+2. **NegritaOS router** ([rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md)) — mode + agent binding.
+3. **NegritaOS global rules** (`rules/global/*.yaml`).
+4. **Agent-specific rules** (declared in `integrator.yaml`).
+5. **Engineering adapter rules** (`.codex/rules/dev-*.md`).
+6. **Sibling repo overrides** (`.codex/local-overrides.md`).
+7. **Skills** (procedural — never override rules).
+
+If steps 3–6 disagree on something non-trivial, the agent **must ask** before proceeding
+(per [.codex/rules/ai-behavior.md](.codex/rules/ai-behavior.md) §10 — escalation rule).
+
+---
+
+## 15. Daily Cheat Sheet
+
+```text
+# Open a project session
+cd ~/repos/<project_id> && code .
+# then in chat:
+@agent:<MODE> <task>
+# or paste the full activation block from §10
+
+# Validate the system after edits
+cd ~/repos/NegritaOS
+python3 scripts/validate_alignment.py
+python3 scripts/validate_registry_paths.py
+
+# Add a new project
+./scripts/bootstrap_project_adapter.sh <project_id> /abs/path
+./scripts/migrate_sibling_to_canonical.sh /abs/path
+python3 scripts/validate_alignment.py --sibling /abs/path
+
+# Persist memory at session end
+"Persist this session under ~/.negritaos/memory/projects/<project_id>/sessions/"
+```
+
+Modes (quick recall):
+**LP** lead · **AE** academic · **TD** docs · **MR** model · **CR** code · **EP** present · **DQ** data-quality · **RT** research
+
+---
+
+## Key Files Index
+
+| File | Purpose |
+|---|---|
+| [integrator.yaml](integrator.yaml) | Master agent registry (read first) |
+| [core/orchestration/metaagent_router.yaml](core/orchestration/metaagent_router.yaml) | Request → mode classification |
+| [core/orchestration/execution_policy.yaml](core/orchestration/execution_policy.yaml) | End-to-end execution contract |
+| [core/identity/negrita_identity.md](core/identity/negrita_identity.md) | System identity |
+| [core/ontology/domain_ontology.yaml](core/ontology/domain_ontology.yaml) | Shared vocabulary |
+| [core/principles/cognitive_principles.md](core/principles/cognitive_principles.md) | 15 operating principles |
+| [core/standards/output_standards.yaml](core/standards/output_standards.yaml) | Output structure requirements |
+| [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md) | Canonical router rule |
+| [projects/README.md](projects/README.md) | Project registry & memory load order |
+| [docs/daily_usage_manual.md](docs/daily_usage_manual.md) | Daily workflow walkthrough |
+| [docs/presentation_and_notion_workflow.md](docs/presentation_and_notion_workflow.md) | EP / TD workflow |
+| [docs/context-management-audit.md](docs/context-management-audit.md) | Full audit of 22 rule files — size, overlap, migration plan |
+| [docs/context-management.md](docs/context-management.md) | Architecture guide: what belongs in rules vs skills vs commands |
+| [archetypes/README.md](archetypes/README.md) | Reusable project archetypes |
+| [agents/README.md](agents/README.md) | Full agent registry |
 
 ---
 

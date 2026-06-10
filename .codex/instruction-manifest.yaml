@@ -1,4 +1,13 @@
 version: 1
+
+docs:
+  - id: repository-readme
+    path: ../README.md
+    description: >-
+      Main NegritaOS documentation: purpose, architecture, adapter model,
+      skill/rule/command inventory, conflict resolution, and onboarding guide.
+    load: always
+
 rules:
   - id: negritaos-router
     path: rules/negritaos-router.md
