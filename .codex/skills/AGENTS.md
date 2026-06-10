@@ -25,7 +25,10 @@ Use these skills for detailed patterns on-demand:
 | `data-contracts` | Raw/derived contracts, schema validation, casting, and errors | [SKILL.md](data-contracts/SKILL.md) |
 | `data-loading` | Local/BQ loading, lineage hashing, source resolution | [SKILL.md](data-loading/SKILL.md) |
 | `eda-reports` | EDA execution (analytics + pre-ML): ingestion, metrics, plots, run outputs | [SKILL.md](eda-reports/SKILL.md) |
+| `churn-recall-indicator-audit` | Standard audit and report workflow for recall, churn, DiscReq, retention, recontact, and account journey pressure metrics | [SKILL.md](churn-recall-indicator-audit/SKILL.md) |
 | `create-unittest` | Create/convert Python unit tests using `unittest` + behavior-driven naming | [SKILL.md](create-unittest/SKILL.md) |
+| `dev-logging` | PhaseLogger usage, governance JSON structure, phase names, audit file layout | [SKILL.md](dev-logging/SKILL.md) |
+| `plotting-guidelines` | Labels readiness, title/subtitle with N & KPI, legend placement, chart PR checklist | [SKILL.md](plotting-guidelines/SKILL.md) |
 
 ## Auto-invoke Skills
 
@@ -44,6 +47,9 @@ When performing these actions, invoke the corresponding skill first:
 | Modify dataset contracts or schema validation | `data-contracts` |
 | Change data ingestion or source resolution | `data-loading` |
 | Modify EDA outputs, plots, dashboards, or run-scoped output layout | `eda-reports` |
+| Review or create churn, recall, DiscReq, retention, recontact, or account journey pressure metrics | `churn-recall-indicator-audit` |
+| Instrument code with logging, add PhaseLogger, write governance JSON | `dev-logging` |
+| Create or modify matplotlib/seaborn/plotly charts or plot helpers | `plotting-guidelines` |
 
 ## Rule vs Skill Precedence
 

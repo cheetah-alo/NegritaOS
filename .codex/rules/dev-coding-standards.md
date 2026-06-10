@@ -57,6 +57,23 @@ To maintain a lean codebase, we enforce the following hard limits:
 * **Module Boundaries:** Keep `.py` files under **1500 lines** (preferred). Files between **1500 and 1700 lines** are accepted only if the additional length is justified by cohesive single-responsibility logic. Files **above 1700 lines MUST be refactored** (e.g., `trainer.py` -> `trainer_utils.py`, `trainer_core.py`). This threshold is the single source of truth for file size across this repo.
 * **Type Safety:** Mandatory Type Hints for all signatures. Use `Pandas-Type-Checks` where possible to define expected DataFrame schemas.
 
+### 1.2.1 Pre-Generation File-Size Gate (MANDATORY — applies to AI agents)
+
+> **Before generating any new Python file, the agent MUST estimate its line count.**
+> If the estimate exceeds **1000 lines**, STOP and propose a module split plan first.
+> Do NOT generate the file until the split is approved (explicitly or implicitly by the user continuing).
+
+Split heuristics:
+- One class → one file.
+- Helpers/utils extracted to `<module>_utils.py`.
+- Constants extracted to `<module>_constants.py` or `config/constants.py`.
+- Pipeline phases extracted to separate stage files.
+
+If the user explicitly requests a single-file output that will exceed 1700 lines, generate it AND immediately append a `## Refactor Plan` section inside the file explaining how it must be split before merging.
+
+**Generating a file > 1700 lines without a Refactor Plan is a rule violation.**
+**Generating a file > 3000 lines for any reason is forbidden.**
+
 ### 1.3 Automated Quality Enforcement (The Toolchain)
 
 Readability is not subjective; it is measured by our CI/CD pipeline. Every PR must pass:
@@ -65,6 +82,7 @@ Readability is not subjective; it is measured by our CI/CD pipeline. Every PR mu
 2. **MyPy:** For static type validation.
 3. **Vulture:** To identify and prune "Dead Code" (unused features or abandoned experiments).
 4. **DeepSource/SonarQube:** To flag "Cognitive Complexity" hotspots.
+5. **Cyclomatic Complexity:** Must be below 10 for all functions (enforced by Ruff + DeepSource).
 
 ### 1.4 Self-Documenting Architecture* **Public Contracts:** 
 
