@@ -29,6 +29,10 @@ rubric:
       - chart_headline_states_the_finding_not_the_chart_type
       - axis_labels_are_present
       - data_source_is_referenced
+      - denominator_and_base_population_are_visible
+      - sample_size_or_support_threshold_is_visible
+      - outcome_window_and_metric_direction_are_explained
+      - overall_or_baseline_reference_is_visible_when_rates_or_lifts_are_compared
     required_per_recommendation_slide:
       - recommendations_reference_prior_findings
       - each_recommendation_has_an_owner_or_TBD
@@ -43,6 +47,9 @@ rubric:
       - "Unsupported claims not traceable to a slide finding"
       - "Recommendations that are not actionable"
       - "Executive summary that repeats slide titles instead of synthesizing findings"
+      - "Chart slide where the audience must infer denominator, filter, or outcome window"
+      - "Plot labels contain internal taxonomy or processing states without explanation"
+      - "Temporal association is described as causality without causal design"
     narrative:
       - "Deck that builds up to a finding the audience already knew"
       - "Narrative that contradicts the recommendation"

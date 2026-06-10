@@ -1,6 +1,6 @@
 # EDA Reports Agent
 
-Use this subagent for EDA execution, interactive analytics workflows, chart generation, and deterministic output handling.
+Use this subagent for EDA execution, interactive analytics workflows, chart generation, deterministic output handling, plot evidence contracts, and visual QA before reporting.
 
 ## Primary paths (this repo)
 
@@ -18,3 +18,9 @@ Use this subagent for EDA execution, interactive analytics workflows, chart gene
 ### Outputs
 - `data_analytics/output/**`
 - `output/**`
+
+## Required review focus
+- Confirm population, denominator, KPI windows, support threshold, and category semantics.
+- Maintain plot artifact lineage through a manifest, registry, or report table.
+- Review rendered plots/contact sheets before using plots in decks or executive summaries.
+- Flag `not processed` versus `processed no signal` as separate evidence states when extraction layers exist.
