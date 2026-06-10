@@ -18,10 +18,18 @@ findings_contract:
     timeline: "Suggested timing when available."
     slide_candidate: "Whether the finding belongs in the main deck or appendix."
     notion_section: "Target Notion section."
+    denominator: "Rows, calls, accounts, events, pairs, or model samples used for the metric."
+    base_population: "Population/filter used to compute the evidence."
+    support_threshold: "Minimum n or support rule used to include the segment."
+    outcome_window: "Time window and direction for future/current outcomes, when applicable."
+    baseline_reference: "Overall/base rate, control group, or comparison reference used in the claim."
 
   quality_rules:
     - message_must_be_a_claim_not_a_topic
     - evidence_must_be_traceable
+    - plot_based_finding_must_state_base_population_and_denominator
+    - rate_or_lift_finding_must_state_baseline_reference
+    - future_outcome_finding_must_state_window_and_direction
     - implication_must_be_audience_specific
     - caveat_must_be_visible_when_uncertainty_exists
     - recommendation_must_not_exceed_evidence

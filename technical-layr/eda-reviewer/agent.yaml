@@ -22,6 +22,10 @@ agent:
     domain: rules/ml/ml_rules.yaml
     constraints:
       - every_plot_must_have_operational_takeaway
+      - every_business_plot_must_state_population_denominator_and_support
+      - plot_rates_and_lifts_must_include_baseline_or_overall_reference
+      - temporal_outcomes_must_state_window_and_direction
+      - processed_no_signal_must_not_be_merged_with_not_processed
       - missing_value_patterns_must_be_explained_not_just_counted
       - class_distribution_must_be_reviewed_before_modeling
       - correlation_analysis_must_distinguish_spurious_from_meaningful
@@ -40,6 +44,9 @@ agent:
     - missing_value_analysis_is_interpreted
     - class_imbalance_is_quantified
     - no_orphan_plots
+    - plot_evidence_contract_is_complete
+    - generated_plots_have_visual_QA_or_rendered_review
+    - plot_artifact_lineage_is_traceable
     - feature_leakage_candidates_are_flagged
     - data_readiness_verdict_is_explicit
 
@@ -55,4 +62,6 @@ agent:
       - data_quality_flags
       - class_distribution_summary
       - feature_leakage_candidates
+      - plot_quality_warnings
+      - plot_artifact_manifest
       - data_readiness_verdict
