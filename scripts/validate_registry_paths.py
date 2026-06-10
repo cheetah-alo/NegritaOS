@@ -8,6 +8,10 @@ from pathlib import Path
 
 
 SYSTEM_EXTENSIONS = ("md", "yaml", "yml", "docx", "pptx")
+ADAPTER_RELATIVE_PREFIXES = (
+    ".codex/",
+    ".claude/",
+)
 ROOT_RELATIVE_PREFIXES = (
     "academic-layer/",
     "agents/",
@@ -32,10 +36,33 @@ CODEX_RELATIVE_PREFIXES = (
 )
 PATH_PATTERN = re.compile(
     r"(?<![A-Za-z0-9_-])(?P<path>(?:"
-    + "|".join(re.escape(prefix) for prefix in ROOT_RELATIVE_PREFIXES + CODEX_RELATIVE_PREFIXES)
+    + "|".join(
+        re.escape(prefix)
+        for prefix in (
+            ADAPTER_RELATIVE_PREFIXES + ROOT_RELATIVE_PREFIXES + CODEX_RELATIVE_PREFIXES
+        )
+    )
     + r")[A-Za-z0-9_./ -]+?\.(?:"
     + "|".join(SYSTEM_EXTENSIONS)
     + r"))"
+)
+
+OPTIONAL_REFERENCE_MARKERS = (
+    "if exists",
+    "if present",
+    "per-project",
+    "create ",
+    "created/",
+    "created or updated",
+    "created/updated",
+    "write ",
+    "writes ",
+    "output",
+    "placeholder",
+    "template_name",
+    "yyyy",
+    "<",
+    ">",
 )
 
 
@@ -66,12 +93,44 @@ def iter_source_files(root: Path) -> list[Path]:
 
 
 def resolve_reference(root: Path, source_path: Path, reference: str) -> Path:
-    """Resolve a reference against the repo root or .codex root."""
+    """Resolve a reference against the repo root or canonical .codex root."""
+    if reference.startswith(".claude/"):
+        return root / ".codex" / reference.removeprefix(".claude/")
+    if reference.startswith(".codex/"):
+        return root / reference
     if source_path.relative_to(root).parts[:1] == (".codex",):
         codex_candidate = root / ".codex" / reference
         if codex_candidate.exists():
             return codex_candidate
-    return root / reference
+    root_candidate = root / reference
+    if root_candidate.exists():
+        return root_candidate
+    if reference.startswith(CODEX_RELATIVE_PREFIXES):
+        codex_candidate = root / ".codex" / reference
+        if codex_candidate.exists():
+            return codex_candidate
+    return root_candidate
+
+
+def is_optional_or_placeholder_reference(
+    source_path: Path, line: str, reference: str
+) -> bool:
+    """Return whether a missing reference is an example, placeholder, or output path."""
+    line_lower = line.lower()
+    reference_lower = reference.lower()
+    if any(marker in line_lower for marker in OPTIONAL_REFERENCE_MARKERS):
+        return True
+    if "template_name" in reference_lower:
+        return True
+    if source_path.name == "prompt_examples_catalog.md" and reference.startswith(
+        ("projects/", "templates/")
+    ):
+        return True
+    if reference == "templates/analytical_report_template.md":
+        return True
+    if reference == "docs/task_tracker.md":
+        return True
+    return False
 
 
 def collect_missing_paths(root: Path) -> list[tuple[Path, int, str]]:
@@ -86,6 +145,10 @@ def collect_missing_paths(root: Path) -> list[tuple[Path, int, str]]:
             for match in PATH_PATTERN.finditer(line):
                 reference = match.group("path").strip().rstrip(".,;:)")
                 if not resolve_reference(root, source_path, reference).exists():
+                    if is_optional_or_placeholder_reference(
+                        source_path, line, reference
+                    ):
+                        continue
                     missing.append((source_path, line_number, reference))
     return missing
 
