@@ -70,7 +70,12 @@ Reusable patterns for common domains:
 | `python-core` | Python coding standards and modules |
 | `api-design` | API contract and endpoint design |
 | `data-analytics` | Analytics and pipeline conventions |
+| `data-contracts` | Dataset schema contracts and validation |
+| `data-loading` | Data ingestion, source resolution, lineage |
+| `churn-recall-indicator-audit` | Standard audit and report workflow for recall, churn, DiscReq, retention, recontact, and account journey pressure metrics |
 | `mcp-server` | MCP server and tool design |
+| `dev-logging` | PhaseLogger, governance JSON, audit dirs |
+| `plotting-guidelines` | Labels readiness, title/subtitle/legend standards, chart quality gate |
 
 ### Meta Skills
 
