@@ -165,6 +165,12 @@ folders.
 
 ## 6️⃣ Commit & PR Governance
 
+Before mutating work, agents must inspect the git tree with
+`git status --short --branch`, report pending commits against the remote base,
+and state whether to continue the current branch, create a new branch, or open
+a PR first. Branches with more than 5 unmerged commits should go to PR before
+new work continues on a fresh branch.
+
 Commit structure:
 
 <type>(<scope>): <description>

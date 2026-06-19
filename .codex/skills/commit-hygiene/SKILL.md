@@ -23,9 +23,16 @@ Use this skill when:
 3. The message should explain why, not only what changed.
 4. Do not commit generated, temporary, local, or secret-bearing artifacts.
 5. Do not hide unrelated refactors inside a bug fix or feature commit.
+6. Before mutating work or creating/reviewing commits, report branch state from `git status --short --branch`.
+7. Report pending commits against the remote base, using `git log --oneline origin/main..HEAD` when applicable.
+8. State the branch decision explicitly: continue current branch, create a new branch, or open PR before continuing.
+9. If the branch has more than 5 unmerged commits, recommend opening a PR and continuing new work on a fresh branch.
 
 ## Pre-Commit Checklist
 
+- [ ] Branch state was checked with `git status --short --branch`
+- [ ] Pending commit count was checked against the remote base
+- [ ] Branch decision is explicit: continue, create branch, or open PR
 - [ ] Diff matches the commit scope
 - [ ] No secrets, tokens, or credentials
 - [ ] No cache, coverage, build, or scratch artifacts

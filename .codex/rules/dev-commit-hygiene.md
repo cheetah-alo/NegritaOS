@@ -37,14 +37,35 @@ PR.
 
 ---
 
-## 1. Commit Message Format
+## 1. Branch Hygiene Before Work
+
+Before any mutating work, agents MUST inspect and report the git tree:
+
+```bash
+git status --short --branch
+git log --oneline origin/main..HEAD
+```
+
+If the remote base is not `origin/main`, use the appropriate upstream or
+merge base for the repository. The report MUST include the current branch,
+uncommitted changes, untracked files, pending commits, and the branch
+decision: continue current branch, create a new branch, or open a PR before
+continuing.
+
+If the current branch has more than 5 unmerged commits over its base, agents
+MUST recommend opening a PR and continuing new work on a fresh branch. Long
+branches must not accumulate unrelated work.
+
+---
+
+## 2. Commit Message Format
 
 ```
 type(scope): short imperative description
 
 <optional body explaining WHY, not WHAT>
 
-<optional trailer block: see \u00a74>
+<optional trailer block: see \u00a75>
 ```
 
 Allowed `type` values:
@@ -68,10 +89,10 @@ Commits MUST be atomic: one concern per commit. If you need the word
 
 ---
 
-## 2. Per-Commit Checklist (MANDATORY)
+## 3. Per-Commit Checklist (MANDATORY)
 
 Run this for **every** commit. Paste the result into the commit body
-trailer (see \u00a74) so reviewers can audit history without re-running.
+trailer (see \u00a75) so reviewers can audit history without re-running.
 
 | # | Check                                                                 | Pass / Fail / N/A |
 | - | --------------------------------------------------------------------- | ----------------- |
@@ -82,15 +103,15 @@ trailer (see \u00a74) so reviewers can audit history without re-running.
 | 5 | No `print()` in production code; structured logging used.             |                   |
 | 6 | No secrets, PII, or credentials introduced (see `dev-security.md`).   |                   |
 | 7 | `python -m unittest discover -s tests` -> **100% pass**.              |                   |
-| 8 | `pytest --cov` run; coverage delta vs `main` is reported (\u00a73).        |                   |
+| 8 | `pytest --cov` run; coverage delta vs `main` is reported (\u00a74).        |                   |
 | 9 | Static analysis (ruff + mypy + vulture) clean on changed files.       |                   |
 
 A commit MUST NOT be created if any item is failing without an explicit
-justification recorded in \u00a74 trailer.
+justification recorded in \u00a75 trailer.
 
 ---
 
-## 3. Coverage Reporting per Commit (MANDATORY)
+## 4. Coverage Reporting per Commit (MANDATORY)
 
 Every commit MUST report:
 
@@ -119,7 +140,7 @@ Minimum total coverage thresholds (from `tests-unittest-standards.md` \u00a710):
 
 ---
 
-## 4. Commit Message Trailer (MANDATORY)
+## 5. Commit Message Trailer (MANDATORY)
 
 Append the following block to every commit body:
 
@@ -144,26 +165,28 @@ any required field is absent.
 
 ---
 
-## 5. Per-PR Checklist (MANDATORY, aggregated)
+## 6. Per-PR Checklist (MANDATORY, aggregated)
 
 Run this once before requesting review and once more before merging. It
 **aggregates** every commit on the branch.
 
 | # | Check                                                                                    | Pass / Fail |
 | - | ---------------------------------------------------------------------------------------- | ----------- |
-| 1 | Every commit on the branch carries a valid trailer (\u00a74).                                 |             |
-| 2 | All commits combined: `unittest` passes `100%` on the merged state.                      |             |
-| 3 | Aggregated coverage on the merged state \u2265 the stage floor (\u00a73). Report the number.     |             |
-| 4 | Coverage delta across the whole PR vs `main` is reported and justified if negative.      |             |
-| 5 | No new file exceeds 1700 lines; any file in 1500-1700 has a justification in the PR body.|             |
-| 6 | No secret-scan hits; `.gitignore` still satisfies `dev-security.md` \u00a73.1.                |             |
-| 7 | Dataset contract changes (if any) are versioned per `data-contracts.md` \u00a72.              |             |
-| 8 | Public docs / README / AGENTS.md updated when behavior or workflow changed.              |             |
-| 9 | The 7-question pre-commit answer (\u00a76) is included in the PR description.                |             |
+| 1 | Branch hygiene was reported before mutating work (\u00a71).                                |             |
+| 2 | Branch has 5 or fewer unmerged commits, or PR/new-branch plan is recorded.                |             |
+| 3 | Every commit on the branch carries a valid trailer (\u00a75).                              |             |
+| 4 | All commits combined: `unittest` passes `100%` on the merged state.                      |             |
+| 5 | Aggregated coverage on the merged state \u2265 the stage floor (\u00a74). Report the number.     |             |
+| 6 | Coverage delta across the whole PR vs `main` is reported and justified if negative.      |             |
+| 7 | No new file exceeds 1700 lines; any file in 1500-1700 has a justification in the PR body.|             |
+| 8 | No secret-scan hits; `.gitignore` still satisfies `dev-security.md` \u00a73.1.                |             |
+| 9 | Dataset contract changes (if any) are versioned per `data-contracts.md` \u00a72.              |             |
+| 10 | Public docs / README / AGENTS.md updated when behavior or workflow changed.             |             |
+| 11 | The 7-question pre-commit answer (\u00a77) is included in the PR description.               |             |
 
-A PR MUST NOT be marked "ready for review" until items 1\u20137 are green.
+A PR MUST NOT be marked "ready for review" until items 1\u20139 are green.
 
-### 5.1 PR description coverage section (mandatory)
+### 6.1 PR description coverage section (mandatory)
 
 The PR description MUST contain a block like:
 
@@ -181,7 +204,7 @@ The PR description MUST contain a block like:
 
 ---
 
-## 6. Pre-Commit Answer Template (MANDATORY)
+## 7. Pre-Commit Answer Template (MANDATORY)
 
 Before proposing a commit OR a PR, the AI agent MUST answer these seven
 questions explicitly. The answer goes in the PR description; for
@@ -203,23 +226,23 @@ modifications unrelated to the stated scope.
 
 ---
 
-## 7. CI Enforcement
+## 8. CI Enforcement
 
 CI MUST enforce, on every PR:
 
 | Gate                                | Tool                                   | On failure |
 | ----------------------------------- | -------------------------------------- | ---------- |
-| Commit-message format (\u00a71)         | `commitlint` or equivalent             | Block      |
-| Commit trailer presence (\u00a74)       | repo script (e.g. `scripts/validate_commit_trailers.py`) | Block |
+| Commit-message format (\u00a72)         | `commitlint` or equivalent             | Block      |
+| Commit trailer presence (\u00a75)       | repo script (e.g. `scripts/validate_commit_trailers.py`) | Block |
 | `unittest` pass rate                | `python -m unittest discover`          | Block      |
-| Coverage floor (\u00a73)                 | `pytest --cov` + threshold check       | Block      |
+| Coverage floor (\u00a74)                 | `pytest --cov` + threshold check       | Block      |
 | Static analysis (ruff, mypy, vulture)| pre-commit or CI step                 | Block      |
 | Secret scan                         | `gitleaks` / `detect-secrets`          | Block      |
 | File-size policy                    | repo script                            | Warn @1500, block @1700 |
 
 ---
 
-## 8. Learnings
+## 9. Learnings
 
 ```
 ## Learnings
