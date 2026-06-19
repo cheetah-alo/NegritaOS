@@ -20,6 +20,24 @@ global_rules:
     require_traceability: true
     require_context_before_conclusions: true
 
+  git_workflow:
+    review_git_tree_before_work: true
+    required_initial_checks:
+      - "git status --short --branch"
+      - "git log --oneline origin/main..HEAD when a remote base is available"
+    require_branch_decision_before_mutation: true
+    report_existing_changes: true
+    report_pending_commits: true
+    report_unsuitable_branch: true
+    excessive_unmerged_commit_threshold: 5
+    excessive_unmerged_commit_policy: >
+      If the current branch has more than 5 unmerged commits over its base,
+      recommend opening a PR and continuing new work on a fresh branch.
+    branch_decision_options:
+      - continue_current_branch
+      - create_new_branch
+      - open_pr_then_continue_on_new_branch
+
   style:
     tone: professional_technical
     verbosity: adaptive
