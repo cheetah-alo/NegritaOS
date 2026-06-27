@@ -45,7 +45,7 @@
 - **Message:** [The finding this slide communicates]
 - **Evidence:** [Chart / table / example]
 - **Chart takeaway label:** [Headline that states the finding]
-- **Speaker note:** [Supporting context, limitations, or caveats]
+- **Speaker note:** [Supporting context, limitations, or notes]
 
 ---
 

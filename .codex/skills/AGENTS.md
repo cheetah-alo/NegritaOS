@@ -19,11 +19,17 @@ Use these skills for detailed patterns on-demand:
 | `project-structure` | File placement rules for backend, analytics, frontend, tests, and governance assets | [SKILL.md](project-structure/SKILL.md) |
 | `business-rules` | Deterministic and traceable business-rule guidance across backend, frontend, and analytics | [SKILL.md](business-rules/SKILL.md) |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
+| `document-control` | Govern deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown under timestamped `documents/` outputs | [SKILL.md](document-control/SKILL.md) |
 | `commit-hygiene` | Commit scope and message quality rules for this repository | [SKILL.md](commit-hygiene/SKILL.md) |
 | `pr-review-deep` | Deep review checklist for risky or user-visible changes | [SKILL.md](pr-review-deep/SKILL.md) |
 | `sdd-flow` | Phased spec-driven workflow for non-trivial changes | [SKILL.md](sdd-flow/SKILL.md) |
 | `data-contracts` | Raw/derived contracts, schema validation, casting, and errors | [SKILL.md](data-contracts/SKILL.md) |
 | `data-loading` | Local/BQ loading, lineage hashing, source resolution | [SKILL.md](data-loading/SKILL.md) |
+| `analytics-storytelling-deck` | Finding-first analytical deck structure, baseline alignment, broad-to-narrow evidence zoom, and PPT readability standards | [SKILL.md](analytics-storytelling-deck/SKILL.md) |
+| `eda-analytics-findings` | Convert EDA plots, cohorts, funnels, and segment summaries into defensible findings | [SKILL.md](eda-analytics-findings/SKILL.md) |
+| `ml-model-findings` | Convert model metrics, thresholds, lift, and explainability outputs into defensible findings | [SKILL.md](ml-model-findings/SKILL.md) |
+| `business-proposal-findings` | Convert proposals, ROI narratives, feasibility notes, and decision briefs into structured findings | [SKILL.md](business-proposal-findings/SKILL.md) |
+| `research-paper-findings` | Convert papers, abstracts, and research reports into evidence-grounded findings | [SKILL.md](research-paper-findings/SKILL.md) |
 | `eda-reports` | EDA execution (analytics + pre-ML): ingestion, metrics, plots, run outputs | [SKILL.md](eda-reports/SKILL.md) |
 | `churn-recall-indicator-audit` | Standard audit and report workflow for recall, churn, DiscReq, retention, recontact, and account journey pressure metrics | [SKILL.md](churn-recall-indicator-audit/SKILL.md) |
 | `create-unittest` | Create/convert Python unit tests using `unittest` + behavior-driven naming | [SKILL.md](create-unittest/SKILL.md) |
@@ -46,6 +52,12 @@ When performing these actions, invoke the corresponding skill first:
 | Standardize test naming/structure (behavior-driven pattern) | `create-unittest` |
 | Modify dataset contracts or schema validation | `data-contracts` |
 | Change data ingestion or source resolution | `data-loading` |
+| Create or edit analytical PPTs, finding decks, or metric-driven storylines | `analytics-storytelling-deck` |
+| Convert EDA plots, cohorts, funnels, segments, or outcome rates into claims | `eda-analytics-findings` |
+| Convert model metrics, thresholds, lift, SHAP, or leakage review into claims | `ml-model-findings` |
+| Convert business proposals, ROI narratives, feasibility notes, or decision briefs into claims | `business-proposal-findings` |
+| Convert research papers, abstracts, or literature reviews into claims | `research-paper-findings` |
+| Create or update deliverable documents, PPT/PDF/DOCX/HTML artifacts, or Notion/Confluence-ready markdown | `document-control` |
 | Modify EDA outputs, plots, dashboards, or run-scoped output layout | `eda-reports` |
 | Review or create churn, recall, DiscReq, retention, recontact, or account journey pressure metrics | `churn-recall-indicator-audit` |
 | Instrument code with logging, add PhaseLogger, write governance JSON | `dev-logging` |

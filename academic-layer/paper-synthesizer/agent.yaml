@@ -15,6 +15,7 @@ agent:
 
   skills:
     - skills/academic/paper_synthesizer.md
+    - skills/academic/research_paper_findings.md
     - skills/academic/research_quality_review.md
     - skills/academic/citation_extraction.md
     - skills/academic/methodology_deconstruction.md

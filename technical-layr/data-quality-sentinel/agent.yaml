@@ -54,7 +54,7 @@ agent:
       escalation: "Within 4 hours."
     P3:
       label: Medium
-      definition: "Partial data issues. Analysis degraded but usable with documented caveats."
+      definition: "Partial data issues. Analysis degraded but usable with documented notes."
       escalation: "Document and remediate within current sprint."
     P4:
       label: Low

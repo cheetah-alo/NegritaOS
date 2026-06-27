@@ -7,7 +7,7 @@ rubric:
     - missingness_is_reported
     - distributions_are_interpreted
     - target_or_outcome_context_is_explained
-    - caveats_are_named
+    - notes_are_named
     - plot_population_and_denominator_are_explicit
     - support_threshold_or_sample_size_is_visible
     - future_outcome_windows_are_defined

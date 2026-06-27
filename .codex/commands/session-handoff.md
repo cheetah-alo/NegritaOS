@@ -113,3 +113,5 @@ Keep each section tight — bullet points over prose.
 3. If a task tracker exists (`docs/task_tracker.md`), append the session's
    completed and in-progress entries before producing this output.
 4. This command is **read-only except for** the memory writes in notes 1-3.
+5. Do not write repo-local handoff files such as `docs/handoffs/*`; persistent
+   handoffs belong in canonical NegritaOS memory.

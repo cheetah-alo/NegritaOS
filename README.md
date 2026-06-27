@@ -96,7 +96,7 @@ NegritaOS/
 ├── .codex/                         canonical engineering adapter (loaded by Claude/Codex/Copilot)
 │   ├── rules/                      22 dev-* rules (naming, logging, errors, …)
 │   ├── skills/                     IDE-time skills (32 skills: typescript, react-19, dev-logging, plotting-guidelines, …)
-│   ├── commands/                   slash-commands (7: load-context, system-audit, commit-push-pr, run-quality-checks, …)
+│   ├── commands/                   slash-commands (load-context, system-audit, handoff, roast, run-quality-checks, …)
 │   └── instruction-manifest.yaml   manifest read by Claude/Codex/Copilot
 ├── .claude -> .codex               Claude compatibility alias; never a separate source of truth
 │
@@ -185,7 +185,7 @@ Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copi
 `negritaos-mode-router`, `rule-compliance-gate`, `create-unittest`, `python-core`, `typescript`,
 `nextjs-15`, `react-19`, `zod-4`, `tailwind-4`, `playwright`, `mcp-server`, `sdd-flow`,
 `commit-hygiene`, `pr-review-deep`, `memory-protocol`, `eda-reports`, `data-contracts`,
-`dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, …
+`dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, `document-control`, …
 
 Each skill is a folder with a `SKILL.md` describing **when to trigger** and **what to do**.
 
@@ -199,6 +199,9 @@ Under [.codex/commands/](.codex/commands/). Available as `/command-name` in any 
 | `code-review-harden` | Deep security + quality code review |
 | `confidence-gate` | Pre-answer confidence self-check |
 | `task-tracker` | In-session task planning and progress tracking |
+| `handoff` | Chat-only continuation summary before clearing context |
+| `session-handoff` | Persistent NegritaOS handoff with canonical memory writes |
+| `roast` | Adversarial idea council for pressure-testing ideas |
 | `commit-push-pr` | Full commit → push → PR workflow with quality gate |
 | `run-quality-checks` | Local QA gate (unittest → coverage → ruff/mypy → gitleaks) |
 

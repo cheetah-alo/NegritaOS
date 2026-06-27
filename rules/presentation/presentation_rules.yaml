@@ -8,11 +8,16 @@ presentation_rules:
     prioritize_executive_summary: true
     top_down_structure: true
     business_impact_first: true
-    use_claim_evidence_implication_caveat: true
+    use_claim_evidence_implication_note: true
 
   visuals:
     avoid_decorative_plots: true
     every_visual_requires_takeaway: true
+    default_font: Malgun Gothic
+    minimum_body_or_table_font_pt: 12
+    minimum_table_header_font_pt: 14
+    minimum_complementary_note_font_pt: 10
+    split_tables_that_cannot_fit_minimum_font: true
     allow_theme_presets:
       - white_background
       - black_background

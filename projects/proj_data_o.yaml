@@ -1,0 +1,52 @@
+project:
+  id: proj_data_o
+  name: "Proyecto Data O - Solidaridad Generacciones"
+  version: "1.0.0"
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/backup_repos/proj_data_o"
+  memory_home: "~/.negritaos/memory/projects/proj_data_o"
+  archetypes:
+    - eda_analytics
+    - data_platform
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - etl
+    - powerbi_dashboards
+    - business_proposal_findings
+    - executive_synthesis
+    - mixed_methods_research
+  agents:
+    - consulting_delivery_controller_agent
+    - team_lead_ds_agent
+    - decision_support_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - presentation_agent
+  codex_profiles:
+    - analysis-run
+  mode_map:
+    planning: LP
+    writeup: TD
+    deck: EP
+    data_quality_audit: DQ
+    eda: MR
+    research: RT
+  expected_outputs:
+    - technical_report
+    - analytical_report
+    - evidence_matrix
+    - scope_matrix
+    - risk_register
+    - executive_summary
+    - executive_presentation
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "local_untracked_adapter"
+    canonical_memory_outside_repo: true
+    latest_preservation_backup: "TBD"
+  notes:
+    - "Consulting bid for Solidaridad Network Generacciones in Peru/Lima."
+    - "Keep evidence, inference, and assumptions explicitly separated."
+    - "Use consulting_delivery_controller_agent to enforce Notion-first task/document governance."

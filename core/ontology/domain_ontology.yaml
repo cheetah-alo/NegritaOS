@@ -100,7 +100,7 @@ domain_ontology:
           definition: "Significant data gaps. Analysis may be invalid. Same-day resolution."
         P3:
           label: Medium
-          definition: "Partial data issues. Analysis degraded but usable with caveats."
+          definition: "Partial data issues. Analysis degraded but usable with notes."
         P4:
           label: Low
           definition: "Minor inconsistencies. Tracked for remediation in next cycle."

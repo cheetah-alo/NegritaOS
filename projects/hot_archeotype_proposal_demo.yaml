@@ -1,0 +1,65 @@
+project:
+  id: hot_archeotype_proposal_demo
+  name: "HOT Archeotype Proposal Demo"
+  version: "1.0.0"
+  description: >
+    Demo workspace for HOT Telecom/CQI analytical deliverables: friction and
+    journey-health decks, dashboard prototypes, static HTML outputs, and
+    supporting EDA/planning artifacts.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/hot_archeotype_proposal_demo"
+    nested_dashboard: "/Users/jackyb-cqi/repos/hot_archeotype_proposal_demo/hot-dashboard"
+  memory_home: "~/.negritaos/memory/projects/hot_archeotype_proposal_demo"
+  archetypes:
+    - eda_analytics
+    - product_app
+  capabilities:
+    - eda
+    - analytics
+    - plots
+    - frontend
+    - product_ux
+    - executive_presentation
+    - local_files
+  agents:
+    - code_review_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - presentation_agent
+    - team_lead_ds_agent
+  codex_profiles:
+    - analysis-run
+    - review
+    - refactor
+  mode_map:
+    new_feature: CR
+    bug_fix: CR
+    refactor: CR
+    dashboard_work: CR
+    eda: MR
+    metric_review: MR
+    data_quality_audit: DQ
+    deck: EP
+    stakeholder_brief: EP
+    writeup: TD
+    planning: LP
+  expected_outputs:
+    - analytical_report
+    - plot_interpretation
+    - executive_summary
+    - executive_presentation
+    - technical_memo
+    - task_register
+    - technical_debt_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  related_projects:
+    - hot_frictions
+  notes:
+    - "Root folder is not currently a Git repository."
+    - "hot-dashboard/ is a nested Git repository and must be inspected independently."
+    - "Client-facing HOT/CQI deliverables should default to Spanish unless requested otherwise."
+    - "Large PPTX/PDF/HTML outputs are deliverables; avoid modifying them unless regeneration is requested."

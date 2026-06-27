@@ -9,8 +9,8 @@
 [Completeness, duplicates, distributions, anomalies.]
 
 ## Findings
-| Finding | Evidence | Implication | Caveat |
-|---------|----------|-------------|--------|
+| Finding | Evidence | Implication | Note |
+|---------|----------|-------------|------|
 
 ## Recommendations
 [Next analytical or operational actions.]

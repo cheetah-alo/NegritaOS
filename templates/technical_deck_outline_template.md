@@ -10,7 +10,7 @@
 3. Data and assumptions
 4. Methodology
 5. Core findings
-6. Validation and caveats
+6. Validation and notes
 7. Recommendations
 8. Appendix
 

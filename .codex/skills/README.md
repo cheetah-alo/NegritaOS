@@ -72,6 +72,12 @@ Reusable patterns for common domains:
 | `data-analytics` | Analytics and pipeline conventions |
 | `data-contracts` | Dataset schema contracts and validation |
 | `data-loading` | Data ingestion, source resolution, lineage |
+| `document-control` | Timestamped `documents/` placement and manifest governance for deliverables |
+| `analytics-storytelling-deck` | Finding-first analytical deck structure, baseline alignment, broad-to-narrow evidence zoom, and PPT readability standards |
+| `eda-analytics-findings` | Convert EDA plots, cohorts, funnels, and segment summaries into defensible findings |
+| `ml-model-findings` | Convert model metrics, thresholds, lift, and explainability outputs into defensible findings |
+| `business-proposal-findings` | Convert proposals, ROI narratives, feasibility notes, and decision briefs into structured findings |
+| `research-paper-findings` | Convert papers, abstracts, and research reports into evidence-grounded findings |
 | `churn-recall-indicator-audit` | Standard audit and report workflow for recall, churn, DiscReq, retention, recontact, and account journey pressure metrics |
 | `mcp-server` | MCP server and tool design |
 | `dev-logging` | PhaseLogger, governance JSON, audit dirs |
@@ -93,6 +99,7 @@ Reusable patterns for common domains:
 | `business-rules` | Deterministic and traceable business-rule guidance |
 | `memory-protocol` | Repository-local persistent memory workflow |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills aligned |
+| `document-control` | Keep deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown traceable |
 | `commit-hygiene` | Commit message and scope discipline |
 | `pr-review-deep` | Deep technical review protocol |
 | `sdd-flow` | Spec-driven phased delivery workflow |

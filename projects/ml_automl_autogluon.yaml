@@ -3,7 +3,8 @@ project:
   name: "ML AutoML AutoGluon"
   version: "1.0.0"
   local_paths:
-    primary: "/Users/jackyb-cqi/repos/backup_repos/ml_automl_autogluon"
+    primary: "/Users/jackyb-cqi/repos/autogloun/ml_automl_autogluon"
+    previous_backup: "/Users/jackyb-cqi/repos/backup_repos/ml_automl_autogluon"
   memory_home: "~/.negritaos/memory/projects/ml_automl_autogluon"
   archetypes:
     - ml_automl
@@ -25,11 +26,27 @@ project:
     - technical_writer_agent
     - presentation_agent
   codex_profiles:
-    - automl_pipeline
+    - analysis-run
+    - eda-pre-ml
     - review
     - refactor
+  mode_map:
+    new_feature: CR
+    bug_fix: CR
+    refactor: CR
+    automl_pipeline: CR
+    data_contract: DQ
+    data_loading: DQ
+    eda: MR
+    model_review: MR
+    training_governance: MR
+    writeup: TD
+    deck: EP
+    planning: LP
   expected_outputs:
     - model_review_report
+    - analytical_report
+    - plot_interpretation
     - governance_summary
     - experiment_traceability
     - production_readiness_review
@@ -37,8 +54,11 @@ project:
     - executive_presentation
   preservation:
     backup_required_before_migration: true
-    repo_codex_status: "tracked_dirty_deferred"
+    repo_codex_status: "ignored_local"
     canonical_memory_outside_repo: true
-    latest_preservation_backup: "~/.negritaos/backups/2026-05-17_150934/ml_automl_autogluon"
+    latest_preservation_backup: "~/.negritaos/backups/20260625_121542_ml_automl_autogluon_adapter"
   notes:
-    - "Do not rewrite this repo's .codex until dirty tracked changes are classified and preserved."
+    - "Repo adapter is local/ignored by .gitignore; root AGENTS.md is the visible entry pointer."
+    - ".claude, .cursor, and .agents are compatibility symlinks to .codex after the 2026-06-25 migration."
+    - "Legacy repo-local .codex/.claude/.cursor/.agents content was backed up and repo memory imported under legacy_import."
+    - "Primary test runner is pytest via Poetry; use repo-local pyproject and README for command details."

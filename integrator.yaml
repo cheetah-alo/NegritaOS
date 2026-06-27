@@ -32,9 +32,11 @@ negrita_os:
         - Evidence
         - Findings
         - Interpretation
-        - Risks_and_Caveats
+        - Risks_and_Notes
         - Recommendations
         - Next_Actions
+      legacy_section_aliases:
+        Risks_and_Caveats: Risks_and_Notes
 
     plot_interpretation:
       required_fields:
@@ -63,6 +65,11 @@ negrita_os:
         - product_strategist
       skills:
         - skills/executive/presentation_storyline.md
+        - skills/executive/analytics_storytelling_deck.md
+        - skills/ml/eda_analytics_findings.md
+        - skills/ml/ml_model_findings.md
+        - skills/business/business_proposal_findings.md
+        - skills/academic/research_paper_findings.md
         - skills/executive/executive_summary.md
         - skills/transversal/tldr_writer.md
         - skills/transversal/evidence_framing.md
@@ -87,6 +94,8 @@ negrita_os:
       quality_gate:
         - each_slide_has_one_core_message
         - each_chart_has_takeaway
+        - analytics_decks_start_with_findings_then_baseline
+        - presentation_uses_note_terminology
         - chart_slides_state_denominator_base_and_outcome_window
         - chart_claims_reference_overall_or_baseline_when_comparing_rates
         - recommendation_is_decision_oriented
@@ -100,6 +109,7 @@ negrita_os:
         - applied_ai_strategist
       skills:
         - skills/academic/paper_synthesizer.md
+        - skills/academic/research_paper_findings.md
         - skills/academic/research_quality_review.md
         - skills/academic/citation_extraction.md
         - skills/academic/methodology_deconstruction.md
@@ -170,6 +180,8 @@ negrita_os:
       skills:
         - skills/ml/model_review.md
         - skills/ml/eda_review.md
+        - skills/ml/eda_analytics_findings.md
+        - skills/ml/ml_model_findings.md
         - skills/ml/explainability_review.md
         - skills/ml/leakage_detection.md
         - skills/ml/operational_rule_extraction.md
@@ -240,6 +252,7 @@ negrita_os:
         - technical_documentation_owner
       skills:
         - skills/writing/notion_report.md
+        - skills/ml/eda_analytics_findings.md
         - skills/executive/executive_summary.md
         - skills/transversal/tldr_writer.md
         - skills/transversal/evidence_framing.md
@@ -273,6 +286,7 @@ negrita_os:
         - delivery_governance_owner
       skills:
         - skills/transversal/structured_reasoning.md
+        - skills/business/business_proposal_findings.md
         - skills/transversal/tldr_writer.md
         - skills/governance/risk_framing.md
       rules:
@@ -306,6 +320,7 @@ negrita_os:
         - strategic_technology_scout
       skills:
         - skills/academic/paper_synthesizer.md
+        - skills/academic/research_paper_findings.md
         - skills/academic/tfm_opportunity_mapping.md
         - skills/governance/hype_vs_reality_review.md
         - skills/transversal/structured_reasoning.md

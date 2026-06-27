@@ -22,7 +22,7 @@ rubric:
       failure_action: "Revisar recomendaciones: cada una debe tener propietario (aunque sea TBD)"
     - id: BG5
       name: "Limitaciones del análisis declaradas"
-      failure_action: "Agregar sección de limitaciones o caveats"
+      failure_action: "Agregar sección de limitaciones o notes"
 
   quality_dimensions:
 

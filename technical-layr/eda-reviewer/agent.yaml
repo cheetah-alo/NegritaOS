@@ -15,6 +15,7 @@ agent:
 
   skills:
     - skills/ml/eda_review.md
+    - skills/ml/eda_analytics_findings.md
     - skills/transversal/evidence_framing.md
 
   rules:

@@ -40,10 +40,10 @@ Each finding should follow:
 - **Finding:** [claim]
 - **Evidence:** [metric/chart/table/source path]
 - **Implication:** [why it matters]
-- **Caveat:** [limitation or uncertainty]
+- **Note:** [limitation or uncertainty]
 - **Recommendation:** [action if any]
 
-## Risks and Caveats
+## Risks and Notes
 [What could be wrong with the findings. What assumptions were made.]
 
 ## Recommendations

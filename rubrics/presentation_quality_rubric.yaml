@@ -13,6 +13,7 @@ rubric:
       - executive_summary_slide_is_present_and_first
       - appendix_is_separated_from_main_deck
       - deck_length_matches_audience_type
+      - correct_domain_finding_skill_is_applied_when_evidence_is_domain_specific
 
     audience_length_guidance:
       c_level: "Max 10 slides (excluding appendix)"
@@ -25,7 +26,15 @@ rubric:
       - one_message_per_slide
       - message_is_a_complete_sentence_not_a_label
       - evidence_supports_the_message
+      - note_is_visible_when_uncertainty_or_validation_need_exists
+      - malgun_gothic_is_used_for_editable_text
+      - body_and_table_text_meet_minimum_size
+      - dense_tables_are_split_or_converted_to_cards
     required_per_chart_slide:
+      - if_visual_is_plot_apply_plotting_guidelines
+      - if_deck_is_analytics_apply_analytics_storytelling_deck
+      - if_claim_uses_model_metrics_apply_ml_model_findings
+      - if_claim_comes_from_paper_apply_research_paper_findings
       - chart_headline_states_the_finding_not_the_chart_type
       - axis_labels_are_present
       - data_source_is_referenced
@@ -50,6 +59,8 @@ rubric:
       - "Chart slide where the audience must infer denominator, filter, or outcome window"
       - "Plot labels contain internal taxonomy or processing states without explanation"
       - "Temporal association is described as causality without causal design"
+      - "User-facing slide or notes use non-standard uncertainty terminology instead of note"
+      - "Analytical deck skips baseline/calculation alignment before detailed evidence"
     narrative:
       - "Deck that builds up to a finding the audience already knew"
       - "Narrative that contradicts the recommendation"

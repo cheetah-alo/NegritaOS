@@ -76,6 +76,9 @@ Commands inventory:
 | `system-audit.md` | System-wide health audit |
 | `task-tracker.md` | Task planning and status tracking |
 | `commit-push-pr.md` | Commit, push, and PR creation workflow |
+| `handoff.md` | Chat-only handoff summary before clearing context |
+| `session-handoff.md` | Persistent NegritaOS handoff with canonical memory writes |
+| `roast.md` | Adversarial idea council using `skills/transversal/roast.md` |
 | `run-quality-checks.md` | Local quality gate (lint, tests, coverage) |
 
 ---
@@ -119,6 +122,9 @@ The NegritaOS router (`integrator.yaml` + `negritaos-mode-router` skill) maps us
 | Review SQL | `data-analytics`, `data-contracts` |
 | ML analysis / EDA | `eda-reports`, `data-contracts`, `data-loading` |
 | Write documentation | `docs-alignment` |
+| Create/update deliverable documents, decks, PDFs, DOCX, or HTML outputs | `document-control` |
+| Roast or pressure-test an idea | `roast` (command), `skills/transversal/roast.md` |
+| Produce handoff before clearing context | `handoff` (chat-only) or `session-handoff` (persistent memory) |
 | Commit / PR | `commit-hygiene`, `pr-review-deep` |
 | Architecture change | `architecture-guardrails`, `project-structure` |
 | Run quality checks | `run-quality-checks` (command) |

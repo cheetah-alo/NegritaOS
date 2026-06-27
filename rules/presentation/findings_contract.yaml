@@ -9,11 +9,12 @@ findings_contract:
     message: "One complete English sentence stating the claim."
     evidence: "Metric, chart, table, log, or source excerpt supporting the claim."
     implication: "Why the finding matters for the audience."
-    caveat: "Known limitation, uncertainty, or validation need."
+    note: "Known limitation, uncertainty, validation need, or what should not be overclaimed."
     recommendation: "Action implied by the finding, or 'None' if not actionable."
     source_path: "Local file path or Notion/source URL used as evidence."
 
   optional_fields:
+    caveat: "Legacy alias for note. Accept for old artifacts, but new outputs must use note."
     owner: "Recommended role responsible for the next action."
     timeline: "Suggested timing when available."
     slide_candidate: "Whether the finding belongs in the main deck or appendix."
@@ -31,10 +32,11 @@ findings_contract:
     - rate_or_lift_finding_must_state_baseline_reference
     - future_outcome_finding_must_state_window_and_direction
     - implication_must_be_audience_specific
-    - caveat_must_be_visible_when_uncertainty_exists
+    - note_must_be_visible_when_uncertainty_exists
+    - new_outputs_must_use_note_terminology
     - recommendation_must_not_exceed_evidence
 
   deck_mapping:
-    ceo_product_owner: "message + implication + recommendation in main deck; evidence summarized; caveat visible."
-    data_scientist_peer: "message + evidence + method caveat in main deck; raw support in appendix."
+    ceo_product_owner: "message + implication + recommendation in main deck; evidence summarized; note visible."
+    data_scientist_peer: "message + evidence + method note in main deck; raw support in appendix."
     mixed_leadership_technical: "executive claim in main deck; technical proof in appendix."

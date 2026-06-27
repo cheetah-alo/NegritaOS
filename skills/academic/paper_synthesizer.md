@@ -22,7 +22,7 @@ limitations are, and why it matters to the user's domains.
 - Evaluation: metrics and benchmarks
 - Key result: headline finding (quantified if possible)
 
-### Step 3: Limitations and Caveats
+### Step 3: Limitations and Notes
 - What the paper cannot claim
 - Generalizability issues (domain, data size, temporal scope)
 - Reproducibility: is code available?
