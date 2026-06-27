@@ -12,5 +12,5 @@
 ## Applicability
 [Where this is useful.]
 
-## Caveats
+## Notes
 [Limits.]

@@ -15,7 +15,7 @@ Assesses whether a research source is credible, relevant, and usable for applied
 
 ## Output
 Use this structure:
-- **Quality verdict:** usable / usable with caveats / not decision-grade
+- **Quality verdict:** usable / usable with notes / not decision-grade
 - **Evidence strength:** high / medium / low
 - **Main limitation:** one sentence
 - **Operational relevance:** one sentence

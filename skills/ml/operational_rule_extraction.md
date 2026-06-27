@@ -13,7 +13,7 @@ Rule:
   action: [recommended operational response]
   owner: [role or TBD]
   evidence: [source finding or chart]
-  caveat: [limit or validation need]
+  note: [limit or validation need]
 ```
 
 ## Rules

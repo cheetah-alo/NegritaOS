@@ -14,4 +14,4 @@ Reviews model explainability outputs for business meaning, technical validity, a
 - Recommendations do not exceed what the explanation supports.
 
 ## Output
-For each explainability finding: claim, evidence, operational meaning, caveat, and recommended follow-up.
+For each explainability finding: claim, evidence, operational meaning, note, and recommended follow-up.

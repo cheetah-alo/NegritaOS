@@ -69,6 +69,37 @@ document_metadata_standards:
         - "Gate 'findings_are_numbered' - PASSED"
         - "Gate 'limitations_explicit' - WARNING: Only 1 limitation stated"
 
+  deliverable_file_policy:
+    description: >
+      Placement, naming, and manifest requirements for deliverable artifacts
+      generated or updated by NegritaOS agents.
+    governed_extensions: [md, pptx, ppt, pdf, docx, doc, html]
+    canonical_folder: "documents/"
+    timestamp_timezone: "Europe/Madrid"
+    filename_format: "<slug>__updated_YYYYMMDD_HHMMSS.<ext>"
+    filename_regex: "^[a-z0-9][a-z0-9_]*__updated_[0-9]{8}_[0-9]{6}\\.(md|pptx|ppt|pdf|docx|doc|html)$"
+    update_policy: "Each update creates a new timestamped version; do not overwrite prior versions."
+    manifest_path: "documents/document_manifest.jsonl"
+    excluded_source_docs:
+      - "README.md"
+      - ".codex/*"
+      - "rules/*"
+      - "skills/*"
+      - "templates/*"
+    manifest_record_fields:
+      - document_id
+      - title
+      - artifact_type
+      - file_path
+      - created_at
+      - updated_at
+      - supersedes
+      - project_id
+      - agent_id
+      - router_mode
+      - source_paths
+      - quality_gates_status
+
   notion_specific_metadata:
     description: >
       When exporting to Notion, these fields should be mapped to Notion database properties.
@@ -146,6 +177,10 @@ document_metadata_standards:
         > - **Mode:** MR
         > - **Project:** proj_data_analytics
         > - **Quality Status:** ✅ Passed
+
+    deliverable_creation:
+      action: "Reject deliverable output outside documents/ unless user explicitly overrides"
+      message: "Deliverables must be written under documents/ with an __updated_YYYYMMDD_HHMMSS timestamp and manifest record."
 
   examples:
     model_review_report:

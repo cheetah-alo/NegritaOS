@@ -6,7 +6,7 @@ rubric:
     - tldr_is_first
     - objective_is_explicit
     - findings_are_interpreted
-    - risks_and_caveats_are_visible
+    - risks_and_notes_are_visible
     - recommendations_are_actionable
     - next_actions_have_owner_or_role
   fail_conditions:

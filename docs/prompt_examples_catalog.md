@@ -281,7 +281,7 @@ OUTPUT SECTIONS:
 5. Evidence (plots + tablas interpretadas)
 6. Findings (numerados, traceable)
 7. Interpretation (qué significan los findings)
-8. Risks and Caveats (limitaciones de datos)
+8. Risks and Notes (limitaciones de datos)
 9. Recommendations (accionables, referenciando findings)
 10. Next Actions (con owners o TBD)
 

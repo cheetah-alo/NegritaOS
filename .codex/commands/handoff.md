@@ -3,62 +3,76 @@ id: handoff
 mode_hint: LP
 ---
 
-# Quick Handoff Summary
+# Handoff
 
-Produces a lightweight handoff document for this project session and writes it
-to `docs/handoffs/YYYY-MM-DD-<slug>.md`.
+Produces a chat-only handoff summary for the current session so the user can
+clear context and a fresh agent can continue without losing continuity.
 
-For the full NegritaOS-format handoff (reads memory, git, task tracker, writes
-session file), use `/session-handoff` instead.
+This is a context-handoff artifact, not a stakeholder status report. The
+audience is the next agent instance.
+
+For persistent NegritaOS memory/session writes, use `/session-handoff`.
 
 ## When to use
 
-- End of a focused work session (one feature, one bug, one analysis)
-- Before hitting a usage limit — run **early**, not last
-- As a running log: append incrementally as tasks complete during a long session
+- The user says `/handoff`, "session handoff", "wrap up session", "hand off",
+  "handoff summary", "summarize before I clear", or a near-equivalent.
+- Before context compaction or `/clear`.
+- When a future agent needs enough context to continue from chat alone.
 
 ## Procedure
 
-### Step 1 — Gather state
+1. Review the whole current conversation, not only the last few turns.
+2. Pull only state that is known from this session:
+   - plan files referenced in the session
+   - current task/checklist state
+   - background processes or dev servers started by this agent
+   - files this agent created or modified
+   - memory files this agent wrote or updated
+   - unresolved user questions
+3. Do not perform a broad filesystem audit for this command.
+4. Do not write files.
+5. Do not update memory.
 
-```bash
-git status --short
-git log --oneline -10
-python -m unittest discover -s tests -q 2>&1 | tail -3
-```
+## Output contract
 
-### Step 2 — Write the document
-
-Create `docs/handoffs/YYYY-MM-DD-<slug>.md` with this structure:
+Use exactly this structure:
 
 ```markdown
-## Handoff — <project> — <ISO date> — <slug>
+# Session Handoff — <one-line title>
 
-### Completed Work
-- [ ] <task>: <one-line status>
+## Where it started
+<2-3 sentences: user request, key framing, constraints>
 
-### Files Changed
-| File | Change |
-|------|--------|
-| `path/to/file.py` | <what changed> |
+## Decisions locked + what shipped
+- <decision or change> — <why, and where it lives using absolute paths when a file matters>
 
-### Tests
-- Command: `python -m unittest discover -s tests -p "test_*.py" -v`
-- Result: N/N passing
+## Key files for next session
+- `<absolute path>` — <why the next agent should read this first>
+- Plan file: `<absolute path or none>`
+- Memory files touched: `<absolute paths or none>`
 
-### Known Issues / Partial Work
-- <anything incomplete or blocked>
+## Running state
+- Background processes: <session IDs + purpose + kill command, or "none">
+- Dev servers / ports: <URL + port, or "none">
+- Open worktrees / branches: <paths/branches, or "none">
 
-### Next Steps (ordered)
-1. <specific action> → `<file or command>` — <expected outcome>
+## Verification — how to confirm things still work
+- `<command>` — <expected outcome>
+
+## Deferred + open questions
+- Deferred: <item> — <why pushed later, or "none">
+- Open: <question needing user input, or "none">
+
+## Pick up here
+<1-2 sentences: the single most likely next action>
 ```
 
-### Step 3 — Confirm
+## Hard rules
 
-State which file was written and the test result summary in your response.
-
-## Notes
-
-- Keep each section to bullet points, not prose.
-- If tests are failing, list the failing test names explicitly.
-- Do not include speculation about future work beyond the immediate next steps.
+- Chat output only.
+- Never invent state.
+- Use absolute paths for files that matter to continuation.
+- If a section has nothing to report, write `none`.
+- Include process/session IDs for any background jobs started in this session.
+- No repo-local `docs/handoffs` output from `/handoff`.

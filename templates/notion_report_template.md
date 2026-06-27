@@ -11,10 +11,10 @@
 [The specific question or task this document addresses.]
 
 ## Findings
-| Finding | Evidence | Implication | Caveat |
-|---------|----------|-------------|--------|
+| Finding | Evidence | Implication | Note |
+|---------|----------|-------------|------|
 
-## Risks and Caveats
+## Risks and Notes
 [What could be wrong, incomplete, or sensitive.]
 
 ## Recommendations

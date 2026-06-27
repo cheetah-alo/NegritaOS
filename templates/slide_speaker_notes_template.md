@@ -8,6 +8,6 @@
 
 **Evidence:** [Metric, chart, table, or source.]
 
-**Caveat:** [What should not be overclaimed.]
+**Note:** [What should not be overclaimed.]
 
 **Transition:** [How this leads to the next slide.]

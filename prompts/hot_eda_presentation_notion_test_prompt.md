@@ -53,7 +53,7 @@ Brand: CQI / CQISense. Use CQI blue `#0044ff`, clean white, dark neutral, and re
    - `message`
    - `evidence`
    - `implication`
-   - `caveat`
+   - `note`
    - `recommendation`
    - `source_path`
 
@@ -72,7 +72,7 @@ Brand: CQI / CQISense. Use CQI blue `#0044ff`, clean white, dark neutral, and re
    - Finding 2
    - Finding 3
    - FR/PR focus implications
-   - Risks and caveats
+   - Risks and notes
    - Recommendations and next actions
    - Appendix separator, if appendix follows
 
@@ -92,7 +92,7 @@ Brand: CQI / CQISense. Use CQI blue `#0044ff`, clean white, dark neutral, and re
    - Source Inventory
    - Findings
    - Comparison: General vs. FR/PR Focus
-   - Risks and Caveats
+   - Risks and Notes
    - Recommendations
    - Next Actions
    - Appendix / Reproducibility Notes

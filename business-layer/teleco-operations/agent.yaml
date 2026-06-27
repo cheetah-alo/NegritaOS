@@ -51,6 +51,9 @@ agent:
   skills:
     - skills/ml/model_review.md
     - skills/ml/eda_review.md
+    - skills/ml/eda_analytics_findings.md
+    - skills/ml/ml_model_findings.md
+    - skills/business/business_proposal_findings.md
     - skills/ml/leakage_detection.md
     - skills/ml/explainability_review.md
     - skills/transversal/structured_reasoning.md

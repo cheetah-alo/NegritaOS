@@ -31,7 +31,7 @@ audience_profiles:
       - assumptions
       - metrics
       - validation
-      - caveats
+      - notes
       - reproducibility
     avoid:
       - executive_overcompression
