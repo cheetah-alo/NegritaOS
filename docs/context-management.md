@@ -121,7 +121,7 @@ The NegritaOS router (`integrator.yaml` + `negritaos-mode-router` skill) maps us
 | Review code | `code-review-harden` (command), `python-core`, `pr-review-deep` |
 | Review SQL | `data-analytics`, `data-contracts` |
 | ML analysis / EDA | `eda-reports`, `data-contracts`, `data-loading` |
-| Write documentation | `docs-alignment` |
+| Write repository documentation, runbooks, ADRs, rules, skills, prompts, or templates | `docs-alignment` plus `documentation-governance` |
 | Create/update deliverable documents, decks, PDFs, DOCX, or HTML outputs | `document-control` |
 | Roast or pressure-test an idea | `roast` (command), `skills/transversal/roast.md` |
 | Produce handoff before clearing context | `handoff` (chat-only) or `session-handoff` (persistent memory) |

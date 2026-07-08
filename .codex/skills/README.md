@@ -99,7 +99,7 @@ Reusable patterns for common domains:
 | `project-structure` | File placement rules for backend, analytics, frontend, tests, and governance assets |
 | `business-rules` | Deterministic and traceable business-rule guidance |
 | `memory-protocol` | Repository-local persistent memory workflow |
-| `docs-alignment` | Keep implementation, docs, prompts, rules, and skills aligned |
+| `docs-alignment` | Keep implementation, docs, prompts, rules, and skills aligned under the documentation-governance structure gate |
 | `document-control` | Keep deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown traceable |
 | `commit-hygiene` | Commit message and scope discipline |
 | `pr-review-deep` | Deep technical review protocol |

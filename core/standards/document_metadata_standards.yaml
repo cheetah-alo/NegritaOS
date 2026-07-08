@@ -100,6 +100,38 @@ document_metadata_standards:
       - source_paths
       - quality_gates_status
 
+  source_document_structure_policy:
+    description: >
+      Minimum structure for source documentation generated or substantially
+      updated by NegritaOS agents. Deliverables still use the stricter
+      deliverable_file_policy above.
+    governed_paths:
+      - "README.md"
+      - "AGENTS.md"
+      - "docs/*"
+      - ".codex/*"
+      - "rules/*"
+      - "skills/*"
+      - "templates/*"
+    required_sections:
+      - title
+      - purpose
+      - audience_and_scope
+      - source_of_truth_or_provenance
+      - current_behavior_or_contract
+      - procedure_examples_schema_or_commands
+      - quality_gates_or_validation
+      - ownership_and_update_trigger
+      - open_questions_or_limitations_when_applicable
+    minimum_for_small_docs:
+      - purpose
+      - scope
+      - source_of_truth
+      - current_behavior
+      - validation
+    template_policy: "Use the closest existing template under templates/ before inventing a new structure."
+    enforcement: "Reject unstructured documentation that lacks purpose, scope, source of truth, current behavior, or validation."
+
   notion_specific_metadata:
     description: >
       When exporting to Notion, these fields should be mapped to Notion database properties.
