@@ -132,9 +132,27 @@ metaagent_router:
       id: CR
       label: "Code / Repository Work"
       agent: code_review_agent
+      specialist_agents:
+        software_architecture:
+          agent: software_architect_agent
+          when:
+            - starting a new repository
+            - designing repo structure
+            - defining modular architecture
+            - setting quality gates before implementation
       trigger_signals:
         - review this code
         - PR review
+        - software architect
+        - architecture plan
+        - repo structure
+        - repository blueprint
+        - start a repo
+        - new repository
+        - modular architecture
+        - maintainable structure
+        - quality score
+        - code quality 80
         - refactor
         - BigQuery SQL
         - Python script
@@ -155,6 +173,10 @@ metaagent_router:
         - DAG definition
       output_types:
         - code_review_report
+        - repository_blueprint
+        - architecture_review
+        - modularization_plan
+        - quality_gate_plan
         - refactor_plan
         - pull_request_comments
         - technical_debt_register

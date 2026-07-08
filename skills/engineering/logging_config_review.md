@@ -1,7 +1,7 @@
 # Skill: Logging and Config Review
 
 **Type:** Domain — Engineering
-**Applicable agents:** code_review_agent
+**Applicable agents:** code_review_agent, software_architect_agent
 
 ## Purpose
 Reviews whether code exposes enough configuration and logging for production operation.

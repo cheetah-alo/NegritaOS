@@ -1,7 +1,7 @@
 # Skill: Reproducibility Review
 
 **Type:** Domain — Engineering
-**Applicable agents:** code_review_agent
+**Applicable agents:** code_review_agent, software_architect_agent
 
 ## Purpose
 Checks whether a workflow can be rerun by another engineer with the same expected result.

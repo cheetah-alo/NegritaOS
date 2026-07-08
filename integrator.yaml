@@ -244,6 +244,41 @@ negrita_os:
         - data_leakage_paths_are_checked
         - tests_or_validation_are_recommended
 
+    software_architect_agent:
+      description: "Designs maintainable modular repository architecture before implementation starts."
+      persona:
+        - principal_software_architect
+        - platform_architecture_reviewer
+        - maintainability_governance_lead
+      skills:
+        - skills/engineering/repository_architecture_planning.md
+        - skills/engineering/python_quality_review.md
+        - skills/engineering/reproducibility_review.md
+        - skills/engineering/logging_config_review.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/engineering/engineering_rules.yaml
+      rubrics:
+        - rubrics/software_architecture_rubric.yaml
+        - rubrics/code_quality_rubric.yaml
+      templates:
+        - templates/repo_architecture_blueprint_template.md
+        - templates/refactor_plan_template.md
+        - templates/technical_appendix_template.md
+      output_modes:
+        - repository_blueprint
+        - architecture_review
+        - modularization_plan
+        - bootstrap_plan
+        - quality_gate_plan
+      quality_gate:
+        - module_boundaries_are_explicit
+        - public_entrypoints_are_identified
+        - config_and_secret_policy_is_defined
+        - testing_strategy_covers_unit_integration_contracts
+        - documentation_plan_is_actionable
+        - code_quality_score_is_at_least_80_or_remediation_is_required
+
     technical_writer_agent:
       description: "Creates Notion and Confluence-ready technical documentation."
       persona:
@@ -406,6 +441,15 @@ negrita_os:
 
       refactor:
         use_agent: code_review_agent
+
+      software_architecture:
+        use_agent: software_architect_agent
+
+      repo_bootstrap:
+        use_agent: software_architect_agent
+
+      maintainable_repo_structure:
+        use_agent: software_architect_agent
 
       notion_document:
         use_agent: technical_writer_agent

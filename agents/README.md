@@ -20,6 +20,7 @@ For execution policy, see: `core/orchestration/execution_policy.yaml`
 | MR | model_review_agent | technical | ML / EDA / Model Review | Reviews ML models, EDA, explainability, and operational readiness |
 | MR | eda_reviewer_agent | technical | ML / EDA / Model Review | Focused EDA completeness and correctness review |
 | CR | code_review_agent | technical | Code / Repository Work | Reviews Python, SQL, and ML pipelines for production readiness |
+| CR | software_architect_agent | technical | Code / Repository Work | Designs maintainable modular repo structures with quality score >=80 |
 | EP | presentation_agent | strategic | Executive Presentation | Builds top-down executive and technical presentations |
 | EP | decision_support_agent | strategic | Leadership Planning | Structures complex decisions for senior leadership |
 | DQ | data_quality_sentinel_agent | technical | Data Quality / Escalation | Detects, documents, and escalates data quality incidents |
@@ -56,7 +57,8 @@ NEGRITAOS/
 │   ├── code-reviewer/          → code_review_agent
 │   ├── data-quality-sentinel/  → data_quality_sentinel_agent
 │   ├── eda-reviewer/           → eda_reviewer_agent
-│   └── model-reviewer/         → model_review_agent
+│   ├── model-reviewer/         → model_review_agent
+│   └── software-architect/     → software_architect_agent
 │
 └── business-layer/
     ├── moneyflow/              → moneyflow_analyst_agent

@@ -1,0 +1,66 @@
+rubric:
+  name: software_architecture_rubric
+  version: "1.0.0"
+  applicable_agents: [software_architect_agent]
+  description: >
+    Scores repository-start and architecture plans against maintainability,
+    modularity, documentation, testability, and operational quality gates.
+
+  minimum_passing_score: 80
+  scoring_scale: 0_to_100
+  verdicts:
+    pass: "80-100: architecture can start implementation"
+    conditional: "70-79: implementation can start only with explicit remediation tasks"
+    blocked: "0-69: architecture must be redesigned before implementation"
+
+  dimensions:
+    architecture_fit:
+      weight: 20
+      gates:
+        - product_goal_is_clear
+        - stack_matches_runtime_and_team
+        - no_unjustified_framework_or_pattern
+        - deployment_shape_is_known_or_assumption_is_marked
+    modular_boundaries:
+      weight: 20
+      gates:
+        - modules_have_single_responsibility
+        - domain_logic_is_separated_from_io
+        - adapters_are_explicit
+        - public_entrypoints_are_identified
+    testing_strategy:
+      weight: 20
+      gates:
+        - unit_tests_cover_domain_logic
+        - integration_tests_cover_adapters
+        - contract_tests_cover_external_interfaces
+        - smoke_test_or_cli_health_check_exists
+    documentation_onboarding:
+      weight: 15
+      gates:
+        - readme_has_setup_and_run_commands
+        - architecture_doc_exists_or_is_planned
+        - adr_location_exists_for_decisions
+        - runbook_exists_for_operations_when_needed
+    operational_quality:
+      weight: 15
+      gates:
+        - config_and_secrets_are_externalized
+        - structured_logging_policy_exists
+        - error_handling_policy_exists
+        - generated_outputs_and_sensitive_data_are_ignored
+    maintainability_simplicity:
+      weight: 10
+      gates:
+        - folder_tree_is_minimal
+        - naming_is_predictable
+        - dependencies_are_justified
+        - future_growth_path_is_clear
+
+  output_format:
+    - total_score
+    - verdict
+    - score_by_dimension
+    - blocking_gaps
+    - remediation_to_reach_80
+    - approved_repository_tree
