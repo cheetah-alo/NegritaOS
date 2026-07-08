@@ -314,10 +314,15 @@ Current sibling repos (registered under [projects/](projects/)):
 - `proj_data_analytics` → `/Users/jackyb-cqi/repos/proj_data_analytics`
 - `composer_local_dev` → `/Users/jackyb-cqi/repos/composer-local-dev`
 - `moneyflowlist` → `/Users/jackyb-cqi/repos/backup_repos/moneyflowlist`
-- `ml_automl_autogluon` → `/Users/jackyb-cqi/repos/backup_repos/ml_automl_autogluon`
+- `ml_automl_autogluon` → `/Users/jackyb-cqi/repos/autogloun/ml_automl_autogluon`
+- `hot_archeotype_proposal_demo` → `/Users/jackyb-cqi/repos/hot_archeotype_proposal_demo`
+- `hot_onedrive_workspace` → `/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/HOT`
+- `ibc_fiber_network` → `/Users/jackyb-cqi/repos/ibc_fiber_network`
+- `proj_data_o` → `/Users/jackyb-cqi/repos/backup_repos/proj_data_o`
+- `vene` → `/Users/jackyb-cqi/repos/backup_repos/vene`
 - `hot_frictions`, `negritaos` (meta)
 
-All siblings are validated by [scripts/validate_alignment.py](scripts/validate_alignment.py) — currently 49/49 checks pass.
+All siblings are validated by [scripts/validate_alignment.py](scripts/validate_alignment.py).
 
 ---
 

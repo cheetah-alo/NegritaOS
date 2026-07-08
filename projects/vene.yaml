@@ -1,0 +1,69 @@
+project:
+  id: vene
+  name: "Vene"
+  version: "1.0.0"
+  description: >
+    Reconexion DTV padron audit workspace. The repo downloads or loads a
+    read-only personas dataset, audits data quality/privacy issues, detects
+    probable duplicates, and exports manual review files without mutating
+    source records.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/backup_repos/vene"
+  memory_home: "~/.negritaos/memory/projects/vene"
+  archetypes:
+    - eda_analytics
+    - data_platform
+    - data_quality
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - data_quality_audit
+    - privacy_review
+    - api_ingestion
+    - csv_excel_exports
+    - business_proposal_findings
+    - executive_synthesis
+    - local_files
+  agents:
+    - consulting_delivery_controller_agent
+    - team_lead_ds_agent
+    - decision_support_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - presentation_agent
+  codex_profiles:
+    - analysis-run
+    - review
+    - refactor
+  mode_map:
+    planning: LP
+    writeup: TD
+    deck: EP
+    data_quality_audit: DQ
+    privacy_audit: DQ
+    api_ingestion: CR
+    export_pipeline: CR
+    eda: MR
+    research: RT
+    implementation: CR
+  expected_outputs:
+    - technical_report
+    - analytical_report
+    - evidence_matrix
+    - scope_matrix
+    - risk_register
+    - executive_summary
+    - executive_presentation
+    - task_register
+    - data_quality_report
+    - privacy_review_register
+    - duplicate_review_file
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  notes:
+    - "Repository was initially empty during bootstrap, then populated with the Reconexion DTV padron audit code during the same adaptation session."
+    - "Use the canonical NegritaOS adapter symlinks under .codex for rules, commands, manifest, and router skill."
+    - "Treat API keys, downloaded personas JSON, Excel/CSV review exports, and raw/processed data as sensitive local artifacts."
+    - "The application is intentionally read-only against the source API; do not add write-back behavior without explicit approval."

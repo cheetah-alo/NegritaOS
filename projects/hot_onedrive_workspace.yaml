@@ -1,0 +1,87 @@
+project:
+  id: hot_onedrive_workspace
+  name: "HOT OneDrive Workspace"
+  version: "1.0.0"
+  description: >
+    OneDrive-backed HOT project workspace for churn, journey, Diamond
+    Performance, EBM reboot, user reboot, and model-review deliverables. The
+    folder is primarily an evidence and delivery workspace containing PDFs,
+    PowerPoint decks, Excel workbooks, CSV extracts, plots, model artifacts, and
+    selected scripts/logs rather than a single source-code repository.
+  local_paths:
+    primary: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/HOT"
+  memory_home: "~/.negritaos/memory/projects/hot_onedrive_workspace"
+  archetypes:
+    - eda_analytics
+    - data_platform
+    - ml_automl
+    - executive_delivery
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - bigquery
+    - sql
+    - python
+    - data_quality_audit
+    - churn_analysis
+    - customer_journey_analysis
+    - diamond_performance_review
+    - user_reboot_analysis
+    - ebm_model_review
+    - ml_readiness
+    - model_review
+    - executive_presentation
+    - spreadsheet_review
+    - pdf_review
+    - deck_review
+    - evidence_inventory
+    - local_files
+  agents:
+    - consulting_delivery_controller_agent
+    - decision_support_agent
+    - team_lead_ds_agent
+    - code_review_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - presentation_agent
+  codex_profiles:
+    - analysis-run
+    - review
+    - refactor
+  mode_map:
+    planning: LP
+    writeup: TD
+    deck: EP
+    executive_presentation: EP
+    data_quality_audit: DQ
+    spreadsheet_review: DQ
+    evidence_inventory: DQ
+    sql_review: CR
+    script_review: CR
+    eda: MR
+    model_review: MR
+    churn_model_review: MR
+    journey_analysis: MR
+    implementation: CR
+  expected_outputs:
+    - analytical_report
+    - technical_report
+    - model_review_report
+    - data_quality_report
+    - evidence_matrix
+    - artifact_inventory
+    - executive_summary
+    - executive_presentation
+    - decision_memo
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  notes:
+    - "Repository root is not currently a Git repo; do not assume git operations are available in this OneDrive workspace."
+    - "This folder is evidence/delivery heavy: treat PDFs, PPTX, XLSX, CSV, PNG, ZIP/model artifacts, and logs as local evidence unless explicitly promoted to canonical deliverables."
+    - "Avoid rewriting, moving, or deleting OneDrive client artifacts such as .DS_Store, temporary Office files, or synced binary deliverables unless the user explicitly asks."
+    - "For model claims, distinguish legacy churn artifacts, EBM reboot/user reboot materials, Diamond Performance workbooks, and HOT Journey specifications; do not collapse them into one model lineage."
+    - "Use NegritaOS canonical adapter symlinks under .codex for rules, commands, manifest, and router skill."
