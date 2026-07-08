@@ -75,6 +75,34 @@ The archive is canonical. The current high-level contract is:
 - Slide writing: one idea per slide, conclusion first, minimal body text,
   evidence visible, no hype.
 
+### Canvas And Master Layout Constraints
+
+- Slide canvas: **26.67 in wide by 15.00 in tall** (double-widescreen 16:9).
+  Content ported from standard `13.33 by 7.5` decks must be rescaled, not
+  copy-pasted.
+- Left margin: `1.33 in`. Right margin: `1.33 in`. Content width: `24.01 in`.
+- The master bakes in a CQI logo at the bottom-left (approx `x` in `[0, 3.5]`,
+  `y` in `[14.4, 14.9]`) and a copyright line at the bottom-center (approx
+  `x` in `[13, 20]`).
+- Footnote positioning MUST clear these baked-in elements. Recommended
+  bounds: `x = 3.7`, `y = 14.35`, `width <= 9.2`, left-aligned, italic,
+  size >= 10 pt. Never place a footnote inside `x < 3.5` at `y > 14.3`.
+
+### Chart Regeneration Policy
+
+- Never reuse a chart image from a source deck if its palette or typography
+  drifts from the CQI design system.
+- When the source `.pptx` contains embedded chart data:
+  ```bash
+  unzip -j SOURCE.pptx 'ppt/embeddings/*.xlsx' -d build/xlsx_extract
+  ```
+  read the extracted xlsx and re-render the chart in matplotlib using the
+  CQI categorical palette (`#1A43F5`, `#FF8093`, `#2D7173`, `#774CFF`,
+  `#FFA720`, `#888888`, `#37A781`).
+- Charts must ship as high-DPI PNG (>= 200 DPI) rendered at the destination
+  aspect ratio. Do not inline-embed PPT charts that lose CQI palette
+  compliance in the final deck.
+
 If any of the above conflicts with a newer `CQISense_Design_System.zip`, the
 newer zip wins.
 

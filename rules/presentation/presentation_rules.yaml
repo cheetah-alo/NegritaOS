@@ -35,6 +35,22 @@ presentation_rules:
     one_main_message_per_slide: true
     speaker_notes_required: true
     appendix_separates_methodology: true
+    insight_slide_frame:
+      section_tag_eyebrow: true
+      insight_title_leads_with_number: true
+      why_it_matters_line_required: true
+      action_line_required: true
+      why_prefix: "Why it matters:"
+      action_prefix: "Action >"
+    section_dividers:
+      required_for_multi_section_decks: true
+      purpose: enable_powerpoint_section_zoom
+      style:
+        background: dark_cobalt          # BLUE_900 #001450
+        accent_rail: pink_300
+        number_size_pt: 180
+        title_size_pt: 60
+        subtitle_size_pt: 24
 
   brand:
     cqi_brand_reference: brands/cqi/brand_style/brand_style.md
