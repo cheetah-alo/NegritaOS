@@ -38,6 +38,23 @@ on this scorecard and has no unresolved P0/P1 architecture blockers.
 | Dependency hygiene | 10 | Imports/dependencies are acyclic or exceptions are justified. |
 | Developer experience | 5 | Setup/test commands are clear and short. |
 
+## Dashboard Architecture Gate
+
+For dashboard repos, dashboard pages, static dashboard HTML, BI-style UIs, and
+chart-heavy analytical reports, the architecture pass must include a dashboard
+source split before implementation starts.
+
+- Required source boundaries: data loading, data normalization, state/filters,
+  layout, chart components, styles/assets, and build/export code.
+- Required documentation: entrypoint, build/run command, data sources, expected
+  schema, validation steps, and generated artifact location.
+- Forbidden final source: one monolithic `.html` file with inline CSS,
+  JavaScript, data, and thousands of lines.
+- Allowed exception: a single static `.html` generated from modular source under
+  `dist/`, `build/`, `outputs/`, or a repo-approved artifact directory.
+- Review action: treat monolithic dashboard HTML as a P1 architecture blocker
+  until a modular source-of-truth exists.
+
 ## Default Repo Shape
 
 Use this as a baseline, then adapt to the stack:
