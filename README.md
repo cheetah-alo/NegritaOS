@@ -185,7 +185,8 @@ Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copi
 `negritaos-mode-router`, `rule-compliance-gate`, `create-unittest`, `python-core`, `typescript`,
 `nextjs-15`, `react-19`, `zod-4`, `tailwind-4`, `playwright`, `mcp-server`, `sdd-flow`,
 `commit-hygiene`, `pr-review-deep`, `memory-protocol`, `eda-reports`, `data-contracts`,
-`dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, `document-control`, …
+`dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, `docs-alignment`,
+`document-control`, `dashboard-architecture`, …
 
 Each skill is a folder with a `SKILL.md` describing **when to trigger** and **what to do**.
 
@@ -508,6 +509,7 @@ Modes (quick recall):
 | [core/ontology/domain_ontology.yaml](core/ontology/domain_ontology.yaml) | Shared vocabulary |
 | [core/principles/cognitive_principles.md](core/principles/cognitive_principles.md) | 15 operating principles |
 | [core/standards/output_standards.yaml](core/standards/output_standards.yaml) | Output structure requirements |
+| [.codex/rules/documentation-governance.md](.codex/rules/documentation-governance.md) | Documentation structure and quality gates |
 | [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md) | Canonical router rule |
 | [projects/README.md](projects/README.md) | Project registry & memory load order |
 | [docs/daily_usage_manual.md](docs/daily_usage_manual.md) | Daily workflow walkthrough |

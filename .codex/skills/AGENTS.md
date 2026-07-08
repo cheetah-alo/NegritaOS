@@ -47,6 +47,10 @@ When performing these actions, invoke the corresponding skill first:
 | User asks to remember, recall, or continue prior work | `memory-protocol` |
 | Task references prior decisions, open bugs, or ongoing features | `memory-protocol` |
 | Before ending a substantive session | `memory-protocol` |
+| Creating or updating repository documentation | `docs-alignment` |
+| Creating or updating README, AGENTS, runbooks, ADRs, rules, skills, prompts, or templates | `docs-alignment` |
+| Documenting behavior, workflows, contracts, APIs, architecture, setup, operations, or governance changes | `docs-alignment` |
+| Reviewing documentation consistency | `docs-alignment` |
 | Changing Python logic under `backend/app/`, `data_analytics/`, or `mcp_server/` with test impact | `create-unittest` |
 | Create, refactor, or extend unit tests under `tests/` | `create-unittest` |
 | Convert existing tests (pytest-style) into `unittest.TestCase` | `create-unittest` |

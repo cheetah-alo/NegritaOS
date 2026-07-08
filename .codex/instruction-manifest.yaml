@@ -27,6 +27,15 @@ rules:
       - negritaos-router
     version: 1.1.0
 
+  - id: documentation-governance
+    path: rules/documentation-governance.md
+    domain: documentation
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - ai-behavior
+    version: 1.0.0
+
   - id: naming-guidelines
     path: rules/dev-naming-conventions.md
     domain: dev
