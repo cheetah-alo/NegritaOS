@@ -17,7 +17,9 @@ writing_rules:
     avoid_marketing_language: true
     avoid_generic_ai_phrases: true
     prefer_brene_brown_style: true
-    prefer_canidian_tone_when_on_english: true
+    prefer_canadian_tone_when_on_english: true
+    forbid_em_dash: true                    # U+2014 never. Substitute with comma, colon, parenthesis, or split the sentence.
+    forbid_en_dash_outside_ranges: true     # U+2013 allowed only for strict numeric ranges (e.g. 2024 to 2026).
 
 
   storytelling:
