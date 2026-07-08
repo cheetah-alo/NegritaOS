@@ -18,7 +18,8 @@ Core rules:
 - Start with findings, then baseline/calculation alignment.
 - Move broad to narrow: population → signal layer → family → subcategory → attribute → context overlays → interactions/sequences → mechanism/action.
 - Use `note`, not `caveat`.
-- Font: `Malgun Gothic`.
+- Font: follow `rules/presentation/presentation_rules.yaml`.
+- For CQI/CQISense decks, load `brands/cqi/brand_style/brand_style.md` and use `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`.
 - Minimum sizes: body/table 12 pt, table headers 14 pt, complementary notes 10 pt.
 - If a table cannot fit at those sizes, split it or convert it to cards/bullets.
 - Every analytical slide needs finding, how calculated, base/denominator, KPI window, `n`/support, note, and speaker note.

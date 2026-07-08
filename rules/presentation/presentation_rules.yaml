@@ -13,7 +13,9 @@ presentation_rules:
   visuals:
     avoid_decorative_plots: true
     every_visual_requires_takeaway: true
-    default_font: Malgun Gothic
+    default_font: Noto Sans
+    default_heading_font: Poppins
+    default_numeric_font: IBM Plex Mono
     minimum_body_or_table_font_pt: 12
     minimum_table_header_font_pt: 14
     minimum_complementary_note_font_pt: 10
@@ -36,10 +38,15 @@ presentation_rules:
 
   brand:
     cqi_brand_reference: brands/cqi/brand_style/brand_style.md
-    cqi_template_pptx: brands/cqi/plantillas/Template_CQISense.pptx
-    primary_color: "#0044ff"
-    dark_neutral: "#111827"
+    cqi_brand_archive: brands/cqi/brand_style/CQISense_Design_System.zip
+    cqi_pptx_skill: brands/cqi/brand_style/pptx_skill_cqi.md
+    cqi_template_pptx: brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx
+    deprecated_template_pptx_name: Template_CQISense.pptx
+    primary_color: "#1A43F5"
+    accent_color: "#FF8093"
+    dark_neutral: "#232324"
     light_neutral: "#ffffff"
+    archive_is_visual_source_of_truth: true
     avoid_improvised_palettes: true
 
   required_source_contract:

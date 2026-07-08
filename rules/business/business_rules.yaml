@@ -22,9 +22,13 @@ business_rules:
   brand_compliance:
     applies_to: [Hot_deliverables, client_presentations, concept_notes, business_plans]
     cqi_brand_reference: "brands/cqi/brand_style/brand_style.md"
+    cqi_brand_archive: "brands/cqi/brand_style/CQISense_Design_System.zip"
+    cqi_presentation_template: "brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx"
     requirements:
+      - "El zip CQISense_Design_System.zip es la fuente visual canonica para marca, tokens, tipografia, componentes y logos"
       - "Documentos formales de cliente deben seguir plantillas CQI"
-      - "Presentaciones ejecutivas deben usar colores y tipografía CQI"
+      - "Presentaciones ejecutivas deben usar CQI_PresentationTemplate_20260401.pptx"
+      - "No usar Template_CQISense.pptx; esa plantilla PPT esta deprecada"
       - "Reportes técnicos internos pueden usar formato libre pero estructurado"
     template_location: "brands/cqi/plantillas/"
 
