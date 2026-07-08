@@ -1,0 +1,80 @@
+project:
+  id: ibc_fiber_network
+  name: "IBC Fiber Network"
+  version: "1.0.0"
+  description: >
+    Fiber network analytics workspace for HOT / IBC incident and ML-readiness
+    work. The repo contains BigQuery inventory reviews, deterministic incident
+    trend-layer code, data contracts, plot/report builders, CSV table schemas,
+    and research/PPT source documents for fiber fault monitoring and telecom
+    alarm analysis.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/ibc_fiber_network"
+  memory_home: "~/.negritaos/memory/projects/ibc_fiber_network"
+  archetypes:
+    - eda_analytics
+    - data_platform
+    - data_quality
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - bigquery
+    - sql
+    - python
+    - data_contracts
+    - data_quality_audit
+    - incident_trend_analysis
+    - ml_readiness
+    - research_review
+    - plot_generation
+    - executive_synthesis
+    - local_files
+  agents:
+    - consulting_delivery_controller_agent
+    - team_lead_ds_agent
+    - decision_support_agent
+    - code_review_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - presentation_agent
+  codex_profiles:
+    - analysis-run
+    - review
+    - refactor
+  mode_map:
+    planning: LP
+    writeup: TD
+    deck: EP
+    data_quality_audit: DQ
+    bq_inventory: DQ
+    sql_review: CR
+    python_pipeline: CR
+    eda: MR
+    ml_readiness: MR
+    paper_review: AE
+    research: RT
+    implementation: CR
+  expected_outputs:
+    - analytical_report
+    - technical_report
+    - data_quality_report
+    - data_contract
+    - sql_inventory
+    - incident_trend_layer
+    - model_readiness_review
+    - evidence_matrix
+    - research_fit_review
+    - executive_summary
+    - executive_presentation
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  notes:
+    - "Repository root is not currently a Git repo; preserve nested analysis/document structure and do not assume git operations are available there."
+    - "Use the canonical NegritaOS adapter symlinks under .codex for rules, commands, manifest, and router skill."
+    - "Stage 1 incident work is trend-layer first; deterministic incident rules remain the source of truth before prediction or severity calibration."
+    - "BigQuery inventory artifacts indicate missing topology/population-denominator and generated-incident labels; do not overclaim model readiness without owner confirmation."
+    - "Treat generated CSV outputs, plots, PDFs, PPTX files, and local research documents as local evidence artifacts unless explicitly promoted to a deliverable."
