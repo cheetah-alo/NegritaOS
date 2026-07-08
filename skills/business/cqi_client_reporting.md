@@ -14,9 +14,12 @@ apropiado para la audiencia del cliente.
 
 ### Identidad de marca
 - **Empresa:** CQISense (cqisense.com)
-- **Paleta primaria:** Azul `#0044ff`, carbón `#232324`, blanco `#ffffff`
-- **Tipografía:** Arial (headings), Malgun Gothic (body)
-- **Referencia completa:** `brands/cqi/brand_style/brand_style.md`
+- **Referencia operativa:** `brands/cqi/brand_style/brand_style.md`
+- **Source of truth visual:** `brands/cqi/brand_style/CQISense_Design_System.zip`
+- **Paleta actual:** cobalt `#1A43F5`, accent `#FF8093`, carbón `#232324`, blanco `#ffffff`
+- **Tipografía actual:** Poppins (display), Noto Sans (body), IBM Plex Mono (números)
+- **Plantilla PPT actual:** `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`
+- **Plantilla PPT obsoleta:** `Template_CQISense.pptx` — no usar
 
 ### Documentos formales (propuestas, informes, business plans)
 - Usar plantillas en: `brands/cqi/plantillas/`
@@ -25,10 +28,11 @@ apropiado para la audiencia del cliente.
 - Footer o metadatos: Fecha + Autor + Estado (Borrador / En revisión / Aprobado)
 
 ### Presentaciones ejecutivas para cliente
+- Usar siempre `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`
 - Seguir estructura top-down: TL;DR → Contexto → Hallazgos → Recomendaciones → Próximos pasos
 - Audiencia ejecutiva de telecom: sin jerga de ML, traducir a KPIs de negocio
 - Cada slide: un mensaje central + evidencia
-- Usar colores CQI — no introducir paletas externas
+- Usar el zip CQISense Design System como autoridad visual; no introducir paletas externas
 
 ---
 

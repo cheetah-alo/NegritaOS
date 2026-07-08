@@ -78,7 +78,10 @@ agent:
 
   brand:
     cqi_reference: brands/cqi/brand_style/brand_style.md
-    cqi_template_pptx: brands/cqi/plantillas/Template_CQISense.pptx
+    cqi_brand_archive: brands/cqi/brand_style/CQISense_Design_System.zip
+    cqi_pptx_skill: brands/cqi/brand_style/pptx_skill_cqi.md
+    cqi_template_pptx: brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx
+    deprecated_template_pptx_name: Template_CQISense.pptx
     supported_theme_presets:
       - white_background
       - black_background

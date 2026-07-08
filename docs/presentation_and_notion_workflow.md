@@ -33,7 +33,10 @@ Use `rules/presentation/presentation_rules.yaml` for presentation behavior.
 - Default visual preset: `white_background`.
 - Supported presets: `white_background`, `black_background`.
 - CQI brand reference: `brands/cqi/brand_style/brand_style.md`.
-- CQI PPTX reference: `brands/cqi/plantillas/Template_CQISense.pptx`.
+- CQI brand archive: `brands/cqi/brand_style/CQISense_Design_System.zip`.
+- CQI PPTX skill wrapper: `brands/cqi/brand_style/pptx_skill_cqi.md`.
+- CQI PPTX reference: `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`.
+- Deprecated PPTX name: `Template_CQISense.pptx` must not be used.
 
 ## Output Pairing
 

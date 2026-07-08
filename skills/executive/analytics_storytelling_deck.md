@@ -38,7 +38,9 @@ Every analytical slide must include:
 
 ## Readability Contract
 
-- Font: `Malgun Gothic`.
+- Font: use `rules/presentation/presentation_rules.yaml`.
+- For CQI/CQISense decks, load `brands/cqi/brand_style/brand_style.md` and use
+  `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`.
 - Body and table text: minimum 12 pt.
 - Table headers: minimum 14 pt.
 - Complementary notes: minimum 10 pt.
