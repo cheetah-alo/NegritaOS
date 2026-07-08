@@ -11,7 +11,7 @@ engineering_rules:
   automatic_activation_triggers:
     - router_mode: CR
     - file_extensions: [".py", ".sql", ".ipynb", ".yaml", ".json", ".sh"]
-    - agent_ids: [code_review_agent, model_review_agent, technical_writer_agent]
+    - agent_ids: [code_review_agent, software_architect_agent, model_review_agent, technical_writer_agent]
     - contexts: [code_generation, code_review, pipeline_review, reproducibility_check]
 
   python_standards:
@@ -197,7 +197,7 @@ engineering_rules:
       trigger_conditions:
         - "File extension is .py, .sql, .ipynb, .yaml, .sh"
         - "Request contains 'review code', 'code review', 'check my code'"
-        - "Agent is code_review_agent"
+        - "Agent is code_review_agent or software_architect_agent"
         - "Document type is code_review_report"
       
       action: "Load python_standards + logging_standards + configuration_management + reproducibility rules"

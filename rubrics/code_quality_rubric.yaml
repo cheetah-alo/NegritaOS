@@ -1,7 +1,7 @@
 rubric:
   name: code_quality_rubric
   version: "1.0.0"
-  applicable_agents: [code_review_agent]
+  applicable_agents: [code_review_agent, software_architect_agent]
   description: >
     Severity-tiered rubric for Python/SQL code review in DS/ML contexts.
     Issues are classified P0–P3. P0/P1 block merge. P2/P3 are tracked.
