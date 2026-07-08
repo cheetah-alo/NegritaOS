@@ -4,13 +4,13 @@ engineering_rules:
     Engineering rules for code quality, Python standards, infrastructure, and ML pipelines.
     These rules are AUTOMATICALLY ACTIVE when:
     - Router mode is CR (Code Review)
-    - Any code file (.py, .sql, .yaml) is being reviewed or generated
+    - Any code file (.py, .sql, .yaml, .html, .js, .ts, .jsx, .tsx, .css) is being reviewed or generated
     - Code blocks appear in technical documentation
     - Model review includes code/pipeline review
 
   automatic_activation_triggers:
     - router_mode: CR
-    - file_extensions: [".py", ".sql", ".ipynb", ".yaml", ".json", ".sh"]
+    - file_extensions: [".py", ".sql", ".ipynb", ".yaml", ".json", ".sh", ".html", ".js", ".ts", ".jsx", ".tsx", ".css"]
     - agent_ids: [code_review_agent, software_architect_agent, model_review_agent, technical_writer_agent]
     - contexts: [code_generation, code_review, pipeline_review, reproducibility_check]
 
@@ -93,6 +93,27 @@ engineering_rules:
     max_file_length: 500
     max_function_length: 50
     max_line_length: 100
+    dashboard_architecture:
+      require_modular_source: true
+      forbid_monolithic_dashboard_html: true
+      source_of_truth: "Modular source files, templates, and configs; never a generated bundled HTML artifact"
+      generated_single_html_allowed_only_as_artifact: true
+      generated_artifact_dirs: ["dist", "build", "outputs"]
+      required_boundaries:
+        - data_loading
+        - data_normalization
+        - state_and_filters
+        - layout
+        - chart_components
+        - styles
+        - build_or_export
+      documentation_required:
+        - entrypoint
+        - build_or_run_command
+        - data_sources
+        - expected_schema
+        - validation_steps
+      action: "Flag monolithic dashboard HTML as P1; require modular rewrite before merge or handoff"
 
   logging_standards:
     module: "logging (not print())"

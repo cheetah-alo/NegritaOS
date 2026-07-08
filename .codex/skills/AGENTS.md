@@ -20,6 +20,7 @@ Use these skills for detailed patterns on-demand:
 | `business-rules` | Deterministic and traceable business-rule guidance across backend, frontend, and analytics | [SKILL.md](business-rules/SKILL.md) |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
 | `document-control` | Govern deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown under timestamped `documents/` outputs | [SKILL.md](document-control/SKILL.md) |
+| `dashboard-architecture` | Enforce maintainable modular dashboard architecture and forbid monolithic dashboard HTML as final source | [SKILL.md](dashboard-architecture/SKILL.md) |
 | `commit-hygiene` | Commit scope and message quality rules for this repository | [SKILL.md](commit-hygiene/SKILL.md) |
 | `pr-review-deep` | Deep review checklist for risky or user-visible changes | [SKILL.md](pr-review-deep/SKILL.md) |
 | `sdd-flow` | Phased spec-driven workflow for non-trivial changes | [SKILL.md](sdd-flow/SKILL.md) |
@@ -58,6 +59,7 @@ When performing these actions, invoke the corresponding skill first:
 | Convert business proposals, ROI narratives, feasibility notes, or decision briefs into claims | `business-proposal-findings` |
 | Convert research papers, abstracts, or literature reviews into claims | `research-paper-findings` |
 | Create or update deliverable documents, PPT/PDF/DOCX/HTML artifacts, or Notion/Confluence-ready markdown | `document-control` |
+| Create or modify dashboards, dashboard HTML, BI-style frontend pages, chart-heavy report UIs, or dashboard generators | `dashboard-architecture` |
 | Modify EDA outputs, plots, dashboards, or run-scoped output layout | `eda-reports` |
 | Review or create churn, recall, DiscReq, retention, recontact, or account journey pressure metrics | `churn-recall-indicator-audit` |
 | Instrument code with logging, add PhaseLogger, write governance JSON | `dev-logging` |

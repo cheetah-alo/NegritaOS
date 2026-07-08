@@ -73,6 +73,7 @@ Reusable patterns for common domains:
 | `data-contracts` | Dataset schema contracts and validation |
 | `data-loading` | Data ingestion, source resolution, lineage |
 | `document-control` | Timestamped `documents/` placement and manifest governance for deliverables |
+| `dashboard-architecture` | Maintainable modular dashboard architecture; forbids monolithic dashboard HTML as final source |
 | `analytics-storytelling-deck` | Finding-first analytical deck structure, baseline alignment, broad-to-narrow evidence zoom, and PPT readability standards |
 | `eda-analytics-findings` | Convert EDA plots, cohorts, funnels, and segment summaries into defensible findings |
 | `ml-model-findings` | Convert model metrics, thresholds, lift, and explainability outputs into defensible findings |

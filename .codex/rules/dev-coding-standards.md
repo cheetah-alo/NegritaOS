@@ -69,7 +69,13 @@ Split heuristics:
 - Constants extracted to `<module>_constants.py` or `config/constants.py`.
 - Pipeline phases extracted to separate stage files.
 
-If the user explicitly requests a single-file output that will exceed 1700 lines, generate it AND immediately append a `## Refactor Plan` section inside the file explaining how it must be split before merging.
+For non-dashboard and non-frontend source files, if the user explicitly requests a single-file output that will exceed 1700 lines, generate it AND immediately append a `## Refactor Plan` section inside the file explaining how it must be split before merging.
+
+Dashboard/frontend source override:
+- NEVER create or accept a dashboard as one monolithic source `.html` file with inline CSS, JavaScript, data, and thousands of lines.
+- Dashboard source MUST be modular across data loading, normalization, state, filters, layout, chart components, styles, and build/export code.
+- A single static dashboard `.html` is allowed only as generated output under `dist/`, `build/`, `outputs/`, or a repo-approved artifact directory, with modular source and a documented generation command.
+- Codex, Claude, and other NegritaOS adapters MUST reject monolithic dashboard HTML as a final implementation.
 
 **Generating a file > 1700 lines without a Refactor Plan is a rule violation.**
 **Generating a file > 3000 lines for any reason is forbidden.**
@@ -156,6 +162,7 @@ else:
 ## 7. File Size & Organization
 - See §1.2 Structural Guardrails for the canonical thresholds (1500 preferred, 1700 hard cap).
 - Keep files cohesive and modular; split by responsibility, not by line count alone.
+- Dashboards must follow the `dashboard-architecture` skill: source modules are the editable truth, generated bundled HTML is an artifact only, and monolithic dashboard HTML is not accepted as final source.
 
 ## 8. Mocking & Test Integrity
 - Mock data only within the **test** suite.
