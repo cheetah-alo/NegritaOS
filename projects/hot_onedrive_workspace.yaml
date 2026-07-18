@@ -79,9 +79,13 @@ project:
     backup_required_before_migration: true
     repo_codex_status: "adapter_local"
     canonical_memory_outside_repo: true
+  related_projects:
+    - hot_archeotype_proposal_demo
+    - hot_frictions
   notes:
     - "Repository root is not currently a Git repo; do not assume git operations are available in this OneDrive workspace."
     - "This folder is evidence/delivery heavy: treat PDFs, PPTX, XLSX, CSV, PNG, ZIP/model artifacts, and logs as local evidence unless explicitly promoted to canonical deliverables."
+    - "When creating new agent-authored deliverables in this workspace, apply document-control under a documents/ folder unless the user explicitly asks to update an existing synced client artifact."
     - "Avoid rewriting, moving, or deleting OneDrive client artifacts such as .DS_Store, temporary Office files, or synced binary deliverables unless the user explicitly asks."
     - "For model claims, distinguish legacy churn artifacts, EBM reboot/user reboot materials, Diamond Performance workbooks, and HOT Journey specifications; do not collapse them into one model lineage."
     - "Use NegritaOS canonical adapter symlinks under .codex for rules, commands, manifest, and router skill."

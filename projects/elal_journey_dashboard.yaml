@@ -1,0 +1,85 @@
+project:
+  id: elal_journey_dashboard
+  name: "EL AL Journey Analytics Dashboard"
+  version: "1.0.0"
+  description: >
+    Internal EL AL CQI journey analytics dashboard over read-only BigQuery
+    aggregate endpoints. The repo combines a FastAPI backend, parameterized
+    BigQuery access, and a Next.js 15 frontend for customer-journey and
+    flight-journey analysis.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard"
+    backend: "/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard/backend"
+    frontend: "/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard/frontend"
+    docs: "/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard/docs"
+    eda: "/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard/eda"
+  memory_home: "~/.negritaos/memory/projects/elal_journey_dashboard"
+  archetypes:
+    - product_app
+    - frontend_dashboard
+    - backend_service
+    - data_analytics
+  capabilities:
+    - frontend
+    - product_ux
+    - backend
+    - api
+    - bigquery
+    - sql
+    - python
+    - typescript
+    - nextjs
+    - data_analytics
+    - data_quality_audit
+    - dashboard_qa
+    - local_files
+    - executive_presentation
+  agents:
+    - code_review_agent
+    - software_architect_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - team_lead_ds_agent
+    - presentation_agent
+  codex_profiles:
+    - review
+    - refactor
+    - analysis-run
+  mode_map:
+    dashboard_work: CR
+    dashboard_refactor: CR
+    api_change: CR
+    backend_change: CR
+    frontend_change: CR
+    data_contract: DQ
+    data_quality_audit: DQ
+    browser_qa: CR
+    eda: MR
+    metric_review: MR
+    deck: EP
+    stakeholder_copy: TD
+    planning: LP
+  expected_outputs:
+    - dashboard_source_change
+    - backend_api_change
+    - data_contract_report
+    - browser_qa_report
+    - technical_memo
+    - executive_summary
+    - executive_presentation
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  related_projects:
+    - proj_data_analytics
+  notes:
+    - "Repo folder is intentionally named internal-ia-rawdata-dasboard; do not silently rename the local path."
+    - "Dashboard is strictly read-only: backend must use parameterized SELECT statements and must not expose PII columns."
+    - "BigQuery project/dataset defaults come from the app environment; validate BQ_PROJECT, BQ_DATASET, CACHE_TTL_SECONDS, CORS_ORIGINS, and NEXT_PUBLIC_API_BASE before runtime changes."
+    - "Frontend source-of-truth is frontend/src with Next.js 15, React 19, Tailwind 4, and ApexCharts."
+    - "Backend source-of-truth is backend/app with FastAPI and BigQuery aggregate endpoints."
+    - "Apply dashboard-architecture before creating or changing dashboard UI/source structure; do not create one-file dashboard monoliths."
+    - "Apply data-contracts and data-quality-sentinel review for endpoint schema, metric, row-grain, join, or BigQuery field changes."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, or HTML deliverables under documents/ unless updating existing repo docs."
+    - "Existing ELAL journey-intelligence work in proj_data_analytics may provide reusable contract context, but this repo owns the dashboard app runtime."

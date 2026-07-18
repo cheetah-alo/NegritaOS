@@ -1,0 +1,45 @@
+/* CQISense — Elevation, radius, border & motion tokens
+ * Cards are calm: paper-flat with soft warm shadows, hairline borders,
+ * gently rounded corners. Shadows are warm-tinted (never neutral gray).
+ */
+:root {
+  /* Corner radii — soft, organic, never pill-everything */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;   /* default card / control */
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 999px;
+
+  /* Border widths */
+  --border-width: 1px;
+  --border-width-thick: 1.5px;
+
+  /* Cool-tinted shadow color (dark navy, low alpha) */
+  --shadow-color: 0 20 80;  /* rgb close to blue-900, used as rgb(var(--shadow-color) / a) */
+
+  /* Elevation — subtle, layered, warm */
+  --shadow-xs: 0 1px 2px rgb(var(--shadow-color) / 0.08);
+  --shadow-sm: 0 1px 2px rgb(var(--shadow-color) / 0.06),
+               0 2px 6px rgb(var(--shadow-color) / 0.06);
+  --shadow-md: 0 2px 4px rgb(var(--shadow-color) / 0.06),
+               0 6px 16px rgb(var(--shadow-color) / 0.09);
+  --shadow-lg: 0 4px 8px rgb(var(--shadow-color) / 0.08),
+               0 16px 36px rgb(var(--shadow-color) / 0.12);
+  --shadow-xl: 0 8px 16px rgb(var(--shadow-color) / 0.10),
+               0 28px 60px rgb(var(--shadow-color) / 0.16);
+
+  /* Inset (wells, pressed) */
+  --shadow-inset: inset 0 1px 3px rgb(var(--shadow-color) / 0.10);
+
+  /* Focus ring composite */
+  --ring: 0 0 0 3px var(--brand-ring);
+
+  /* Motion — calm, grounded. No bounce. Quiet easing. */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.45, 0, 0.2, 1);  /* @kind other */
+  --dur-fast: 120ms; /* @kind other */
+  --dur-base: 200ms; /* @kind other */
+  --dur-slow: 320ms; /* @kind other */
+}

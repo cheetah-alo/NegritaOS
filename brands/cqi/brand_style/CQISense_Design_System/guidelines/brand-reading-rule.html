@@ -1,0 +1,26 @@
+<!-- @dsCard group="Brand" viewport="700x250" name="The reading rule" subtitle="Repair = blue-side · Risk = red-side · Heat = priority" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; padding:26px; background:var(--surface-page); font-family:var(--font-body); color:var(--text-body); }
+  .legend { display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:620px; }
+  .item { display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:var(--surface-card); border:1px solid var(--border-hair); border-radius:var(--radius-md); }
+  .dot { width:18px; height:18px; border-radius:5px; flex:none; margin-top:2px; }
+  .nm { font-weight:600; color:var(--text-strong); font-size:15px; }
+  .desc { font-size:13px; color:var(--text-muted); margin-top:3px; line-height:1.45; }
+  h4 { margin:0 0 14px; font-family:var(--font-display); font-size:16px; color:var(--text-strong); }
+</style>
+</head>
+<body>
+  <h4>One consistent reading across every slide and screen</h4>
+  <div class="legend">
+    <div class="item"><span class="dot" style="background:var(--repair)"></span><div><div class="nm">Repair pressure</div><div class="desc">Broken promises, repair loops, callbacks, tech visits, recalls. Normalized / 206.</div></div></div>
+    <div class="item"><span class="dot" style="background:var(--risk)"></span><div><div class="nm">Risk pressure</div><div class="desc">Competition, exit intent, dissatisfaction. Normalized / 97.</div></div></div>
+    <div class="item"><span class="dot" style="background:var(--operational)"></span><div><div class="nm">Operational score</div><div class="desc">The 0–100 synthesis used for prioritization — not churn probability.</div></div></div>
+    <div class="item"><span class="dot" style="background:var(--heat)"></span><div><div class="nm">Heat / priority</div><div class="desc">"Hot Orange" flag. Orange marks urgency only — never a surface.</div></div></div>
+  </div>
+</body>
+</html>

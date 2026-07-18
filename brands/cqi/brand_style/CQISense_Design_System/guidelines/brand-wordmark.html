@@ -1,0 +1,36 @@
+<!-- @dsCard group="Brand" viewport="700x200" name="Wordmark & mark" subtitle="Official CQI logo from brand PPT" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; padding:26px; background:var(--surface-page); font-family:var(--font-body); }
+  .row { display:flex; align-items:center; gap:40px; flex-wrap:wrap; }
+  .tile { display:flex; align-items:center; justify-content:center; padding:22px 28px; border-radius:var(--radius-md); }
+  .meta { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-top:12px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div>
+      <div class="tile" style="background:var(--white);border:1px solid var(--border-hair);">
+        <img src="../assets/cqi-logo.png" alt="CQI" height="52">
+      </div>
+      <div class="meta">Primary lockup · on white</div>
+    </div>
+    <div>
+      <div class="tile" style="background:var(--blue-900);">
+        <img src="../assets/cqi-logo.png" alt="CQI" height="52" style="filter:brightness(0) invert(1);">
+      </div>
+      <div class="meta">On navy (dark surfaces)</div>
+    </div>
+    <div>
+      <div class="tile" style="background:var(--blue-500);">
+        <img src="../assets/cqi-logo.png" alt="CQI" height="52" style="filter:brightness(0) invert(1);">
+      </div>
+      <div class="meta">On cobalt</div>
+    </div>
+  </div>
+</body>
+</html>

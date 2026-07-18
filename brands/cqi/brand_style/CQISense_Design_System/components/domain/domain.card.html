@@ -1,0 +1,57 @@
+<!-- @dsCard group="Components" viewport="700x460" name="Domain — Archetype, Mechanism, Points, Score, Rule" subtitle="Hot Orange model primitives" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body { margin: 0; padding: 26px; background: var(--surface-page); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 20px; }
+  .lbl { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-subtle); margin-bottom: 10px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const NS = window.CQISenseDesignSystem_73301e;
+  const { ArchetypeBadge, MechanismTag, PointsPill, ChannelSplit, ScoreMeter, RuleCard } = NS;
+  function Demo() {
+    return (
+      <div>
+        <div className="lbl">Archetypes</div>
+        <div className="row">
+          <ArchetypeBadge code="A" /><ArchetypeBadge code="C" /><ArchetypeBadge code="D2" />
+        </div>
+        <div className="lbl">Mechanisms · Points</div>
+        <div className="row">
+          <MechanismTag id="PROMISE_DEBT_TO_FRICTION" />
+          <MechanismTag id="COMPETITIVE_EXIT_PRESSURE" />
+          <PointsPill value="+25" family="repair" />
+          <PointsPill value="+30" family="risk" />
+          <ChannelSplit tsr="+8" csr="+10" family="repair" />
+        </div>
+        <div className="cols">
+          <div>
+            <div className="lbl">Score meters</div>
+            <ScoreMeter family="repair" value={62} style={{ marginBottom: 18 }} />
+            <ScoreMeter family="risk" value={38} threshold={55} thresholdLabel="≥55 → D" />
+          </div>
+          <div>
+            <div className="lbl">Rule contract</div>
+            <RuleCard code="R1" title="Callback Promise Debt" family="repair"
+              tsr="+8" csr="+10" mechanism="PROMISE_DEBT_TO_FRICTION"
+              archetype="C" strictCalls="87,626" strictShare="62.5%" status="Proposal" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>
