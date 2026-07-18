@@ -1,0 +1,47 @@
+/* CQISense — Domain semantic tokens
+ * Encodes the "Hot Orange Journey Rules" model so screens & slides read
+ * consistently. Preserves the source convention (Repair = blue-side,
+ * Risk = red-side) but in earthy, calm tones.
+ *
+ * Model: evidence -> rules (R1..R9) -> scores (Repair / Risk / Operational)
+ *        -> mechanisms -> archetypes (A,B,C,D,D2,E,F).
+ */
+:root {
+  /* ---- Score families (the two pressures + the synthesis) ---------- */
+  --repair:        var(--teal-400);    /* Repair Pressure — "blue side" */
+  --repair-soft:   var(--teal-100);
+  --repair-text:   var(--teal-500);
+  --risk:          var(--pink-400);    /* Risk Pressure — "red side"  */
+  --risk-soft:     var(--pink-50);
+  --risk-text:     var(--pink-600);
+  --operational:   var(--green-600);   /* Operational Score 0-100 (synthesis) */
+  --operational-soft: var(--green-100);
+  --relief:        var(--green-600);   /* recovery / relief overlay (subtracts) */
+  --overlay-strain:var(--ochre-600);   /* journey strain overlay (adds pressure) */
+
+  /* ---- "Hot Orange" heat / priority tiers --------------------------
+   * Orange is the PROGRAM name, used only as a priority/heat accent —
+   * never as a surface. Neutral gray stays dominant. */
+  --heat:        #C2682F;   /* hot orange — priority flag, sparingly */
+  --heat-soft:   #F6E2D2;
+  --heat-text:   #843E14;
+
+  /* ---- Archetype palette (A..F, D2) --------------------------------
+   * Calm -> caution -> exit: green → ochre → pink/risk. */
+  --arch-a:  var(--green-600);   /* A · Resolved Low Pressure   (calm)     */
+  --arch-b:  var(--cat-6);       /* B · Operational Loop        (khaki)    */
+  --arch-c:  var(--ochre-600);   /* C · Repair Failure / Recall (caution)  */
+  --arch-d:  var(--clay-600);    /* D · Exit Risk Proximity     (alarm)    */
+  --arch-d2: #8A3A2A;            /* D2· Promise + Exit Escalation (deep)   */
+  --arch-e:  var(--stone-600);   /* E · Silent Failure / Gap    (uncertain)*/
+  --arch-f:  var(--gray-500);    /* F · Uncertain Review        (neutral)  */
+
+  /* ---- Channels ----------------------------------------------------- */
+  --channel-tsr: var(--teal-400);   /* technical support */
+  --channel-csr: var(--purple-400); /* customer support  */
+
+  /* ---- Evidence status --------------------------------------------- */
+  --evidence-scored:  var(--green-700);  /* contributes points */
+  --evidence-only:    var(--gray-500);   /* audit / no points  */
+  --evidence-future:  var(--ochre-600);  /* future candidate   */
+}

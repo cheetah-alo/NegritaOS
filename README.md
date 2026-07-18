@@ -316,6 +316,7 @@ Current sibling repos (registered under [projects/](projects/)):
 - `composer_local_dev` → `/Users/jackyb-cqi/repos/composer-local-dev`
 - `moneyflowlist` → `/Users/jackyb-cqi/repos/backup_repos/moneyflowlist`
 - `ml_automl_autogluon` → `/Users/jackyb-cqi/repos/autogloun/ml_automl_autogluon`
+- `elal_journey_dashboard` → `/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard`
 - `hot_archeotype_proposal_demo` → `/Users/jackyb-cqi/repos/hot_archeotype_proposal_demo`
 - `hot_onedrive_workspace` → `/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/HOT`
 - `ibc_fiber_network` → `/Users/jackyb-cqi/repos/ibc_fiber_network`
