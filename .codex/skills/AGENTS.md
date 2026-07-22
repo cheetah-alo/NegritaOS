@@ -21,6 +21,15 @@ Use these skills for detailed patterns on-demand:
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
 | `document-control` | Govern deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown under timestamped `documents/` outputs | [SKILL.md](document-control/SKILL.md) |
 | `dashboard-architecture` | Enforce maintainable modular dashboard architecture and forbid monolithic dashboard HTML as final source | [SKILL.md](dashboard-architecture/SKILL.md) |
+| `analytical-dashboard-architecture` | Provider-neutral boundaries and quality gates for data-backed dashboards | [SKILL.md](analytical-dashboard-architecture/SKILL.md) |
+| `data-source-adapters` | BigQuery, PostgreSQL, and provider-neutral source adapter governance | [SKILL.md](data-source-adapters/SKILL.md) |
+| `branch-pr` | Provider-neutral branch and PR workflow using the project-declared base branch | [SKILL.md](branch-pr/SKILL.md) |
+| `testing-coverage` | Backend, frontend, contract, browser, and coverage gates without provider assumptions | [SKILL.md](testing-coverage/SKILL.md) |
+| `nate-skill-builder` | NegritaOS adaptation of skill authoring and audit guidance | [SKILL.md](nate-skill-builder/SKILL.md) |
+| `nate-frontend-design` | Opt-in domain-specific frontend design guidance | [SKILL.md](nate-frontend-design/SKILL.md) |
+| `nate-excalidraw-diagram` | Explicit editable Excalidraw diagram workflow | [SKILL.md](nate-excalidraw-diagram/SKILL.md) |
+| `nate-excalidraw-visuals` | Explicit external-API raster visual generation workflow | [SKILL.md](nate-excalidraw-visuals/SKILL.md) |
+| `nate-video-to-website` | Explicit video-backed frontend generation workflow | [SKILL.md](nate-video-to-website/SKILL.md) |
 | `commit-hygiene` | Commit scope and message quality rules for this repository | [SKILL.md](commit-hygiene/SKILL.md) |
 | `pr-review-deep` | Deep review checklist for risky or user-visible changes | [SKILL.md](pr-review-deep/SKILL.md) |
 | `sdd-flow` | Phased spec-driven workflow for non-trivial changes | [SKILL.md](sdd-flow/SKILL.md) |
@@ -36,6 +45,18 @@ Use these skills for detailed patterns on-demand:
 | `create-unittest` | Create/convert Python unit tests using `unittest` + behavior-driven naming | [SKILL.md](create-unittest/SKILL.md) |
 | `dev-logging` | PhaseLogger usage, governance JSON structure, phase names, audit file layout | [SKILL.md](dev-logging/SKILL.md) |
 | `plotting-guidelines` | Labels readiness, title/subtitle with N & KPI, legend placement, chart PR checklist | [SKILL.md](plotting-guidelines/SKILL.md) |
+
+## Federated Skill Profiles
+
+Generated from `skills/catalog.yaml`; update the catalog first.
+
+| Profile | Skills |
+|---|---|
+| `analytical-dashboard` | `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `docs-alignment`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
+| `data-source-bigquery` | `data-source-adapters`, `data-contracts`, `data-loading` |
+| `data-source-postgresql` | `data-source-adapters`, `data-contracts`, `data-loading` |
+| `fastapi-nextjs` | `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
+| `visual-delivery` | `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
 ## Auto-invoke Skills
 
@@ -64,6 +85,10 @@ When performing these actions, invoke the corresponding skill first:
 | Convert research papers, abstracts, or literature reviews into claims | `research-paper-findings` |
 | Create or update deliverable documents, PPT/PDF/DOCX/HTML artifacts, or Notion/Confluence-ready markdown | `document-control` |
 | Create or modify dashboards, dashboard HTML, BI-style frontend pages, chart-heavy report UIs, or dashboard generators | `dashboard-architecture` |
+| Design or modify data-backed dashboard boundaries, provider routing, or logical dashboard contracts | `analytical-dashboard-architecture` |
+| Change BigQuery, PostgreSQL, or other data-source adapters and physical object routing | `data-source-adapters` |
+| Prepare a branch, choose a PR base, or assemble review evidence | `branch-pr` |
+| Change behavior, contracts, visual states, or browser flows requiring coverage evidence | `testing-coverage` |
 | Modify EDA outputs, plots, dashboards, or run-scoped output layout | `eda-reports` |
 | Review or create churn, recall, DiscReq, retention, recontact, or account journey pressure metrics | `churn-recall-indicator-audit` |
 | Instrument code with logging, add PhaseLogger, write governance JSON | `dev-logging` |

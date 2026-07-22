@@ -19,10 +19,16 @@ agent:
 
   skills:
     - skills/engineering/repository_architecture_planning.md
+    - skills/engineering/analytical_dashboard_architecture.md
+    - skills/engineering/data_source_adapter_governance.md
     - skills/engineering/python_quality_review.md
     - skills/engineering/reproducibility_review.md
     - skills/engineering/logging_config_review.md
     - skills/transversal/structured_reasoning.md
+
+  codex_skills:
+    - .codex/skills/analytical-dashboard-architecture/SKILL.md
+    - .codex/skills/data-source-adapters/SKILL.md
 
   rules:
     inherit: rules/global/global_rules.yaml

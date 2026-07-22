@@ -1,0 +1,434 @@
+catalog:
+  name: negritaos-federated-skills
+  version: "1.0.0"
+  purpose: >
+    Canonical mapping from imported Engram and Nate skills to NegritaOS
+    skills, project profiles, scopes, dependencies, and activation policy.
+  source_policy:
+    raw_sources_are_reference_only: true
+    canonical_activation_root: .codex/skills
+    native_agent_skill_root: skills/engineering
+    do_not_copy_full_codex_into_sibling_repos: true
+
+profiles:
+  analytical-dashboard:
+    description: Modular data-backed dashboard architecture and delivery.
+    skills:
+      - analytical-dashboard-architecture
+      - data-source-adapters
+      - dashboard-architecture
+      - frontend-web
+      - api-design
+      - data-contracts
+      - docs-alignment
+      - playwright
+      - commit-hygiene
+      - pr-review-deep
+      - sdd-flow
+      - branch-pr
+      - testing-coverage
+  fastapi-nextjs:
+    description: FastAPI backend and Next.js frontend boundaries.
+    skills:
+      - backend-service
+      - api-design
+      - frontend-web
+      - nextjs-15
+      - react-19
+      - typescript
+      - playwright
+  data-source-bigquery:
+    description: Read-only or governed BigQuery source adapter profile.
+    data_source:
+      provider: bigquery
+      dialects: [google_standard_sql]
+    skills:
+      - data-source-adapters
+      - data-contracts
+      - data-loading
+  data-source-postgresql:
+    description: PostgreSQL source adapter profile using logical API contracts.
+    data_source:
+      provider: postgresql
+      dialects: [postgresql]
+    skills:
+      - data-source-adapters
+      - data-contracts
+      - data-loading
+  visual-delivery:
+    description: Explicitly requested visual, diagram, or video-to-website work.
+    skills:
+      - nate-frontend-design
+      - nate-excalidraw-diagram
+      - nate-excalidraw-visuals
+      - nate-video-to-website
+
+skills:
+  - id: analytical-dashboard-architecture
+    path: .codex/skills/analytical-dashboard-architecture/SKILL.md
+    native_path: skills/engineering/analytical_dashboard_architecture.md
+    source: NegritaOS-native
+    profiles: [analytical-dashboard]
+    scopes: [root, backend, frontend, data_analytics]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: data-source-adapters
+    path: .codex/skills/data-source-adapters/SKILL.md
+    native_path: skills/engineering/data_source_adapter_governance.md
+    source: NegritaOS-native
+    profiles: [analytical-dashboard, data-source-bigquery, data-source-postgresql]
+    scopes: [root, backend, data_analytics]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: dashboard-architecture
+    path: .codex/skills/dashboard-architecture/SKILL.md
+    source: NegritaOS-native
+    profiles: [analytical-dashboard]
+    scopes: [root, frontend]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: frontend-web
+    path: .codex/skills/frontend-web/SKILL.md
+    source: NegritaOS-native
+    profiles: [analytical-dashboard, fastapi-nextjs]
+    scopes: [root, frontend]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: api-design
+    path: .codex/skills/api-design/SKILL.md
+    source: NegritaOS-native
+    profiles: [analytical-dashboard, fastapi-nextjs]
+    scopes: [root, backend]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: data-contracts
+    path: .codex/skills/data-contracts/SKILL.md
+    source: NegritaOS-native
+    profiles: [analytical-dashboard, data-source-bigquery, data-source-postgresql]
+    scopes: [root, backend, data_analytics]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: docs-alignment
+    path: .codex/skills/docs-alignment/SKILL.md
+    source: NegritaOS-native
+    profiles: [analytical-dashboard]
+    scopes: [root]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: commit-hygiene
+    path: .codex/skills/commit-hygiene/SKILL.md
+    source: skills/skills_engram/commit-hygiene/SKILL.md
+    profiles: [analytical-dashboard]
+    scopes: [root]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: pr-review-deep
+    path: .codex/skills/pr-review-deep/SKILL.md
+    source: skills/skills_engram/pr-review-deep/SKILL.md
+    profiles: [analytical-dashboard]
+    scopes: [root, backend, frontend, data_analytics]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: sdd-flow
+    path: .codex/skills/sdd-flow/SKILL.md
+    source: skills/skills_engram/sdd-flow/SKILL.md
+    profiles: [analytical-dashboard]
+    scopes: [root]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: branch-pr
+    path: .codex/skills/branch-pr/SKILL.md
+    source: skills/skills_engram/branch-pr/SKILL.md
+    profiles: [analytical-dashboard]
+    scopes: [root]
+    status: adapted
+    dependencies: []
+    side_effects: none
+  - id: testing-coverage
+    path: .codex/skills/testing-coverage/SKILL.md
+    source: skills/skills_engram/testing-coverage/SKILL.md
+    profiles: [analytical-dashboard]
+    scopes: [root, backend, frontend, data_analytics]
+    status: adapted
+    dependencies: []
+    side_effects: none
+  - id: playwright
+    path: .codex/skills/playwright/SKILL.md
+    source: NegritaOS-native
+    profiles: [analytical-dashboard, fastapi-nextjs]
+    scopes: [root, frontend]
+    status: canonical
+    dependencies: [Playwright]
+    side_effects: browser_automation
+  - id: backend-service
+    path: .codex/skills/backend-service/SKILL.md
+    source: NegritaOS-native
+    profiles: [fastapi-nextjs]
+    scopes: [root, backend]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: nextjs-15
+    path: .codex/skills/nextjs-15/SKILL.md
+    source: NegritaOS-native
+    profiles: [fastapi-nextjs]
+    scopes: [root, frontend]
+    status: canonical
+    dependencies: [Node.js, Next.js 15]
+    side_effects: none
+  - id: react-19
+    path: .codex/skills/react-19/SKILL.md
+    source: NegritaOS-native
+    profiles: [fastapi-nextjs]
+    scopes: [root, frontend]
+    status: canonical
+    dependencies: [React 19]
+    side_effects: none
+  - id: typescript
+    path: .codex/skills/typescript/SKILL.md
+    source: NegritaOS-native
+    profiles: [fastapi-nextjs]
+    scopes: [root, frontend]
+    status: canonical
+    dependencies: [TypeScript]
+    side_effects: none
+  - id: data-loading
+    path: .codex/skills/data-loading/SKILL.md
+    source: NegritaOS-native
+    profiles: [data-source-bigquery, data-source-postgresql]
+    scopes: [root, backend, data_analytics]
+    status: canonical
+    dependencies: []
+    side_effects: source_access
+  - id: nate-skill-builder
+    path: .codex/skills/nate-skill-builder/SKILL.md
+    source: skills/skill_nate/skill-builder/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: adapted
+    dependencies: []
+    side_effects: none
+  - id: nate-frontend-design
+    path: .codex/skills/nate-frontend-design/SKILL.md
+    source: skills/skill_nate/frontend-design-nate/SKILL.md
+    profiles: [visual-delivery]
+    scopes: [root, frontend]
+    status: adapted
+    dependencies: []
+    side_effects: none
+  - id: nate-excalidraw-diagram
+    path: .codex/skills/nate-excalidraw-diagram/SKILL.md
+    source: skills/skill_nate/excalidraw-diagram/SKILL (1).md
+    profiles: [visual-delivery]
+    scopes: [root]
+    status: adapted
+    dependencies: [Excalidraw]
+    side_effects: generated_visual
+  - id: nate-excalidraw-visuals
+    path: .codex/skills/nate-excalidraw-visuals/SKILL.md
+    source: skills/skill_nate/excalidraw-visuals/SKILL.md
+    profiles: [visual-delivery]
+    scopes: [root]
+    status: adapted
+    dependencies: [Node.js, KIE_AI_API_KEY]
+    side_effects: external_api_and_generated_visual
+  - id: nate-video-to-website
+    path: .codex/skills/nate-video-to-website/SKILL.md
+    source: skills/skill_nate/video-to-website/SKILL.md
+    profiles: [visual-delivery]
+    scopes: [root, frontend]
+    status: adapted
+    dependencies: [Node.js, ffmpeg, ffprobe, GSAP, Lenis]
+    side_effects: generated_frontend_artifact
+
+  - id: engram-architecture-guardrails
+    path: skills/skills_engram/architecture-guardrails/SKILL.md
+    source: skills/skills_engram/architecture-guardrails/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-branch-pr
+    path: skills/skills_engram/branch-pr/SKILL.md
+    source: skills/skills_engram/branch-pr/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-business-rules
+    path: skills/skills_engram/business-rules/SKILL.md
+    source: skills/skills_engram/business-rules/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-commit-hygiene
+    path: skills/skills_engram/commit-hygiene/SKILL.md
+    source: skills/skills_engram/commit-hygiene/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-cultural-norms
+    path: skills/skills_engram/cultural-norms/SKILL.md
+    source: skills/skills_engram/cultural-norms/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-dashboard-htmx
+    path: skills/skills_engram/dashboard-htmx/SKILL.md
+    source: skills/skills_engram/dashboard-htmx/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-docs-alignment
+    path: skills/skills_engram/docs-alignment/SKILL.md
+    source: skills/skills_engram/docs-alignment/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-gentleman-bubbletea
+    path: skills/skills_engram/gentleman-bubbletea/SKILL.md
+    source: skills/skills_engram/gentleman-bubbletea/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-memory-protocol
+    path: skills/skills_engram/memory-protocol/SKILL.md
+    source: skills/skills_engram/memory-protocol/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-plugin-thin
+    path: skills/skills_engram/plugin-thin/SKILL.md
+    source: skills/skills_engram/plugin-thin/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-pr-review-deep
+    path: skills/skills_engram/pr-review-deep/SKILL.md
+    source: skills/skills_engram/pr-review-deep/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-project-structure
+    path: skills/skills_engram/project-structure/SKILL.md
+    source: skills/skills_engram/project-structure/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-sdd-flow
+    path: skills/skills_engram/sdd-flow/SKILL.md
+    source: skills/skills_engram/sdd-flow/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-server-api
+    path: skills/skills_engram/server-api/SKILL.md
+    source: skills/skills_engram/server-api/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-testing-coverage
+    path: skills/skills_engram/testing-coverage/SKILL.md
+    source: skills/skills_engram/testing-coverage/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-tui-quality
+    path: skills/skills_engram/tui-quality/SKILL.md
+    source: skills/skills_engram/tui-quality/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-ui-elements
+    path: skills/skills_engram/ui-elements/SKILL.md
+    source: skills/skills_engram/ui-elements/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+  - id: engram-visual-language
+    path: skills/skills_engram/visual-language/SKILL.md
+    source: skills/skills_engram/visual-language/SKILL.md
+    profiles: []
+    scopes: [root]
+    status: reference_only
+    dependencies: []
+    side_effects: none
+
+source_mappings:
+  engram:
+    root: skills/skills_engram
+    policy: reference_only
+    reusable_concepts:
+      - architecture-guardrails
+      - branch-pr
+      - commit-hygiene
+      - cultural-norms
+      - docs-alignment
+      - memory-protocol
+      - plugin-thin
+      - pr-review-deep
+      - project-structure
+      - sdd-flow
+      - server-api
+      - testing-coverage
+      - ui-elements
+      - visual-language
+    stack_specific_reference_only:
+      - business-rules
+      - dashboard-htmx
+      - gentleman-bubbletea
+      - tui-quality
+    normalized_to:
+      architecture-guardrails: [analytical-dashboard-architecture, data-source-adapters]
+      project-structure: [analytical-dashboard-architecture]
+      server-api: [api-design, backend-service]
+      ui-elements: [frontend-web, dashboard-architecture]
+      visual-language: [frontend-web, nate-frontend-design]
+      cultural-norms: [analytical-dashboard-architecture]
+      plugin-thin: []
+  nate:
+    root: skills/skill_nate
+    policy: reference_only
+    canonical_namespace: nate-

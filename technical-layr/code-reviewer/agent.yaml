@@ -16,6 +16,8 @@ agent:
   skills:
     - skills/engineering/python_quality_review.md
     - skills/engineering/sql_bigquery_review.md
+    - skills/engineering/analytical_dashboard_architecture.md
+    - skills/engineering/data_source_adapter_governance.md
     - skills/engineering/reproducibility_review.md
     - skills/engineering/logging_config_review.md
     - skills/ml/model_review.md

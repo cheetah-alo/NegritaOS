@@ -105,6 +105,28 @@ Reusable patterns for common domains:
 | `pr-review-deep` | Deep technical review protocol |
 | `sdd-flow` | Spec-driven phased delivery workflow |
 
+### Federated Skill Profiles
+
+The canonical federation catalog is [skills/catalog.yaml](../../skills/catalog.yaml).
+It maps reference bundles from `skills/skills_engram/` and `skills/skill_nate/`
+to activable `.codex/skills/` wrappers and native `skills/engineering/` agent
+guidance.
+
+Project adapters declare `skill_profiles` and `data_source` in their canonical
+project registry. Use `scripts/validate_skill_catalog.py` before materializing
+an adapter and `scripts/materialize_project_skills.py <repo> --dry-run` before
+linking profile-selected skills. Raw imported bundles remain reference-only.
+
+The portable catalog synchronizer is:
+
+```bash
+python3 scripts/sync_skill_catalog.py --write
+```
+
+The legacy `skill-sync` skill remains available for existing project layouts;
+the portable synchronizer is the NegritaOS meta-repo path and does not require
+macOS Bash associative arrays.
+
 ## Directory Structure
 
 ```

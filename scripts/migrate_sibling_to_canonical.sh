@@ -16,6 +16,7 @@
 #   - <repo>/.codex/instruction-manifest.yaml -> symlink to canonical
 #   - <repo>/.codex/skills/AGENTS.md    -> symlink to canonical
 #   - <repo>/.codex/skills/negritaos-mode-router/ -> symlink to canonical
+#   - <repo>/.codex/skills/<profile-skill> -> symlink to canonical when profiles are declared
 #   - <repo>/.claude                    -> symlink to .codex
 #   - <repo>/.claude.bak.<ts>/          backup of pre-existing real .claude/
 #   - <repo>/.codex/<file>.preCanonical.<ts>  per-file backups when symlinking over real files
@@ -143,5 +144,8 @@ if [[ -f .gitignore ]] && ! grep -q '^\.claude\.bak\.' .gitignore; then
   printf '\n# NegritaOS adapter migration backups\n.claude.bak.*/\n.codex/**/*.preCanonical.*\n' >> .gitignore
   echo "  [gitignore] appended backup patterns"
 fi
+
+# Step 9 — Materialize profile-selected canonical skills when declared.
+python3 "${NEGRITAOS_ROOT}/scripts/materialize_project_skills.py" "${REPO}"
 
 echo "==> done: ${REPO}"

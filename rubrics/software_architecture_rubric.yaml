@@ -1,6 +1,6 @@
 rubric:
   name: software_architecture_rubric
-  version: "1.0.0"
+  version: "1.1.0"
   applicable_agents: [software_architect_agent]
   description: >
     Scores repository-start and architecture plans against maintainability,
@@ -21,6 +21,10 @@ rubric:
         - stack_matches_runtime_and_team
         - no_unjustified_framework_or_pattern
         - deployment_shape_is_known_or_assumption_is_marked
+        - data_source_provider_and_dialect_are_explicit
+        - source_of_truth_and_access_mode_are_documented
+        - physical_source_names_are_backend_owned
+        - logical_contract_is_stable_across_providers
     modular_boundaries:
       weight: 20
       gates:
@@ -28,6 +32,8 @@ rubric:
         - domain_logic_is_separated_from_io
         - adapters_are_explicit
         - public_entrypoints_are_identified
+        - frontend_backend_and_query_boundaries_are_explicit
+        - dialect_specific_logic_stays_inside_source_adapters
     testing_strategy:
       weight: 20
       gates:
@@ -35,6 +41,9 @@ rubric:
         - integration_tests_cover_adapters
         - contract_tests_cover_external_interfaces
         - smoke_test_or_cli_health_check_exists
+        - provider_adapter_compatibility_is_tested
+        - dashboard_connected_flows_have_browser_coverage
+        - test_counts_coverage_and_e2e_commands_are_reported
     documentation_onboarding:
       weight: 15
       gates:
@@ -42,6 +51,8 @@ rubric:
         - architecture_doc_exists_or_is_planned
         - adr_location_exists_for_decisions
         - runbook_exists_for_operations_when_needed
+        - physical_source_inventory_is_documented
+        - integration_branch_and_pr_evidence_are_documented
     operational_quality:
       weight: 15
       gates:
@@ -49,6 +60,8 @@ rubric:
         - structured_logging_policy_exists
         - error_handling_policy_exists
         - generated_outputs_and_sensitive_data_are_ignored
+        - provider_credentials_are_externalized
+        - read_only_access_is_enforced_when_declared
     maintainability_simplicity:
       weight: 10
       gates:
@@ -56,6 +69,7 @@ rubric:
         - naming_is_predictable
         - dependencies_are_justified
         - future_growth_path_is_clear
+        - provider_swap_does_not_change_frontend_contract
 
   output_format:
     - total_score

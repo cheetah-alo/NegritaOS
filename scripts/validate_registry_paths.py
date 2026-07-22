@@ -65,6 +65,11 @@ OPTIONAL_REFERENCE_MARKERS = (
     ">",
 )
 
+REFERENCE_ONLY_SOURCE_PREFIXES = (
+    "skills/skills_engram/",
+    "skills/skill_nate/",
+)
+
 
 def iter_source_files(root: Path) -> list[Path]:
     """Return governance files whose path references should be validated."""
@@ -137,6 +142,9 @@ def collect_missing_paths(root: Path) -> list[tuple[Path, int, str]]:
     """Collect missing path references with source file and line number."""
     missing: list[tuple[Path, int, str]] = []
     for source_path in iter_source_files(root):
+        relative_source = source_path.relative_to(root).as_posix()
+        if relative_source.startswith(REFERENCE_ONLY_SOURCE_PREFIXES):
+            continue
         try:
             text = source_path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
