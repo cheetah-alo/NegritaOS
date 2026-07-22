@@ -190,6 +190,11 @@ Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copi
 
 Each skill is a folder with a `SKILL.md` describing **when to trigger** and **what to do**.
 
+Federated skills from Engram and Nate are mapped in
+[skills/catalog.yaml](skills/catalog.yaml). Project registries select profiles
+such as `analytical-dashboard`, `data-source-bigquery`, or
+`data-source-postgresql`; raw imported bundles remain reference-only.
+
 ### 5.3 IDE-time commands (slash-commands)
 Under [.codex/commands/](.codex/commands/). Available as `/command-name` in any IDE client:
 
@@ -416,7 +421,9 @@ The sibling repo gets `.codex/project.yaml` (real file) and a `.gitignore` entry
 ### Add a new skill
 1. Decide layer: cognitive (`skills/<bucket>/<name>.md`) vs IDE (`.codex/skills/<name>/SKILL.md`).
 2. Follow [.codex/skills/skill-creator/SKILL.md](.codex/skills/skill-creator/SKILL.md) — frontmatter is mandatory.
-3. Reference it from any agent in [integrator.yaml](integrator.yaml) under `skills:`.
+3. Register its path, scope, profile, dependencies, and side-effect policy in [skills/catalog.yaml](skills/catalog.yaml).
+4. Reference native agent guidance from any relevant agent in [integrator.yaml](integrator.yaml) under `skills:`.
+5. Validate with `python3 scripts/validate_skill_catalog.py` and synchronize the canonical profile section with `python3 scripts/sync_skill_catalog.py --write`.
 
 ### Add a new rule
 1. Create `<file>.md` under [rules/](rules/) (NegritaOS) or [.codex/rules/](.codex/rules/) (engineering).
@@ -444,6 +451,9 @@ The sibling repo gets `.codex/project.yaml` (real file) and a `.gitignore` entry
 |---|---|
 | [scripts/validate_alignment.py](scripts/validate_alignment.py) | Verifies NegritaOS ↔ every sibling adapter. Modes: default (all), `--only-meta`, `--sibling <path>`. **Run before every commit.** |
 | [scripts/validate_registry_paths.py](scripts/validate_registry_paths.py) | Verifies every path referenced in `integrator.yaml`, rubrics, templates, skills resolves on disk. |
+| [scripts/validate_skill_catalog.py](scripts/validate_skill_catalog.py) | Validates federated skill IDs, frontmatter, profiles, sources, and project data-source declarations. |
+| [scripts/materialize_project_skills.py](scripts/materialize_project_skills.py) | Dry-runs or links profile-selected canonical skills into a sibling adapter with backups. |
+| [scripts/sync_skill_catalog.py](scripts/sync_skill_catalog.py) | Synchronizes federated profiles into the canonical `.codex/skills/AGENTS.md`. |
 | [scripts/bootstrap_project_adapter.sh](scripts/bootstrap_project_adapter.sh) | Creates project registry + memory home + `.codex/project.yaml`. |
 | [scripts/migrate_sibling_to_canonical.sh](scripts/migrate_sibling_to_canonical.sh) | Idempotent: turns any sibling repo into a symlink-based adapter. |
 

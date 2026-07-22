@@ -140,6 +140,10 @@ metaagent_router:
             - designing repo structure
             - defining modular architecture
             - setting quality gates before implementation
+            - designing dashboard architecture
+            - defining dashboard backend/frontend boundaries
+            - selecting a data source adapter
+            - defining BigQuery or PostgreSQL source routing
       trigger_signals:
         - review this code
         - PR review
@@ -165,6 +169,12 @@ metaagent_router:
         - data pipeline
         - technical debt
         - anti-patterns
+        - dashboard architecture
+        - dashboard source structure
+        - FastAPI dashboard
+        - Next.js dashboard
+        - PostgreSQL adapter
+        - data source adapter
       input_types:
         - Python file
         - SQL query

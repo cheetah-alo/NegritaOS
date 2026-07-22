@@ -9,7 +9,13 @@ Usage:
     --repo <repo-path> \
     --archetypes <a,b> \
     --capabilities <a,b> \
-    --agents <a,b>
+    --agents <a,b> \
+    --integration-branch <branch> \
+    --skill-profiles <a,b> \
+    --data-provider <provider> \
+    --data-dialect <dialect> \
+    --data-source-of-truth <mode> \
+    --data-access <read_only|read_write>
 
 Creates:
   ~/.negritaos/memory/projects/<id>/
@@ -28,6 +34,12 @@ REPO_PATH=""
 ARCHETYPES=""
 CAPABILITIES=""
 AGENTS=""
+INTEGRATION_BRANCH=""
+SKILL_PROFILES=""
+DATA_PROVIDER=""
+DATA_DIALECT=""
+DATA_SOURCE_OF_TRUTH=""
+DATA_ACCESS=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -51,6 +63,30 @@ while [[ $# -gt 0 ]]; do
       AGENTS="$2"
       shift 2
       ;;
+    --integration-branch)
+      INTEGRATION_BRANCH="$2"
+      shift 2
+      ;;
+    --skill-profiles)
+      SKILL_PROFILES="$2"
+      shift 2
+      ;;
+    --data-provider)
+      DATA_PROVIDER="$2"
+      shift 2
+      ;;
+    --data-dialect)
+      DATA_DIALECT="$2"
+      shift 2
+      ;;
+    --data-source-of-truth)
+      DATA_SOURCE_OF_TRUTH="$2"
+      shift 2
+      ;;
+    --data-access)
+      DATA_ACCESS="$2"
+      shift 2
+      ;;
     --help|-h)
       usage
       exit 0
@@ -65,6 +101,12 @@ done
 
 if [[ -z "$PROJECT_ID" || -z "$REPO_PATH" || -z "$ARCHETYPES" || -z "$CAPABILITIES" || -z "$AGENTS" ]]; then
   usage >&2
+  exit 2
+fi
+
+if [[ -n "$DATA_PROVIDER$DATA_DIALECT$DATA_SOURCE_OF_TRUTH$DATA_ACCESS" ]] && \
+   [[ -z "$DATA_PROVIDER" || -z "$DATA_DIALECT" || -z "$DATA_SOURCE_OF_TRUTH" || -z "$DATA_ACCESS" ]]; then
+  echo "Data-source options must be provided together." >&2
   exit 2
 fi
 
@@ -151,6 +193,28 @@ for item in "${capability_items[@]}"; do
   printf '    - %s\n' "$item" >> "$REGISTRY_FILE"
 done
 
+if [[ -n "$INTEGRATION_BRANCH" ]]; then
+  printf '  integration_branch: %s\n' "$INTEGRATION_BRANCH" >> "$REGISTRY_FILE"
+fi
+
+if [[ -n "$SKILL_PROFILES" ]]; then
+  printf '  skill_profiles:\n' >> "$REGISTRY_FILE"
+  IFS=',' read -r -a skill_profile_items <<< "$SKILL_PROFILES"
+  for item in "${skill_profile_items[@]}"; do
+    printf '    - %s\n' "$item" >> "$REGISTRY_FILE"
+  done
+fi
+
+if [[ -n "$DATA_PROVIDER" ]]; then
+  cat >> "$REGISTRY_FILE" <<EOF
+  data_source:
+    provider: $DATA_PROVIDER
+    dialect: $DATA_DIALECT
+    source_of_truth: $DATA_SOURCE_OF_TRUTH
+    access: $DATA_ACCESS
+EOF
+fi
+
 cat >> "$REGISTRY_FILE" <<'EOF'
   agents:
 EOF
@@ -186,6 +250,28 @@ EOF
 for item in "${capability_items[@]}"; do
   printf '  - %s\n' "$item" >> "$ADAPTER_FILE"
 done
+
+if [[ -n "$INTEGRATION_BRANCH" ]]; then
+  printf 'integration_branch: %s\n' "$INTEGRATION_BRANCH" >> "$ADAPTER_FILE"
+fi
+
+if [[ -n "$SKILL_PROFILES" ]]; then
+  printf 'active_skill_profiles:\n' >> "$ADAPTER_FILE"
+  IFS=',' read -r -a skill_profile_items <<< "$SKILL_PROFILES"
+  for item in "${skill_profile_items[@]}"; do
+    printf '  - %s\n' "$item" >> "$ADAPTER_FILE"
+  done
+fi
+
+if [[ -n "$DATA_PROVIDER" ]]; then
+  cat >> "$ADAPTER_FILE" <<EOF
+data_source:
+  provider: $DATA_PROVIDER
+  dialect: $DATA_DIALECT
+  source_of_truth: $DATA_SOURCE_OF_TRUTH
+  access: $DATA_ACCESS
+EOF
+fi
 
 cat > "$OVERRIDES_FILE" <<EOF
 # Local Codex Adapter: $PROJECT_ID

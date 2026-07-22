@@ -34,6 +34,16 @@ project:
     - dashboard_qa
     - local_files
     - executive_presentation
+  skill_profiles:
+    - analytical-dashboard
+    - fastapi-nextjs
+    - data-source-bigquery
+  integration_branch: dev_ml
+  data_source:
+    provider: bigquery
+    dialect: google_standard_sql
+    source_of_truth: governed_remote_source
+    access: read_only
   agents:
     - code_review_agent
     - software_architect_agent
