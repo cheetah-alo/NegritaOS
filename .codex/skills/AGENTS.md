@@ -20,6 +20,7 @@ Use these skills for detailed patterns on-demand:
 | `business-rules` | Deterministic and traceable business-rule guidance across backend, frontend, and analytics | [SKILL.md](business-rules/SKILL.md) |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
 | `document-control` | Govern deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown under timestamped `documents/` outputs | [SKILL.md](document-control/SKILL.md) |
+| `rule-model-documentation` | Create CQI-style documents for deterministic rule-based models, scoring layers, boosters, persistence, validation, plots, and recommendations | [SKILL.md](rule-model-documentation/SKILL.md) |
 | `tfm-academic-reviewer` | Standardized final TFM reviewer with 0–4 scoring, 1–10 grade, and benchmark calibration | [SKILL.md](tfm-academic-reviewer/SKILL.md) |
 | `tfm-research-advisor` | Propose differentiated TFM titles from recent papers, validated public data, and a read-only proposal corpus | [SKILL.md](tfm-research-advisor/SKILL.md) |
 | `jira-bulk-import-hierarchy` | Create, validate, repair, and document Jira Cloud bulk-import CSVs for issue hierarchies and rescue imports | [SKILL.md](jira-bulk-import-hierarchy/SKILL.md) |
@@ -63,6 +64,7 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 | `data-source-postgresql` | `data-source-adapters`, `data-contracts`, `data-loading` |
 | `elal-eda-governance` | `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
 | `fastapi-nextjs` | `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
+| `rule-model-documentation` | `rule-model-documentation` |
 | `visual-delivery` | `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
 ## Auto-invoke Skills
@@ -90,6 +92,7 @@ When performing these actions, invoke the corresponding skill first:
 | Create or edit analytical PPTs, finding decks, or metric-driven storylines | `analytics-storytelling-deck` |
 | Convert EDA plots, cohorts, funnels, segments, or outcome rates into claims | `eda-analytics-findings` |
 | Convert model metrics, thresholds, lift, SHAP, or leakage review into claims | `ml-model-findings` |
+| Create documentation for rule-based models, rules engines, scoring, boosters, persistence, sticky logic, decay, sensitivity analysis, or validation plots | `rule-model-documentation` |
 | Convert business proposals, ROI narratives, feasibility notes, or decision briefs into claims | `business-proposal-findings` |
 | Convert research papers, abstracts, or literature reviews into claims | `research-paper-findings` |
 | Create or update deliverable documents, PPT/PDF/DOCX/HTML artifacts, or Notion/Confluence-ready markdown | `document-control` |
