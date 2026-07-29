@@ -118,6 +118,17 @@ rules:
       - logging
     version: 1.0.0
 
+  - id: analyses-structure
+    path: rules/analyses-structure.md
+    domain: analysis-governance
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - negritaos-router
+      - data-contracts
+      - data-sql-governance
+    version: 1.0.0
+
   - id: notebooks
     path: rules/notebooks.md
     domain: governance
