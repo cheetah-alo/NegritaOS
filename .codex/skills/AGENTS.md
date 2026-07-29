@@ -20,6 +20,9 @@ Use these skills for detailed patterns on-demand:
 | `business-rules` | Deterministic and traceable business-rule guidance across backend, frontend, and analytics | [SKILL.md](business-rules/SKILL.md) |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
 | `document-control` | Govern deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown under timestamped `documents/` outputs | [SKILL.md](document-control/SKILL.md) |
+| `tfm-academic-reviewer` | Standardized final TFM reviewer with 0–4 scoring, 1–10 grade, and benchmark calibration | [SKILL.md](tfm-academic-reviewer/SKILL.md) |
+| `tfm-research-advisor` | Propose differentiated TFM titles from recent papers, validated public data, and a read-only proposal corpus | [SKILL.md](tfm-research-advisor/SKILL.md) |
+| `jira-bulk-import-hierarchy` | Create, validate, repair, and document Jira Cloud bulk-import CSVs for issue hierarchies and rescue imports | [SKILL.md](jira-bulk-import-hierarchy/SKILL.md) |
 | `dashboard-architecture` | Enforce maintainable modular dashboard architecture and forbid monolithic dashboard HTML as final source | [SKILL.md](dashboard-architecture/SKILL.md) |
 | `analytical-dashboard-architecture` | Provider-neutral boundaries and quality gates for data-backed dashboards | [SKILL.md](analytical-dashboard-architecture/SKILL.md) |
 | `data-source-adapters` | BigQuery, PostgreSQL, and provider-neutral source adapter governance | [SKILL.md](data-source-adapters/SKILL.md) |
@@ -52,9 +55,13 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 
 | Profile | Skills |
 |---|---|
+| `academic-tfm-research` | `tfm-research-advisor` |
+| `academic-tfm-review` | `tfm-academic-reviewer` |
 | `analytical-dashboard` | `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `docs-alignment`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
-| `data-source-bigquery` | `data-source-adapters`, `data-contracts`, `data-loading` |
+| `analytical-eda` | `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage`, `docs-alignment` |
+| `data-source-bigquery` | `data-source-adapters`, `bigquery-analysis-governance`, `data-contracts`, `data-loading` |
 | `data-source-postgresql` | `data-source-adapters`, `data-contracts`, `data-loading` |
+| `elal-eda-governance` | `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
 | `fastapi-nextjs` | `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
 | `visual-delivery` | `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
@@ -69,6 +76,8 @@ When performing these actions, invoke the corresponding skill first:
 | Task references prior decisions, open bugs, or ongoing features | `memory-protocol` |
 | Before ending a substantive session | `memory-protocol` |
 | Creating or updating repository documentation | `docs-alignment` |
+| Starting a new or migrated exploratory analysis | `analytical-eda-governance` |
+| Starting a new or migrated BigQuery analysis or source-quality preflight | `bigquery-analysis-governance` |
 | Creating or updating README, AGENTS, runbooks, ADRs, rules, skills, prompts, or templates | `docs-alignment` |
 | Documenting behavior, workflows, contracts, APIs, architecture, setup, operations, or governance changes | `docs-alignment` |
 | Reviewing documentation consistency | `docs-alignment` |
@@ -84,6 +93,9 @@ When performing these actions, invoke the corresponding skill first:
 | Convert business proposals, ROI narratives, feasibility notes, or decision briefs into claims | `business-proposal-findings` |
 | Convert research papers, abstracts, or literature reviews into claims | `research-paper-findings` |
 | Create or update deliverable documents, PPT/PDF/DOCX/HTML artifacts, or Notion/Confluence-ready markdown | `document-control` |
+| Review a TFM PDF, prepare a tribunal report, or calibrate an academic score against benchmark theses | `tfm-academic-reviewer` |
+| Investigate or propose new TFM titles, research gaps, public datasets, or publication-oriented thesis topics | `tfm-research-advisor` |
+| Create, validate, repair, or document Jira Cloud bulk-import CSVs, issue hierarchies, or rescue imports | `jira-bulk-import-hierarchy` |
 | Create or modify dashboards, dashboard HTML, BI-style frontend pages, chart-heavy report UIs, or dashboard generators | `dashboard-architecture` |
 | Design or modify data-backed dashboard boundaries, provider routing, or logical dashboard contracts | `analytical-dashboard-architecture` |
 | Change BigQuery, PostgreSQL, or other data-source adapters and physical object routing | `data-source-adapters` |

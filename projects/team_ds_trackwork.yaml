@@ -1,0 +1,87 @@
+project:
+  id: team_ds_trackwork
+  name: "Team DS Leadership Workspace"
+  version: "1.0.0"
+  description: >
+    OneDrive-backed Team Data Scientist leadership workspace for goals,
+    objectives, project tracking, requirements, Jira activity, onboarding,
+    envisioning material, audit coverage, completed work, planned work, and
+    delivery alignment. This workspace is a planning/evidence hub, not a
+    source-code repository.
+  local_paths:
+    primary: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist"
+    trackwork: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist/TrackWork"
+    track_projects: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist/Track de Proj"
+    jira_inputs: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist/Jira_dashboard_inputs"
+    objectives: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist/ObjetivosDemandadosCQISense"
+    planning: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist/PlanningTeamEnvisioning"
+    onboarding: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist/OnboardingDoc"
+  memory_home: "~/.negritaos/memory/projects/team_ds_trackwork"
+  archetypes:
+    - leadership_planning
+    - executive_delivery
+    - operations_tracking
+  capabilities:
+    - leadership_planning
+    - roadmap_tracking
+    - jira_tracking
+    - okr_alignment
+    - requirements_tracking
+    - technical_documentation
+    - spreadsheet_review
+    - pdf_review
+    - docx_review
+    - evidence_inventory
+    - local_files
+  agents:
+    - team_lead_ds_agent
+    - decision_support_agent
+    - technical_writer_agent
+    - presentation_agent
+    - data_quality_sentinel_agent
+    - consulting_delivery_controller_agent
+  codex_profiles:
+    - review
+    - analysis-run
+  mode_map:
+    planning: LP
+    roadmap: LP
+    okr_alignment: LP
+    jira_tracking: LP
+    requirements_tracking: LP
+    escalation: LP
+    decision_memo: TD
+    writeup: TD
+    evidence_inventory: DQ
+    spreadsheet_review: DQ
+    deck: EP
+    executive_summary: EP
+  expected_outputs:
+    - task_register
+    - roadmap
+    - okr_alignment_summary
+    - jira_activity_summary
+    - requirements_register
+    - decision_memo
+    - evidence_matrix
+    - executive_summary
+    - executive_presentation
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  related_projects:
+    - proj_data_analytics
+    - hot_onedrive_workspace
+    - hot_dashboard
+    - elal_journey_dashboard
+    - ds_onedrive_workspace
+  notes:
+    - "Workspace root is not a Git repository; do not assume git operations are available here."
+    - "This is the Team Lead DS tracking hub for goals, objectives, what was done, what remains, requirements, Jira activity, onboarding, envisioning, and delivery alignment."
+    - "Default to LP mode and team_lead_ds_agent for planning, roadmap, OKR, prioritization, escalation, dependency, or work-tracking requests."
+    - "Use TD mode for structured bitacora updates, decision memos, leadership summaries, or requirement narratives."
+    - "Use DQ mode for CSV/XLSX inventory, activity reconciliation, evidence completeness, or traceability checks."
+    - "Treat existing PDFs, DOC/DOCX, CSVs, and synced OneDrive artifacts as evidence; do not move, delete, rename, normalize, or overwrite them unless explicitly requested."
+    - "Apply document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating an existing user-owned artifact."
+    - "When summarizing work status, separate completed work, in-progress work, blocked work, pending decisions, dependencies, and objective alignment."

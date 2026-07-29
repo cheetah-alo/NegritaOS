@@ -1,0 +1,27 @@
+version: 1
+analysis_profile: analytical-eda
+
+grain:
+  entity: event
+  key_columns: [logical_event_id]
+  expected_cardinality: one_row_per_event
+  join_expectations:
+    - left: events
+      right: calls
+      relationship: many_to_one
+
+timestamps:
+  event_time: logical_event_time
+  source_capture_time: logical_source_capture_time
+  bq_loaded_at: logical_bq_loaded_at
+  timezone: UTC
+  latency_definition: bq_loaded_at_minus_source_capture_time
+  freshness_definition: now_minus_latest_bq_loaded_at
+
+latency_sla:
+  p95_minutes: 60
+
+status:
+  missing_capture_time: NOT_APPLICABLE
+  missing_load_time: CONTRACT_INCOMPLETE
+  invalid_latency: CONTRACT_INCOMPLETE

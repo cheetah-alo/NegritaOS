@@ -1,0 +1,151 @@
+rubric:
+  name: academic_tfm_reviewer_rubric
+  version: "1.0.0"
+  applicable_agents: [tfm_evaluator_agent]
+  description: >
+    Operational rubric for final Master's Thesis reviews. It aligns the local
+    rubric_v1_light guidance with NegritaOS academic and UVI review contracts
+    without treating benchmark grades as ground truth.
+
+  canonical_sources:
+    external_local: "project.local_paths.tools/TFM_Modelos/rubric_v1_light.md"
+    native_gate: rubrics/academic_tfm_rubric.yaml
+    applied_master_context: rubrics/uvi_master_rubric.yaml
+    missing_source_note: >
+      The requested rubric_v1_2025_full.md was not present in the configured
+      benchmark directory during implementation. Do not claim to have loaded it.
+
+  evidence_policy:
+    primary_document: uploaded_thesis
+    page_references_required_for: [errors, writing_feedback, figures, tables, claims]
+    missing_section_text: "Not enough information in the uploaded PDF to evaluate this section reliably."
+    no_claim_without_evidence: true
+    distinguish: [observation, evidence, inference, recommendation]
+
+  scoring:
+    detailed_scale: 0-4
+    final_scale: 1-10
+    table_criteria:
+      literature_review:
+        label: Literature Review
+        weight: 0.25
+        composed_of: [theoretical_review, state_of_art, citation_quality]
+        anchors:
+          4: "Current, relevant, deep, and comparative literature positioning with consistent citations."
+          3: "Relevant literature and a usable state of the art, with limited depth or citation gaps."
+          2: "Superficial, outdated, weakly integrated, or inconsistently cited literature."
+          1: "Minimal or largely unrelated literature with no credible research positioning."
+          0: "No usable theoretical or literature foundation."
+      research_design:
+        label: Research Design
+        weight: 0.25
+        composed_of: [problem_objectives_hypotheses, methodology, validation_design]
+        anchors:
+          4: "Problem, variables, objectives, hypotheses, data, method, and validation form a coherent research design."
+          3: "The design is coherent with minor gaps in justification, alternatives, or scope."
+          2: "The design is partially coherent but has material alignment or validation weaknesses."
+          1: "Objectives, data, and method are fundamentally disconnected or unsupported."
+          0: "No interpretable research design is presented."
+      technical_quality:
+        label: Technical Quality
+        weight: 0.30
+        composed_of: [data_analysis, model_evaluation, results_integration, reproducibility]
+        anchors:
+          4: "Technical choices are correct, justified, reproducible, and evaluated with problem-appropriate metrics and baselines."
+          3: "The implementation and evaluation are substantially sound with bounded technical gaps."
+          2: "Technical work is plausible but metrics, validation, leakage, reproducibility, or interpretation need revision."
+          1: "Technical evidence is insufficient, invalid, or not connected to the claims."
+          0: "No assessable technical contribution or results."
+      academic_writing:
+        label: Academic Writing
+        weight: 0.20
+        composed_of: [structure, writing, figures_tables, references]
+        anchors:
+          4: "Clear academic structure, precise language, well-contextualized visuals, and consistent references."
+          3: "Readable and structured work with limited presentation, grammar, or citation corrections."
+          2: "Repeated writing, structure, visual, or citation issues reduce academic clarity."
+          1: "Writing or presentation substantially obstructs evaluation."
+          0: "The document is not academically interpretable."
+    final_grade:
+      formula: "round(1 + 9 * weighted_average_score / 4, 1)"
+      weights_must_sum_to: 1.0
+      rounding: "Use one decimal. Do not round upward to improve the result."
+      critical_failures:
+        - "Confirmed leakage or invalid validation that materially invalidates the results."
+        - "Inaccessible or undefined data presented as if it were reproducible evidence."
+        - "Conclusions materially overclaim the reported evidence."
+
+  benchmark_calibration:
+    purpose: tone_and_relative_score_calibration_only
+    grades_are_ground_truth: false
+    benchmark_average_column: "Use N/D unless numeric benchmark scores are explicitly available."
+    works:
+      excellent:
+        - id: tfm_olivares_group4
+          file_hint: TFM_Olivares_Grupo4.pdf
+        - id: tfm_viu_javier_presmanes
+          file_hint: TFM___VIU___Javier_Presmanes_Cardama.pdf
+        - id: tfm_final_delange
+          file_hint: TFM_FINAL-DELANGEMUNOZ_DAVID.pdf
+      lower_quality:
+        - id: tfm_sergi_puigmal
+          file_hint: "2604226259 - Sergi Puigmal Miranda - *.pdf"
+        - id: tfm_javier_cobas
+          file_hint: "2516363723 - Javier Cobas Silvestre - *.pdf"
+    rules:
+      - "Analyze the uploaded thesis first."
+      - "Use benchmarks only to calibrate tone and relative severity."
+      - "Never copy benchmark wording, arguments, scores, or conclusions."
+      - "Never treat a benchmark label as an automatic grade."
+
+  output:
+    language: match_uploaded_thesis_or_user_request
+    format: notion_compatible_markdown
+    tone: concise_formal_structured_analytically_rigorous
+    forbidden: [emojis, unsupported_authorship_accusations, generic_praise]
+    required_sections:
+      - scoring_table
+      - section_by_section_feedback
+      - five_key_issues_with_pages
+      - ai_text_indicators_with_rewrites
+      - discussion_vs_state_of_art_five_points
+      - five_reflective_questions_with_grounded_answers
+      - five_technical_mastery_questions_with_grounded_answers
+      - model_metrics_summary
+      - recommendations
+      - final_academic_review
+    scoring_table_columns: [criterion, score_0_to_4, benchmark_avg, justification]
+    section_feedback:
+      - introduction_and_background
+      - problem_definition_and_hypothesis
+      - objectives_and_methodology
+      - state_of_art
+      - theoretical_information
+      - methodology_and_justification
+      - model_development
+      - results_and_discussion
+      - conclusions_and_future_work
+      - references_apa_or_ieee
+      - academic_and_technical_value_of_business_segmentation
+    final_academic_review_table:
+      - bibliography_and_citation_style
+      - figures_and_tables
+      - research_integration
+      - key_errors
+      - reflective_questions
+      - technical_mastery_questions
+      - recommendations
+      - final_grade_1_to_10
+
+  special_handling:
+    ai_text_detection: >
+      Report only linguistic indicators such as formulaic repetition or generic
+      phrasing. State explicitly that these are not proof of AI authorship.
+    model_metrics: >
+      Select metrics from the task type. Check baselines, class imbalance,
+      splits, leakage, calibration, stability, drift, uncertainty, and business
+      impact when applicable. Do not force accuracy, precision, recall, or F1
+      onto regression, clustering, or anomaly-detection work.
+    questions: >
+      Answers are grounded model answers derived from the thesis evidence, not
+      claims that the student gave those answers.

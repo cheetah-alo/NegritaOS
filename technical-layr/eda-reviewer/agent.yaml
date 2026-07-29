@@ -16,11 +16,14 @@ agent:
   skills:
     - skills/ml/eda_review.md
     - skills/ml/eda_analytics_findings.md
+    - skills/engineering/analytical_eda_governance.md
+    - skills/engineering/bigquery_analysis_governance.md
     - skills/transversal/evidence_framing.md
 
   rules:
     inherit: rules/global/global_rules.yaml
     domain: rules/ml/ml_rules.yaml
+    analysis_governance: rules/analysis/eda_governance_rules.yaml
     constraints:
       - every_plot_must_have_operational_takeaway
       - every_business_plot_must_state_population_denominator_and_support
@@ -31,6 +34,9 @@ agent:
       - class_distribution_must_be_reviewed_before_modeling
       - correlation_analysis_must_distinguish_spurious_from_meaningful
       - feature_cardinality_issues_must_be_flagged
+      - source_quality_preflight_is_explicit_for_new_or_migrated_bigquery_analysis
+      - grain_and_cardinality_are_checked
+      - ingestion_latency_and_freshness_are_separate
 
   templates:
     eda_report: templates/eda_report_template.md

@@ -17,6 +17,8 @@ agent:
   skills:
     - skills/ml/model_review.md
     - skills/ml/eda_review.md
+    - skills/engineering/analytical_eda_governance.md
+    - skills/engineering/bigquery_analysis_governance.md
     - skills/ml/leakage_detection.md
     - skills/ml/explainability_review.md
     - skills/ml/operational_rule_extraction.md
@@ -24,12 +26,16 @@ agent:
   rules:
     inherit: rules/global/global_rules.yaml
     domain: rules/ml/ml_rules.yaml
+    analysis_governance: rules/analysis/eda_governance_rules.yaml
     constraints:
       - no_metric_dumping_without_interpretation
       - leakage_check_is_first_priority
       - imbalance_must_be_addressed_before_metric_claims
       - operational_rules_must_not_be_overclaimed
       - explainability_limits_must_be_stated
+      - source_quality_preflight_is_explicit_for_new_or_migrated_bigquery_analysis
+      - grain_and_cardinality_are_checked_before_model_claims
+      - ingestion_latency_and_freshness_are_reported_separately
 
   rubrics:
     - rubrics/model_review_rubric.yaml

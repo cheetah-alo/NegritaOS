@@ -36,6 +36,18 @@ project:
     - deck_review
     - evidence_inventory
     - local_files
+  skill_profiles:
+    - analytical-eda
+    - data-source-bigquery
+  data_source:
+    provider: bigquery
+    dialect: google_standard_sql
+    source_of_truth: governed_remote_source
+    access: read_only
+  analysis_governance:
+    phase: warn_first
+    scope: new_or_migrated_analyses_only
+    activation: only_when_running_bigquery_analysis
   agents:
     - consulting_delivery_controller_agent
     - decision_support_agent

@@ -57,6 +57,81 @@ negrita_os:
 
   agents:
 
+    consulting_delivery_controller_agent:
+      description: "Controls consulting delivery, evidence traceability, and Notion-first task governance."
+      persona:
+        - consulting_delivery_manager
+        - technical_project_controller
+        - evidence_governance_owner
+      skills:
+        - skills/business/business_proposal_findings.md
+        - skills/business/cqi_client_reporting.md
+        - skills/writing/notion_report.md
+        - skills/governance/risk_framing.md
+        - skills/transversal/evidence_framing.md
+        - skills/transversal/structured_reasoning.md
+        - skills/transversal/tldr_writer.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/business/business_rules.yaml
+        - rules/governance/governance_rules.yaml
+        - rules/writing/writing_rules.yaml
+      rubrics:
+        - rubrics/client_delivery_rubric.yaml
+        - rubrics/documentation_quality_rubric.yaml
+      templates:
+        - templates/notion_report_template.md
+        - templates/proposal_validation_template.md
+      output_modes:
+        - notion_project_hub
+        - consulting_task_register
+        - evidence_matrix
+        - risk_register
+        - decision_log
+      quality_gate:
+        - evidence_inference_assumption_are_separated
+        - tasks_have_owner_status_output_and_acceptance_criteria
+        - source_to_indicator_to_visualization_traceability_exists_when_data_scope_is_claimed
+
+    moneyflow_analyst_agent:
+      description: "Reviews MoneyFlow revenue analytics, billing anomalies, ARPU, and telecom revenue models."
+      persona:
+        - senior_data_scientist
+        - revenue_analytics_specialist
+        - telecom_ml_strategist
+      skills:
+        - skills/ml/model_review.md
+        - skills/ml/eda_review.md
+        - skills/ml/eda_analytics_findings.md
+        - skills/ml/ml_model_findings.md
+        - skills/business/business_proposal_findings.md
+        - skills/business/telecom_kpi_interpretation.md
+        - skills/transversal/structured_reasoning.md
+        - skills/transversal/evidence_framing.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/ml/ml_rules.yaml
+        - rules/business/business_rules.yaml
+        - rules/bussiness_awereness/telecom_rules.yaml
+      rubrics:
+        - rubrics/client_delivery_rubric.yaml
+        - rubrics/model_review_rubric.yaml
+      templates:
+        - templates/moneyflow_analysis_template.md
+        - templates/hot_client_report_template.md
+        - templates/model_review_report_template.md
+      output_modes:
+        - revenue_analysis_report
+        - arpu_segmentation_report
+        - billing_anomaly_incident
+        - forecast_brief
+        - executive_revenue_summary
+      quality_gate:
+        - metric_is_defined_with_business_context
+        - trend_has_baseline_for_comparison
+        - anomaly_has_reproducible_evidence
+        - forecast_includes_confidence_interval_or_stated_uncertainty
+
     presentation_agent:
       description: "Creates executive and technical presentations from analytical material."
       persona:
@@ -101,6 +176,39 @@ negrita_os:
         - recommendation_is_decision_oriented
         - appendix_separates_methodology_from_main_story
 
+    decision_support_agent:
+      description: "Structures complex technical decisions for senior leadership consumption."
+      persona:
+        - principal_data_scientist
+        - technical_program_lead
+        - analytical_decision_architect
+      skills:
+        - skills/transversal/structured_reasoning.md
+        - skills/executive/executive_summary.md
+        - skills/governance/risk_framing.md
+        - skills/transversal/evidence_framing.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/governance/governance_rules.yaml
+      rubrics:
+        - rubrics/task_quality_rubric.yaml
+      templates:
+        - templates/decision_memo_template.md
+        - templates/trade_off_matrix_template.md
+        - templates/option_analysis_template.md
+      output_modes:
+        - decision_memo
+        - trade_off_analysis
+        - option_comparison
+        - recommendation_brief
+      quality_gate:
+        - at_least_two_options_presented
+        - decision_criteria_defined
+        - trade_offs_are_explicit
+        - recommendation_references_criteria
+        - risks_of_recommended_option_are_stated
+        - assumptions_are_listed
+
     paper_review_agent:
       description: "Reviews, summarizes, and operationalizes academic papers."
       persona:
@@ -114,6 +222,7 @@ negrita_os:
         - skills/academic/citation_extraction.md
         - skills/academic/methodology_deconstruction.md
         - skills/academic/tfm_opportunity_mapping.md
+        - skills/academic/tfm_research_advisor.md
       rules:
         - rules/global/global_rules.yaml
         - rules/academic/academic_rules.yaml
@@ -121,6 +230,7 @@ negrita_os:
       rubrics:
         - rubrics/research_quality_rubric.yaml
         - rubrics/academic_relevance_rubric.yaml
+        - rubrics/tfm_research_advisor_rubric.yaml
       templates:
         - templates/paper_summary_template.md
         - templates/literature_review_card_template.md
@@ -136,6 +246,87 @@ negrita_os:
         - methodology_is_explained
         - limitations_are_explicit
         - relevance_to_user_domains_is_mapped
+      handoff:
+        can_feed_into:
+          - ai_trend_radar_agent
+          - tfm_research_advisor_agent
+          - tfm_evaluator_agent
+          - technical_writer_agent
+        context_fields_to_pass:
+          - paper_title
+          - core_methodology
+          - key_findings
+          - limitations
+          - tfm_relevance_score
+          - literature_evidence
+          - dataset_mentions_and_limitations
+          - research_gaps
+
+    tfm_research_advisor_agent:
+      description: "Proposes and ranks differentiated, data-backed TFM research topics."
+      persona:
+        - academic_research_advisor
+        - research_design_specialist
+        - applied_ai_researcher
+        - publication_readiness_reviewer
+      skills:
+        - skills/academic/tfm_research_advisor.md
+        - skills/academic/tfm_opportunity_mapping.md
+        - skills/academic/paper_synthesizer.md
+        - skills/academic/research_quality_review.md
+        - skills/academic/dataset_validation.md
+        - skills/academic/objective_alignment.md
+        - skills/academic/methodology_review.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/academic/academic_rules.yaml
+        - rules/governance/governance_rules.yaml
+      rubrics:
+        - rubrics/tfm_research_advisor_rubric.yaml
+        - rubrics/proposal_viability_rubric.yaml
+      templates:
+        - templates/tfm_topic_card_template.md
+      codex_skills:
+        - .codex/skills/tfm-research-advisor/SKILL.md
+      output_modes:
+        - tfm_topic_shortlist
+        - tfm_research_opportunity
+        - dataset_access_audit
+        - literature_gap_matrix
+      quality_gate:
+        - candidates_are_ranked_with_evidence
+        - each_candidate_has_at_least_five_traceable_papers
+        - dataset_owner_license_access_and_schema_are_reported
+        - proposal_corpus_overlap_or_unverified_status_is_reported
+        - research_question_hypothesis_and_objectives_are_measurable
+        - baseline_advanced_method_and_task_metrics_are_justified
+        - leakage_and_validation_design_are_explicit
+        - roadmap_covers_three_to_six_months
+        - eight_dimension_score_is_reported
+        - hard_failures_are_not_hidden_by_the_mean_score
+      input_types:
+        - domain_or_problem_description
+        - research_question
+        - proposal_corpus_path_or_inventory
+        - previous_proposal_documents
+        - paper_set_or_search_request
+        - dataset_candidate_or_source_url
+        - program_constraints
+        - duration_student_count_and_compute
+      handoff:
+        can_feed_into:
+          - proposal_validator_agent
+          - tfm_evaluator_agent
+          - technical_writer_agent
+          - presentation_agent
+        context_fields_to_pass:
+          - ranked_tfm_candidates
+          - literature_evidence
+          - dataset_access_evidence
+          - differentiation_matrix
+          - research_questions_and_hypotheses
+          - feasibility_scores
+          - blocking_gates
 
     tfm_evaluator_agent:
       description: "Evaluates master's thesis proposals, milestones, and final work."
@@ -144,6 +335,7 @@ negrita_os:
         - tribunal_reviewer
         - methodology_reviewer
       skills:
+        - skills/academic/tfm_academic_reviewer.md
         - skills/academic/tfm_evaluation.md
         - skills/academic/objective_alignment.md
         - skills/academic/methodology_review.md
@@ -153,12 +345,15 @@ negrita_os:
         - rules/global/global_rules.yaml
         - rules/academic/academic_rules.yaml
       rubrics:
+        - rubrics/academic_tfm_reviewer_rubric.yaml
         - rubrics/academic_tfm_rubric.yaml
         - rubrics/proposal_viability_rubric.yaml
       templates:
         - templates/tfm_milestone_review_template.md
         - templates/tribunal_report_template.md
         - templates/student_feedback_template.md
+      codex_skills:
+        - .codex/skills/tfm-academic-reviewer/SKILL.md
       output_modes:
         - section_by_section_review
         - tribunal_report
@@ -171,6 +366,81 @@ negrita_os:
         - methodology_matches_research_question
         - conclusions_are_supported_by_results
 
+    proposal_validator_agent:
+      description: "Validates TFM topic cards and research proposals before formal evaluation."
+      persona:
+        - academic_director
+        - methodology_reviewer
+        - research_design_specialist
+      skills:
+        - skills/academic/objective_alignment.md
+        - skills/academic/methodology_review.md
+        - skills/academic/dataset_validation.md
+        - skills/academic/tfm_research_advisor.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/academic/academic_rules.yaml
+      rubrics:
+        - rubrics/proposal_viability_rubric.yaml
+        - rubrics/tfm_research_advisor_rubric.yaml
+      templates:
+        - templates/proposal_validation_template.md
+      output_modes:
+        - proposal_assessment
+        - go_no_go_recommendation
+        - revision_checklist
+      quality_gate:
+        - title_reflects_actual_problem
+        - objectives_are_not_method_descriptions
+        - dataset_access_is_addressed
+        - dataset_legal_and_documented_status_is_explicit
+        - scope_is_appropriate_for_timeframe
+        - research_gap_is_identified
+        - differentiation_status_is_explicit
+      input_types:
+        - proposal_document
+        - abstract
+        - outline_with_objectives
+        - tfm_topic_shortlist
+        - tfm_research_opportunity
+      handoff:
+        can_feed_into: [tfm_evaluator_agent]
+        context_fields_to_pass:
+          - viability_verdict
+          - alignment_score
+          - blocking_issues
+          - recommended_revisions
+
+    eda_reviewer_agent:
+      description: "Reviews exploratory analysis structure, source quality, plot evidence, and data readiness."
+      persona:
+        - senior_data_scientist
+        - ml_governance_reviewer
+      skills:
+        - skills/ml/eda_review.md
+        - skills/ml/eda_analytics_findings.md
+        - skills/engineering/analytical_eda_governance.md
+        - skills/engineering/bigquery_analysis_governance.md
+        - skills/transversal/evidence_framing.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/ml/ml_rules.yaml
+        - rules/analysis/analysis_rules.yaml
+        - rules/analysis/eda_governance_rules.yaml
+      templates:
+        - templates/eda_report_template.md
+      output_modes:
+        - eda_review
+        - data_readiness_assessment
+        - feature_quality_report
+      quality_gate:
+        - source_quality_preflight_is_explicit
+        - grain_and_cardinality_are_checked
+        - latency_and_freshness_are_separate
+        - no_orphan_plots
+        - plot_evidence_contract_is_complete
+        - data_readiness_verdict_is_explicit
+
     model_review_agent:
       description: "Reviews ML models, EDA, explainability outputs, and operational readiness."
       persona:
@@ -181,6 +451,8 @@ negrita_os:
         - skills/ml/model_review.md
         - skills/ml/eda_review.md
         - skills/ml/eda_analytics_findings.md
+        - skills/engineering/analytical_eda_governance.md
+        - skills/engineering/bigquery_analysis_governance.md
         - skills/ml/ml_model_findings.md
         - skills/ml/explainability_review.md
         - skills/ml/leakage_detection.md
@@ -189,6 +461,7 @@ negrita_os:
         - rules/global/global_rules.yaml
         - rules/ml/ml_rules.yaml
         - rules/analysis/analysis_rules.yaml
+        - rules/analysis/eda_governance_rules.yaml
       rubrics:
         - rubrics/model_review_rubric.yaml
         - rubrics/eda_rubric.yaml
@@ -219,6 +492,7 @@ negrita_os:
       skills:
         - skills/engineering/python_quality_review.md
         - skills/engineering/sql_bigquery_review.md
+        - skills/engineering/bigquery_analysis_governance.md
         - skills/engineering/analytical_dashboard_architecture.md
         - skills/engineering/data_source_adapter_governance.md
         - skills/engineering/reproducibility_review.md
@@ -354,6 +628,37 @@ negrita_os:
         - timeline_is_realistic
         - risks_are_actionable
 
+    jira_import_agent:
+      description: "Prepares Jira Cloud bulk-import CSV hierarchies, validation mapping, rescue imports, and audit evidence."
+      persona:
+        - jira_import_operations_assistant
+        - delivery_task_structurer
+        - csv_hierarchy_quality_guard
+      skills:
+        - skills/strategic/jira_bulk_import_hierarchy.md
+        - skills/transversal/structured_reasoning.md
+        - skills/transversal/tldr_writer.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/governance/governance_rules.yaml
+      rubrics:
+        - rubrics/task_quality_rubric.yaml
+      templates:
+        - templates/jira_epic_template.md
+        - templates/jira_story_template.md
+      output_modes:
+        - jira_bulk_import_csv
+        - jira_rescue_import_csv
+        - jira_import_mapping
+        - jira_import_audit
+        - task_output
+      quality_gate:
+        - expected_validation_count_equals_child_issue_count
+        - parent_marker_rows_are_not_created_as_new_issues
+        - parent_field_maps_to_principal_never_parent_link
+        - rescue_csv_excludes_previously_created_issues
+        - audit_files_cover_created_failed_remaining_and_reference_rows
+
     ai_trend_radar_agent:
       description: "Tracks AI, ML, Blockchain, AI governance, papers, tools, and production trends."
       persona:
@@ -364,14 +669,17 @@ negrita_os:
         - skills/academic/paper_synthesizer.md
         - skills/academic/research_paper_findings.md
         - skills/academic/tfm_opportunity_mapping.md
+        - skills/academic/tfm_research_advisor.md
         - skills/governance/hype_vs_reality_review.md
         - skills/transversal/structured_reasoning.md
       rules:
         - rules/global/global_rules.yaml
+        - rules/academic/academic_rules.yaml
         - rules/governance/governance_rules.yaml
       rubrics:
         - rubrics/research_quality_rubric.yaml
         - rubrics/technology_maturity_rubric.yaml
+        - rubrics/tfm_research_advisor_rubric.yaml
       templates:
         - templates/weekly_ai_blockchain_digest_template.md
         - templates/paper_digest_template.md
@@ -387,6 +695,19 @@ negrita_os:
         - relevance_is_explained
         - implementation_maturity_is_classified
         - potential_tfm_topics_are_actionable
+        - tfm_topics_include_feasibility_assessment
+        - tfm_topics_include_literature_dataset_and_differentiation_gates
+      handoff:
+        can_feed_into:
+          - tfm_research_advisor_agent
+          - technical_writer_agent
+          - presentation_agent
+          - tfm_evaluator_agent
+        context_fields_to_pass:
+          - synthesized_trends
+          - recommended_papers
+          - tfm_topic_signals
+          - maturity_assessments
 
     data_quality_sentinel_agent:
       description: "Detects, documents, and escalates data quality issues."
@@ -395,6 +716,7 @@ negrita_os:
         - ml_governance_reviewer
         - operational_risk_monitor
       skills:
+        - skills/engineering/bigquery_analysis_governance.md
         - skills/governance/risk_framing.md
         - skills/transversal/evidence_framing.md
         - skills/transversal/structured_reasoning.md
@@ -431,6 +753,18 @@ negrita_os:
       paper_review:
         use_agent: paper_review_agent
 
+      new_tfm_titles:
+        use_agent: tfm_research_advisor_agent
+
+      tfm_research_advisor:
+        use_agent: tfm_research_advisor_agent
+
+      public_dataset_for_thesis:
+        use_agent: tfm_research_advisor_agent
+
+      publication_oriented_tfm:
+        use_agent: tfm_research_advisor_agent
+
       academic_evaluation:
         use_agent: tfm_evaluator_agent
 
@@ -466,6 +800,12 @@ negrita_os:
 
       jira_tasks:
         use_agent: team_lead_ds_agent
+
+      jira_bulk_import:
+        use_agent: jira_import_agent
+
+      jira_rescue_import:
+        use_agent: jira_import_agent
 
       roadmap:
         use_agent: team_lead_ds_agent

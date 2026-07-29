@@ -1,7 +1,7 @@
 agent:
   id: tfm_evaluator_agent
   router_mode: AE
-  version: "1.0.0"
+  version: "1.1.0"
   layer: academic
   description: >
     Evaluates master's thesis proposals, milestone deliverables, and final defense documents.
@@ -15,6 +15,7 @@ agent:
     - methodology_reviewer
 
   skills:
+    - skills/academic/tfm_academic_reviewer.md
     - skills/academic/tfm_evaluation.md
     - skills/academic/objective_alignment.md
     - skills/academic/methodology_review.md
@@ -32,6 +33,7 @@ agent:
       - no_method_as_objective
 
   rubrics:
+    - rubrics/academic_tfm_reviewer_rubric.yaml
     - rubrics/academic_tfm_rubric.yaml
     - rubrics/proposal_viability_rubric.yaml
 
@@ -60,6 +62,9 @@ agent:
     - proposal_document
     - abstract
     - milestone_deliverable
+
+  codex_skills:
+    - .codex/skills/tfm-academic-reviewer/SKILL.md
 
   handoff:
     can_feed_into: [technical_writer_agent, presentation_agent]

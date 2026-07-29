@@ -72,6 +72,9 @@ Reusable patterns for common domains:
 | `data-analytics` | Analytics and pipeline conventions |
 | `data-contracts` | Dataset schema contracts and validation |
 | `data-loading` | Data ingestion, source resolution, lineage |
+| `analytical-eda-governance` | Provider-neutral structure, manifests, contracts, immutable runs, and evidence gates for new or migrated EDA |
+| `bigquery-analysis-governance` | BigQuery source-quality preflight for grain, capture-to-load latency, freshness, SLA, and evidence |
+| `elal-eda-governance` | Opt-in ELAL EDA semantics for operational severity, proxy labels, blocked states, and third subtitle |
 | `document-control` | Timestamped `documents/` placement and manifest governance for deliverables |
 | `dashboard-architecture` | Maintainable modular dashboard architecture; forbids monolithic dashboard HTML as final source |
 | `analytics-storytelling-deck` | Finding-first analytical deck structure, baseline alignment, broad-to-narrow evidence zoom, and PPT readability standards |
@@ -79,6 +82,8 @@ Reusable patterns for common domains:
 | `ml-model-findings` | Convert model metrics, thresholds, lift, and explainability outputs into defensible findings |
 | `business-proposal-findings` | Convert proposals, ROI narratives, feasibility notes, and decision briefs into structured findings |
 | `research-paper-findings` | Convert papers, abstracts, and research reports into evidence-grounded findings |
+| `tfm-academic-reviewer` | Standardized final TFM review with rubric scoring, page evidence, and benchmark calibration |
+| `tfm-research-advisor` | Research and rank differentiated TFM titles with recent papers and legally validated public data |
 | `churn-recall-indicator-audit` | Standard audit and report workflow for recall, churn, DiscReq, retention, recontact, and account journey pressure metrics |
 | `mcp-server` | MCP server and tool design |
 | `dev-logging` | PhaseLogger, governance JSON, audit dirs |
@@ -116,6 +121,11 @@ Project adapters declare `skill_profiles` and `data_source` in their canonical
 project registry. Use `scripts/validate_skill_catalog.py` before materializing
 an adapter and `scripts/materialize_project_skills.py <repo> --dry-run` before
 linking profile-selected skills. Raw imported bundles remain reference-only.
+
+New or migrated BigQuery analyses must also pass the source-quality preflight
+defined by `bigquery-analysis-governance`. PostgreSQL, files, API, and academic
+projects do not activate that provider-specific gate unless their registry
+selects a compatible profile.
 
 The portable catalog synchronizer is:
 

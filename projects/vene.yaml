@@ -29,6 +29,9 @@ project:
     - team_lead_ds_agent
     - decision_support_agent
     - data_quality_sentinel_agent
+    - code_review_agent
+    - model_review_agent
+    - ai_trend_radar_agent
     - technical_writer_agent
     - presentation_agent
   codex_profiles:

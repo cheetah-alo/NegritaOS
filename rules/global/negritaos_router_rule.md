@@ -53,10 +53,13 @@ Before producing output, an agent MUST:
 | **CR** | Code / Repository Work | `code_review_agent` | code review, PR, refactor, SQL, pipeline, MLflow |
 | **EP** | Executive Presentation | `presentation_agent` | deck, slides, executive summary, board, one-pager |
 | **DQ** | Data Quality / Escalation | `data_quality_sentinel_agent` | data quality, schema drift, KPI anomaly, RCA, incident |
-| **RT** | Research / Trends / TFM Topics | `ai_trend_radar_agent` | AI trend, paper review, blockchain watch, TFM topic |
+| **RT** | Research / Trends / TFM Topics | `ai_trend_radar_agent` or specialist `tfm_research_advisor_agent` | AI trend, paper review, blockchain watch, TFM topic |
 
 Full trigger lists live in
 [core/orchestration/metaagent_router.yaml](../../core/orchestration/metaagent_router.yaml).
+Specific requests for new TFM titles, legal public datasets, proposal
+differentiation, or publication-oriented topics resolve to the academic
+`tfm_research_advisor_agent` specialist within RT.
 
 ### 2.1 Per-project `mode_map` override
 

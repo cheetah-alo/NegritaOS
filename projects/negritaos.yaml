@@ -13,6 +13,11 @@ project:
     - memory_governance
     - project_routing
     - documentation
+    - academic_research
+    - academic_tfm_support
+  skill_profiles:
+    - academic-tfm-review
+    - academic-tfm-research
   agents:
     - team_lead_ds_agent
     - decision_support_agent
@@ -20,6 +25,11 @@ project:
     - presentation_agent
     - code_review_agent
     - software_architect_agent
+    - tfm_evaluator_agent
+    - proposal_validator_agent
+    - paper_review_agent
+    - tfm_research_advisor_agent
+    - ai_trend_radar_agent
   expected_outputs:
     - decision_memo
     - operating_model
