@@ -86,8 +86,21 @@ profiles:
       - nate-excalidraw-diagram
       - nate-excalidraw-visuals
       - nate-video-to-website
+  rule-model-documentation:
+    description: CQI-style documentation for deterministic rule-based models and rules engines.
+    skills:
+      - rule-model-documentation
 
 skills:
+  - id: rule-model-documentation
+    path: .codex/skills/rule-model-documentation/SKILL.md
+    native_path: skills/engineering/rule_model_documentation.md
+    source: NegritaOS-native
+    profiles: [rule-model-documentation]
+    scopes: [root, data_analytics, model-review]
+    status: canonical
+    dependencies: [pdfinfo, pdftotext]
+    side_effects: read_only_style_calibration
   - id: tfm-research-advisor
     path: .codex/skills/tfm-research-advisor/SKILL.md
     native_path: skills/academic/tfm_research_advisor.md

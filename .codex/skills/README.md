@@ -76,6 +76,7 @@ Reusable patterns for common domains:
 | `bigquery-analysis-governance` | BigQuery source-quality preflight for grain, capture-to-load latency, freshness, SLA, and evidence |
 | `elal-eda-governance` | Opt-in ELAL EDA semantics for operational severity, proxy labels, blocked states, and third subtitle |
 | `document-control` | Timestamped `documents/` placement and manifest governance for deliverables |
+| `rule-model-documentation` | CQI-style documentation for deterministic rule-based models, scoring layers, boosters, lifecycle behavior, validation plots, and recommendations |
 | `dashboard-architecture` | Maintainable modular dashboard architecture; forbids monolithic dashboard HTML as final source |
 | `analytics-storytelling-deck` | Finding-first analytical deck structure, baseline alignment, broad-to-narrow evidence zoom, and PPT readability standards |
 | `eda-analytics-findings` | Convert EDA plots, cohorts, funnels, and segment summaries into defensible findings |
