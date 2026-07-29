@@ -16,18 +16,22 @@ agent:
 
   skills:
     - skills/governance/risk_framing.md
+    - skills/engineering/bigquery_analysis_governance.md
     - skills/transversal/evidence_framing.md
     - skills/transversal/structured_reasoning.md
 
   rules:
     inherit: rules/global/global_rules.yaml
     domain: rules/governance/governance_rules.yaml
+    analysis_governance: rules/analysis/eda_governance_rules.yaml
     constraints:
       - reproducible_evidence_required_before_escalation
       - affected_scope_must_be_quantified
       - business_impact_must_be_stated
       - resolution_criteria_required
       - severity_classification_required
+      - source_quality_evidence_is_reproducible_for_bigquery_analysis_incidents
+      - latency_and_freshness_are_not_conflated
 
   rubrics:
     - rubrics/data_quality_rubric.yaml

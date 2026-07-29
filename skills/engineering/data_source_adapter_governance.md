@@ -33,6 +33,36 @@ Each project declares:
 7. Documentation names the source, grain, refresh behavior, access mode,
    rollback/operational limits, and validation commands.
 
+## Analysis source-quality preflight
+
+When the selected provider is BigQuery and the request starts a new or migrated
+analysis, the analysis must declare and verify a source-quality contract before
+interpreting results. The contract uses logical fields and maps them to
+provider-specific columns inside the adapter or source manifest.
+
+Required declarations:
+
+- logical grain and unique/composite key;
+- expected cardinality and join relationships;
+- `event_time`;
+- `source_capture_time`, when the upstream system recorded the row;
+- `bq_loaded_at`, when BigQuery received the row;
+- timezone, precision, analysis window, and source coverage;
+- p95 latency SLA by source where one is available.
+
+Measure ingestion latency as `bq_loaded_at - source_capture_time`. Measure
+freshness separately as `now - max(bq_loaded_at)`. Event time must never
+silently stand in for source capture time. If capture time is unavailable,
+record `NOT_APPLICABLE`, identify the proxy and limitation, and keep the result
+provisional.
+
+The run evidence must include row count, distinct-key count, duplicate rate,
+join-cardinality checks, timestamp null/invalid counts, latency percentiles,
+freshness, SLA status, query/config hashes, and unresolved limitations. During
+the Warn-first adoption phase, incomplete evidence produces
+`CONTRACT_INCOMPLETE`; it does not produce a validated or production-ready
+claim.
+
 ## Provider notes
 
 - BigQuery: keep project/dataset/table refs and partition/cost controls in the

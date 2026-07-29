@@ -35,6 +35,7 @@ project:
     - local_files
     - executive_presentation
   skill_profiles:
+    - analytical-eda
     - analytical-dashboard
     - fastapi-nextjs
     - data-source-bigquery
@@ -44,10 +45,15 @@ project:
     dialect: google_standard_sql
     source_of_truth: governed_remote_source
     access: read_only
+  analysis_governance:
+    phase: warn_first
+    scope: new_or_migrated_analyses
+    activation: analysis_and_eda_modes_only
   agents:
     - code_review_agent
     - software_architect_agent
     - data_quality_sentinel_agent
+    - model_review_agent
     - technical_writer_agent
     - team_lead_ds_agent
     - presentation_agent

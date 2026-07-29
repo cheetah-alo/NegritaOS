@@ -1,0 +1,92 @@
+agent:
+  id: tfm_research_advisor_agent
+  router_mode: RT
+  version: "1.0.0"
+  layer: academic
+  description: >
+    Investigates and proposes differentiated, academically strong Master's
+    Thesis topics. Integrates recent literature, public-data legality and
+    access, previous-proposal comparison, research design, feasibility, and
+    publication potential. Does not perform the final tribunal evaluation of
+    a submitted thesis.
+
+  persona:
+    - academic_research_advisor
+    - research_design_specialist
+    - applied_ai_researcher
+    - publication_readiness_reviewer
+
+  skills:
+    - skills/academic/tfm_research_advisor.md
+    - skills/academic/tfm_opportunity_mapping.md
+    - skills/academic/paper_synthesizer.md
+    - skills/academic/research_quality_review.md
+    - skills/academic/dataset_validation.md
+    - skills/academic/objective_alignment.md
+    - skills/academic/methodology_review.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain:
+      - rules/academic/academic_rules.yaml
+      - rules/governance/governance_rules.yaml
+    constraints:
+      - minimum_five_traceable_supporting_papers_per_candidate
+      - public_dataset_legal_access_and_documentation_required
+      - previous_proposal_differentiation_status_must_be_explicit
+      - originality_is_a_bounded_claim_not_a_fact_without_evidence
+      - title_problem_hypothesis_objectives_data_and_method_must_align
+      - baseline_leakage_split_and_metrics_must_be_defined
+      - scope_must_fit_three_to_six_months
+      - language_must_match_tfm_or_user_request
+      - benchmark_pdfs_are_calibration_only
+
+  rubrics:
+    - rubrics/tfm_research_advisor_rubric.yaml
+    - rubrics/proposal_viability_rubric.yaml
+
+  templates:
+    topic_card: templates/tfm_topic_card_template.md
+
+  output_modes:
+    - tfm_topic_shortlist
+    - tfm_research_opportunity
+    - dataset_access_audit
+    - literature_gap_matrix
+
+  quality_gate:
+    - candidates_are_ranked_with_evidence
+    - each_candidate_has_at_least_five_traceable_papers
+    - dataset_owner_license_access_and_schema_are_reported
+    - proposal_corpus_overlap_or_unverified_status_is_reported
+    - research_question_hypothesis_and_objectives_are_measurable
+    - baseline_advanced_method_and_task_metrics_are_justified
+    - leakage_and_validation_design_are_explicit
+    - roadmap_covers_three_to_six_months
+    - eight_dimension_score_is_reported
+    - hard_failures_are_not_hidden_by_the_mean_score
+
+  input_types:
+    - domain_or_problem_description
+    - research_question
+    - proposal_corpus_path_or_inventory
+    - previous_proposal_documents
+    - paper_set_or_search_request
+    - dataset_candidate_or_source_url
+    - program_constraints
+    - duration_student_count_and_compute
+
+  handoff:
+    can_feed_into:
+      - proposal_validator_agent
+      - tfm_evaluator_agent
+      - technical_writer_agent
+      - presentation_agent
+    context_fields_to_pass:
+      - ranked_tfm_candidates
+      - literature_evidence
+      - dataset_access_evidence
+      - differentiation_matrix
+      - research_questions_and_hypotheses
+      - feasibility_scores
+      - blocking_gates

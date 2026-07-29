@@ -30,6 +30,7 @@ S6. `.codex/rules/negritaos-router.md` reachable; symlinks (if any) dereference
 S7. `.codex/skills/negritaos-mode-router/SKILL.md` reachable.
 S8. `.codex/commands/` reachable (file or symlink dir).
 S9. Declared `memory_home` exists on disk.
+S10. The canonical project -> registry -> agent/profile asset resolution passes.
 
 Exit codes:
     0 — all checks pass.
@@ -48,6 +49,11 @@ import re
 import subprocess
 from pathlib import Path
 from typing import Callable, Iterable
+
+try:
+    from .validate_config_resolution import validate_resolution
+except ImportError:
+    from validate_config_resolution import validate_resolution
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 HOME = Path.home()
@@ -100,6 +106,16 @@ def check_project_yaml() -> tuple[bool, str]:
     if not registry.exists():
         return _fail(f".codex/project.yaml -> missing registry {registry}")
     return _ok(f".codex/project.yaml -> projects/{project_id}.yaml")
+
+
+def check_config_resolution() -> tuple[bool, str]:
+    """Ensure the active project can resolve all declared agent assets."""
+    errors, warnings, project_id = validate_resolution(REPO_ROOT)
+    if errors:
+        first_error = errors[0]
+        return _fail(f"config resolution for {project_id}: {first_error}")
+    suffix = f" ({len(warnings)} warning(s))" if warnings else ""
+    return _ok(f"config resolution complete for {project_id}{suffix}")
 
 
 def check_local_overrides() -> tuple[bool, str]:
@@ -172,6 +188,7 @@ def check_memory_home() -> tuple[bool, str]:
 CHECKS = (
     check_claude_alignment,
     check_project_yaml,
+    check_config_resolution,
     check_local_overrides,
     check_manifest_router,
     check_canonical_router_rule,
@@ -325,6 +342,21 @@ def check_sibling(
             results.append(
                 _fail_s(project_id, f"memory_home missing on disk: {memory_home}")
             )
+
+    # S10 — full canonical resolution, using the sibling adapter as the entrypoint
+    errors, warnings, resolved_id = validate_resolution(
+        REPO_ROOT, project_yaml.resolve()
+    )
+    if errors:
+        results.append(
+            _fail_s(
+                project_id,
+                f"canonical config resolution failed for {resolved_id}: {errors[0]}",
+            )
+        )
+    else:
+        suffix = f" ({len(warnings)} warning(s))" if warnings else ""
+        results.append(_ok_s(project_id, f"canonical config resolution passed{suffix}"))
 
     return results
 

@@ -194,6 +194,28 @@ engineering_rules:
       dry_run_before_production: "Use --dry_run to estimate cost"
       action: "No result validation: P2. Production query without dry run: P1"
 
+    source_quality:
+      analysis_entry_preflight:
+        required: true
+        scope: "new_or_migrated_analysis"
+        checks:
+          - logical_grain_and_key
+          - expected_cardinality_and_join_fanout
+          - event_capture_and_bigquery_load_timestamps
+          - ingestion_latency_and_freshness_separately
+          - timestamp_null_negative_and_timezone_validation
+          - source_window_and_partition_coverage
+        adoption_phase: warn_first
+        incomplete_action: "Mark CONTRACT_INCOMPLETE; do not call the result validated or production-ready."
+      timestamp_semantics:
+        event_time_is_not_capture_time: true
+        missing_capture_time: "NOT_APPLICABLE with proxy, limitation, and owner; never silent fallback"
+        missing_load_time: "CONTRACT_INCOMPLETE"
+        invalid_or_negative_latency: "CONTRACT_INCOMPLETE"
+      evidence:
+        required: [row_count, distinct_key_count, duplicate_rate, latency_percentiles, freshness, query_hashes]
+        retain_source_quality_section_in_run_manifest: true
+
   infra:
     prioritize_reproducibility: true
     prioritize_environment_consistency: true

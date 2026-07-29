@@ -120,7 +120,7 @@ Every request is classified into exactly one mode (mixed requests run a pipeline
 | **CR** | Code / Repository Work | `code_review_agent` | Code review, PRs, refactors, SQL, pipelines, MLflow |
 | **EP** | Executive Presentation | `presentation_agent` | Decks, board summaries, one-pagers |
 | **DQ** | Data Quality / Escalation | `data_quality_sentinel_agent` | Schema drift, KPI anomaly, RCA, incidents |
-| **RT** | Research / Trends / TFM | `ai_trend_radar_agent` | AI trend digests, paper reviews, TFM topic scouting |
+| **RT** | Research / Trends / TFM | `ai_trend_radar_agent` + `tfm_research_advisor_agent` | AI trend digests, paper reviews, evidence-backed TFM topic proposals |
 
 Canonical definition: [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md).
 Full trigger keywords: [core/orchestration/metaagent_router.yaml](core/orchestration/metaagent_router.yaml).
@@ -149,6 +149,7 @@ All agents are defined in [integrator.yaml](integrator.yaml) with the same shape
 |---|---|
 | `presentation_agent` | Executive & technical decks. Quality gate: every slide has one core message; every chart has a takeaway. |
 | `paper_review_agent` | Digests, reviews and operationalizes academic papers. |
+| `tfm_research_advisor_agent` | Ranks differentiated TFM topics using recent papers, legal public data, and proposal comparison. |
 | `tfm_evaluator_agent` | Master's thesis proposals, milestones, tribunal reports. |
 | `model_review_agent` | ML model review with explicit leakage, split-strategy and target-definition checks. |
 | `code_review_agent` | Python / SQL / pipeline review, MLOps readiness, reproducibility. |
@@ -186,14 +187,19 @@ Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copi
 `nextjs-15`, `react-19`, `zod-4`, `tailwind-4`, `playwright`, `mcp-server`, `sdd-flow`,
 `commit-hygiene`, `pr-review-deep`, `memory-protocol`, `eda-reports`, `data-contracts`,
 `dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, `docs-alignment`,
-`document-control`, `dashboard-architecture`, …
+`document-control`, `dashboard-architecture`, `analytical-eda-governance`,
+`bigquery-analysis-governance`, …
 
 Each skill is a folder with a `SKILL.md` describing **when to trigger** and **what to do**.
 
 Federated skills from Engram and Nate are mapped in
 [skills/catalog.yaml](skills/catalog.yaml). Project registries select profiles
 such as `analytical-dashboard`, `data-source-bigquery`, or
-`data-source-postgresql`; raw imported bundles remain reference-only.
+`data-source-postgresql`. The academic profile `academic-tfm-review` provides
+the final TFM reviewer and read-only benchmark calibration. The
+`academic-tfm-research` profile proposes differentiated TFM titles with recent
+literature, validated public datasets, and explicit feasibility gates. Raw imported
+bundles remain reference-only.
 
 ### 5.3 IDE-time commands (slash-commands)
 Under [.codex/commands/](.codex/commands/). Available as `/command-name` in any IDE client:
@@ -321,9 +327,11 @@ Current sibling repos (registered under [projects/](projects/)):
 - `composer_local_dev` → `/Users/jackyb-cqi/repos/composer-local-dev`
 - `moneyflowlist` → `/Users/jackyb-cqi/repos/backup_repos/moneyflowlist`
 - `ml_automl_autogluon` → `/Users/jackyb-cqi/repos/autogloun/ml_automl_autogluon`
+- `ds_onedrive_workspace` → `/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds`
 - `elal_journey_dashboard` → `/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard`
 - `hot_archeotype_proposal_demo` → `/Users/jackyb-cqi/repos/hot_archeotype_proposal_demo`
 - `hot_onedrive_workspace` → `/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/HOT`
+- `team_ds_trackwork` → `/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist`
 - `ibc_fiber_network` → `/Users/jackyb-cqi/repos/ibc_fiber_network`
 - `proj_data_o` → `/Users/jackyb-cqi/repos/backup_repos/proj_data_o`
 - `vene` → `/Users/jackyb-cqi/repos/backup_repos/vene`
@@ -436,7 +444,10 @@ The sibling repo gets `.codex/project.yaml` (real file) and a `.gitignore` entry
 2. Add a row to the mode table in [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md).
 3. Add a routing keyword block in `routing_rules.if_user_asks_for`.
 4. Provide a rubric in [rubrics/](rubrics/) and a template in [templates/](templates/) if the output is novel.
-5. Validate: `python3 scripts/validate_registry_paths.py`.
+5. Add the agent to the relevant `projects/<project>.yaml` registry and declare
+   any selected `skill_profiles`.
+6. Validate: `python3 scripts/validate_config_resolution.py` and
+   `python3 scripts/validate_registry_paths.py`.
 
 ### Add a new rubric / template
 1. Create the YAML / MD file in the right folder.
@@ -450,8 +461,10 @@ The sibling repo gets `.codex/project.yaml` (real file) and a `.gitignore` entry
 | Script | What it does |
 |---|---|
 | [scripts/validate_alignment.py](scripts/validate_alignment.py) | Verifies NegritaOS ↔ every sibling adapter. Modes: default (all), `--only-meta`, `--sibling <path>`. **Run before every commit.** |
+| [scripts/validate_config_resolution.py](scripts/validate_config_resolution.py) | Resolves `.codex/project.yaml` → project registry → profiles/mode map/agents → integrator assets → catalog and wrappers. **Run before answering or committing config changes.** |
 | [scripts/validate_registry_paths.py](scripts/validate_registry_paths.py) | Verifies every path referenced in `integrator.yaml`, rubrics, templates, skills resolves on disk. |
 | [scripts/validate_skill_catalog.py](scripts/validate_skill_catalog.py) | Validates federated skill IDs, frontmatter, profiles, sources, and project data-source declarations. |
+| [scripts/validate_source_quality_contract.py](scripts/validate_source_quality_contract.py) | Validates logical grain, keys, timestamp roles, latency/freshness semantics, SLA, and source-quality evidence for new or migrated BigQuery analyses. |
 | [scripts/materialize_project_skills.py](scripts/materialize_project_skills.py) | Dry-runs or links profile-selected canonical skills into a sibling adapter with backups. |
 | [scripts/sync_skill_catalog.py](scripts/sync_skill_catalog.py) | Synchronizes federated profiles into the canonical `.codex/skills/AGENTS.md`. |
 | [scripts/bootstrap_project_adapter.sh](scripts/bootstrap_project_adapter.sh) | Creates project registry + memory home + `.codex/project.yaml`. |
@@ -459,7 +472,14 @@ The sibling repo gets `.codex/project.yaml` (real file) and a `.gitignore` entry
 
 Recommended pre-commit:
 ```bash
-python3 scripts/validate_alignment.py && python3 scripts/validate_registry_paths.py
+python3 scripts/validate_config_resolution.py && python3 scripts/validate_alignment.py && python3 scripts/validate_registry_paths.py && python3 scripts/validate_skill_catalog.py
+```
+
+For a new or migrated BigQuery analysis, also validate its logical source
+contract before calling the run validated or `production-ready`:
+
+```bash
+python3 scripts/validate_source_quality_contract.py --contract <source-contract.yaml>
 ```
 
 ---

@@ -16,12 +16,15 @@ agent:
   skills:
     - skills/academic/paper_synthesizer.md
     - skills/academic/tfm_opportunity_mapping.md
+    - skills/academic/tfm_research_advisor.md
     - skills/governance/hype_vs_reality_review.md
     - skills/transversal/structured_reasoning.md
 
   rules:
     inherit: rules/global/global_rules.yaml
-    domain: rules/governance/governance_rules.yaml
+    domain:
+      - rules/academic/academic_rules.yaml
+      - rules/governance/governance_rules.yaml
     constraints:
       - source_quality_required
       - date_and_recency_required
@@ -31,6 +34,7 @@ agent:
   rubrics:
     - rubrics/research_quality_rubric.yaml
     - rubrics/technology_maturity_rubric.yaml
+    - rubrics/tfm_research_advisor_rubric.yaml
 
   templates:
     weekly_digest: templates/weekly_ai_blockchain_digest_template.md
@@ -50,6 +54,7 @@ agent:
     - implementation_maturity_is_classified
     - hype_is_explicitly_flagged_when_present
     - tfm_topics_include_feasibility_assessment
+    - tfm_topics_include_literature_dataset_and_differentiation_gates
 
   input_types:
     - topic_or_domain_description
@@ -66,9 +71,13 @@ agent:
       - commoditized: "Standard tooling. Low differentiation value."
 
   handoff:
-    can_feed_into: [technical_writer_agent, presentation_agent, tfm_evaluator_agent]
+    can_feed_into:
+      - tfm_research_advisor_agent
+      - technical_writer_agent
+      - presentation_agent
+      - tfm_evaluator_agent
     context_fields_to_pass:
       - synthesized_trends
       - recommended_papers
-      - tfm_topic_candidates
+      - tfm_topic_signals
       - maturity_assessments

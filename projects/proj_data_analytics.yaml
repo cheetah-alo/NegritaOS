@@ -19,6 +19,17 @@ project:
     - production_audit
     - bigquery
     - local_files
+  skill_profiles:
+    - analytical-eda
+    - data-source-bigquery
+  data_source:
+    provider: bigquery
+    dialect: google_standard_sql
+    source_of_truth: governed_remote_source
+    access: read_only
+  analysis_governance:
+    phase: warn_first
+    scope: new_or_migrated_analyses
   agents:
     - eda_reviewer_agent
     - model_review_agent
@@ -27,6 +38,7 @@ project:
     - team_lead_ds_agent
     - technical_writer_agent
     - presentation_agent
+    - ai_trend_radar_agent
   codex_profiles:
     - analysis-run
     - eda-pre-ml

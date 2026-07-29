@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "skills" / "catalog.yaml"
 VALID_STATUSES = {"canonical", "adapted", "reference_only"}
 VALID_PROVIDERS = {"bigquery", "postgresql", "files", "api", "other"}
+VALID_ANALYSIS_PHASES = {"warn_first", "fail_closed"}
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -171,12 +172,24 @@ def validate_project(catalog: dict[str, Any], project_path: Path) -> list[str]:
         for profile_id in declared_profiles:
             if profile_id not in profiles:
                 errors.append(f"{project_path}: unknown profile {profile_id}")
+    if "data-source-bigquery" in declared_profiles and "analytical-eda" not in declared_profiles:
+        # The provider profile is also useful for dashboards, but analysis
+        # projects must opt into the provider-neutral EDA entry gate explicitly.
+        if "elal-eda-governance" not in declared_profiles:
+            errors.append(
+                f"{project_path}: BigQuery analysis profile requires analytical-eda "
+                "or an explicit ELAL EDA governance profile"
+            )
     integration_branch = project.get("integration_branch")
     if integration_branch is not None and (
         not isinstance(integration_branch, str) or not integration_branch.strip()
     ):
         errors.append(f"{project_path}: integration_branch must be a non-empty string")
     data_source = project.get("data_source")
+    if "data-source-bigquery" in declared_profiles and data_source is None:
+        errors.append(
+            f"{project_path}: data_source is required when data-source-bigquery is declared"
+        )
     if data_source is not None:
         if not isinstance(data_source, dict):
             errors.append(f"{project_path}: data_source must be a mapping")
@@ -205,6 +218,20 @@ def validate_project(catalog: dict[str, Any], project_path: Path) -> list[str]:
                         f"{project_path}: dialect {data_source.get('dialect')!r} "
                         f"is not allowed by profile {profile_id}"
                     )
+    governance = project.get("analysis_governance")
+    if governance is not None:
+        if not isinstance(governance, dict):
+            errors.append(f"{project_path}: analysis_governance must be a mapping")
+        else:
+            phase = governance.get("phase")
+            if phase not in VALID_ANALYSIS_PHASES:
+                errors.append(
+                    f"{project_path}: analysis_governance.phase must be one of "
+                    f"{sorted(VALID_ANALYSIS_PHASES)}"
+                )
+            scope = governance.get("scope")
+            if not isinstance(scope, str) or not scope.strip():
+                errors.append(f"{project_path}: analysis_governance.scope must be a non-empty string")
     return errors
 
 

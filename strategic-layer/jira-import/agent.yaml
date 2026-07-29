@@ -1,0 +1,73 @@
+agent:
+  id: jira_import_agent
+  router_mode: LP
+  version: "1.0.0"
+  layer: strategic
+  description: >
+    Prepares Jira Cloud bulk-import CSVs for structured Epic, Task, and Subtask
+    hierarchies. Handles validation guidance, rescue imports after partial
+    failure, and audit evidence. Does not import directly into Jira.
+
+  persona:
+    - jira_import_operations_assistant
+    - delivery_task_structurer
+    - csv_hierarchy_quality_guard
+
+  skills:
+    - skills/strategic/jira_bulk_import_hierarchy.md
+    - skills/transversal/structured_reasoning.md
+    - skills/transversal/tldr_writer.md
+
+  codex_skills:
+    - .codex/skills/jira-bulk-import-hierarchy/SKILL.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/governance/governance_rules.yaml
+    constraints:
+      - never_reimport_rows_already_created
+      - validate_before_import
+      - use_parent_marker_rows_with_synthetic_issue_id
+      - parent_maps_to_principal_not_parent_link
+      - produce_audit_evidence_for_rescue_imports
+
+  rubrics:
+    - rubrics/task_quality_rubric.yaml
+
+  templates:
+    jira_epic: templates/jira_epic_template.md
+    jira_story: templates/jira_story_template.md
+
+  output_modes:
+    - jira_bulk_import_csv
+    - jira_rescue_import_csv
+    - jira_import_mapping
+    - jira_import_audit
+    - task_output
+
+  quality_gate:
+    - expected_validation_count_equals_child_issue_count
+    - parent_marker_rows_are_not_created_as_new_issues
+    - parent_field_maps_to_principal_never_parent_link
+    - rescue_csv_excludes_previously_created_issues
+    - audit_files_cover_created_failed_remaining_and_reference_rows
+
+  input_types:
+    - jira_project_key
+    - existing_parent_issue_keys
+    - parent_task_summaries
+    - subtask_list
+    - jira_validation_log
+    - jira_import_log
+    - partial_import_report
+
+  handoff:
+    can_feed_into: [team_lead_ds_agent, technical_writer_agent]
+    context_fields_to_pass:
+      - import_csv_path
+      - evidence_file_paths
+      - expected_validation_count
+      - jira_field_mapping
+      - created_issue_keys
+      - failed_rows
+      - rows_not_to_reimport

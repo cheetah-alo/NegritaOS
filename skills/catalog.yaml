@@ -2,15 +2,38 @@ catalog:
   name: negritaos-federated-skills
   version: "1.0.0"
   purpose: >
-    Canonical mapping from imported Engram and Nate skills to NegritaOS
-    skills, project profiles, scopes, dependencies, and activation policy.
+    Canonical mapping from imported Engram and Nate skills plus native
+    NegritaOS skills to project profiles, scopes, dependencies, and activation
+    policy.
   source_policy:
     raw_sources_are_reference_only: true
     canonical_activation_root: .codex/skills
-    native_agent_skill_root: skills/engineering
+    native_agent_skill_roots: [skills/engineering, skills/academic]
     do_not_copy_full_codex_into_sibling_repos: true
 
 profiles:
+  academic-tfm-research:
+    description: Research and proposal of differentiated, data-backed TFM titles.
+    skills:
+      - tfm-research-advisor
+  academic-tfm-review:
+    description: Final TFM review with deterministic scoring and local benchmark calibration.
+    skills:
+      - tfm-academic-reviewer
+  analytical-eda:
+    description: Provider-neutral governance for new or migrated exploratory analyses.
+    skills:
+      - analytical-eda-governance
+      - data-contracts
+      - data-loading
+      - testing-coverage
+      - docs-alignment
+  elal-eda-governance:
+    description: Opt-in ELAL passenger-journey EDA semantics and evidence states.
+    skills:
+      - analytical-eda-governance
+      - bigquery-analysis-governance
+      - elal-eda-governance
   analytical-dashboard:
     description: Modular data-backed dashboard architecture and delivery.
     skills:
@@ -44,6 +67,7 @@ profiles:
       dialects: [google_standard_sql]
     skills:
       - data-source-adapters
+      - bigquery-analysis-governance
       - data-contracts
       - data-loading
   data-source-postgresql:
@@ -64,6 +88,51 @@ profiles:
       - nate-video-to-website
 
 skills:
+  - id: tfm-research-advisor
+    path: .codex/skills/tfm-research-advisor/SKILL.md
+    native_path: skills/academic/tfm_research_advisor.md
+    source: NegritaOS-native
+    profiles: [academic-tfm-research]
+    scopes: [root]
+    status: canonical
+    dependencies: [python3]
+    side_effects: read_only_research
+  - id: analytical-eda-governance
+    path: .codex/skills/analytical-eda-governance/SKILL.md
+    native_path: skills/engineering/analytical_eda_governance.md
+    source: NegritaOS-native
+    profiles: [analytical-eda, elal-eda-governance]
+    scopes: [root, data_analytics]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: bigquery-analysis-governance
+    path: .codex/skills/bigquery-analysis-governance/SKILL.md
+    native_path: skills/engineering/bigquery_analysis_governance.md
+    source: NegritaOS-native
+    profiles: [data-source-bigquery, elal-eda-governance]
+    scopes: [root, data_analytics]
+    status: canonical
+    dependencies: [bq]
+    side_effects: read_only_preflight
+  - id: elal-eda-governance
+    path: .codex/skills/elal-eda-governance/SKILL.md
+    native_path: null
+    source: NegritaOS-native
+    profiles: [elal-eda-governance]
+    scopes: [root, data_analytics]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: tfm-academic-reviewer
+    path: .codex/skills/tfm-academic-reviewer/SKILL.md
+    native_path: skills/academic/tfm_academic_reviewer.md
+    source: NegritaOS-native
+    profiles: [academic-tfm-review]
+    scopes: [root]
+    status: canonical
+    dependencies: [pdftotext, pdfinfo]
+    side_effects: read_only_local_evidence
   - id: analytical-dashboard-architecture
     path: .codex/skills/analytical-dashboard-architecture/SKILL.md
     native_path: skills/engineering/analytical_dashboard_architecture.md
@@ -77,7 +146,7 @@ skills:
     path: .codex/skills/data-source-adapters/SKILL.md
     native_path: skills/engineering/data_source_adapter_governance.md
     source: NegritaOS-native
-    profiles: [analytical-dashboard, data-source-bigquery, data-source-postgresql]
+    profiles: [analytical-dashboard, analytical-eda, data-source-bigquery, data-source-postgresql]
     scopes: [root, backend, data_analytics]
     status: canonical
     dependencies: []
@@ -85,7 +154,7 @@ skills:
   - id: dashboard-architecture
     path: .codex/skills/dashboard-architecture/SKILL.md
     source: NegritaOS-native
-    profiles: [analytical-dashboard]
+    profiles: [analytical-dashboard, analytical-eda]
     scopes: [root, frontend]
     status: canonical
     dependencies: []
@@ -109,7 +178,7 @@ skills:
   - id: data-contracts
     path: .codex/skills/data-contracts/SKILL.md
     source: NegritaOS-native
-    profiles: [analytical-dashboard, data-source-bigquery, data-source-postgresql]
+    profiles: [analytical-dashboard, analytical-eda, data-source-bigquery, data-source-postgresql]
     scopes: [root, backend, data_analytics]
     status: canonical
     dependencies: []
@@ -117,7 +186,7 @@ skills:
   - id: docs-alignment
     path: .codex/skills/docs-alignment/SKILL.md
     source: NegritaOS-native
-    profiles: [analytical-dashboard]
+    profiles: [analytical-dashboard, analytical-eda]
     scopes: [root]
     status: canonical
     dependencies: []
@@ -157,7 +226,7 @@ skills:
   - id: testing-coverage
     path: .codex/skills/testing-coverage/SKILL.md
     source: skills/skills_engram/testing-coverage/SKILL.md
-    profiles: [analytical-dashboard]
+    profiles: [analytical-dashboard, analytical-eda]
     scopes: [root, backend, frontend, data_analytics]
     status: adapted
     dependencies: []
@@ -205,7 +274,7 @@ skills:
   - id: data-loading
     path: .codex/skills/data-loading/SKILL.md
     source: NegritaOS-native
-    profiles: [data-source-bigquery, data-source-postgresql]
+    profiles: [analytical-eda, data-source-bigquery, data-source-postgresql]
     scopes: [root, backend, data_analytics]
     status: canonical
     dependencies: []
@@ -228,7 +297,7 @@ skills:
     side_effects: none
   - id: nate-excalidraw-diagram
     path: .codex/skills/nate-excalidraw-diagram/SKILL.md
-    source: skills/skill_nate/excalidraw-diagram/SKILL (1).md
+    source: skills/skill_nate/excalidraw-diagram/SKILL.md
     profiles: [visual-delivery]
     scopes: [root]
     status: adapted

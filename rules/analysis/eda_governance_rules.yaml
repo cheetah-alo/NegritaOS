@@ -1,0 +1,30 @@
+eda_governance_rules:
+  scope:
+    applies_to: new_or_migrated_analyses
+    legacy_policy: audit_only_until_migrated
+    enforcement_phase: warn_first
+
+  entry_preflight:
+    required:
+      - logical_grain
+      - key_or_composite_key
+      - expected_cardinality
+      - join_relationships
+      - population_and_denominator
+      - source_coverage
+      - source_quality_contract
+    incomplete_action: "Mark CONTRACT_INCOMPLETE; do not call the analysis validated or production-ready."
+
+  structure:
+    thin_entrypoints_under: analyses/
+    reusable_logic_under: src/data_analytics/analyses/
+    sql_in_files: true
+    config_and_manifests_under: config/
+    immutable_output_pattern: outputs/run_<id>/
+    run_manifest_requires_hashes: true
+    legacy_quarantine_pattern: legacy/v<N>/
+
+  publication:
+    blocked_states: [BLOCKED_DATA, BLOCKED_NO_SUPPORT]
+    blocked_states_are_not_zero: true
+    rendered_plot_review_required: true

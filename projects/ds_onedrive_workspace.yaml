@@ -1,0 +1,87 @@
+project:
+  id: ds_onedrive_workspace
+  name: "OneDrive DS Workspace"
+  version: "1.0.0"
+  description: >
+    OneDrive-backed data science, TFM, teaching, evaluation, and reference
+    workspace. The folder contains PDFs, DOCX guidance, XLSX/XLSM evaluation
+    templates, ZIP utilities, and exploratory notebooks rather than a single
+    source-code repository.
+  local_paths:
+    primary: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds"
+    tools: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds/Tools"
+    tfm_models: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds/Tools/TFM_Modelos"
+    tribunales: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds/Tribunales"
+    teams_tfms: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds/Teams TFMs"
+    uvalencia: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds/00-UValencia"
+  memory_home: "~/.negritaos/memory/projects/ds_onedrive_workspace"
+  archetypes:
+    - data_analytics
+    - academic_research
+    - executive_delivery
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - python
+    - notebooks
+    - spreadsheet_review
+    - pdf_review
+    - docx_review
+    - evidence_inventory
+    - privacy_anonymization
+    - academic_tfm_support
+    - local_files
+  skill_profiles:
+    - academic-tfm-review
+    - academic-tfm-research
+  agents:
+    - technical_writer_agent
+    - team_lead_ds_agent
+    - data_quality_sentinel_agent
+    - model_review_agent
+    - presentation_agent
+    - code_review_agent
+    - tfm_evaluator_agent
+    - tfm_research_advisor_agent
+    - ai_trend_radar_agent
+    - paper_review_agent
+  codex_profiles:
+    - review
+    - analysis-run
+  mode_map:
+    documentation: TD
+    academic_writeup: TD
+    tfm_review: AE
+    tfm_topic_research: RT
+    research_review: MR
+    notebook_review: CR
+    spreadsheet_review: DQ
+    evidence_inventory: DQ
+    privacy_anonymization: DQ
+    deck: EP
+    planning: LP
+  expected_outputs:
+    - technical_report
+    - academic_review
+    - tfm_topic_opportunities
+    - evidence_matrix
+    - artifact_inventory
+    - data_quality_report
+    - spreadsheet_review
+    - notebook_review
+    - executive_summary
+    - executive_presentation
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  notes:
+    - "Workspace root is not a Git repository; do not assume git operations are available here."
+    - "Treat PDFs, DOCX, XLSX, XLSM, ZIP files, notebooks, and OneDrive sync artifacts as local evidence unless the user explicitly asks to modify them."
+    - "Do not move, delete, rename, normalize, or rewrite synced OneDrive artifacts by default."
+    - "Apply document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating an existing user-owned artifact."
+    - "Use DQ mode for evaluation spreadsheets, anonymization tooling, data-quality checks, or artifact inventories."
+    - "Use TD mode for TFM guidance, academic documentation, tribunal material, or structured writeups."
+    - "tfm_proposal_corpus is intentionally unset until the authoritative previous-proposal directory is confirmed; the research advisor must mark differentiation as unverified meanwhile."
+    - "Use CR mode only for notebooks/scripts or code-like utilities under Tools; notebooks are support artifacts unless the user asks to productize them."
+    - "For privacy/anonymization work, preserve source files and create traceable derived versions instead of overwriting originals."

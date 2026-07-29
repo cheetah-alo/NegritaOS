@@ -13,9 +13,11 @@ For execution policy, see: `core/orchestration/execution_policy.yaml`
 | ID | Agent | Layer | Router Mode | Description |
 |----|-------|-------|-------------|-------------|
 | LP | team_lead_ds_agent | strategic | Leadership Planning | Converts ambiguity into structured tasks, roadmaps, and escalations |
+| LP | jira_import_agent | strategic | Leadership Planning | Prepares Jira bulk-import CSV hierarchies, rescue imports, and audit evidence |
 | AE | tfm_evaluator_agent | academic | Academic Evaluation | Evaluates TFM proposals, milestones, and final defense documents |
 | AE | paper_review_agent | academic | Academic Evaluation | Synthesizes and operationalizes academic and industry papers |
 | AE | proposal_validator_agent | academic | Academic Evaluation | Pre-review filter for research proposal structural soundness |
+| RT | tfm_research_advisor_agent | academic | Research / TFM Generation | Proposes differentiated TFM topics from papers, legal public data, and proposal comparison |
 | TD | technical_writer_agent | strategic | Technical Documentation | Produces Notion/Confluence-ready technical documentation |
 | MR | model_review_agent | technical | ML / EDA / Model Review | Reviews ML models, EDA, explainability, and operational readiness |
 | MR | eda_reviewer_agent | technical | ML / EDA / Model Review | Focused EDA completeness and correctness review |
@@ -40,6 +42,7 @@ NEGRITAOS/
 ├── academic-layer/
 │   ├── paper-synthesizer/      → paper_review_agent
 │   ├── proposal-validator/     → proposal_validator_agent
+│   ├── tfm-research-advisor/   → tfm_research_advisor_agent
 │   └── tfm-evaluator/          → tfm_evaluator_agent
 │
 ├── intelligence-layer/
@@ -50,6 +53,7 @@ NEGRITAOS/
 ├── strategic-layer/
 │   ├── decision-support/       → decision_support_agent
 │   ├── executive-presenter/    → presentation_agent
+│   ├── jira-import/            → jira_import_agent
 │   ├── team-lead-ds/           → team_lead_ds_agent
 │   └── technical-writer/       → technical_writer_agent
 │

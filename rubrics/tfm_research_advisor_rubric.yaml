@@ -1,0 +1,111 @@
+rubric:
+  name: tfm_research_advisor_rubric
+  version: "1.0.0"
+  applicable_agents: [ai_trend_radar_agent, paper_review_agent]
+  description: >
+    Acceptance and prioritization rubric for proposing new TFM titles. It
+    separates hard evidence gates from a 1-10 prioritization score and does not
+    treat unverified novelty, dataset access, or citation metadata as facts.
+
+  evidence_states: [verified, partially_verified, unverified, rejected]
+
+  hard_gates:
+    supporting_literature:
+      minimum_usable_papers: 5
+      recency_default: "published within the last 3 years relative to review date"
+      seminal_exception_max_age_years: 5
+      acceptable_evidence: [doi, publisher_page, official_conference_page, official_repository]
+      rejection_conditions:
+        - "Fewer than five usable papers without an explicit approved exception."
+        - "Fabricated or untraceable DOI, venue, author, year, or result."
+    dataset:
+      required_fields:
+        - owner_or_official_publisher
+        - canonical_url_or_official_api
+        - public_access_route
+        - license_or_terms
+        - documentation_and_schema
+        - record_scale_and_time_coverage
+        - variables_and_target
+        - target_engineering
+        - privacy_bias_and_representativeness_risks
+        - access_check_date
+      rejection_conditions:
+        - "Private, inaccessible, legally unclear, or undocumented data."
+        - "Dataset only cited by a paper without current access evidence."
+        - "Required target or fields cannot be constructed reproducibly."
+    differentiation:
+      required_comparison: [previous_proposal_corpus, current_literature]
+      no_corpus_status: "Differentiation against the local proposal corpus was not verified."
+      forbidden_claim: "Novelty asserted as fact from absence in a limited search."
+    feasibility:
+      required: [duration_months, student_count, compute, permissions, ethics_limits]
+      supported_duration_months: [3, 4, 5, 6]
+      rejection_conditions:
+        - "Question, data, method, and metrics are not aligned."
+        - "Compute, infrastructure, permissions, or ethics route is unavailable."
+        - "Direct replication without a meaningful differentiator."
+
+  scoring:
+    scale: 1-10
+    dimensions:
+      originality:
+        weight: 1
+        evidence: [literature_gap, proposal_corpus_comparison, differentiator]
+      feasibility:
+        weight: 1
+        evidence: [duration, student_count, compute, access, roadmap]
+      dataset_quality:
+        weight: 1
+        evidence: [license, documentation, availability, scale, target, bias]
+      technical_complexity:
+        weight: 1
+        evidence: [baseline, proposed_method, validation, engineering_risk]
+      scientific_value:
+        weight: 1
+        evidence: [research_question, hypothesis, contribution, limitations]
+      industrial_applicability:
+        weight: 1
+        evidence: [decision_context, operational_metric, deployment_relevance]
+      publication_potential:
+        weight: 1
+        evidence: [gap, comparison, robustness, reproducibility, venue_fit]
+      methodological_quality:
+        weight: 1
+        evidence: [unit_of_analysis, target, leakage_controls, split, metrics]
+    aggregate: "mean of eight dimensions, rounded to one decimal"
+    labels:
+      medium: "Established methods and data support a bounded student project."
+      high: "Material integration, validation, or methodological risk remains."
+      very_high: "Requires two students, exceptional supervision, or scope reduction."
+    rule: "The mean prioritizes candidates but cannot override a failed hard gate."
+
+  required_output:
+    language: match_tfm_or_user_request
+    candidate_count: "3-5 unless the user requests another count"
+    sections:
+      - decision_summary
+      - academic_title
+      - context_and_impact
+      - state_of_art_and_limitations
+      - research_question
+      - hypothesis
+      - general_and_specific_objectives
+      - dataset_and_legal_access
+      - variable_taxonomy_and_leakage_controls
+      - baseline_models_and_advanced_method_justification
+      - task_appropriate_metrics
+      - three_to_six_month_roadmap
+      - risks_and_mitigations
+      - difficulty_and_team_size
+      - scientific_potential
+      - five_or_more_supporting_papers_with_relevance
+      - eight_dimension_score
+      - comparison_table_and_recommendation
+
+  forbidden:
+    - "Copying previous proposal titles or distinctive text."
+    - "Using reviewer benchmark grades as topic truth."
+    - "Claiming legal clearance, ethics approval, or institutional endorsement."
+    - "Selecting fashionable models without a research justification."
+    - "Forcing accuracy, F1, or ROC-AUC on an unsuitable task."

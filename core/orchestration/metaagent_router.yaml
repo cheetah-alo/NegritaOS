@@ -17,11 +17,25 @@ metaagent_router:
       id: LP
       label: "Leadership Planning"
       agent: team_lead_ds_agent
+      specialist_agents:
+        jira_import_operations:
+          agent: jira_import_agent
+          when:
+            - preparing Jira bulk-import CSV files
+            - creating Jira subtasks under existing parent tasks
+            - repairing failed Jira imports
+            - parsing Jira validation or import logs
+            - producing rescue CSV files and audit evidence
       trigger_signals:
         - roadmap
         - sprint planning
         - task breakdown
         - jira epic
+        - jira bulk import
+        - jira csv import
+        - jira subtask import
+        - jira rescue import
+        - invalid Parent selection
         - team escalation
         - OKR alignment
         - delivery risk
@@ -49,7 +63,11 @@ metaagent_router:
       agent: tfm_evaluator_agent
       trigger_signals:
         - thesis review
+        - thesis PDF review
         - TFM evaluation
+        - TFM reviewer
+        - benchmark calibration
+        - final academic review
         - master thesis
         - research proposal
         - academic defense
@@ -58,6 +76,7 @@ metaagent_router:
         - methodology review
         - objective alignment
         - academic score
+        - publication readiness
       input_types:
         - thesis document
         - proposal draft
@@ -246,9 +265,24 @@ metaagent_router:
       id: RT
       label: "Research / TFM Topic Generation"
       agent: ai_trend_radar_agent
+      specialist_agents:
+        tfm_research_advising:
+          agent: tfm_research_advisor_agent
+          when:
+            - new TFM titles
+            - TFM research advisor
+            - public dataset for thesis
+            - dataset license for TFM
+            - publication-oriented TFM
+            - proposal differentiation
       trigger_signals:
         - TFM topic ideas
+        - new TFM titles
+        - TFM research advisor
         - research opportunities
+        - public dataset for thesis
+        - dataset license for TFM
+        - publication-oriented TFM
         - AI trends
         - blockchain AI research
         - paper synthesis
@@ -256,6 +290,7 @@ metaagent_router:
         - technology radar
         - what's new in ML
         - research gap
+        - proposal differentiation
         - frontier models
         - governance trends
         - LLM research
@@ -268,6 +303,9 @@ metaagent_router:
         - weekly_digest
         - paper_list
         - topic_opportunities
+        - tfm_topic_shortlist
+        - tfm_research_opportunity
+        - dataset_access_audit
         - strategic_brief
 
   mixed_mode_pipeline:

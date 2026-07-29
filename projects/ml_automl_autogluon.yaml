@@ -21,6 +21,7 @@ project:
   agents:
     - model_review_agent
     - eda_reviewer_agent
+    - code_review_agent
     - data_quality_sentinel_agent
     - team_lead_ds_agent
     - technical_writer_agent
