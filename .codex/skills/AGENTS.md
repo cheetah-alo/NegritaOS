@@ -20,6 +20,7 @@ Use these skills for detailed patterns on-demand:
 | `business-rules` | Deterministic and traceable business-rule guidance across backend, frontend, and analytics | [SKILL.md](business-rules/SKILL.md) |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
 | `document-control` | Govern deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown under timestamped `documents/` outputs | [SKILL.md](document-control/SKILL.md) |
+| `cqi-analytical-pptx` | CQI/CQISense analytical PowerPoint creation, editing, evidence notes, release QA, readability audits, and mobile podcast contracts | [SKILL.md](cqi-analytical-pptx/SKILL.md) |
 | `rule-model-documentation` | Create CQI-style documents for deterministic rule-based models, scoring layers, boosters, persistence, validation, plots, and recommendations | [SKILL.md](rule-model-documentation/SKILL.md) |
 | `tfm-academic-reviewer` | Standardized final TFM reviewer with 0–4 scoring, 1–10 grade, and benchmark calibration | [SKILL.md](tfm-academic-reviewer/SKILL.md) |
 | `tfm-research-advisor` | Propose differentiated TFM titles from recent papers, validated public data, and a read-only proposal corpus | [SKILL.md](tfm-research-advisor/SKILL.md) |
@@ -60,8 +61,10 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 | `academic-tfm-review` | `tfm-academic-reviewer` |
 | `analytical-dashboard` | `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `docs-alignment`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
 | `analytical-eda` | `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage`, `docs-alignment` |
+| `cqi-analytical-pptx` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `document-control` |
 | `data-source-bigquery` | `data-source-adapters`, `bigquery-analysis-governance`, `data-contracts`, `data-loading` |
 | `data-source-postgresql` | `data-source-adapters`, `data-contracts`, `data-loading` |
+| `elal-analytical-deck` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance` |
 | `elal-eda-governance` | `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
 | `fastapi-nextjs` | `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
 | `rule-model-documentation` | `rule-model-documentation` |
@@ -90,6 +93,7 @@ When performing these actions, invoke the corresponding skill first:
 | Modify dataset contracts or schema validation | `data-contracts` |
 | Change data ingestion or source resolution | `data-loading` |
 | Create or edit analytical PPTs, finding decks, or metric-driven storylines | `analytics-storytelling-deck` |
+| Create, edit, audit, release, or podcast a CQI/CQISense analytical PPTX deck | `cqi-analytical-pptx` |
 | Convert EDA plots, cohorts, funnels, segments, or outcome rates into claims | `eda-analytics-findings` |
 | Convert model metrics, thresholds, lift, SHAP, or leakage review into claims | `ml-model-findings` |
 | Create documentation for rule-based models, rules engines, scoring, boosters, persistence, sticky logic, decay, sensitivity analysis, or validation plots | `rule-model-documentation` |

@@ -17,6 +17,8 @@ agent:
   skills:
     - skills/executive/executive_summary.md
     - skills/executive/presentation_storyline.md
+    - skills/executive/analytics_storytelling_deck.md
+    - skills/executive/cqi_analytical_pptx.md
     - skills/transversal/tldr_writer.md
 
   rules:
@@ -33,6 +35,7 @@ agent:
       - appendix_separates_methodology_from_main_story
       - no_slide_without_speaker_notes
       - audience_must_be_defined_before_structure
+      - cqi_analytical_decks_require_release_and_evidence_qa
 
   rubrics:
     - rubrics/presentation_quality_rubric.yaml
@@ -57,7 +60,7 @@ agent:
     - claims_are_traceable_to_source_paths
     - recommendation_is_decision_oriented
     - appendix_separates_methodology
-    - deck_language_is_english
+    - deck_language_matches_user_request_or_source_deck
 
   input_types:
     - analytical_report
@@ -78,8 +81,10 @@ agent:
 
   brand:
     cqi_reference: brands/cqi/brand_style/brand_style.md
+    cqi_design_system_root: brands/cqi/brand_style/CQISense_Design_System
     cqi_brand_archive: brands/cqi/brand_style/CQISense_Design_System.zip
     cqi_pptx_skill: brands/cqi/brand_style/pptx_skill_cqi.md
+    cqi_analytical_pptx_skill: .codex/skills/cqi-analytical-pptx/SKILL.md
     cqi_template_pptx: brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx
     deprecated_template_pptx_name: Template_CQISense.pptx
     supported_theme_presets:

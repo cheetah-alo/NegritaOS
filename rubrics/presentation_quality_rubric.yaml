@@ -12,8 +12,9 @@ rubric:
       - narrative_pattern_is_applied
       - executive_summary_slide_is_present_and_first
       - appendix_is_separated_from_main_deck
-      - deck_length_matches_audience_type
+      - deck_length_matches_audience_or_approved_release_config
       - correct_domain_finding_skill_is_applied_when_evidence_is_domain_specific
+      - cqi_analytical_decks_apply_cqi_analytical_pptx_skill_when_applicable
 
     audience_length_guidance:
       c_level: "Max 10 slides (excluding appendix)"
@@ -27,8 +28,9 @@ rubric:
       - message_is_a_complete_sentence_not_a_label
       - evidence_supports_the_message
       - note_is_visible_when_uncertainty_or_validation_need_exists
-      - malgun_gothic_is_used_for_editable_text
+      - cqi_decks_use_poppins_noto_sans_and_ibm_plex_mono
       - body_and_table_text_meet_minimum_size
+      - cqi_analytical_slides_have_structured_evidence_notes
       - dense_tables_are_split_or_converted_to_cards
     required_per_chart_slide:
       - if_visual_is_plot_apply_plotting_guidelines
@@ -60,6 +62,9 @@ rubric:
       - "Plot labels contain internal taxonomy or processing states without explanation"
       - "Temporal association is described as causality without causal design"
       - "User-facing slide or notes use non-standard uncertainty terminology instead of note"
+      - "CQI analytical deck publishes BLOCKED_DATA, BLOCKED_AUTH, or BLOQUEADO instead of communicable evidence states"
+      - "Slides equate calls with members, candidate association with exact match, or rule reach with causal effect"
+      - "Existing deck canvas is overwritten with a universal size instead of preserving inherited masters and layouts"
       - "Analytical deck skips baseline/calculation alignment before detailed evidence"
     narrative:
       - "Deck that builds up to a finding the audience already knew"

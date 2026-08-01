@@ -3,12 +3,13 @@
 ## Purpose
 
 This file is the lightweight agent entrypoint for CQI/CQISense brand usage.
-The full visual source of truth is the bundled design-system archive:
+The full editable visual source of truth is the extracted design-system folder:
 
-`brands/cqi/brand_style/CQISense_Design_System.zip`
+`brands/cqi/brand_style/CQISense_Design_System/`
 
 Use this Markdown file to route Codex, Claude, and other NegritaOS adapters to
-the current brand assets. Do not treat older inline brand notes as canonical.
+the current brand assets. The zip bundle is a distribution artifact derived
+from the folder; do not treat older inline brand notes as canonical.
 
 ## Audience And Scope
 
@@ -26,13 +27,14 @@ the zip instead of improvising.
 
 | Purpose | Canonical path |
 |---|---|
-| Full brand/design system archive | `brands/cqi/brand_style/CQISense_Design_System.zip` |
-| Agent skill inside archive | `SKILL.md` |
-| Brand overview inside archive | `readme.md` |
-| CSS entrypoint inside archive | `styles.css` |
-| Token source inside archive | `tokens/` |
-| Component source inside archive | `components/` |
-| Official logo assets inside archive | `assets/` |
+| Editable visual design system | `brands/cqi/brand_style/CQISense_Design_System/` |
+| Distribution bundle | `brands/cqi/brand_style/CQISense_Design_System.zip` |
+| Agent skill inside design system | `brands/cqi/brand_style/CQISense_Design_System/SKILL.md` |
+| Brand overview inside design system | `brands/cqi/brand_style/CQISense_Design_System/readme.md` |
+| CSS entrypoint inside design system | `brands/cqi/brand_style/CQISense_Design_System/styles.css` |
+| Token source inside design system | `brands/cqi/brand_style/CQISense_Design_System/tokens/` |
+| Component source inside design system | `brands/cqi/brand_style/CQISense_Design_System/components/` |
+| Official logo assets inside design system | `brands/cqi/brand_style/CQISense_Design_System/assets/` |
 | Current CQI PPT template | `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx` |
 | CQI PPT agent wrapper | `brands/cqi/brand_style/pptx_skill_cqi.md` |
 
@@ -44,8 +46,8 @@ Do not reference or recreate the deprecated PPT template.
 
 ## Current Brand Contract
 
-The current brand is defined by the archive contents. The most important tokens
-observed in the current archive are:
+The current brand is defined by the extracted design-system folder. The most
+important tokens observed in that folder are:
 
 | Role | Token / value | Source |
 |---|---|---|
@@ -63,31 +65,32 @@ observed in the current archive are:
 | Body font | `--font-sans`, Noto Sans | `tokens/typography.css` |
 | Numeric font | `--font-mono`, IBM Plex Mono | `tokens/typography.css` |
 
-If these values conflict with a newer zip, the newer zip wins.
+If these values conflict with the extracted design-system folder, the extracted
+folder wins.
 
-## How Agents Must Use The Zip
+## How Agents Must Use The Design System
 
 Before generating or modifying CQI visual work:
 
-1. Inspect the archive index:
+1. Inspect the extracted design system:
 
    ```bash
-   unzip -l brands/cqi/brand_style/CQISense_Design_System.zip
+   find brands/cqi/brand_style/CQISense_Design_System -maxdepth 2 -type f
    ```
 
-2. Read the embedded skill and overview:
+2. Read the skill and overview:
 
    ```bash
-   unzip -p brands/cqi/brand_style/CQISense_Design_System.zip SKILL.md
-   unzip -p brands/cqi/brand_style/CQISense_Design_System.zip readme.md
+   sed -n '1,220p' brands/cqi/brand_style/CQISense_Design_System/SKILL.md
+   sed -n '1,220p' brands/cqi/brand_style/CQISense_Design_System/readme.md
    ```
 
 3. For UI, HTML, and dashboards, use the embedded CSS/tokens:
 
    ```bash
-   unzip -p brands/cqi/brand_style/CQISense_Design_System.zip styles.css
-   unzip -p brands/cqi/brand_style/CQISense_Design_System.zip tokens/colors.css
-   unzip -p brands/cqi/brand_style/CQISense_Design_System.zip tokens/domain.css
+   sed -n '1,220p' brands/cqi/brand_style/CQISense_Design_System/styles.css
+   sed -n '1,220p' brands/cqi/brand_style/CQISense_Design_System/tokens/colors.css
+   sed -n '1,220p' brands/cqi/brand_style/CQISense_Design_System/tokens/domain.css
    ```
 
 4. For presentations, use:
@@ -96,8 +99,8 @@ Before generating or modifying CQI visual work:
 
 ## Quality Gates
 
-- Use the zip as visual authority for colors, typography, tokens, components,
-  logos, spacing, and presentation style.
+- Use the extracted design-system folder as visual authority for colors,
+  typography, tokens, components, logos, spacing, and presentation style.
 - Use the current PPT template for any new CQI/CQISense deck.
 - Do not use `Template_CQISense.pptx`.
 - Do not invent alternate palettes, fonts, logos, or slide styles.
@@ -110,5 +113,5 @@ Before generating or modifying CQI visual work:
 
 Owner: NegritaOS CQI brand governance.
 
-Update this file whenever `CQISense_Design_System.zip` or the canonical CQI PPT
-template changes.
+Update this file whenever `CQISense_Design_System/`, its distribution zip, or
+the canonical CQI PPT template changes.

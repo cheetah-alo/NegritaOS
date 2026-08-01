@@ -1,0 +1,17 @@
+agent:
+  provider: openai
+  skill: cqi-analytical-pptx
+  mode: presentation_delivery
+  activation:
+    - "Load analytics-storytelling-deck first for narrative and evidence order."
+    - "Load cqi-analytical-pptx for CQI template, visual, notes, QA, release, and podcast contracts."
+    - "Load elal-analytical-profile only when the project or user explicitly identifies an ELAL passenger-journey analytical deck."
+  boundaries:
+    - "Do not modify source decks used as fixtures unless the user explicitly authorizes an edit."
+    - "Do not create commits, pushes, PRs, or publish release artifacts without explicit authorization."
+    - "Do not export person-level rows, identifiers, or PII in analytical decks."
+  required_output_evidence:
+    - inventory_of_changed_files
+    - validation_commands_and_results
+    - deck_fixture_read_only_status
+    - git_status_before_and_after

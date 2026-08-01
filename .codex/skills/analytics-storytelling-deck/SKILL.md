@@ -19,7 +19,9 @@ Core rules:
 - Move broad to narrow: population → signal layer → family → subcategory → attribute → context overlays → interactions/sequences → mechanism/action.
 - Use `note`, not `caveat`.
 - Font: follow `rules/presentation/presentation_rules.yaml`.
-- For CQI/CQISense decks, load `brands/cqi/brand_style/brand_style.md` and use `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`.
-- Minimum sizes: body/table 12 pt, table headers 14 pt, complementary notes 10 pt.
+- For CQI/CQISense analytical decks, load `.codex/skills/cqi-analytical-pptx/SKILL.md` after this skill.
+- For new CQI/CQISense decks, use `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`; for existing decks, preserve the source deck canvas and inherited template.
+- Minimum sizes: body/table cells 16 pt, axes/legends/labels 12 pt, visible sources/notes/metadata 10 pt.
 - If a table cannot fit at those sizes, split it or convert it to cards/bullets.
 - Every analytical slide needs finding, how calculated, base/denominator, KPI window, `n`/support, note, and speaker note.
+- CQI analytical slides also need the structured `[Evidence]` speaker-notes block required by `cqi-analytical-pptx`.

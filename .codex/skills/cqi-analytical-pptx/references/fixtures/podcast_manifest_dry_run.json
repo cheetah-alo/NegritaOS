@@ -1,0 +1,24 @@
+{
+  "deck_id": "synthetic_cqi_deck",
+  "expected_slide_count": 2,
+  "chapters": [
+    {
+      "slide": 1,
+      "title": "Context",
+      "question": "What decision does this deck support?",
+      "population": "Synthetic population",
+      "denominator": "Two synthetic slides",
+      "data_problem": "No real data; dry-run fixture only",
+      "conclusion": "The manifest structure is valid"
+    },
+    {
+      "slide": 2,
+      "title": "Decision",
+      "question": "What should the audience do next?",
+      "population": "Synthetic population",
+      "denominator": "Two synthetic slides",
+      "data_problem": "No real data; dry-run fixture only",
+      "conclusion": "The dry-run gate should pass"
+    }
+  ]
+}

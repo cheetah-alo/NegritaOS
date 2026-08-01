@@ -1,0 +1,21 @@
+{
+  "checks": [
+    {
+      "type": "parent_subset",
+      "label": "subset larger than parent",
+      "parent": 10,
+      "subset": 12
+    },
+    {
+      "type": "mutually_exclusive_sum",
+      "label": "buckets do not sum to total",
+      "total": 100,
+      "buckets": [40, 30, 20]
+    },
+    {
+      "type": "forbidden_export_columns",
+      "label": "person-level identifier exported",
+      "columns": ["member_id", "monthly_events"]
+    }
+  ]
+}

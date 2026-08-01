@@ -141,6 +141,7 @@ negrita_os:
       skills:
         - skills/executive/presentation_storyline.md
         - skills/executive/analytics_storytelling_deck.md
+        - skills/executive/cqi_analytical_pptx.md
         - skills/ml/eda_analytics_findings.md
         - skills/ml/ml_model_findings.md
         - skills/business/business_proposal_findings.md
@@ -170,6 +171,7 @@ negrita_os:
         - each_slide_has_one_core_message
         - each_chart_has_takeaway
         - analytics_decks_start_with_findings_then_baseline
+        - cqi_analytical_decks_apply_cqi_analytical_pptx_when_applicable
         - presentation_uses_note_terminology
         - chart_slides_state_denominator_base_and_outcome_window
         - chart_claims_reference_overall_or_baseline_when_comparing_rates

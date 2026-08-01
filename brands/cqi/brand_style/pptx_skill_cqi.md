@@ -1,125 +1,32 @@
 ---
 name: pptx-cqi
 description: >
-  Use this CQI presentation wrapper whenever creating, editing, reviewing, or
-  extracting content from a CQI/CQISense .pptx deck. It routes agents to the
-  current CQI presentation template and the CQISense design-system archive.
+  Deprecated compatibility redirect for CQI/CQISense presentation work. Use
+  `.codex/skills/cqi-analytical-pptx/SKILL.md` as the canonical skill for
+  creating, editing, auditing, releasing, or podcasting CQI analytical PPTX
+  decks.
 ---
 
-# CQI PPTX Skill
+# CQI PPTX Skill Redirect
 
-## Purpose
+This file is kept only for older agents and references that still open
+`brands/cqi/brand_style/pptx_skill_cqi.md`.
 
-This file is the agent entrypoint for CQI/CQISense presentation work. It keeps
-Codex, Claude, and other NegritaOS adapters aligned to the current brand package
-without duplicating the full design system.
+Canonical contract:
 
-## Source Of Truth
+`.codex/skills/cqi-analytical-pptx/SKILL.md`
 
-| Purpose | Canonical path |
-|---|---|
-| Current CQI PPT template | `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx` |
-| Full brand/design system archive | `brands/cqi/brand_style/CQISense_Design_System.zip` |
-| Brand routing guide | `brands/cqi/brand_style/brand_style.md` |
-| Deprecated PPT template | `Template_CQISense.pptx` |
+Use that skill for:
 
-Do not use the deprecated PPT template. If a deck references it, migrate the
-deck workflow to `CQI_PresentationTemplate_20260401.pptx`.
+- CQI/CQISense analytical `.pptx` creation and editing;
+- inherited deck canvas and template handling;
+- Poppins, Noto Sans, and IBM Plex Mono typography;
+- speaker-notes evidence blocks;
+- release QA, readability audits, reconciliation checks, and optional mobile
+  podcast generation.
 
-## When To Use
+The editable visual source of truth is:
 
-Use this wrapper when the user mentions:
+`brands/cqi/brand_style/CQISense_Design_System/`
 
-- CQI, CQISense, Hot Orange, executive deck, slide deck, PPT, or presentation.
-- Creating or editing `.pptx` files.
-- Extracting or summarizing a CQI presentation.
-- Building a deck from analysis outputs, plots, or model findings.
-
-## Mandatory Workflow
-
-1. Load brand context from:
-
-   `brands/cqi/brand_style/brand_style.md`
-
-2. Inspect the design-system archive:
-
-   ```bash
-   unzip -l brands/cqi/brand_style/CQISense_Design_System.zip
-   unzip -p brands/cqi/brand_style/CQISense_Design_System.zip SKILL.md
-   unzip -p brands/cqi/brand_style/CQISense_Design_System.zip readme.md
-   ```
-
-3. Use the current PPT template:
-
-   `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`
-
-4. Apply presentation rules from:
-
-   `rules/presentation/presentation_rules.yaml`
-
-5. If creating a stakeholder deliverable, apply:
-
-   `.codex/skills/document-control/SKILL.md`
-
-## Current Visual Contract
-
-The archive is canonical. The current high-level contract is:
-
-- Primary brand: CQI cobalt `#1A43F5`.
-- Accent: pink `#FF8093`.
-- Display font: Poppins.
-- Body font: Noto Sans.
-- Numeric/data font: IBM Plex Mono with tabular numbers.
-- Reading rule: brand/UI = cobalt; Repair = teal; Risk = pink; Operational =
-  green; Hot Orange/heat = priority flag only, not a surface.
-- Slide writing: one idea per slide, conclusion first, minimal body text,
-  evidence visible, no hype.
-
-### Canvas And Master Layout Constraints
-
-- Slide canvas: **26.67 in wide by 15.00 in tall** (double-widescreen 16:9).
-  Content ported from standard `13.33 by 7.5` decks must be rescaled, not
-  copy-pasted.
-- Left margin: `1.33 in`. Right margin: `1.33 in`. Content width: `24.01 in`.
-- The master bakes in a CQI logo at the bottom-left (approx `x` in `[0, 3.5]`,
-  `y` in `[14.4, 14.9]`) and a copyright line at the bottom-center (approx
-  `x` in `[13, 20]`).
-- Footnote positioning MUST clear these baked-in elements. Recommended
-  bounds: `x = 3.7`, `y = 14.35`, `width <= 9.2`, left-aligned, italic,
-  size >= 10 pt. Never place a footnote inside `x < 3.5` at `y > 14.3`.
-
-### Chart Regeneration Policy
-
-- Never reuse a chart image from a source deck if its palette or typography
-  drifts from the CQI design system.
-- When the source `.pptx` contains embedded chart data:
-  ```bash
-  unzip -j SOURCE.pptx 'ppt/embeddings/*.xlsx' -d build/xlsx_extract
-  ```
-  read the extracted xlsx and re-render the chart in matplotlib using the
-  CQI categorical palette (`#1A43F5`, `#FF8093`, `#2D7173`, `#774CFF`,
-  `#FFA720`, `#888888`, `#37A781`).
-- Charts must ship as high-DPI PNG (>= 200 DPI) rendered at the destination
-  aspect ratio. Do not inline-embed PPT charts that lose CQI palette
-  compliance in the final deck.
-
-If any of the above conflicts with a newer `CQISense_Design_System.zip`, the
-newer zip wins.
-
-## Deck Quality Gates
-
-- The deck uses `CQI_PresentationTemplate_20260401.pptx` as template.
-- Colors, fonts, logos, spacing, and slide style come from the zip/template.
-- Every slide has one main message.
-- Every analytical claim has evidence or is marked as hypothesis.
-- Metrics use consistent source paths, sample sizes, and calculation notes.
-- No lorem ipsum, placeholders, hidden TODOs, or stale client names remain.
-- Exported PPT/PDF deliverables follow `document-control` naming and manifest
-  rules when they are final stakeholder artifacts.
-
-## Ownership And Update Trigger
-
-Owner: NegritaOS CQI brand governance.
-
-Update this wrapper when the CQI PPT template or the CQISense design-system zip
-changes.
+The zip bundle is a distribution artifact, not the primary authority.

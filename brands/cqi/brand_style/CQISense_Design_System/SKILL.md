@@ -1,6 +1,6 @@
 ---
 name: cqisense-design
-description: Use this skill to generate well-branded interfaces, slides and assets for CQISense — the customer-journey churn-intelligence product. Contains essential design guidelines, colors, type (Spectral / Public Sans / IBM Plex Mono), fonts, domain model tokens (Repair / Risk / Operational / Archetype), assets, and a full 10-slide Hot Orange Journey Rules deck template. Use for production or throwaway prototypes/mocks/presentations.
+description: Use this skill to generate well-branded interfaces, slides and assets for CQISense. Contains essential design guidelines, colors, type (Poppins / Noto Sans / IBM Plex Mono), fonts, domain tokens, assets, and reusable presentation patterns. Use for production or throwaway prototypes/mocks/presentations.
 user-invocable: true
 ---
 
@@ -15,9 +15,9 @@ Key files to explore first:
 If creating **visual artifacts** (slides, mocks, throwaway prototypes, etc.):
 - Copy `styles.css` and the `tokens/` folder (or link them relatively) so all CSS custom properties are available.
 - Copy `assets/cqisense-mark.svg` and `assets/cqisense-logo.svg` for the logo.
-- The cobalt brand (`#1A43F5`) + cool gray palette, Poppins headings, and IBM Plex Mono for all numbers are non-negotiable.
-- Follow the Reading Rule: Brand/UI = cobalt (`--brand`), Repair = teal (`--repair`), Risk = pink (`--risk`), Operational = green (`--operational`), Hot Orange/priority = `--heat` (used sparingly, never as a surface).
-- For slides: one idea per slide, large focal element (big mono number or big serif statement), minimal body text. Boss-level ADHD-friendly.
+- The cobalt brand (`#1A43F5`) + cool gray palette, Poppins headings, Noto Sans body text, and IBM Plex Mono for all numbers are non-negotiable.
+- Follow the Reading Rule: Brand/UI = cobalt (`--brand`), Repair = teal (`--repair`), Risk = pink (`--risk`), Operational = green (`--operational`), priority/heat = `--heat` (used sparingly, never as a surface).
+- For slides: one idea per slide, finding first, visible evidence, readable typography, and minimal body text.
 - For components: reference the primitives in `components/core/` and `components/domain/` — never re-implement Button or ArchetypeBadge.
 
 If working on **production code**:
