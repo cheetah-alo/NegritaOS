@@ -1,8 +1,10 @@
 presentation_rules:
 
   language:
-    default_for_generated_decks: english
+    default_for_generated_decks: match_user_or_source_deck_language
     preserve_domain_terms_when_clearer: true
+    preserve_sql_fields_ids_and_codes: true
+    do_not_force_english: true
 
   storytelling:
     prioritize_executive_summary: true
@@ -16,9 +18,15 @@ presentation_rules:
     default_font: Noto Sans
     default_heading_font: Poppins
     default_numeric_font: IBM Plex Mono
-    minimum_body_or_table_font_pt: 12
-    minimum_table_header_font_pt: 14
+    disallowed_normative_fonts_for_cqi_pptx:
+      - Spectral
+      - Public Sans
+      - Malgun Gothic
+    minimum_body_or_table_font_pt: 16
+    minimum_axis_legend_label_font_pt: 12
+    minimum_visible_source_note_metadata_font_pt: 10
     minimum_complementary_note_font_pt: 10
+    prohibit_auto_shrink_below_minimums: true
     split_tables_that_cannot_fit_minimum_font: true
     allow_theme_presets:
       - white_background
@@ -35,6 +43,7 @@ presentation_rules:
     one_main_message_per_slide: true
     speaker_notes_required: true
     appendix_separates_methodology: true
+    expected_slide_count_must_be_validated: true
     insight_slide_frame:
       section_tag_eyebrow: true
       insight_title_leads_with_number: true
@@ -54,18 +63,28 @@ presentation_rules:
 
   brand:
     cqi_brand_reference: brands/cqi/brand_style/brand_style.md
+    cqi_design_system_root: brands/cqi/brand_style/CQISense_Design_System
     cqi_brand_archive: brands/cqi/brand_style/CQISense_Design_System.zip
     cqi_pptx_skill: brands/cqi/brand_style/pptx_skill_cqi.md
+    cqi_analytical_pptx_skill: .codex/skills/cqi-analytical-pptx/SKILL.md
     cqi_template_pptx: brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx
     deprecated_template_pptx_name: Template_CQISense.pptx
     primary_color: "#1A43F5"
     accent_color: "#FF8093"
     dark_neutral: "#232324"
     light_neutral: "#ffffff"
-    archive_is_visual_source_of_truth: true
+    extracted_design_system_is_visual_source_of_truth: true
+    archive_is_distribution_bundle_only: true
     avoid_improvised_palettes: true
+
+  canvas:
+    new_cqi_decks_use_template: true
+    existing_decks_preserve_canvas_masters_layouts_and_footers: true
+    use_relative_or_canvas_derived_coordinates: true
+    do_not_force_universal_canvas_on_existing_decks: true
 
   required_source_contract:
     every_claim_requires_source_path: true
     every_recommendation_requires_prior_finding: true
     missing_evidence_must_be_marked_as_hypothesis: true
+    cqi_analytical_slides_require_evidence_notes_block: true

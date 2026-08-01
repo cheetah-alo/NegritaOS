@@ -90,8 +90,47 @@ profiles:
     description: CQI-style documentation for deterministic rule-based models and rules engines.
     skills:
       - rule-model-documentation
+  cqi-analytical-pptx:
+    description: CQI analytical PowerPoint delivery, QA, release, and podcast contracts.
+    skills:
+      - analytics-storytelling-deck
+      - cqi-analytical-pptx
+      - document-control
+  elal-analytical-deck:
+    description: ELAL passenger-journey analytical deck profile layered on CQI PPTX governance.
+    skills:
+      - analytics-storytelling-deck
+      - cqi-analytical-pptx
+      - elal-eda-governance
 
 skills:
+  - id: cqi-analytical-pptx
+    path: .codex/skills/cqi-analytical-pptx/SKILL.md
+    native_path: skills/executive/cqi_analytical_pptx.md
+    source: NegritaOS-native
+    profiles: [cqi-analytical-pptx, elal-analytical-deck]
+    scopes: [root, presentation, deck, analytics]
+    status: canonical
+    dependencies: [node, unzip]
+    side_effects: read_only_audit_by_default
+  - id: analytics-storytelling-deck
+    path: .codex/skills/analytics-storytelling-deck/SKILL.md
+    native_path: skills/executive/analytics_storytelling_deck.md
+    source: NegritaOS-native
+    profiles: [cqi-analytical-pptx, elal-analytical-deck]
+    scopes: [root, presentation, deck, analytics]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: document-control
+    path: .codex/skills/document-control/SKILL.md
+    native_path: null
+    source: NegritaOS-native
+    profiles: [cqi-analytical-pptx]
+    scopes: [root, presentation, documentation]
+    status: canonical
+    dependencies: []
+    side_effects: governed_deliverable_creation
   - id: rule-model-documentation
     path: .codex/skills/rule-model-documentation/SKILL.md
     native_path: skills/engineering/rule_model_documentation.md
@@ -132,7 +171,7 @@ skills:
     path: .codex/skills/elal-eda-governance/SKILL.md
     native_path: null
     source: NegritaOS-native
-    profiles: [elal-eda-governance]
+    profiles: [elal-eda-governance, elal-analytical-deck]
     scopes: [root, data_analytics]
     status: canonical
     dependencies: []

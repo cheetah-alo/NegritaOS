@@ -8,6 +8,10 @@ Turns validated analytical findings into a decision-ready deck. The deck must
 start with the answer, then show how the answer was calculated, and only then
 zoom into evidence layers.
 
+For CQI/CQISense analytical PowerPoint delivery, this is the narrative layer.
+Apply `.codex/skills/cqi-analytical-pptx/SKILL.md` after this skill for brand,
+template, evidence-notes, release QA, and optional podcast contracts.
+
 ## Required Story Order
 
 Use this order unless the user explicitly provides a different deck structure:
@@ -39,11 +43,15 @@ Every analytical slide must include:
 ## Readability Contract
 
 - Font: use `rules/presentation/presentation_rules.yaml`.
-- For CQI/CQISense decks, load `brands/cqi/brand_style/brand_style.md` and use
+- For CQI/CQISense analytical decks, load
+  `.codex/skills/cqi-analytical-pptx/SKILL.md`.
+- For new CQI/CQISense decks, use
   `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx`.
-- Body and table text: minimum 12 pt.
-- Table headers: minimum 14 pt.
-- Complementary notes: minimum 10 pt.
+- For existing decks, preserve the source deck canvas, masters, layouts,
+  cobalt rail, cover, and inherited footers.
+- Body and table cells: minimum 16 pt.
+- Axes, legends, and labels: minimum 12 pt.
+- Visible sources, notes, and metadata: minimum 10 pt.
 - Footer text may be smaller if it does not carry the main finding.
 - If a table cannot fit at these sizes, split it or convert it to cards/bullets.
 - Do not use dense tables as executive slides when cards or KPI strips are clearer.
@@ -82,3 +90,6 @@ Slide N:
   Speaker note:
   Transition:
 ```
+
+For CQI analytical slides, the speaker note must also include the structured
+`[Evidence]` block defined by `cqi-analytical-pptx`.

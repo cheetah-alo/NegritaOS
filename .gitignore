@@ -26,3 +26,6 @@ outputs/
 zsmash/presentation-samples/**/*.zip
 zsmash/presentation-samples/**/*.pptx
 zsmash/presentation-samples/**/*.parquet
+
+# Protected local acceptance decks; keep evidence fixtures out of Git.
+.codex/skills/cqi-analytical-pptx/references/fixtures/*.pptx

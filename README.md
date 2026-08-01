@@ -187,8 +187,9 @@ Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copi
 `nextjs-15`, `react-19`, `zod-4`, `tailwind-4`, `playwright`, `mcp-server`, `sdd-flow`,
 `commit-hygiene`, `pr-review-deep`, `memory-protocol`, `eda-reports`, `data-contracts`,
 `dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, `docs-alignment`,
-`document-control`, `rule-model-documentation`, `dashboard-architecture`,
-`analytical-eda-governance`, `bigquery-analysis-governance`, …
+`document-control`, `cqi-analytical-pptx`, `rule-model-documentation`,
+`dashboard-architecture`, `analytical-eda-governance`,
+`bigquery-analysis-governance`, …
 
 Each skill is a folder with a `SKILL.md` describing **when to trigger** and **what to do**.
 

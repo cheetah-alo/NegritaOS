@@ -2,8 +2,8 @@
 name: elal-eda-governance
 description: >
   Opt-in ELAL EDA semantics for raw operational severity, IA call taxonomy
-  proxies, BLOCKED_DATA/BLOCKED_NO_SUPPORT states, and third-subtitle evidence.
-  Use only for governed ELAL passenger-journey EDA packages.
+  proxies, data support states, and third-subtitle evidence. Use only for
+  governed ELAL passenger-journey EDA packages.
 license: Apache-2.0
 metadata:
   author: negritaos
@@ -23,7 +23,12 @@ Required distinctions:
 - raw operational severity is separate from score-derived state;
 - `IA_CALL_TAXONOMY_PROXY` is a proxy and is not confirmed denied boarding;
 - `BLOCKED_NO_SUPPORT` means no defensible intersection, not zero prevalence;
-- `BLOCKED_DATA` means the required source/window is unavailable;
+- `BLOCKED_DATA` means the required source/window is unavailable in internal
+  EDA governance;
 - a valid zero remains distinct from both blocked states;
 - canonical plots expose snapshot, window, grain, denominator, and source in
   the third subtitle, not footer metadata.
+
+Stakeholder decks must translate internal blocked states into communicable
+evidence states from `cqi-analytical-pptx`: `DATA_REQUIREMENT_OPEN`,
+`NOT_MATERIALIZED`, `N/D`, `OBSERVED`, or `CANDIDATE_SHADOW`.
