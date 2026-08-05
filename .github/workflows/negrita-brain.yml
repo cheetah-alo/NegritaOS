@@ -1,0 +1,31 @@
+name: Negrita Brain
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare canonical memory structure
+        run: mkdir -p ~/.negritaos/memory/projects/negritaos/runtime/sessions ~/.negritaos/memory/projects/negritaos/decisions
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Coverage gate
+        run: python3 scripts/check_negrita_brain_coverage.py --fail-under 80
+      - name: Canonical configuration
+        run: |
+          python3 scripts/validate_skill_catalog.py --project projects/negritaos.yaml
+          python3 scripts/validate_config_resolution.py
+          python3 scripts/validate_registry_paths.py --root "$PWD"
+          python3 scripts/validate_alignment.py --only-meta
+      - name: Secret patterns and diff hygiene
+        run: |
+          ! git grep -nE 'AKIA[0-9A-Z]{16}|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|ghp_[A-Za-z0-9]{30,}|sk-[A-Za-z0-9]{20,}'
+          git diff --check

@@ -4,11 +4,16 @@
 from __future__ import annotations
 
 import argparse
+import sys
 
 try:
     from .validate_skill_catalog import CATALOG, ROOT, _load_yaml, validate_catalog
 except ImportError:
     from validate_skill_catalog import CATALOG, ROOT, _load_yaml, validate_catalog
+
+sys.path.insert(0, str(ROOT / "src"))
+
+from negrita_brain.profiles import resolve_profiles  # noqa: E402
 
 
 AGENTS = ROOT / ".codex" / "skills" / "AGENTS.md"
@@ -26,8 +31,9 @@ def render_profiles(catalog: dict) -> str:
         "| Profile | Skills |",
         "|---|---|",
     ]
-    for profile_id, profile in sorted(catalog["profiles"].items()):
-        skills = ", ".join(f"`{skill}`" for skill in profile.get("skills", []))
+    for profile_id in sorted(catalog["profiles"]):
+        closure = resolve_profiles(catalog, [profile_id])
+        skills = ", ".join(f"`{skill}`" for skill in closure.skills)
         lines.append(f"| `{profile_id}` | {skills or 'No automatic skills'} |")
     lines.extend(["", ""])
     return "\n".join(lines)

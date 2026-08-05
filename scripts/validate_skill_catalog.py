@@ -7,12 +7,17 @@ import argparse
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "skills" / "catalog.yaml"
+sys.path.insert(0, str(ROOT / "src"))
+
+from negrita_brain.errors import ProfileResolutionError  # noqa: E402
+from negrita_brain.profiles import resolve_profiles  # noqa: E402
 VALID_STATUSES = {"canonical", "adapted", "reference_only"}
 VALID_PROVIDERS = {"bigquery", "postgresql", "files", "api", "other"}
 VALID_ANALYSIS_PHASES = {"warn_first", "fail_closed"}
@@ -129,6 +134,15 @@ def validate_catalog(catalog: dict[str, Any]) -> list[str]:
                 errors.append(
                     f"{skill_id}: missing reverse profile mapping {profile_id}"
                 )
+        try:
+            resolve_profiles(catalog, [profile_id])
+        except ProfileResolutionError as exc:
+            errors.append(f"profile {profile_id}: {exc}")
+
+    try:
+        resolve_profiles(catalog, [])
+    except ProfileResolutionError as exc:
+        errors.append(f"catalog defaults: {exc}")
 
     source_mappings = catalog.get("source_mappings", {})
     if not isinstance(source_mappings, dict):
@@ -146,13 +160,15 @@ def validate_catalog(catalog: dict[str, Any]) -> list[str]:
                 for source_skill, target_skills in normalized_to.items():
                     if not isinstance(target_skills, list):
                         errors.append(
-                            f"source mapping {source_id}: normalized_to.{source_skill} must be a list"
+                            f"source mapping {source_id}: normalized_to."
+                            f"{source_skill} must be a list"
                         )
                         continue
                     for target_skill in target_skills:
                         if target_skill not in by_id:
                             errors.append(
-                                f"source mapping {source_id}: unknown normalized skill {target_skill}"
+                                f"source mapping {source_id}: unknown normalized "
+                                f"skill {target_skill}"
                             )
 
     return errors
@@ -169,6 +185,10 @@ def validate_project(catalog: dict[str, Any], project_path: Path) -> list[str]:
     if not isinstance(declared_profiles, list):
         errors.append(f"{project_path}: skill_profiles must be a list")
     else:
+        try:
+            resolve_profiles(catalog, declared_profiles)
+        except ProfileResolutionError as exc:
+            errors.append(f"{project_path}: {exc}")
         for profile_id in declared_profiles:
             if profile_id not in profiles:
                 errors.append(f"{project_path}: unknown profile {profile_id}")
@@ -231,7 +251,10 @@ def validate_project(catalog: dict[str, Any], project_path: Path) -> list[str]:
                 )
             scope = governance.get("scope")
             if not isinstance(scope, str) or not scope.strip():
-                errors.append(f"{project_path}: analysis_governance.scope must be a non-empty string")
+                errors.append(
+                    f"{project_path}: analysis_governance.scope must be a "
+                    "non-empty string"
+                )
     return errors
 
 

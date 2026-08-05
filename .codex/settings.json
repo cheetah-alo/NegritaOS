@@ -1,0 +1,66 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain_hook.py PostToolUse",
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain_hook.py PreToolUse",
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain_hook.py SessionEnd",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain_hook.py SessionStart",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain_hook.py Stop",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain_hook.py UserPromptSubmit",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}

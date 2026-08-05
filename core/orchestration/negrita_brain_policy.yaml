@@ -1,0 +1,84 @@
+negrita_brain:
+  schema_version: 1
+  timezone: Europe/Madrid
+  contract_state_required_for_mutation: READY
+  default_mode_map:
+    planning: LP
+    architecture: LP
+    documentation: TD
+    writeup: TD
+    implementation: CR
+    code_review: CR
+    review: CR
+    deck: EP
+    presentation: EP
+    eda: MR
+    model_review: MR
+    data_quality_audit: DQ
+    research: RT
+    academic_review: AE
+  safe_logging:
+    format: jsonl
+    allow:
+      - event_id
+      - session_id
+      - occurred_at
+      - event_kind
+      - status
+      - provider
+      - tool
+      - action
+      - file_path
+      - decision_ids
+    prohibit:
+      - prompts
+      - responses
+      - file_contents
+      - tool_outputs
+      - secrets
+  enforcement:
+    code:
+      read: allow
+      mutation_without_ready_contract: block
+      commit_without_ready_contract: block
+      noncompliant_deliverable: block
+    workspace:
+      read: allow
+      mutation_without_ready_contract: warn
+      commit_without_ready_contract: warn
+      noncompliant_deliverable: warn
+    evidence:
+      read: allow
+      mutation_without_ready_contract: warn
+      commit_without_ready_contract: warn
+      noncompliant_deliverable: warn
+      immutable_existing_artifacts: true
+  artifact_route:
+    directory: documents
+    manifest: documents/document_manifest.jsonl
+    filename_pattern: "<slug>__updated_YYYYMMDD_HHMMSS.<ext>"
+    timezone: Europe/Madrid
+  quality_gates:
+    code:
+      - tests
+      - coverage
+      - config_resolution
+      - registry_paths
+      - alignment
+      - document_control
+      - secret_scan
+      - git_diff_check
+    workspace:
+      - config_resolution
+      - document_control
+      - alignment
+    evidence:
+      - config_resolution
+      - legacy_catalog
+      - no_move_no_overwrite
+  decisions:
+    initial_status: CANDIDATE
+    accepted_status: ACCEPTED
+    correction_status: SUPERSEDED
+    stale_candidate_days: 30
+    adr_kinds: [architecture, contract]

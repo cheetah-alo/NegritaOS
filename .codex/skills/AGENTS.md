@@ -61,21 +61,23 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 
 | Profile | Skills |
 |---|---|
-| `academic-tfm-research` | `tfm-research-advisor` |
-| `academic-tfm-review` | `tfm-academic-reviewer` |
-| `analytical-dashboard` | `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `docs-alignment`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
-| `analytical-eda` | `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage`, `docs-alignment` |
-| `cqi-analytical-docx-pdf` | `cqi-analytical-docx-pdf`, `document-control`, `docs-alignment` |
-| `cqi-analytical-pptx` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `document-control` |
-| `data-source-bigquery` | `data-source-adapters`, `bigquery-analysis-governance`, `jinja-bigquery`, `data-contracts`, `data-loading` |
-| `data-source-postgresql` | `data-source-adapters`, `data-contracts`, `data-loading` |
-| `elal-analytical-deck` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance`, `document-control` |
-| `elal-eda-governance` | `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
-| `fastapi-nextjs` | `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
-| `ibc-technical-eda-presentation` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation`, `document-control` |
-| `ibc-technical-eda-report` | `cqi-analytical-docx-pdf`, `ibc-technical-eda-report`, `document-control`, `analytical-eda-governance`, `data-contracts`, `docs-alignment` |
-| `rule-model-documentation` | `rule-model-documentation` |
-| `visual-delivery` | `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
+| `academic-tfm-research` | `docs-alignment`, `document-control`, `tfm-research-advisor` |
+| `academic-tfm-review` | `docs-alignment`, `document-control`, `tfm-academic-reviewer` |
+| `analytical-dashboard` | `docs-alignment`, `document-control`, `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
+| `analytical-deck-delivery` | `docs-alignment`, `document-control`, `analytics-storytelling-deck` |
+| `analytical-eda` | `docs-alignment`, `document-control`, `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage` |
+| `cqi-analytical-docx-pdf` | `docs-alignment`, `document-control`, `cqi-analytical-docx-pdf` |
+| `cqi-analytical-pptx` | `docs-alignment`, `document-control`, `analytics-storytelling-deck`, `cqi-analytical-pptx` |
+| `data-source-bigquery` | `docs-alignment`, `document-control`, `data-source-adapters`, `bigquery-analysis-governance`, `jinja-bigquery`, `data-contracts`, `data-loading` |
+| `data-source-postgresql` | `docs-alignment`, `document-control`, `data-source-adapters`, `data-contracts`, `data-loading` |
+| `document-delivery` | `docs-alignment`, `document-control` |
+| `elal-analytical-deck` | `docs-alignment`, `document-control`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance` |
+| `elal-eda-governance` | `docs-alignment`, `document-control`, `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
+| `fastapi-nextjs` | `docs-alignment`, `document-control`, `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
+| `ibc-technical-eda-presentation` | `docs-alignment`, `document-control`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation` |
+| `ibc-technical-eda-report` | `docs-alignment`, `document-control`, `cqi-analytical-docx-pdf`, `ibc-technical-eda-report`, `analytical-eda-governance`, `data-contracts` |
+| `rule-model-documentation` | `docs-alignment`, `document-control`, `rule-model-documentation` |
+| `visual-delivery` | `docs-alignment`, `document-control`, `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
 ## Auto-invoke Skills
 
