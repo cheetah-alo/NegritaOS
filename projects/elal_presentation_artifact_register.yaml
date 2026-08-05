@@ -1,0 +1,82 @@
+schema_version: 1
+as_of: 2026-08-04
+source_repository:
+  project_id: proj_data_analytics
+  root: /Users/jackyb-cqi/repos/proj_data_analytics
+  resolution_rule: Every artifact path below is relative to this external project root; do not move the PPTX source artifacts into NegritaOS.
+scope: analyses/poc_elal_passenger_journey/documents
+organization_method: semantic index only; existing local PPTX artifacts are not moved, renamed, or overwritten
+reference_deck:
+  file: elal_passenger_journey_product_owner_summary_44slides_20260804_final_no_text_frames.pptx
+  observed_slides: 46
+  observed_notes: 46
+  sha256: b5bbf5eb7b940b7681bcf227cd0bf38e0c953d258d87cd7686a27682d4252c28
+  role: mandatory visual and speaker-notes reference for all ELAL PPTX work
+  source_state: exact closed source must be confirmed before any edit
+  note_marker_exceptions: [7, 9, 25, 26, 28, 46]
+
+discussion_topics:
+  product_owner_decision_brief:
+    purpose: decision-oriented synthesis from data coverage through rule gates
+    selection_rule: the reference_deck above is mandatory; other Product Owner files are comparison history only
+    artifacts:
+      - {file: elal_passenger_journey_product_owner_summary_44slides_20260804_final_no_text_frames.pptx, slides: 46, notes: 46, lifecycle: mandatory_reference}
+      - {file: elal_passenger_journey_product_owner_summary_44slides_20260804_final.pptx, slides: 44, notes: 44, lifecycle: prior_comparison}
+      - {file: elal_passenger_journey_product_owner_summary_24slides_20260803_candidate.pptx, slides: 26, notes: 26, lifecycle: candidate_history}
+
+  eda_data_universe_and_narrative:
+    purpose: coverage, grain, source rails, observed signals, and decision narrative alternatives
+    selection_rule: these are EDA/supporting artifacts; none replaces the mandatory Product Owner reference without explicit owner selection
+    artifacts:
+      - {file: elal_passenger_journey_eda_story_77slides_20260802_data_universe_candidate.pptx, slides: 77, notes: 77, lifecycle: candidate, focus: data_universe}
+      - {file: elal_passenger_journey_eda_story_74slides_20260803_metadata_final_candidate.pptx, slides: 76, notes: 76, lifecycle: candidate, focus: metadata_and_lineage}
+      - {file: elal_passenger_journey_eda_story_74slides_20260803_metadata_final_candidate.pre_narrative_rules_20260803.pptx, slides: 73, notes: 73, lifecycle: candidate_history, focus: metadata_before_rule_narrative}
+      - {file: elal_passenger_journey_eda_story_74slides_20260802_narrative_trim_candidate.pptx, slides: 74, notes: 74, lifecycle: candidate, focus: narrative_trim}
+      - {file: elal_passenger_journey_eda_story_76slides_20260802_narrative_review_candidate.pptx, slides: 76, notes: 76, lifecycle: candidate, focus: narrative_review}
+      - {file: elal_passenger_journey_eda_story_76slides_20260802_eda_insights_candidate_v2.pptx, slides: 76, notes: 76, lifecycle: candidate_history, focus: eda_insights_v2}
+      - {file: elal_passenger_journey_eda_story_76slides_20260802_eda_insights_candidate.pptx, slides: 76, notes: 76, lifecycle: candidate_history, focus: eda_insights}
+      - {file: elal_passenger_journey_eda_story_76slides_20260802_candidate.pptx, slides: 76, notes: 76, lifecycle: candidate_history, focus: broad_eda_story}
+      - {file: elal_passenger_journey_eda_story_75slides_20260802_candidate.pptx, slides: 75, notes: 75, lifecycle: candidate_history, focus: broad_eda_story}
+      - {file: elal_passenger_journey_eda_story_73slides_20260802_candidate.pptx, slides: 73, notes: 73, lifecycle: candidate_history, focus: broad_eda_story}
+      - {file: elal_passenger_journey_eda_story_72slides_20260803_direct_rails_candidate.pptx, slides: 72, notes: 72, lifecycle: candidate, focus: direct_call_rails}
+      - {file: elal_passenger_journey_eda_story_72slides_20260803_final.pptx, slides: 72, notes: 72, lifecycle: requires_owner_selection, focus: broad_eda_story}
+      - {file: elal_passenger_journey_eda_story_70slides_20260801_final.pptx, slides: 70, notes: 70, lifecycle: requires_owner_selection, focus: broad_eda_story}
+      - {file: elal_passenger_journey_eda_story_current_pre_20260803_final.pptx, slides: 70, notes: 70, lifecycle: revision_history, focus: pre_20260803_final}
+      - {file: elal_passenger_journey_eda_story_pre_70slides_20260801.pptx, slides: 69, notes: 69, lifecycle: revision_history, focus: pre_70slides}
+      - {file: elal_passenger_journey_eda_story_58slides_20260731_195700.pptx, slides: 58, notes: 58, lifecycle: revision_history, focus: broad_eda_story}
+      - {file: elal_passenger_journey_eda_story_current_20260731.pptx, slides: 72, notes: 72, lifecycle: revision_history, focus: current_20260731}
+      - {file: elal_passenger_journey_eda_story_current_20260731_cover_only_qa_candidate.pptx, slides: 52, notes: 52, lifecycle: qa_candidate, focus: cover_only}
+      - {file: elal_passenger_journey_eda_story_current_20260731_pre_58slides_20260731_195700.pptx, slides: 52, notes: 52, lifecycle: revision_history, focus: pre_58slides}
+      - {file: elal_passenger_journey_eda_story_current_20260731_pre_cadence_20260801_125210.pptx, slides: 59, notes: 59, lifecycle: revision_history, focus: pre_cadence}
+      - {file: elal_passenger_journey_eda_story_current_20260731_pre_recommendations_20260731_204950.pptx, slides: 58, notes: 58, lifecycle: revision_history, focus: pre_recommendations}
+      - {file: elal_passenger_journey_eda_story_current_20260731_pre_rule_impact_20260801_120351.pptx, slides: 58, notes: 58, lifecycle: revision_history, focus: pre_rule_impact}
+      - {file: elal_passenger_journey_eda_story__updated_20260801_120351.pptx, slides: 59, notes: 59, lifecycle: revision_history, focus: rule_impact_update}
+      - {file: elal_passenger_journey_eda_story__updated_20260801_125210.pptx, slides: 60, notes: 60, lifecycle: revision_history, focus: cadence_update}
+      - {file: elal_passenger_journey_eda_story_pre_v9_v10_rules_20260801.pptx, slides: 60, notes: 60, lifecycle: revision_history, focus: before_v9_v10_rules}
+
+  legacy_eda_and_for_max:
+    purpose: historical EDA or external-review source material; use only after verifying its claims against current contracts
+    artifacts:
+      - {file: elal_eda_v1_deck.pptx, slides: 8, notes: 0, lifecycle: legacy_no_notes}
+      - {file: elal_eda_v3_deck.pptx, slides: 56, notes: 0, lifecycle: legacy_no_notes}
+      - {file: elal_passenger_journey_eda_for_max_20260729_v01.pptx, slides: 34, notes: 34, lifecycle: historical_review}
+      - {file: elal_passenger_journey_eda_for_max_20260729_v02.pptx, slides: 20, notes: 14, lifecycle: historical_review_partial_notes}
+
+  arik_audit_and_rule_governance:
+    purpose: audit observations, V10 guardrails, rule changes, and decision gates
+    selection_rule: the Arik review is an audit; a candidate/backtest remains non-production until its named governance gate is approved
+    artifacts:
+      - {file: elal_arik_response_review_20260722.pptx, slides: 8, notes: 0, lifecycle: audit_history}
+      - {file: elal_arik_review_eda_status_slide_20260804.pptx, slides: 1, notes: 1, lifecycle: standalone_audit_insert}
+      - {file: elal_attention_treatment_pro__updated_20260720_224023.pptx, slides: 34, notes: 34, lifecycle: audit_supporting_deck}
+      - {file: elal_attention_treatment_pro_support_20260720/template-starter.pptx, slides: 34, notes: 34, lifecycle: technical_template_history}
+      - {file: elal_attention_treatment_pro_support_20260720/elal_attention_treatment_pro_draft.pptx, slides: 34, notes: 34, lifecycle: audit_draft_history}
+      - {file: elal_v10_case_evidence_and_impact__updated_20260720_215451.pptx, slides: 31, notes: 31, lifecycle: audit_evidence}
+      - {file: elal_v10_guardrail_matrix_replacement_slide_20260804.pptx, slides: 1, notes: 1, lifecycle: standalone_audit_insert}
+      - {file: elal_v10_rule_review__updated_20260720_193150.pptx, slides: 12, notes: 12, lifecycle: rule_review_original}
+      - {file: elal_v10_rule_review_revised__updated_20260720_200101.pptx, slides: 19, notes: 19, lifecycle: rule_review_revised}
+
+inventory_check:
+  observed_pptx_count: 41
+  listed_pptx_count: 41
+  exclusions: Office temporary lock files are not presentation artifacts

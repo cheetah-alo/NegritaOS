@@ -45,3 +45,7 @@ Run-scoped evidence must distinguish:
 
 Never silently replace source-capture time with event time and never turn
 unsupported coverage into zero-valued evidence.
+
+If the BigQuery analysis uses Jinja-rendered SQL, also load `jinja-bigquery`
+before editing or reviewing the template. Validate the rendered GoogleSQL, not
+only the template source.

@@ -1,0 +1,476 @@
+schema_version: 1
+ledger_id: ELAL-RULE-TRACEABILITY
+title: ELAL rule and implementation traceability ledger
+last_recorded_on: 2026-08-05
+
+source_repository:
+  project_id: proj_data_analytics
+  root: /Users/jackyb-cqi/repos/proj_data_analytics
+  resolution_rule: All source, contract, and implementation paths in this ledger are relative to this external project root.
+
+ledger_policy:
+  mode: append_only
+  canonical_use: >-
+    This file is the index for rule-change evidence and decisions. It does not
+    replace a data, outcome, or product-policy contract.
+  amendment_rule: >-
+    Do not alter or delete a historical change record. Append a later record
+    with previous_change_id and supersedes to correct, withdraw, or replace it.
+  required_before_claiming_a_change: >-
+    An impacted rule, source/contract, implementation artifact, validation
+    result, decision owner and status, policy effect, and deck/product impact.
+  immutable_source_rule: >-
+    PDF and DOCX source artifacts are evidence. Do not move, rename, overwrite,
+    or normalize them as part of a rule change; retain their recorded digest.
+
+controlled_rule_states:
+  - CURRENT_GOVERNED_BASELINE
+  - ACTIVE_DATA_CONTRACT
+  - CONTEXT_ONLY
+  - SHADOW_CANDIDATE
+  - INSUFFICIENT_EVIDENCE
+  - DEPRECATED
+
+source_artifacts:
+  - id: SRC-RULE-PRODUCTION-EVALUATION-20260804
+    path: output/pdf/elal_rules_production_evaluation.pdf
+    format: PDF
+    sha256: 8a472d06352ab48f56c185dbcd870cc274391d66a86705585b3cd8aae89340d5
+    observed_pages: 15
+    source_role: Target architecture and production-evaluation reference for the governed ELAL rules revision.
+    status: REFERENCE
+  - id: SRC-RULE-DOC-20260729
+    path: analyses/poc_elal_passenger_journey/documents/ELAL_attention_rules_documentation_20260729.docx
+    format: DOCX
+    sha256: 7a0248ce08acfba91dcfa1c55ea687725c05db273603d843d86ddb57e12b1d29
+    observed_pages: 31
+    source_role: Historical technical baseline for score, state, contracts, and evidence references.
+    status: HISTORICAL_BASELINE
+    scope_note: >-
+      The active call rail in this document is superseded by CTR-CALL-DIRECT-V3;
+      retain the document unchanged as historical evidence.
+  - id: SRC-FRICTION-V7
+    path: analyses/poc_elal_passenger_journey/docs_context/FRICTION_DEFINITIONS_v7.pdf
+    format: PDF
+    sha256: d6b5784935520a89f664fe98609fcc69b32778dfbc85586a3b7b71f2495355bc
+    observed_pages: 4
+    source_role: Governed friction taxonomy reference.
+    status: REFERENCE
+  - id: SRC-PROMISE-V2
+    path: analyses/poc_elal_passenger_journey/docs_context/PROMISE_DEFINITIONS_v2.pdf
+    format: PDF
+    sha256: 7e261b12a6931fa578b8a79e78af9cf39674861163997f1eabbd90c5f3c94299
+    observed_pages: 3
+    source_role: Governed promise taxonomy reference.
+    status: REFERENCE
+  - id: SRC-FOUR-TABLES-CATALOG
+    path: analyses/poc_elal_passenger_journey/docs_context/four_main_tables_catalog.pdf
+    format: PDF
+    sha256: 27c481e307327c72543de203cbd56fb7f7ba7e27716a3a63a202eefbdd2ace5f
+    observed_pages: 4
+    source_role: Source-table catalog evidence.
+    status: REFERENCE
+  - id: SRC-FOUR-TABLES-INSIGHTS
+    path: analyses/poc_elal_passenger_journey/docs_context/four_main_tables_insights.pdf
+    format: PDF
+    sha256: 039d4919ec4581861b5baaa06b8097633b7ecf75bb15df99a8bfcd6a1a682d44
+    observed_pages: 4
+    source_role: Source-table insights evidence.
+    status: REFERENCE
+  - id: SRC-MEMBERS-CATALOG
+    path: analyses/poc_elal_passenger_journey/docs_context/members.pdf
+    format: PDF
+    sha256: 749df15a4f7a67281841a95aea33401ac9c2096914d274ea6be41d26d9bdd8b9
+    observed_pages: 2
+    source_role: Member-table reference.
+    status: REFERENCE
+
+contracts:
+  - id: CTR-ATTENTION-LAYERS-V1
+    path: analyses/poc_elal_passenger_journey/docs_context/attention_layers_contract.md
+    version: v1
+    status: CURRENT_GOVERNED_BASELINE
+  - id: CTR-OUTCOMES-V1
+    path: analyses/poc_elal_passenger_journey/docs_context/outcomes_contract.md
+    version: v1
+    status: CURRENT_GOVERNED_BASELINE
+  - id: CTR-CALL-DIRECT-V3
+    path: analyses/poc_elal_passenger_journey/docs_context/elal_fr_pr_call_contract.md
+    version: direct_metadata_v3
+    status: ACTIVE_DATA_CONTRACT
+  - id: CTR-IA-CALLS-DEPRECATED
+    path: analyses/poc_elal_passenger_journey/docs_context/ia_calls_contract.md
+    version: deprecated_20260803
+    status: DEPRECATED
+  - id: CTR-OVERBOOKING-AUDIT
+    path: analyses/poc_elal_passenger_journey/docs_context/elal_overbooking_rule_audit.md
+    version: audit
+    status: SHADOW_CANDIDATE
+
+implementation_artifacts:
+  - id: IMP-V10-TRANSITION-GUARDRAILS-SQL
+    path: analyses/poc_elal_passenger_journey/p_elal_score_priority_bq/sql/build_v10_transition_guardrails.sql
+    artifact_type: SQL
+  - id: IMP-ATTENTION-POLICY-BACKTEST-SQL
+    path: analyses/poc_elal_passenger_journey/p_elal_score_priority_bq/sql/attention_policy_impact_backtest.sql
+    artifact_type: SQL
+  - id: IMP-ATTENTION-POLICY-BACKTEST-RUNNER
+    path: analyses/poc_elal_passenger_journey/p_elal_score_priority_bq/run_attention_policy_impact_backtest.py
+    artifact_type: PYTHON
+  - id: IMP-SEGMENTATION-RULES-CONFIG
+    path: analyses/poc_elal_passenger_journey/config/segmentation_rules.json
+    artifact_type: JSON
+    scope_note: Legacy threshold configuration reference; not by itself evidence of an approved new policy.
+  - id: IMP-ELAL-RULES-REV-RUNNER
+    path: analyses/poc_elal_passenger_journey/p_elal_rules_revision_bq/run_rules_revision.py
+    artifact_type: PYTHON
+    scope_note: Dry-run by default; materialization is append-only in governed ANALYTICS tables ending in _rev.
+  - id: IMP-ELAL-RULES-REV-REGISTRY
+    path: analyses/poc_elal_passenger_journey/p_elal_rules_revision_bq/config/rule_registry_rev.json
+    artifact_type: JSON
+  - id: IMP-ELAL-RULES-REV-SQL
+    path: analyses/poc_elal_passenger_journey/p_elal_rules_revision_bq/sql/07_quality_and_comparison_rev.sql
+    artifact_type: SQL
+    scope_note: Terminal reconciliation and manifest phase for the multi-file revision package.
+  - id: IMP-ELAL-RULES-REV-WORKBOOK-BUILDER
+    path: analyses/poc_elal_passenger_journey/p_elal_rules_revision_bq/build_review_workbook.mjs
+    artifact_type: JAVASCRIPT
+  - id: IMP-ELAL-RULES-REV-PDF-BUILDER
+    path: analyses/poc_elal_passenger_journey/p_elal_rules_revision_bq/build_methodology_pdf.py
+    artifact_type: PYTHON
+
+rule_registry:
+  - id: RUL-V8-OPERATIONAL-ONLY-REV
+    title: Revised V8 contains operational event facts only
+    state: SHADOW_CANDIDATE
+    source_artifact_ids: [SRC-RULE-PRODUCTION-EVALUATION-20260804, SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-ATTENTION-LAYERS-V1]
+    implementation_artifact_ids: []
+    decision_boundary: Existing V8 tables and productive F_NEG_08 remain immutable; only the new _rev shadow output removes call evidence from V8.
+  - id: RUL-CALL-REASON-SUBREASON-REV
+    title: Revised V9 candidate reason and subreason call scoring
+    state: SHADOW_CANDIDATE
+    source_artifact_ids: [SRC-RULE-PRODUCTION-EVALUATION-20260804, SRC-FRICTION-V7, SRC-PROMISE-V2]
+    contract_ids: [CTR-CALL-DIRECT-V3, CTR-OVERBOOKING-AUDIT, CTR-OUTCOMES-V1]
+    implementation_artifact_ids: []
+    decision_boundary: Only exact member-flight identity can score; shared-phone coverage is candidate, Dani overbooking has precedence, and transcript handling is not an outcome.
+  - id: RUL-V10-WEEKLY-RECOVERY-REV
+    title: Weekly V10 recovery candidate with tier-specific time and clean-flight gates
+    state: SHADOW_CANDIDATE
+    source_artifact_ids: [SRC-RULE-PRODUCTION-EVALUATION-20260804, SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-ATTENTION-LAYERS-V1, CTR-OUTCOMES-V1]
+    implementation_artifact_ids: [IMP-V10-TRANSITION-GUARDRAILS-SQL]
+    decision_boundary: Weekly cuts are reconstruction evidence only; Critical may exit only to High after the governed time and clean-flight gates.
+  - id: RUL-SEVERE-CHIP-4STATE-REV
+    title: Four-state severe-context chip candidate
+    state: CONTEXT_ONLY
+    source_artifact_ids: [SRC-RULE-PRODUCTION-EVALUATION-20260804, SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-ATTENTION-LAYERS-V1]
+    implementation_artifact_ids: [IMP-V10-TRANSITION-GUARDRAILS-SQL]
+    decision_boundary: The simplified chip preserves severe-event memory as context and never changes score, segment, colour, or points.
+  - id: RUL-FRICTION-PROMISE-TAXONOMY
+    title: Friction and promise taxonomy
+    state: CURRENT_GOVERNED_BASELINE
+    source_artifact_ids: [SRC-FRICTION-V7, SRC-PROMISE-V2]
+    contract_ids: []
+    implementation_artifact_ids: []
+    decision_boundary: A friction is not automatically a promise; preserve the governed taxonomy versions.
+  - id: RUL-ATTENTION-LAYERS
+    title: Separate score, state, chip, and treatment layers
+    state: CURRENT_GOVERNED_BASELINE
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-ATTENTION-LAYERS-V1]
+    implementation_artifact_ids: [IMP-V10-TRANSITION-GUARDRAILS-SQL]
+    decision_boundary: Do not create a super-score or allow a presentation layer to silently modify another layer.
+  - id: RUL-V10-TRANSITION-GUARDRAIL
+    title: V10 score/state guardrails
+    state: CURRENT_GOVERNED_BASELINE
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-ATTENTION-LAYERS-V1]
+    implementation_artifact_ids: [IMP-V10-TRANSITION-GUARDRAILS-SQL]
+    decision_boundary: Same-snapshot V9/V10 comparisons are reclassification crosswalks, not temporal movement.
+  - id: RUL-SEVERE-CHIP-CONTEXT
+    title: Severe chip is contextual and does not directly change colour or state
+    state: CONTEXT_ONLY
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-ATTENTION-LAYERS-V1]
+    implementation_artifact_ids: [IMP-V10-TRANSITION-GUARDRAILS-SQL]
+    decision_boundary: A contextual chip must not become a hidden score or colour override.
+  - id: RUL-TIER-TREATMENT-NO-SCORE
+    title: Tier modifies treatment, not the pressure score
+    state: CONTEXT_ONLY
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-ATTENTION-LAYERS-V1]
+    implementation_artifact_ids: [IMP-V10-TRANSITION-GUARDRAILS-SQL]
+    decision_boundary: Tier can affect priority, outreach, escalation, or SLA only under an explicit approved policy.
+  - id: RUL-CALL-RAIL-FRPR
+    title: Direct FR/PR metadata is the active call rail
+    state: ACTIVE_DATA_CONTRACT
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-CALL-DIRECT-V3, CTR-IA-CALLS-DEPRECATED]
+    implementation_artifact_ids: [IMP-ATTENTION-POLICY-BACKTEST-SQL]
+    decision_boundary: Do not use a broad additive union or FULL OUTER JOIN between direct FR/PR metadata and deprecated IA calls.
+  - id: RUL-OUTCOME-ELIGIBILITY
+    title: Only governed operational completion/refund sources can prove an outcome
+    state: CURRENT_GOVERNED_BASELINE
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-OUTCOMES-V1]
+    implementation_artifact_ids: [IMP-ATTENTION-POLICY-BACKTEST-SQL]
+    decision_boundary: Transcript resolved or acknowledged language is a signal, never a verified operational outcome.
+  - id: RUL-OVERBOOKING
+    title: Overbooking operational cause rule
+    state: SHADOW_CANDIDATE
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-OVERBOOKING-AUDIT, CTR-OUTCOMES-V1]
+    implementation_artifact_ids: [IMP-ATTENTION-POLICY-BACKTEST-SQL]
+    decision_boundary: Do not promote until the operational taxonomy, association, deduplication, precedence, points, outcome evidence, and owner approvals are governed.
+  - id: RUL-CALL-CLASSIFICATION-S3
+    title: Candidate call classification treatment
+    state: SHADOW_CANDIDATE
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-CALL-DIRECT-V3]
+    implementation_artifact_ids: [IMP-ATTENTION-POLICY-BACKTEST-SQL, IMP-ATTENTION-POLICY-BACKTEST-RUNNER]
+    decision_boundary: A future candidate may replace F_NEG_08; it must not score every FR/PR call as an additive event.
+  - id: RUL-RECOVERY-S5
+    title: Recovery treatment from V9/V10 crosswalk
+    state: INSUFFICIENT_EVIDENCE
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids: [CTR-ATTENTION-LAYERS-V1]
+    implementation_artifact_ids: [IMP-V10-TRANSITION-GUARDRAILS-SQL]
+    decision_boundary: The available same-date snapshot is insufficient to prove recovery or flapping.
+  - id: RUL-FLIGHT360-MEMBER-LEG-CALL-CANDIDATE
+    title: Flight360 member-leg map with direct-call candidate association
+    state: INSUFFICIENT_EVIDENCE
+    source_artifact_ids: [SRC-FOUR-TABLES-CATALOG]
+    contract_ids: [CTR-CALL-DIRECT-V3]
+    implementation_artifact_ids: []
+    decision_boundary: Flight360 TMP.cqi_events_passenger_p is an affected member-event map, not a complete aircraft manifest. Its nearest_segment_id retains zero or one nearest call candidate per member-flight-date, so it can support aggregate candidate association only and cannot measure, prove, or disprove repeated passenger calls.
+
+documented_scope_changes:
+  - id: SCOPE-2026-08-03-CALL-RAIL
+    recorded_on: 2026-08-03
+    statement: Direct FR/PR metadata became the active EDA call rail; IA calls is retained only as deprecated historical evidence.
+    evidence_contract_ids: [CTR-CALL-DIRECT-V3, CTR-IA-CALLS-DEPRECATED]
+    policy_effect: No scoring-policy change; active evidence-source scope was corrected.
+
+change_log:
+  - id: BASELINE-2026-08-04-ELAL-RULES
+    recorded_on: 2026-08-04
+    kind: baseline_capture
+    record_status: RECORDED
+    previous_change_id: null
+    supersedes: null
+    rule_ids:
+      - RUL-FRICTION-PROMISE-TAXONOMY
+      - RUL-ATTENTION-LAYERS
+      - RUL-V10-TRANSITION-GUARDRAIL
+      - RUL-SEVERE-CHIP-CONTEXT
+      - RUL-TIER-TREATMENT-NO-SCORE
+      - RUL-CALL-RAIL-FRPR
+      - RUL-OUTCOME-ELIGIBILITY
+      - RUL-OVERBOOKING
+      - RUL-CALL-CLASSIFICATION-S3
+      - RUL-RECOVERY-S5
+    source_artifact_ids:
+      - SRC-RULE-DOC-20260729
+      - SRC-FRICTION-V7
+      - SRC-PROMISE-V2
+      - SRC-FOUR-TABLES-CATALOG
+      - SRC-FOUR-TABLES-INSIGHTS
+      - SRC-MEMBERS-CATALOG
+    contract_ids:
+      - CTR-ATTENTION-LAYERS-V1
+      - CTR-OUTCOMES-V1
+      - CTR-CALL-DIRECT-V3
+      - CTR-IA-CALLS-DEPRECATED
+      - CTR-OVERBOOKING-AUDIT
+    implementation_artifact_ids:
+      - IMP-V10-TRANSITION-GUARDRAILS-SQL
+      - IMP-ATTENTION-POLICY-BACKTEST-SQL
+      - IMP-ATTENTION-POLICY-BACKTEST-RUNNER
+      - IMP-SEGMENTATION-RULES-CONFIG
+    validation:
+      - Repository paths and immutable-source digests recorded.
+      - Rule states are bounded to the current contracts and evidence.
+    decision:
+      owner: ELAL Product Owner and analytics owner
+      status: CAPTURED
+      approval_ref: User direction on 2026-08-04 to establish traceability; no policy approval implied.
+    policy_effect: NO_POLICY_CHANGE
+    deck_product_impact: Future rule and audit decks must cite this ledger or a later change identifier in their evidence notes.
+
+  - id: TRC-2026-08-04-LEDGER-CONTROL
+    recorded_on: 2026-08-04
+    kind: traceability_control_introduced
+    record_status: IMPLEMENTED
+    previous_change_id: BASELINE-2026-08-04-ELAL-RULES
+    supersedes: null
+    rule_ids:
+      - RUL-ATTENTION-LAYERS
+      - RUL-V10-TRANSITION-GUARDRAIL
+      - RUL-CALL-RAIL-FRPR
+      - RUL-OUTCOME-ELIGIBILITY
+      - RUL-OVERBOOKING
+    source_artifact_ids: [SRC-RULE-DOC-20260729]
+    contract_ids:
+      - CTR-ATTENTION-LAYERS-V1
+      - CTR-OUTCOMES-V1
+      - CTR-CALL-DIRECT-V3
+      - CTR-OVERBOOKING-AUDIT
+    implementation_artifact_ids: []
+    validation:
+      - validate_rule_traceability.py passes.
+      - tests/analyses/test_elal_rule_traceability_contract.py passes.
+    decision:
+      owner: ELAL Product Owner and analytics owner
+      status: IMPLEMENTED
+      approval_ref: User direction on 2026-08-04 to preserve rule-change traceability.
+    policy_effect: NO_POLICY_CHANGE
+    deck_product_impact: The ELAL presentation skill requires the relevant ledger record for every rule/audit deck.
+
+  - id: TRC-2026-08-04-ELAL-RULES-REV-PROPOSAL
+    recorded_on: 2026-08-04
+    kind: rule_revision_proposal
+    record_status: PROPOSED
+    previous_change_id: TRC-2026-08-04-LEDGER-CONTROL
+    supersedes: null
+    rule_ids:
+      - RUL-V8-OPERATIONAL-ONLY-REV
+      - RUL-CALL-REASON-SUBREASON-REV
+      - RUL-V10-WEEKLY-RECOVERY-REV
+      - RUL-SEVERE-CHIP-4STATE-REV
+      - RUL-CALL-RAIL-FRPR
+      - RUL-OVERBOOKING
+      - RUL-TIER-TREATMENT-NO-SCORE
+      - RUL-OUTCOME-ELIGIBILITY
+    source_artifact_ids:
+      - SRC-RULE-PRODUCTION-EVALUATION-20260804
+      - SRC-RULE-DOC-20260729
+      - SRC-FRICTION-V7
+      - SRC-PROMISE-V2
+      - SRC-MEMBERS-CATALOG
+    contract_ids:
+      - CTR-ATTENTION-LAYERS-V1
+      - CTR-OUTCOMES-V1
+      - CTR-CALL-DIRECT-V3
+      - CTR-OVERBOOKING-AUDIT
+    implementation_artifact_ids:
+      - IMP-V10-TRANSITION-GUARDRAILS-SQL
+      - IMP-ATTENTION-POLICY-BACKTEST-SQL
+      - IMP-ATTENTION-POLICY-BACKTEST-RUNNER
+    validation:
+      - Create the isolated analyses/poc_elal_passenger_journey/p_elal_rules_revision_bq package before adding implementation-artifact references.
+      - Dry-run every query and restrict materialization to append-only ANALYTICS tables ending in _rev.
+      - Reconcile source grains, identity states, overbooking precedence, weekly time leakage, score bands, clean-flight gates, and the four-state chip.
+      - Generate aggregate-only review workbook and methodological PDF with no raw identifiers exported.
+    decision:
+      owner: Jacky, ELAL Product Owner, Max, and Arik
+      status: PROPOSED
+      approval_ref: User-approved implementation plan on 2026-08-04; shadow revision only and no productive-policy approval.
+    policy_effect: SHADOW_ONLY_NO_PRODUCTION_CHANGE
+    deck_product_impact: Future revision decks may cite this proposal only as shadow evidence; productive deck claims remain unchanged until a later APPROVED record.
+
+  - id: TRC-2026-08-04-ELAL-RULES-REV-IMPLEMENTED
+    recorded_on: 2026-08-04
+    kind: rule_revision_shadow_implementation
+    record_status: IMPLEMENTED
+    previous_change_id: TRC-2026-08-04-ELAL-RULES-REV-PROPOSAL
+    supersedes: null
+    rule_ids:
+      - RUL-V8-OPERATIONAL-ONLY-REV
+      - RUL-CALL-REASON-SUBREASON-REV
+      - RUL-V10-WEEKLY-RECOVERY-REV
+      - RUL-SEVERE-CHIP-4STATE-REV
+      - RUL-CALL-RAIL-FRPR
+      - RUL-OVERBOOKING
+      - RUL-TIER-TREATMENT-NO-SCORE
+      - RUL-OUTCOME-ELIGIBILITY
+    source_artifact_ids:
+      - SRC-RULE-PRODUCTION-EVALUATION-20260804
+      - SRC-RULE-DOC-20260729
+      - SRC-FRICTION-V7
+      - SRC-PROMISE-V2
+      - SRC-MEMBERS-CATALOG
+    contract_ids:
+      - CTR-ATTENTION-LAYERS-V1
+      - CTR-OUTCOMES-V1
+      - CTR-CALL-DIRECT-V3
+      - CTR-OVERBOOKING-AUDIT
+    implementation_artifact_ids:
+      - IMP-ELAL-RULES-REV-RUNNER
+      - IMP-ELAL-RULES-REV-REGISTRY
+      - IMP-ELAL-RULES-REV-SQL
+      - IMP-ELAL-RULES-REV-WORKBOOK-BUILDER
+      - IMP-ELAL-RULES-REV-PDF-BUILDER
+    validation:
+      - Materialized append-only run elal_rules_rev_20260804_v3 in governed ANALYTICS tables ending in _rev; all nine quality gates passed.
+      - Reconciled 408430 distinct calls, 40006 exact members, 4790 shared-phone candidate calls, 2312 candidate members, and 51190 operational V8 revision facts.
+      - Generated aggregate-only workbook output/elal_rules_revision_20260804/elal_rules_revision_review_20260804.xlsx with zero formula errors.
+      - Generated and rendered the 14-page methodology report output/pdf/elal_rules_revision_methodology_20260804.pdf.
+      - Recorded elal_rules_rev_20260804_final as ABORTED_PARTIAL in the append-only run manifest; no partial run was promoted.
+    decision:
+      owner: Jacky, ELAL Product Owner, Max, and Arik
+      status: NOT_APPROVED_SHADOW_REVIEW
+      approval_ref: User authorization on 2026-08-04 to implement the revision in new _rev tables; no authorization to change production.
+    policy_effect: SHADOW_ONLY_NO_PRODUCTION_CHANGE
+    deck_product_impact: Review artifacts may cite this implemented shadow run; productive rules, points, score tables, and v9/v10 states remain unchanged until a later approved record.
+
+  - id: TRC-2026-08-05-FLIGHT360-MEMBER-LEG-CANDIDATE-PROPOSAL
+    recorded_on: 2026-08-05
+    kind: flight360_member_leg_candidate_association
+    record_status: PROPOSED
+    previous_change_id: TRC-2026-08-04-ELAL-RULES-REV-IMPLEMENTED
+    supersedes: null
+    rule_ids:
+      - RUL-FLIGHT360-MEMBER-LEG-CALL-CANDIDATE
+      - RUL-CALL-RAIL-FRPR
+      - RUL-FRICTION-PROMISE-TAXONOMY
+    source_artifact_ids: [SRC-FOUR-TABLES-CATALOG]
+    contract_ids: [CTR-CALL-DIRECT-V3]
+    implementation_artifact_ids: []
+    validation:
+      - Read-only aggregate preflight on 2026-08-05 confirmed 590272 Flight360 member-flight-date groups and 382446 unique direct-call name IDs in the 2025-05-01 to 2026-05-31 window; no identifiers were exported.
+      - Flight360 retained no more than one distinct nearest_segment_id per member-flight-date group (196288 groups with one and zero groups with more than one), so repeated-call measurement remains structurally unavailable from this map.
+      - The proposed RAD08 profile must use CALLS.calls_fric_prom_w_metadata as the only direct-call rail, must keep candidate association distinct from causal or identity claims, and must export aggregates only.
+      - Add implementation-artifact references only after the isolated analysis package is validated and available under the canonical source repository root.
+    decision:
+      owner: Jacky and ELAL analytics owner
+      status: PROPOSED
+      approval_ref: User direction on 2026-08-05 to inspect Flight360 as a passenger-leg map while keeping calls_fric_prom_w_metadata official for reason and FR/PR.
+    policy_effect: NO_POLICY_CHANGE
+    deck_product_impact: Any deck using this evidence must state that Flight360 supports member-leg candidate mapping but not repeated-call measurement, and cite this proposal in its speaker-note evidence block.
+
+  - id: TRC-2026-08-05-SEVERE-FLIGHT-OVERBOOKING-RADIOGRAPHY-PROPOSAL
+    recorded_on: 2026-08-05
+    kind: severe_flight_and_overbooking_radiography_proposal
+    record_status: PROPOSED
+    previous_change_id: TRC-2026-08-05-FLIGHT360-MEMBER-LEG-CANDIDATE-PROPOSAL
+    supersedes: null
+    rule_ids:
+      - RUL-CALL-RAIL-FRPR
+      - RUL-OUTCOME-ELIGIBILITY
+      - RUL-OVERBOOKING
+      - RUL-FLIGHT360-MEMBER-LEG-CALL-CANDIDATE
+      - RUL-FRICTION-PROMISE-TAXONOMY
+    source_artifact_ids:
+      - SRC-RULE-DOC-20260729
+      - SRC-FRICTION-V7
+      - SRC-PROMISE-V2
+      - SRC-FOUR-TABLES-CATALOG
+    contract_ids:
+      - CTR-CALL-DIRECT-V3
+      - CTR-OVERBOOKING-AUDIT
+      - CTR-OUTCOMES-V1
+    implementation_artifact_ids: []
+    validation:
+      - Extend the isolated p_elal_flight_call_radiography_bq package with SELECT-only RAD13 through RAD18 and aggregate-only outputs.
+      - Keep cancellation, diversion, delay 120 to 239 minutes, and delay 240 plus in the flight-level severe denominator; keep baggage passenger-level and overbooking candidate-shadow outside that denominator.
+      - Use CALLS.calls_fric_prom_w_metadata as the only call rail, exact normalized Seat Overbooking equality, nearest_segment_id equals name_id, and a zero-to-three-day candidate association window.
+      - Fail passenger-normalized rates closed for missing or fanout-risk denominators; exclude ambiguous multi-leg overbooking candidates from family rankings.
+      - Generate a new 18-slide copy from the governed source deck with per-slide evidence notes; never modify prior decks.
+    decision:
+      owner: Jacky and ELAL analytics owner
+      status: PROPOSED
+      approval_ref: User-approved implementation plan on 2026-08-05 for a replicable severe-flight, baggage, call, and overbooking radiography.
+    policy_effect: SHADOW_ONLY_NO_PRODUCTION_CHANGE
+    deck_product_impact: The new review deck may rank severe flight families and describe baggage and direct-call candidate associations, but overbooking remains candidate-shadow and transcript signals remain non-outcomes.

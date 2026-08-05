@@ -22,14 +22,54 @@ project:
   skill_profiles:
     - analytical-eda
     - data-source-bigquery
+    - elal-eda-governance
+    - elal-analytical-deck
   data_source:
     provider: bigquery
     dialect: google_standard_sql
     source_of_truth: governed_remote_source
-    access: read_only
+    access: read_sources_write_governed_output
+    write_controls:
+      default_mode: read_only
+      governed_profiles:
+        - id: elal_rules_revision
+          allowed_project: cqi-elal-dev-6345
+          allowed_datasets:
+            - ANALYTICS
+          required_table_suffix: _rev
+          allowed_operations:
+            - CREATE_TABLE_IF_NOT_EXISTS
+            - INSERT_APPEND
+          prohibited_operations:
+            - CREATE_OR_REPLACE
+            - DROP
+            - ALTER
+            - TRUNCATE
+            - UPDATE
+            - DELETE
+            - MERGE
   analysis_governance:
     phase: warn_first
     scope: new_or_migrated_analyses
+  governance_controls:
+    elal_presentation:
+      applies_to: "All ELAL PPTX creation, editing, review, audit, and release."
+      mandatory_skill: ".codex/skills/elal-product-owner-presentation/SKILL.md"
+      governance_document: "projects/elal_presentation_governance.md"
+      artifact_register: "projects/elal_presentation_artifact_register.yaml"
+      source_project_root: "/Users/jackyb-cqi/repos/proj_data_analytics"
+      authoritative_reference_deck:
+        path: "analyses/poc_elal_passenger_journey/documents/elal_passenger_journey_product_owner_summary_44slides_20260804_final_no_text_frames.pptx"
+        sha256: "b5bbf5eb7b940b7681bcf227cd0bf38e0c953d258d87cd7686a27682d4252c28"
+        observed_slide_count: 46
+        observed_note_count: 46
+    elal_rule_traceability:
+      applies_to: "Any ELAL rule, source rail, outcome, score, state, chip, treatment, implementation, or rule-related deck claim change."
+      mandatory_skill: ".codex/skills/elal-rule-traceability/SKILL.md"
+      ledger: "projects/elal_rule_traceability.yaml"
+      governance_document: "projects/elal_rule_traceability.md"
+      validator: ".codex/skills/elal-rule-traceability/scripts/validate_rule_traceability.py"
+      control_mode: append_only
   agents:
     - eda_reviewer_agent
     - model_review_agent

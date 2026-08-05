@@ -28,3 +28,8 @@ For BigQuery, inspect partition and cost controls. For PostgreSQL, inspect
 schema/relation routing, transaction behavior, and index-sensitive queries.
 Both providers must preserve the same public contract when the project says
 the contract is shared.
+
+When BigQuery SQL is rendered from Jinja templates, also load
+`jinja-bigquery`. The adapter must keep dynamic identifiers allowlisted and
+quoted, value filters parameterized, and final rendered SQL dry-run validated
+when possible.
