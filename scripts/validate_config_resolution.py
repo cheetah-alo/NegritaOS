@@ -18,6 +18,7 @@ the active project registry or cannot load one of its declared assets.
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +32,11 @@ try:
     )
 except ImportError:
     from validate_skill_catalog import CATALOG, ROOT, _load_yaml, validate_catalog, validate_project
+
+sys.path.insert(0, str(ROOT / "src"))
+
+from negrita_brain.errors import ProfileResolutionError  # noqa: E402
+from negrita_brain.profiles import resolve_project_profiles  # noqa: E402
 
 
 ASSET_KEYS = ("skills", "rules", "rubrics", "templates", "codex_skills")
@@ -205,7 +211,8 @@ def validate_resolution(
         profile = profiles.get(profile_id)
         if not isinstance(profile, dict):
             errors.append(
-                f"project {project_id}: skill profile {profile_id!r} is missing from skills/catalog.yaml"
+                f"project {project_id}: skill profile {profile_id!r} is missing "
+                "from skills/catalog.yaml"
             )
             continue
         for required_agent in PROFILE_AGENT_REQUIREMENTS.get(profile_id, set()):
@@ -214,19 +221,23 @@ def validate_resolution(
                     f"project {project_id}: profile {profile_id} requires "
                     f"agent {required_agent}, but it is not declared"
                 )
-        for skill_id in _as_strings(profile.get("skills")):
-            entry = skills_by_id.get(skill_id)
-            if not isinstance(entry, dict):
-                errors.append(
-                    f"project {project_id}: profile {profile_id} references unknown skill {skill_id}"
-                )
-                continue
-            for key in ("path", "native_path"):
-                raw_path = entry.get(key)
-                if isinstance(raw_path, str) and not _resolve(root, raw_path).exists():
-                    errors.append(
-                        f"catalog skill {skill_id}: missing {key} {raw_path}"
-                    )
+    try:
+        resolved_skills = resolve_project_profiles(catalog, project).skills
+    except ProfileResolutionError as exc:
+        errors.append(f"project {project_id}: {exc}")
+        resolved_skills = ()
+    for skill_id in resolved_skills:
+        entry = skills_by_id.get(skill_id)
+        if not isinstance(entry, dict):
+            errors.append(
+                f"project {project_id}: resolved profile closure references "
+                f"unknown skill {skill_id}"
+            )
+            continue
+        for key in ("path", "native_path"):
+            raw_path = entry.get(key)
+            if isinstance(raw_path, str) and not _resolve(root, raw_path).exists():
+                errors.append(f"catalog skill {skill_id}: missing {key} {raw_path}")
 
     modes = _router_modes(router_data)
     mode_map = project.get("mode_map", {})

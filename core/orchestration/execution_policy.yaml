@@ -1,10 +1,15 @@
 execution_policy:
-  version: "2.0.0"
+  version: "3.0.0"
   description: >
-    Defines how NegritaOS processes any request end-to-end after the metaagent router
-    has classified and dispatched it. This is the operational contract for every agent run.
+    Defines how NegritaOS processes any request end-to-end through the executable
+    src/negrita_brain runtime after the metaagent router classifies it.
 
   standard_execution_sequence:
+    - step: resolve_session_contract
+      description: "Resolve project, provider, Git state, modes, agents, inherited profiles, skills, artifact route, quality gates, memory, and SHA-256."
+      owner: negrita_brain
+      command: "python3 scripts/negrita_brain.py resolve --root <work-root> --provider <provider> --action <action>"
+
     - step: classify_request
       description: "Metaagent router identifies mode(s) and target agent(s)."
       owner: metaagent_router
@@ -66,6 +71,14 @@ execution_policy:
       description: "Agent produces output following persona, skills, rules, and template."
       owner: agent
       includes_metadata: true
+
+    - step: gate_mutation
+      description: "Authorize, warn, or block writes and commits using the active READY contract and document route."
+      owner: negrita_brain
+
+    - step: record_safe_event
+      description: "Append execution metadata only; never prompts, responses, contents, tool outputs, commands, or secrets."
+      owner: negrita_brain
     
     - step: run_quality_gate
       description: "Agent self-checks output against quality_gate criteria in its contract."
@@ -84,6 +97,10 @@ execution_policy:
     - step: provide_final_answer
       description: "Deliver structured output with metadata. Flag any failed quality_gate checks explicitly."
       owner: agent
+
+    - step: close_session
+      description: "Write session summary, close active state, refresh memory index, and surface incomplete sessions."
+      owner: negrita_brain
 
   ambiguity_policy:
     minor_ambiguity:

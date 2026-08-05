@@ -58,6 +58,10 @@ markdown.
 - Append each version to `documents/document_manifest.jsonl`.
 - Existing scattered deliverables should be audited before migration; do not
   bulk-move historical files without an explicit migration request.
+- The active Negrita Brain session contract must resolve `document-delivery`.
+  For analytical CQI decks, the inherited chain is
+  `analytical-deck-delivery` -> `cqi-analytical-pptx` -> project-specific
+  ELAL/IBC profile.
 
 ## Validation
 

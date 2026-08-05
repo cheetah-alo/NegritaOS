@@ -8,40 +8,22 @@ required `__updated_YYYYMMDD_HHMMSS` suffix.
 from __future__ import annotations
 
 import argparse
-import re
+import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "src"))
 
-DELIVERABLE_EXTENSIONS = {".md", ".pptx", ".ppt", ".pdf", ".docx", ".doc", ".html"}
-TIMESTAMPED_NAME = re.compile(
-    r"^[a-z0-9][a-z0-9_]*__updated_[0-9]{8}_[0-9]{6}"
-    r"\.(md|pptx|ppt|pdf|docx|doc|html)$"
+from negrita_brain.documents import (  # noqa: E402
+    TIMESTAMPED_NAME,
+    is_deliverable as governed_is_deliverable,
+    iter_deliverables,
 )
-EXCLUDED_PARTS = {
-    ".agents",
-    ".claude",
-    ".codex",
-    ".cursor",
-    ".git",
-    "__pycache__",
-    "core",
-    "node_modules",
-    "plots",
-    "rules",
-    "skills",
-    "templates",
-}
-EXCLUDED_NAMES = {"README.md"}
 
 
 def is_deliverable(path: Path, root: Path) -> bool:
     """Return whether a file should be governed as a deliverable."""
-    if path.suffix.lower() not in DELIVERABLE_EXTENSIONS:
-        return False
-    if path.name in EXCLUDED_NAMES:
-        return False
-    relative_parts = path.relative_to(root).parts
-    return not any(part in EXCLUDED_PARTS for part in relative_parts)
+    return governed_is_deliverable(path, root)
 
 
 def audit(root: Path) -> tuple[list[Path], list[Path], list[Path]]:
@@ -50,9 +32,7 @@ def audit(root: Path) -> tuple[list[Path], list[Path], list[Path]]:
     outside_documents: list[Path] = []
     missing_timestamp: list[Path] = []
 
-    for path in sorted(root.rglob("*")):
-        if not path.is_file() or not is_deliverable(path, root):
-            continue
+    for path in iter_deliverables(root):
         deliverables.append(path)
         relative_parts = path.relative_to(root).parts
         if "documents" not in relative_parts[:-1]:

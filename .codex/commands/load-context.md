@@ -25,7 +25,10 @@ any non-trivial task in a NegritaOS-managed repo.
    - Read `.codex/project.yaml` → resolve symlink to `projects/<project>.yaml`.
    - Confirm `project_id` and `archetype`.
    - Resolve `negrita_registry` and confirm it matches the project id.
-   - Resolve declared `skill_profiles`, `mode_map`, and `agents` before selecting a skill.
+   - Run `python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve --root "$PWD" --provider <codex|claude> --action <action>`.
+   - Use the resulting hashed session contract as the resolved source for
+     `skill_profiles`, inherited profile closure, `mode_map`, agents, artifact
+     route, and quality gates.
    - For the selected agent, load its `integrator.yaml` block, then its `rules`,
      `skills`, `rubrics`, `templates`, and `codex_skills` references.
    - Resolve profile skills through `skills/catalog.yaml`; do not infer availability
@@ -39,9 +42,10 @@ any non-trivial task in a NegritaOS-managed repo.
    - List `docs:` entries (always loaded) and `rules:` entries per mode.
    - Flag any rule with `version` drift or missing `depends_on` target.
 
-5. **Active profile**
-   - From `.codex/project.yaml`, identify `codex_profiles.default`.
-   - Read the matching profile file under `.codex/profiles/`.
+5. **Active profile closure**
+   - Read `profiles` and `skills` from the READY session contract.
+   - Confirm parent-first inheritance and the default `document-delivery`
+     profile; do not look for a non-existent `codex_profiles.default` field.
 
 6. **Router**
    - Read `rules/global/negritaos_router_rule.md` (canonical).
@@ -59,6 +63,7 @@ any non-trivial task in a NegritaOS-managed repo.
      validated.
 
 8. **Validation**
+   - Run `python3 scripts/negrita_brain.py gate --root "$PWD" --action read`.
    - Run `python3 scripts/validate_config_resolution.py`.
    - Run `python3 scripts/validate_alignment.py`.
    - For a declared source contract, run
@@ -102,3 +107,4 @@ Next action awaiting: <user prompt summary or "idle">
 - `validate_alignment.py` exit code ≠ 0 → halt and report failing check.
 - `validate_config_resolution.py` exit code ≠ 0 → halt and report the broken
   project → registry → agent → asset reference.
+- Negrita Brain state is not `READY` or gate returns `BLOCK` → halt.

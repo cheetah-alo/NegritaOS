@@ -6,12 +6,17 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import shutil
+import sys
 from pathlib import Path
 
 try:
     from .validate_skill_catalog import CATALOG, ROOT, _load_yaml
 except ImportError:
     from validate_skill_catalog import CATALOG, ROOT, _load_yaml
+
+sys.path.insert(0, str(ROOT / "src"))
+
+from negrita_brain.profiles import resolve_project_profiles  # noqa: E402
 
 
 def _registry_path(adapter: dict, repo: Path) -> Path:
@@ -24,16 +29,8 @@ def _registry_path(adapter: dict, repo: Path) -> Path:
 
 
 def selected_skills(catalog: dict, project: dict) -> list[str]:
-    """Return unique canonical skill IDs in declared profile order."""
-    selected: list[str] = []
-    for profile_id in project.get("skill_profiles", []):
-        profile = catalog["profiles"].get(profile_id)
-        if profile is None:
-            raise ValueError(f"Unknown project skill profile: {profile_id}")
-        for skill_id in profile.get("skills", []):
-            if skill_id not in selected:
-                selected.append(skill_id)
-    return selected
+    """Return canonical skill IDs from default and inherited project profiles."""
+    return list(resolve_project_profiles(catalog, project).skills)
 
 
 def materialize(repo: Path, dry_run: bool) -> int:

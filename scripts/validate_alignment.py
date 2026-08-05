@@ -45,8 +45,10 @@ CLI:
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Callable, Iterable
 
@@ -56,10 +58,23 @@ except ImportError:
     from validate_config_resolution import validate_resolution
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from negrita_brain.config import load_project, project_memory_home  # noqa: E402
+from negrita_brain.profiles import resolve_project_profiles  # noqa: E402
 HOME = Path.home()
 PROJECTS_DIR = REPO_ROOT / "projects"
 META_PROJECT_ID = "negritaos"
 CANONICAL_RULES_DIR = (REPO_ROOT / ".codex" / "rules").resolve()
+MANAGED_START = "<!-- NEGRITA_BRAIN:START -->"
+BRAIN_HOOK_EVENTS = {
+    "SessionStart",
+    "UserPromptSubmit",
+    "PreToolUse",
+    "PostToolUse",
+    "Stop",
+    "SessionEnd",
+}
 
 
 def _ok(msg: str) -> tuple[bool, str]:
@@ -358,6 +373,96 @@ def check_sibling(
         suffix = f" ({len(warnings)} warning(s))" if warnings else ""
         results.append(_ok_s(project_id, f"canonical config resolution passed{suffix}"))
 
+    # S11-S15 — executable Negrita Brain enforcement surfaces.
+    results.extend(_check_brain_runtime(project_id, repo))
+
+    return results
+
+
+def _check_brain_runtime(project_id: str, repo: Path) -> list[tuple[bool, str]]:
+    """Check entrypoints, hooks, profile closure, document routing, and memory."""
+    results: list[tuple[bool, str]] = []
+    agents = repo / "AGENTS.md"
+    claude = repo / "CLAUDE.md"
+    if agents.is_file() and MANAGED_START in agents.read_text(encoding="utf-8", errors="ignore"):
+        results.append(_ok_s(project_id, "managed AGENTS.md entrypoint present"))
+    else:
+        results.append(_fail_s(project_id, "managed AGENTS.md entrypoint missing"))
+    if claude.is_file():
+        claude_text = claude.read_text(encoding="utf-8", errors="ignore")
+        if MANAGED_START in claude_text and "@AGENTS.md" in claude_text:
+            results.append(_ok_s(project_id, "CLAUDE.md imports managed AGENTS.md"))
+        else:
+            results.append(_fail_s(project_id, "CLAUDE.md managed import missing"))
+    else:
+        results.append(_fail_s(project_id, "CLAUDE.md missing"))
+    settings_path = repo / ".codex" / "settings.json"
+    try:
+        settings = json.loads(settings_path.read_text(encoding="utf-8"))
+        hooks = settings.get("hooks", {}) if isinstance(settings, dict) else {}
+        missing_hooks = sorted(BRAIN_HOOK_EVENTS - set(hooks))
+    except (OSError, json.JSONDecodeError, TypeError):
+        missing_hooks = sorted(BRAIN_HOOK_EVENTS)
+    if missing_hooks:
+        results.append(
+            _fail_s(
+                project_id,
+                f"Negrita Brain hooks missing: {', '.join(missing_hooks)}",
+            )
+        )
+    else:
+        results.append(_ok_s(project_id, "all Negrita Brain hooks present"))
+    try:
+        context = load_project(repo, REPO_ROOT)
+        closure = resolve_project_profiles(context.catalog, context.project)
+        missing_skills = [
+            skill_id
+            for skill_id in closure.skills
+            if not (repo / ".codex" / "skills" / skill_id).exists()
+        ]
+        if missing_skills:
+            results.append(
+                _fail_s(
+                    project_id,
+                    "profile closure not materialized: "
+                    f"{', '.join(missing_skills[:5])}",
+                )
+            )
+        else:
+            results.append(
+                _ok_s(
+                    project_id,
+                    f"profile closure materialized ({len(closure.skills)} skills)",
+                )
+            )
+        if "document-control" in closure.skills:
+            results.append(
+                _ok_s(
+                    project_id,
+                    "document-control present in resolved profile closure",
+                )
+            )
+        else:
+            results.append(
+                _fail_s(
+                    project_id,
+                    "document-control missing from resolved profile closure",
+                )
+            )
+        memory_home = project_memory_home(context)
+        required_memory = [memory_home / "runtime" / "sessions", memory_home / "decisions"]
+        missing_memory = [str(path) for path in required_memory if not path.is_dir()]
+        if missing_memory:
+            results.append(
+                _fail_s(
+                    project_id,
+                    f"runtime memory structure missing: {', '.join(missing_memory)}",
+                )
+            )
+        else:
+            results.append(_ok_s(project_id, "runtime session and decision memory present"))
+    except Exception as exc:
+        results.append(_fail_s(project_id, f"Negrita Brain resolution failed: {exc}"))
     return results
 
 
@@ -479,6 +584,7 @@ def main() -> int:
         results.extend(check_sibling(*match))
     else:
         results.extend(_run_meta_checks(CHECKS))
+        results.extend(_check_brain_runtime(META_PROJECT_ID, REPO_ROOT))
         if not args.only_meta:
             siblings = discover_siblings()
             if not siblings:

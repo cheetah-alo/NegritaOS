@@ -202,6 +202,21 @@ the final TFM reviewer and read-only benchmark calibration. The
 literature, validated public datasets, and explicit feasibility gates. Raw imported
 bundles remain reference-only.
 
+Profile resolution supports parent-first `extends` with cycle detection. The
+catalog default `document-delivery` activates `docs-alignment` and
+`document-control` for every project. Analytical decks then inherit
+`analytical-deck-delivery` -> `cqi-analytical-pptx` -> the project-specific
+ELAL or IBC profile.
+
+### 5.3 Negrita Brain runtime
+
+The executable kernel lives in [src/negrita_brain/](src/negrita_brain/) with a
+thin CLI at [scripts/negrita_brain.py](scripts/negrita_brain.py). Use `resolve`,
+`gate`, `event`, `decision`, `close`, `doctor`, `catalog-legacy`, and `install`
+to turn project configuration into hashed session contracts, enforce writes,
+record safe metadata, and close memory. The full operating contract is
+[docs/negrita-brain-runtime.md](docs/negrita-brain-runtime.md).
+
 ### 5.3 IDE-time commands (slash-commands)
 Under [.codex/commands/](.codex/commands/). Available as `/command-name` in any IDE client:
 
@@ -310,8 +325,11 @@ Every project repository that wants NegritaOS governance becomes an **adapter**:
 
 ```
 <sibling-repo>/
+├── AGENTS.md                         managed Codex runtime entrypoint
+├── CLAUDE.md                         imports AGENTS.md
 ├── .codex/
 │   ├── project.yaml                  declares project_id + negrita_registry path
+│   ├── settings.json                 shared Claude lifecycle hooks
 │   ├── rules/*.md     → symlinks    →  NegritaOS/.codex/rules/*.md
 │   ├── skills/AGENTS.md             →  NegritaOS canonical
 │   ├── skills/negritaos-mode-router →  NegritaOS canonical

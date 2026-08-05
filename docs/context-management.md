@@ -6,6 +6,13 @@ This document defines the architecture for managing agent context in this reposi
 
 ## 1. What belongs where
 
+### Executable session contract
+
+`src/negrita_brain/` resolves the declarative layers below into one hashed
+runtime contract. `AGENTS.md` is the Codex entrypoint; `CLAUDE.md` imports it,
+and `.codex/settings.json` adds Claude lifecycle enforcement. See
+`docs/negrita-brain-runtime.md` for commands, state, memory, and audit behavior.
+
 ### Rules (`.codex/rules/`)
 
 **Always loaded** for every task via `instruction-manifest.yaml`.
@@ -131,3 +138,7 @@ The NegritaOS router (`integrator.yaml` + `negritaos-mode-router` skill) maps us
 | Data pipeline work | `data-analytics`, `data-loading`, `data-contracts` |
 | Logging instrumentation | `dev-logging` |
 | Unit tests | `create-unittest`, `pytest` |
+
+All profile routing includes catalog default `document-delivery`. Specialized
+deck routing is inherited parent-first: `analytical-deck-delivery` ->
+`cqi-analytical-pptx` -> project-specific ELAL or IBC profile.
