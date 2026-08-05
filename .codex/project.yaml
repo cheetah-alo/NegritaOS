@@ -1,5 +1,5 @@
 project_id: negritaos
-negrita_registry: /Users/jackyb-cqi/repos/NegritaOS/projects/negritaos.yaml
+negrita_registry: projects/negritaos.yaml
 memory_home: ~/.negritaos/memory/projects/negritaos
 repo_codex_role: meta_system
 repo_codex_status: tracked_in_meta_repo
