@@ -1,0 +1,115 @@
+project:
+  id: hotmobile_diamond_report
+  name: "HOTmobile Diamond Report"
+  version: "1.0.0"
+  description: >
+    BigQuery SQL-first repository for HOTmobile Diamond Report analysis and
+    hourly segmentation replacement/evaluation. The repo compares the original
+    Diamond publication-hour report with a model-based hourly selection,
+    preserves evaluation evidence, and owns DAG/dev/pro SQL for call-level
+    incremental reporting.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/hotmobile-diamond-report"
+    sql_root: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/scripts/sql"
+    analysis_sql: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/scripts/sql/analysis"
+    dag_sql: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/scripts/sql/DAG"
+    dev_sql: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/scripts/sql/dev"
+    pro_sql: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/scripts/sql/pro"
+    docs: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/docs"
+    evaluation_pdf: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/docs/evaluacion_diamond_report_segmentacion_horaria.pdf"
+  memory_home: "~/.negritaos/memory/projects/hotmobile_diamond_report"
+  archetypes:
+    - eda_analytics
+    - data_platform
+    - data_quality
+    - ml_readiness
+    - executive_delivery
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - bigquery
+    - sql
+    - data_contracts
+    - data_quality_audit
+    - churn_analysis
+    - diamond_report_analysis
+    - hourly_segmentation
+    - control_group_evaluation
+    - model_review
+    - ml_readiness
+    - pdf_review
+    - executive_summary
+    - local_files
+  skill_profiles:
+    - analytical-eda
+    - data-source-bigquery
+    - cqi-analytical-pptx
+  data_source:
+    provider: bigquery
+    dialect: google_standard_sql
+    source_of_truth: governed_remote_source
+    access: read_sources_write_governed_output
+  analysis_governance:
+    phase: warn_first
+    scope: SQL-first HOTmobile Diamond publication-hour analysis, hourly model comparison, and incremental call-reporting SQL
+  agents:
+    - consulting_delivery_controller_agent
+    - code_review_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - team_lead_ds_agent
+    - presentation_agent
+    - decision_support_agent
+  codex_profiles:
+    - analysis-run
+    - review
+    - refactor
+  mode_map:
+    planning: LP
+    writeup: TD
+    deck: EP
+    pdf_review: TD
+    data_quality_audit: DQ
+    bq_inventory: DQ
+    sql_review: CR
+    dag_sql_change: CR
+    pipeline_change: CR
+    incremental_reporting: CR
+    eda: MR
+    model_review: MR
+    churn_analysis: MR
+    control_group_evaluation: MR
+    implementation: CR
+  expected_outputs:
+    - sql_pipeline_change
+    - data_contract_report
+    - data_quality_report
+    - diamond_report_evaluation
+    - hourly_segmentation_review
+    - model_readiness_review
+    - leakage_review
+    - analytical_report
+    - executive_summary
+    - executive_presentation
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  related_projects:
+    - hot_onedrive_workspace
+    - hot_frictions
+    - proj_data_analytics
+  notes:
+    - "This repo is a Git repository; git operations are available at the repo root."
+    - "Treat BigQuery tables in cqi-hotmobile-callsai-2fe1 and cqisense-hotmobile-pro-9ec9 as governed remote sources; local files are source SQL or report evidence."
+    - "Diamond report `hour` is a publication or first-detection hour, not necessarily the call hour; preserve this distinction in analysis and documentation."
+    - "The operational prioritization grain for comparisons is account_id plus publication hour unless a different grain is explicitly documented."
+    - "The DAG call-detail output grain is create_date plus hour plus account_id plus segment_id; do not collapse it into account-hour without stating the aggregation rule."
+    - "Equal-volume comparisons must define the Diamond hourly cap N and the model top-N selection rule for the same exposure hour."
+    - "Review target tables, date windows, timezone Asia/Jerusalem, project, dataset, and delete/insert idempotency before executing SQL."
+    - "Use DQ mode for schema drift, duplicate-grain checks, null/coverage audits, control-group consistency, and BigQuery dry-run readiness."
+    - "Use CR mode for DAG SQL, incremental inserts, table creation, and production SQL changes."
+    - "Use MR mode for churn/model interpretation, segment distribution, overlap, lift, and leakage/readiness claims."
+    - "Preserve the existing PDF evaluation in docs/ as evidence; new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables must use document-control under documents/."

@@ -1,0 +1,108 @@
+project:
+  id: fiber_hourly_analytics_sql
+  name: "Fiber Hourly Analytics SQL"
+  version: "1.0.0"
+  description: >
+    BigQuery SQL-first repository for hourly FTTH/fiber analytics: account-hour
+    TSR scoring tiers, gateway-hour user reboot analysis, 7-day TSR call flags,
+    scoring/evaluation SQL, schemas, and pipeline assumptions. The repo is
+    evidence-first and keeps source SQL, schema notes, customer reference docs,
+    and generated deliverables separated.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql"
+    dags_sql: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/dags/sql"
+    analysis: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/analysis"
+    dev_sql: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/dev"
+    scoring: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/scoring"
+    schemas: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/schemas"
+    docs: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/docs"
+    assumptions: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/pipeline_assumptions.md"
+  memory_home: "~/.negritaos/memory/projects/fiber_hourly_analytics_sql"
+  archetypes:
+    - eda_analytics
+    - data_platform
+    - data_quality
+    - ml_readiness
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - bigquery
+    - sql
+    - data_contracts
+    - data_quality_audit
+    - feature_engineering
+    - hourly_scoring
+    - user_reboot_analysis
+    - tsr_call_prediction
+    - ml_readiness
+    - local_files
+  skill_profiles:
+    - analytical-eda
+    - data-source-bigquery
+  data_source:
+    provider: bigquery
+    dialect: google_standard_sql
+    source_of_truth: governed_remote_source
+    access: read_sources_write_governed_output
+  analysis_governance:
+    phase: warn_first
+    scope: SQL-first hourly fiber scoring, user reboot, TSR-call evaluation, and ML-readiness analyses
+  agents:
+    - consulting_delivery_controller_agent
+    - code_review_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - team_lead_ds_agent
+    - presentation_agent
+    - decision_support_agent
+  codex_profiles:
+    - analysis-run
+    - review
+    - refactor
+  mode_map:
+    planning: LP
+    writeup: TD
+    deck: EP
+    data_quality_audit: DQ
+    bq_inventory: DQ
+    schema_review: DQ
+    sql_review: CR
+    pipeline_change: CR
+    feature_engineering: CR
+    scoring_change: CR
+    eda: MR
+    ml_readiness: MR
+    model_evaluation: MR
+    implementation: CR
+  expected_outputs:
+    - sql_pipeline_change
+    - data_contract_report
+    - data_quality_report
+    - hourly_scoring_analysis
+    - user_reboot_population_report
+    - tsr_call_prediction_review
+    - leakage_review
+    - model_readiness_review
+    - analytical_report
+    - executive_summary
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  related_projects:
+    - ibc_fiber_network
+    - fiber_network_trap_analytics
+    - proj_data_analytics
+  notes:
+    - "This repo is a Git repository; git operations are available at the repo root."
+    - "Treat BigQuery sources under RAW_HOT_ANALYTICS as governed remote sources; local XLSX docs are customer/reference evidence, not generated outputs."
+    - "Review target tables, date windows, project, dataset, and location before executing SQL that creates or replaces BigQuery tables."
+    - "Respect hourly temporal semantics: features must be available before scoring_ts and targets must begin after scoring_ts."
+    - "Keep account-hour and gateway-hour datasets separate unless a governed grain bridge is explicitly documented."
+    - "Do not claim ML readiness without target, horizon, denominator, split, leakage, row-grain, and train/test contracts."
+    - "Use DQ mode for schema drift, denominator/population checks, duplicate-grain checks, coverage/null audits, and BigQuery dry-run readiness."
+    - "Use CR mode for DAG SQL, scoring SQL, and pipeline changes; prefer ordered, reviewable SQL scripts over monolithic ad hoc rewrites."
+    - "Use MR mode for population selection, scoring/evaluation interpretation, user reboot analysis, and model readiness."
+    - "Preserve existing reference docs and SQL evidence; use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/."

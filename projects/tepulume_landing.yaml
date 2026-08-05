@@ -1,0 +1,89 @@
+project:
+  id: tepulume_landing
+  name: "Tepulume Landing"
+  version: "1.0.0"
+  description: >
+    Tepulume corporate landing and web repository. The app presents the parent
+    brand, its operating narrative, capabilities, values, and TepuFlow as the
+    first financial product. It is a Git repository with Next/Vinext,
+    TypeScript, Tailwind, Cloudflare tooling, and OpenAI Sites hosting metadata.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing"
+    app: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing/app"
+    public: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing/public"
+    tests: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing/tests"
+    hosting_config: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing/.openai/hosting.json"
+  memory_home: "~/.negritaos/memory/projects/tepulume_landing"
+  archetypes:
+    - product_app
+    - frontend_web
+    - landing_page
+  capabilities:
+    - frontend
+    - website
+    - landing_page
+    - product_ux
+    - brand_system
+    - copywriting
+    - sites_hosting
+    - cloudflare
+    - typescript
+    - nextjs
+    - vite
+    - tailwind
+    - local_files
+    - technical_documentation
+  agents:
+    - code_review_agent
+    - software_architect_agent
+    - technical_writer_agent
+    - presentation_agent
+    - decision_support_agent
+    - team_lead_ds_agent
+  codex_profiles:
+    - review
+    - refactor
+  mode_map:
+    landing_work: CR
+    website_change: CR
+    frontend_change: CR
+    design_refinement: CR
+    sites_publish: CR
+    cloudflare_change: CR
+    brand_copy: TD
+    content_update: TD
+    planning: LP
+    deck: EP
+  expected_outputs:
+    - website_source_change
+    - landing_copy_update
+    - build_validation
+    - browser_qa_report
+    - deployment_version_note
+    - technical_memo
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  related_projects:
+    - tepulume_workspace
+    - tepulume_social
+  hosting:
+    provider: openai_sites
+    config_path: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing/.openai/hosting.json"
+    project_id: "appgprj_6a6e1027415081918750232914ffa8c3"
+  runtime:
+    node: ">=22.13.0"
+    package_manager: npm
+    dev_command: "npm run dev"
+    build_command: "npm run build"
+    test_command: "npm test"
+  notes:
+    - "This is the source-of-truth Git repo for the Tepulume corporate landing/web experience."
+    - "Because .openai/hosting.json exists, use the Sites workflow for website save/deploy tasks and reuse the recorded project_id."
+    - "Apply dashboard-architecture/frontend-web discipline for maintainable modular UI; do not create one-file page monoliths."
+    - "Preserve app/, public/, tests/, .openai/hosting.json, and hosting identity when changing the site."
+    - "Run npm test for validation when web source changes are made."
+    - "Keep brand/copy decisions aligned with tepulume_social, but do not mix editorial-calendar artifacts into the landing source tree."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating existing repo docs."

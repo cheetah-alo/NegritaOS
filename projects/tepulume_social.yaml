@@ -1,0 +1,80 @@
+project:
+  id: tepulume_social
+  name: "Tepulume Social"
+  version: "1.0.0"
+  description: >
+    Independent editorial and social-media operations repository for Tepulume.
+    It manages brand voice, content strategy, evidence registry, publication
+    calendar, finished posts, Instagram assets, and Meta automation policy.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social"
+    brand_voice: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/brand/VOICE.md"
+    strategy: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/strategy/CONTENT_STRATEGY.md"
+    source_registry: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/research/SOURCE_REGISTRY.md"
+    calendar: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/content/calendar.csv"
+    posts: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/content/posts"
+    instagram_assets: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/assets/instagram"
+    automation: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/automation"
+  memory_home: "~/.negritaos/memory/projects/tepulume_social"
+  archetypes:
+    - content_operations
+    - brand_strategy
+    - social_media
+  capabilities:
+    - content_strategy
+    - social_media
+    - editorial_calendar
+    - evidence_registry
+    - source_verification
+    - brand_voice
+    - meta_publishing
+    - automation_policy
+    - local_files
+    - technical_documentation
+  agents:
+    - technical_writer_agent
+    - decision_support_agent
+    - presentation_agent
+    - team_lead_ds_agent
+    - data_quality_sentinel_agent
+    - code_review_agent
+  codex_profiles:
+    - review
+    - analysis-run
+  mode_map:
+    content_strategy: TD
+    brand_voice: TD
+    post_draft: TD
+    editorial_review: TD
+    source_verification: DQ
+    evidence_registry: DQ
+    calendar_validation: DQ
+    meta_publishing: DQ
+    automation_policy: CR
+    planning: LP
+    deck: EP
+  expected_outputs:
+    - content_strategy
+    - editorial_calendar_review
+    - post_draft
+    - source_verification_report
+    - evidence_matrix
+    - publishing_readiness_report
+    - automation_policy_note
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  related_projects:
+    - tepulume_workspace
+    - tepulume_landing
+  notes:
+    - "This is the source-of-truth Git repo for Tepulume social-media content operations."
+    - "Do not publish, schedule, or send content to Meta automatically unless the user explicitly asks and credentials/permissions are confirmed."
+    - "A post cannot be marked evidence_checked when it contains factual claims without primary source, consultation date, and limitation note."
+    - "Keep opinion copy explicitly framed as opinion; do not present it as evidence."
+    - "Use TD mode for brand voice, content strategy, captions, post drafts, and editorial revisions."
+    - "Use DQ mode for source registry checks, calendar completeness, evidence status, and publishing readiness."
+    - "Keep social content operations separate from landing/web source changes; cross-link brand decisions through tepulume_workspace."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating existing repo docs."
