@@ -26,6 +26,18 @@ ELAL decks.
 - Apply S3 candidates only to events already classified as `F_NEG_08`.
 - Keep production rules and shadow candidates visually and semantically
   separate.
+- Treat the near-flight caller evidence as an identity-alignment surface:
+  the operational event remains member-level, but a call matched through a
+  phone owned by 2--4 members is `CANDIDATE_SHADOW`, not a confirmed individual
+  member call. Phone ownership greater than four and missing phones are not
+  member coverage. A unique, time-appropriate approved identity bridge is
+  required for confirmed member reach.
+- Do not change a productive `F_NEG_08` point value or predicate from an
+  analytical deck. Until near-flight identity alignment is approved, report
+  its reach, points and v9/v10 contribution separately as confirmed,
+  candidate shared-phone and not-observable coverage. Add a visible
+  alignment note stating that the production rule is unchanged and naming the
+  decision needed to promote candidate coverage.
 - Describe a 13-month view as monthly pattern or seasonal context, not proven
   seasonality.
 - Annotate exceptional events only with official sources and without automatic

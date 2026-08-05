@@ -36,6 +36,8 @@ the zip instead of improvising.
 | Component source inside design system | `brands/cqi/brand_style/CQISense_Design_System/components/` |
 | Official logo assets inside design system | `brands/cqi/brand_style/CQISense_Design_System/assets/` |
 | Current CQI PPT template | `brands/cqi/plantillas/CQI_PresentationTemplate_20260401.pptx` |
+| Current CQI Word template | `brands/cqi/plantillas/CQI_DocumentTemplate_20260720.docx` |
+| CQI Word template guide | `brands/cqi/plantillas/CQI_DocumentTemplate_README.md` |
 | CQI PPT agent wrapper | `brands/cqi/brand_style/pptx_skill_cqi.md` |
 
 Deprecated PPT file name:
@@ -102,6 +104,8 @@ Before generating or modifying CQI visual work:
 - Use the extracted design-system folder as visual authority for colors,
   typography, tokens, components, logos, spacing, and presentation style.
 - Use the current PPT template for any new CQI/CQISense deck.
+- Use the current Word template for any CQI/CQISense formal report, proposal,
+  decision memo, or client-facing `.docx`.
 - Do not use `Template_CQISense.pptx`.
 - Do not invent alternate palettes, fonts, logos, or slide styles.
 - Keep deliverables under the active work root's `documents/` folder when
