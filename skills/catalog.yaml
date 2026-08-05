@@ -68,6 +68,7 @@ profiles:
     skills:
       - data-source-adapters
       - bigquery-analysis-governance
+      - jinja-bigquery
       - data-contracts
       - data-loading
   data-source-postgresql:
@@ -96,6 +97,28 @@ profiles:
       - analytics-storytelling-deck
       - cqi-analytical-pptx
       - document-control
+  cqi-analytical-docx-pdf:
+    description: CQI analytical Word/PDF delivery, APA figure/table standards, render QA, and document-control governance.
+    skills:
+      - cqi-analytical-docx-pdf
+      - document-control
+      - docs-alignment
+  ibc-technical-eda-presentation:
+    description: IBC technical EDA and ML-readiness decks layered on CQI PPTX governance.
+    skills:
+      - analytics-storytelling-deck
+      - cqi-analytical-pptx
+      - ibc-technical-eda-presentation
+      - document-control
+  ibc-technical-eda-report:
+    description: IBC technical EDA DOCX/PDF reports layered on CQI document governance and IBC source-readiness guardrails.
+    skills:
+      - cqi-analytical-docx-pdf
+      - ibc-technical-eda-report
+      - document-control
+      - analytical-eda-governance
+      - data-contracts
+      - docs-alignment
   elal-analytical-deck:
     description: ELAL passenger-journey analytical deck profile layered on CQI PPTX governance.
     skills:
@@ -108,16 +131,52 @@ skills:
     path: .codex/skills/cqi-analytical-pptx/SKILL.md
     native_path: skills/executive/cqi_analytical_pptx.md
     source: NegritaOS-native
-    profiles: [cqi-analytical-pptx, elal-analytical-deck]
+    profiles: [cqi-analytical-pptx, ibc-technical-eda-presentation, elal-analytical-deck]
     scopes: [root, presentation, deck, analytics]
     status: canonical
     dependencies: [node, unzip]
     side_effects: read_only_audit_by_default
+  - id: ibc-technical-eda-presentation
+    path: .codex/skills/ibc-technical-eda-presentation/SKILL.md
+    native_path: null
+    source: NegritaOS-native
+    profiles: [ibc-technical-eda-presentation]
+    scopes: [root, presentation, deck, analytics, data_analytics, model-review]
+    status: canonical
+    dependencies: [node, unzip]
+    side_effects: governed_deliverable_creation
+  - id: cqi-analytical-docx-pdf
+    path: .codex/skills/cqi-analytical-docx-pdf/SKILL.md
+    native_path: null
+    source: NegritaOS-native
+    profiles: [cqi-analytical-docx-pdf, ibc-technical-eda-report]
+    scopes: [root, documentation, report, analytics]
+    status: canonical
+    dependencies: [docx, pdf]
+    side_effects: governed_deliverable_creation
+  - id: ibc-technical-eda-report
+    path: .codex/skills/ibc-technical-eda-report/SKILL.md
+    native_path: null
+    source: NegritaOS-native
+    profiles: [ibc-technical-eda-report]
+    scopes: [root, documentation, report, data_analytics, model-review]
+    status: canonical
+    dependencies: [docx, pdf]
+    side_effects: governed_deliverable_creation
+  - id: jinja-bigquery
+    path: .codex/skills/jinja-bigquery/SKILL.md
+    native_path: skills/engineering/jinja-bigquery/SKILL.md
+    source: NegritaOS-native
+    profiles: [data-source-bigquery]
+    scopes: [root, backend, data_analytics]
+    status: canonical
+    dependencies: [jinja2, bq]
+    side_effects: read_only_render_review
   - id: analytics-storytelling-deck
     path: .codex/skills/analytics-storytelling-deck/SKILL.md
     native_path: skills/executive/analytics_storytelling_deck.md
     source: NegritaOS-native
-    profiles: [cqi-analytical-pptx, elal-analytical-deck]
+    profiles: [cqi-analytical-pptx, ibc-technical-eda-presentation, elal-analytical-deck]
     scopes: [root, presentation, deck, analytics]
     status: canonical
     dependencies: []
@@ -126,7 +185,7 @@ skills:
     path: .codex/skills/document-control/SKILL.md
     native_path: null
     source: NegritaOS-native
-    profiles: [cqi-analytical-pptx]
+    profiles: [cqi-analytical-pptx, cqi-analytical-docx-pdf, ibc-technical-eda-presentation, ibc-technical-eda-report]
     scopes: [root, presentation, documentation]
     status: canonical
     dependencies: []
@@ -153,7 +212,7 @@ skills:
     path: .codex/skills/analytical-eda-governance/SKILL.md
     native_path: skills/engineering/analytical_eda_governance.md
     source: NegritaOS-native
-    profiles: [analytical-eda, elal-eda-governance]
+    profiles: [analytical-eda, elal-eda-governance, ibc-technical-eda-report]
     scopes: [root, data_analytics]
     status: canonical
     dependencies: []
@@ -230,7 +289,7 @@ skills:
   - id: data-contracts
     path: .codex/skills/data-contracts/SKILL.md
     source: NegritaOS-native
-    profiles: [analytical-dashboard, analytical-eda, data-source-bigquery, data-source-postgresql]
+    profiles: [analytical-dashboard, analytical-eda, data-source-bigquery, data-source-postgresql, ibc-technical-eda-report]
     scopes: [root, backend, data_analytics]
     status: canonical
     dependencies: []
@@ -238,7 +297,7 @@ skills:
   - id: docs-alignment
     path: .codex/skills/docs-alignment/SKILL.md
     source: NegritaOS-native
-    profiles: [analytical-dashboard, analytical-eda]
+    profiles: [analytical-dashboard, analytical-eda, cqi-analytical-docx-pdf, ibc-technical-eda-report]
     scopes: [root]
     status: canonical
     dependencies: []

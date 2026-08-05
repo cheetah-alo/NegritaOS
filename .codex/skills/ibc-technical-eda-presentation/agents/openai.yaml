@@ -1,0 +1,8 @@
+interface:
+  display_name: "IBC Technical EDA Presentation"
+  short_description: "IBC analytical decks with CQI evidence gates"
+  brand_color: "#2347FF"
+  default_prompt: "Use $ibc-technical-eda-presentation to create an IBC stakeholder deck with CQI visual standards, evidence notes, and ML-readiness gates."
+
+policy:
+  allow_implicit_invocation: true

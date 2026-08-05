@@ -21,6 +21,9 @@ Use these skills for detailed patterns on-demand:
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
 | `document-control` | Govern deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown under timestamped `documents/` outputs | [SKILL.md](document-control/SKILL.md) |
 | `cqi-analytical-pptx` | CQI/CQISense analytical PowerPoint creation, editing, evidence notes, release QA, readability audits, and mobile podcast contracts | [SKILL.md](cqi-analytical-pptx/SKILL.md) |
+| `cqi-analytical-docx-pdf` | CQI/CQISense analytical Word/PDF reports with APA tables/figures, render QA, visual inspection, and document-control governance | [SKILL.md](cqi-analytical-docx-pdf/SKILL.md) |
+| `ibc-technical-eda-presentation` | IBC technical EDA, bridge-readiness, and ML-readiness decks using CQI visual/evidence standards | [SKILL.md](ibc-technical-eda-presentation/SKILL.md) |
+| `ibc-technical-eda-report` | IBC technical EDA DOCX/PDF reports, source-readiness memos, join-readiness guardrails, and ML-readiness evidence limits | [SKILL.md](ibc-technical-eda-report/SKILL.md) |
 | `rule-model-documentation` | Create CQI-style documents for deterministic rule-based models, scoring layers, boosters, persistence, validation, plots, and recommendations | [SKILL.md](rule-model-documentation/SKILL.md) |
 | `tfm-academic-reviewer` | Standardized final TFM reviewer with 0–4 scoring, 1–10 grade, and benchmark calibration | [SKILL.md](tfm-academic-reviewer/SKILL.md) |
 | `tfm-research-advisor` | Propose differentiated TFM titles from recent papers, validated public data, and a read-only proposal corpus | [SKILL.md](tfm-research-advisor/SKILL.md) |
@@ -28,6 +31,7 @@ Use these skills for detailed patterns on-demand:
 | `dashboard-architecture` | Enforce maintainable modular dashboard architecture and forbid monolithic dashboard HTML as final source | [SKILL.md](dashboard-architecture/SKILL.md) |
 | `analytical-dashboard-architecture` | Provider-neutral boundaries and quality gates for data-backed dashboards | [SKILL.md](analytical-dashboard-architecture/SKILL.md) |
 | `data-source-adapters` | BigQuery, PostgreSQL, and provider-neutral source adapter governance | [SKILL.md](data-source-adapters/SKILL.md) |
+| `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates, dynamic clauses, identifiers, and query variants | [SKILL.md](jinja-bigquery/SKILL.md) |
 | `branch-pr` | Provider-neutral branch and PR workflow using the project-declared base branch | [SKILL.md](branch-pr/SKILL.md) |
 | `testing-coverage` | Backend, frontend, contract, browser, and coverage gates without provider assumptions | [SKILL.md](testing-coverage/SKILL.md) |
 | `nate-skill-builder` | NegritaOS adaptation of skill authoring and audit guidance | [SKILL.md](nate-skill-builder/SKILL.md) |
@@ -61,12 +65,15 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 | `academic-tfm-review` | `tfm-academic-reviewer` |
 | `analytical-dashboard` | `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `docs-alignment`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
 | `analytical-eda` | `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage`, `docs-alignment` |
+| `cqi-analytical-docx-pdf` | `cqi-analytical-docx-pdf`, `document-control`, `docs-alignment` |
 | `cqi-analytical-pptx` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `document-control` |
-| `data-source-bigquery` | `data-source-adapters`, `bigquery-analysis-governance`, `data-contracts`, `data-loading` |
+| `data-source-bigquery` | `data-source-adapters`, `bigquery-analysis-governance`, `jinja-bigquery`, `data-contracts`, `data-loading` |
 | `data-source-postgresql` | `data-source-adapters`, `data-contracts`, `data-loading` |
 | `elal-analytical-deck` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance` |
 | `elal-eda-governance` | `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
 | `fastapi-nextjs` | `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
+| `ibc-technical-eda-presentation` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation`, `document-control` |
+| `ibc-technical-eda-report` | `cqi-analytical-docx-pdf`, `ibc-technical-eda-report`, `document-control`, `analytical-eda-governance`, `data-contracts`, `docs-alignment` |
 | `rule-model-documentation` | `rule-model-documentation` |
 | `visual-delivery` | `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
@@ -94,6 +101,9 @@ When performing these actions, invoke the corresponding skill first:
 | Change data ingestion or source resolution | `data-loading` |
 | Create or edit analytical PPTs, finding decks, or metric-driven storylines | `analytics-storytelling-deck` |
 | Create, edit, audit, release, or podcast a CQI/CQISense analytical PPTX deck | `cqi-analytical-pptx` |
+| Create, edit, audit, export, or visually QA a CQI/CQISense analytical DOCX/PDF report | `cqi-analytical-docx-pdf` |
+| Create or edit an IBC technical EDA, bridge-readiness, or ML-readiness PPTX deck | `ibc-technical-eda-presentation` |
+| Create or edit an IBC technical EDA DOCX/PDF report, source-readiness memo, join-readiness memo, or ML-readiness evidence pack | `ibc-technical-eda-report` |
 | Convert EDA plots, cohorts, funnels, segments, or outcome rates into claims | `eda-analytics-findings` |
 | Convert model metrics, thresholds, lift, SHAP, or leakage review into claims | `ml-model-findings` |
 | Create documentation for rule-based models, rules engines, scoring, boosters, persistence, sticky logic, decay, sensitivity analysis, or validation plots | `rule-model-documentation` |
@@ -106,6 +116,7 @@ When performing these actions, invoke the corresponding skill first:
 | Create or modify dashboards, dashboard HTML, BI-style frontend pages, chart-heavy report UIs, or dashboard generators | `dashboard-architecture` |
 | Design or modify data-backed dashboard boundaries, provider routing, or logical dashboard contracts | `analytical-dashboard-architecture` |
 | Change BigQuery, PostgreSQL, or other data-source adapters and physical object routing | `data-source-adapters` |
+| Write or review Jinja templates that render BigQuery SQL, dynamic CTEs, filters, projections, joins, identifiers, or query variants | `jinja-bigquery` |
 | Prepare a branch, choose a PR base, or assemble review evidence | `branch-pr` |
 | Change behavior, contracts, visual states, or browser flows requiring coverage evidence | `testing-coverage` |
 | Modify EDA outputs, plots, dashboards, or run-scoped output layout | `eda-reports` |

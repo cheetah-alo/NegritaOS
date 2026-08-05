@@ -99,6 +99,12 @@ metaagent_router:
         - document this analysis
         - write up findings
         - report for the team
+        - DOCX report
+        - PDF report
+        - technical EDA report
+        - IBC technical EDA report
+        - source-readiness memo
+        - join-readiness memo
         - architecture note
         - postmortem
         - decision record
@@ -110,6 +116,8 @@ metaagent_router:
       output_types:
         - notion_doc
         - confluence_doc
+        - docx_report
+        - pdf_report
         - technical_memo
         - executive_brief
 
@@ -178,6 +186,9 @@ metaagent_router:
         - code quality 80
         - refactor
         - BigQuery SQL
+        - Jinja BigQuery
+        - Jinja SQL template
+        - dynamic SQL template
         - Python script
         - pipeline review
         - logging review

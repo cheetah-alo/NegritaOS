@@ -4,7 +4,7 @@ agent:
   version: "1.0.0"
   layer: strategic
   description: >
-    Creates Notion and Confluence-ready documentation from analytical,
+    Creates Notion, Confluence-ready, DOCX, and PDF documentation from analytical,
     technical, and decision material. Uses the same evidence-first narrative
     spine as presentations, with more auditability and operational detail.
 
@@ -19,6 +19,10 @@ agent:
     - skills/transversal/tldr_writer.md
     - skills/transversal/evidence_framing.md
     - skills/governance/risk_framing.md
+
+  codex_skills:
+    - .codex/skills/cqi-analytical-docx-pdf/SKILL.md
+    - .codex/skills/ibc-technical-eda-report/SKILL.md
 
   rules:
     inherit: rules/global/global_rules.yaml
@@ -37,6 +41,8 @@ agent:
   output_modes:
     - notion_doc
     - confluence_doc
+    - docx_report
+    - pdf_report
     - technical_memo
     - executive_brief
 

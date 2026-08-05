@@ -1,0 +1,5 @@
+interface:
+  display_name: "CQI Analytical DOCX/PDF"
+  short_description: "CQI-branded analytical reports"
+  brand_color: "#1A43F5"
+  default_prompt: "Use $cqi-analytical-docx-pdf to create a CQI-branded analytical report and verify the rendered PDF."

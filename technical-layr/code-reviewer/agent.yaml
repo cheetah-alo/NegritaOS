@@ -16,6 +16,7 @@ agent:
   skills:
     - skills/engineering/python_quality_review.md
     - skills/engineering/sql_bigquery_review.md
+    - skills/engineering/jinja-bigquery/SKILL.md
     - skills/engineering/analytical_dashboard_architecture.md
     - skills/engineering/data_source_adapter_governance.md
     - skills/engineering/reproducibility_review.md
@@ -65,6 +66,7 @@ agent:
   quality_gate:
     - P0_and_P1_issues_are_explicitly_flagged
     - reproducibility_is_assessed
+    - jinja_bigquery_templates_are_rendered_and_validated_when_present
     - logging_coverage_is_reviewed
     - data_leakage_paths_are_checked
     - configuration_management_is_evaluated

@@ -32,6 +32,10 @@ project:
   skill_profiles:
     - analytical-eda
     - data-source-bigquery
+    - cqi-analytical-pptx
+    - cqi-analytical-docx-pdf
+    - ibc-technical-eda-presentation
+    - ibc-technical-eda-report
   data_source:
     provider: bigquery
     dialect: google_standard_sql
