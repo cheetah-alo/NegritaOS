@@ -189,7 +189,7 @@ Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copi
 `dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, `docs-alignment`,
 `document-control`, `cqi-analytical-pptx`, `rule-model-documentation`,
 `dashboard-architecture`, `analytical-eda-governance`,
-`bigquery-analysis-governance`, …
+`bigquery-analysis-governance`, `jinja-bigquery`, …
 
 Each skill is a folder with a `SKILL.md` describing **when to trigger** and **what to do**.
 
@@ -332,9 +332,15 @@ Current sibling repos (registered under [projects/](projects/)):
 - `elal_journey_dashboard` → `/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard`
 - `hot_archeotype_proposal_demo` → `/Users/jackyb-cqi/repos/hot_archeotype_proposal_demo`
 - `hot_onedrive_workspace` → `/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/HOT`
+- `hotmobile_diamond_report` → `/Users/jackyb-cqi/repos/hotmobile-diamond-report`
 - `team_ds_trackwork` → `/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist`
 - `ibc_fiber_network` → `/Users/jackyb-cqi/repos/ibc_fiber_network`
+- `fiber_network_trap_analytics` → `/Users/jackyb-cqi/repos/fiber-network-trap-analytics`
+- `fiber_hourly_analytics_sql` → `/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql`
 - `proj_data_o` → `/Users/jackyb-cqi/repos/backup_repos/proj_data_o`
+- `tepulume_workspace` → `/Users/jackyb-cqi/repos/backup_repos/tepulume`
+- `tepulume_landing` → `/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing`
+- `tepulume_social` → `/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social`
 - `vene` → `/Users/jackyb-cqi/repos/backup_repos/vene`
 - `hot_frictions`, `negritaos` (meta)
 
