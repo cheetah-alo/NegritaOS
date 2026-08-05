@@ -125,6 +125,7 @@ profiles:
       - analytics-storytelling-deck
       - cqi-analytical-pptx
       - elal-eda-governance
+      - document-control
 
 skills:
   - id: cqi-analytical-pptx
@@ -185,7 +186,7 @@ skills:
     path: .codex/skills/document-control/SKILL.md
     native_path: null
     source: NegritaOS-native
-    profiles: [cqi-analytical-pptx, cqi-analytical-docx-pdf, ibc-technical-eda-presentation, ibc-technical-eda-report]
+    profiles: [cqi-analytical-pptx, cqi-analytical-docx-pdf, ibc-technical-eda-presentation, ibc-technical-eda-report, elal-analytical-deck]
     scopes: [root, presentation, documentation]
     status: canonical
     dependencies: []

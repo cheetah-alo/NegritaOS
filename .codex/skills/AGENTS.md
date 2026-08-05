@@ -69,7 +69,7 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 | `cqi-analytical-pptx` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `document-control` |
 | `data-source-bigquery` | `data-source-adapters`, `bigquery-analysis-governance`, `jinja-bigquery`, `data-contracts`, `data-loading` |
 | `data-source-postgresql` | `data-source-adapters`, `data-contracts`, `data-loading` |
-| `elal-analytical-deck` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance` |
+| `elal-analytical-deck` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance`, `document-control` |
 | `elal-eda-governance` | `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
 | `fastapi-nextjs` | `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
 | `ibc-technical-eda-presentation` | `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation`, `document-control` |
