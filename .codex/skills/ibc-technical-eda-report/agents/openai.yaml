@@ -1,0 +1,5 @@
+interface:
+  display_name: "IBC Technical EDA Report"
+  short_description: "IBC EDA reports with guardrails"
+  brand_color: "#001450"
+  default_prompt: "Use $ibc-technical-eda-report to produce an IBC technical EDA report with source boundaries and render QA."

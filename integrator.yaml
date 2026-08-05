@@ -494,6 +494,7 @@ negrita_os:
       skills:
         - skills/engineering/python_quality_review.md
         - skills/engineering/sql_bigquery_review.md
+        - skills/engineering/jinja-bigquery/SKILL.md
         - skills/engineering/bigquery_analysis_governance.md
         - skills/engineering/analytical_dashboard_architecture.md
         - skills/engineering/data_source_adapter_governance.md
@@ -518,6 +519,7 @@ negrita_os:
       quality_gate:
         - risks_are_prioritized
         - reproducibility_is_assessed
+        - jinja_bigquery_templates_are_rendered_and_validated_when_present
         - logging_is_reviewed
         - data_leakage_paths_are_checked
         - tests_or_validation_are_recommended
@@ -563,7 +565,7 @@ negrita_os:
         - code_quality_score_is_at_least_80_or_remediation_is_required
 
     technical_writer_agent:
-      description: "Creates Notion and Confluence-ready technical documentation."
+      description: "Creates Notion, Confluence-ready, DOCX, and PDF technical documentation."
       persona:
         - senior_data_scientist_writer
         - data_analyst_storyteller
@@ -575,6 +577,9 @@ negrita_os:
         - skills/transversal/tldr_writer.md
         - skills/transversal/evidence_framing.md
         - skills/governance/risk_framing.md
+      codex_skills:
+        - .codex/skills/cqi-analytical-docx-pdf/SKILL.md
+        - .codex/skills/ibc-technical-eda-report/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/writing/writing_rules.yaml
@@ -588,6 +593,8 @@ negrita_os:
       output_modes:
         - notion_doc
         - confluence_doc
+        - docx_report
+        - pdf_report
         - technical_memo
         - executive_brief
       quality_gate:
