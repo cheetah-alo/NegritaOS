@@ -67,6 +67,30 @@ deck vocabulary.
 - overbooking proxy = confirmed denied boarding;
 - shadow signal = production rule.
 
+## Cross-source join safety gate
+
+A cross-source join is not a canonical dataset by default. Do not create,
+label as canonical, or use a combined population for reporting, scoring, or
+model inputs merely because two tables expose a similarly named key.
+
+This gate applies to `INNER`, `LEFT`, `FULL OUTER`, `UNION`, `UNION ALL`, key
+coalescing, and additive denominators. Before implementation, the analyst must
+record and validate all of the following:
+
+1. the business question that requires the combination;
+2. source owner and certified physical lineage/DDL for both sources;
+3. grain and unique key of each source;
+4. common analysis window and timestamp semantics;
+5. join key, normalization and expected cardinality;
+6. duplicate, fanout, overlap and parent/subset reconciliation results;
+7. interpretation of missing fields and absent signals; and
+8. explicit approval from the responsible Data Engineering owner.
+
+If any item is unknown, keep source rails separate. Do not add row counts, do
+not publish a combined denominator or coverage percentage, and do not convert
+shared identifiers into confirmed individual entities. A combined artifact is
+`CANDIDATE_SHADOW` until the evidence contract and reconciliation tests pass.
+
 ## Reconciliation Gates
 
 Fail publication when:
@@ -77,6 +101,8 @@ Fail publication when:
 - an entity appears in more than one exclusive tier in the same cut;
 - unmatched calls are converted into estimated members;
 - alternative definitions are summed despite different contracts;
+- a cross-source join or combined denominator lacks the approved join-safety
+  evidence contract;
 - identifiers or person-level rows are exported;
 - a candidate rule creates events outside its base universe;
 - slide count changes outside the approved release configuration.

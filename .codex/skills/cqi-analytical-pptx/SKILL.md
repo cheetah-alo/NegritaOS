@@ -6,8 +6,8 @@ description: Create, edit, audit, release, and optionally publish mobile podcast
 # CQI Analytical PPTX
 
 Use this skill after `analytics-storytelling-deck` and before any CQI/CQISense
-analytical deck is edited, audited, released, or accompanied by a mobile
-podcast.
+analytical deck is created, edited, audited, released, or accompanied by a
+mobile podcast.
 
 Layering:
 
@@ -56,6 +56,13 @@ The zip bundle is a distribution artifact, not the primary source.
    `DATA_REQUIREMENT_OPEN`, `NOT_MATERIALIZED`, and `N/D`.
 7. Do not publish `BLOCKED_DATA`, `BLOCKED_AUTH`, `BLOQUEADO`, placeholders, or
    lorem ipsum in visible slide text or notes.
+8. Every non-neutral plot, table, card, chip, or highlight color must have a
+   declared role: status, category, emphasis, magnitude, comparison, or alert.
+   Load `references/cqi-plot-highlight-palette.md` before creating or editing
+   analytical charts, heatmaps, KPI cards, tables, or highlighted findings.
+9. For new CQI/CQISense decks, use the deck patterns in
+   `references/deck-patterns.md` unless a user-provided template owns the
+   structure.
 
 ## Analytical Evidence Block
 
@@ -109,6 +116,8 @@ Presentation tool as well.
 
 - `references/analytical-evidence-contract.md`
 - `references/cqi-visual-contract.md`
+- `references/cqi-plot-highlight-palette.md`
+- `references/deck-patterns.md`
 - `references/elal-analytical-profile.md`
 - `references/release-qa-contract.md`
 
