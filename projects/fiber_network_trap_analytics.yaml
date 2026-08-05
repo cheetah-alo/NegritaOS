@@ -1,0 +1,105 @@
+project:
+  id: fiber_network_trap_analytics
+  name: "Fiber Network Trap Analytics"
+  version: "1.0.0"
+  description: >
+    BigQuery SQL-first analytics repository for FTTH network traps, topology
+    grain comparison, leakage-safe feature engineering, TSR call association,
+    and TSR call prediction evaluation. The repo stores schemas, SQL scripts,
+    pipeline runners, and source documentation; generated outputs are excluded
+    from version control.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/fiber-network-trap-analytics"
+    schema: "/Users/jackyb-cqi/repos/fiber-network-trap-analytics/schema"
+    analysis_sql: "/Users/jackyb-cqi/repos/fiber-network-trap-analytics/scripts/analysis"
+    dev_sql: "/Users/jackyb-cqi/repos/fiber-network-trap-analytics/scripts/dev/sql"
+    card_day_pipeline: "/Users/jackyb-cqi/repos/fiber-network-trap-analytics/scripts/dev/sql/card_day"
+    dev_docs: "/Users/jackyb-cqi/repos/fiber-network-trap-analytics/scripts/dev/README.md"
+  memory_home: "~/.negritaos/memory/projects/fiber_network_trap_analytics"
+  archetypes:
+    - eda_analytics
+    - data_platform
+    - data_quality
+    - ml_readiness
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - bigquery
+    - sql
+    - data_contracts
+    - data_quality_audit
+    - feature_engineering
+    - topology_analysis
+    - trap_analysis
+    - tsr_call_prediction
+    - ml_readiness
+    - local_files
+  skill_profiles:
+    - analytical-eda
+    - data-source-bigquery
+  data_source:
+    provider: bigquery
+    dialect: google_standard_sql
+    source_of_truth: governed_remote_source
+    access: read_sources_write_governed_output
+  analysis_governance:
+    phase: warn_first
+    scope: SQL-first FTTH trap and TSR-call analyses, feature pipelines, and ML-readiness datasets
+  agents:
+    - consulting_delivery_controller_agent
+    - code_review_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - team_lead_ds_agent
+    - presentation_agent
+    - decision_support_agent
+  codex_profiles:
+    - analysis-run
+    - review
+    - refactor
+  mode_map:
+    planning: LP
+    writeup: TD
+    deck: EP
+    data_quality_audit: DQ
+    bq_inventory: DQ
+    schema_review: DQ
+    sql_review: CR
+    pipeline_change: CR
+    feature_engineering: CR
+    eda: MR
+    ml_readiness: MR
+    model_evaluation: MR
+    implementation: CR
+  expected_outputs:
+    - sql_pipeline_change
+    - data_contract_report
+    - data_quality_report
+    - topology_grain_analysis
+    - trap_tsr_association_report
+    - model_readiness_review
+    - leakage_review
+    - technical_report
+    - analytical_report
+    - executive_summary
+    - task_register
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
+  related_projects:
+    - ibc_fiber_network
+    - proj_data_analytics
+  notes:
+    - "This repo is a Git repository; git operations are available at the repo root."
+    - "Treat BigQuery source tables under RAW_HOT_ANALYTICS as governed remote sources; do not assume local data snapshots are authoritative."
+    - "SQL scripts can create governed output tables under TEMP_CQI; review target table names, dates, project, dataset, and location before execution."
+    - "The selected production candidate documented in scripts/dev/README.md is card_id + reference_date."
+    - "Respect leakage-safe temporal semantics: trap features must use timestamps before the scoring reference, and TSR-call target windows must start strictly after it."
+    - "Do not claim ML readiness without explicit target, window, denominator, split, leakage, and row-grain contracts."
+    - "Use DQ mode for schema drift, denominator/population checks, duplicate-grain checks, null/coverage audits, and BigQuery dry-run readiness."
+    - "Use CR mode for SQL pipeline changes and runner changes; prefer small, ordered scripts over ad hoc monolithic SQL."
+    - "Use MR mode for topology-grain selection, trap-to-call association, prediction evaluation, and model-readiness interpretation."
+    - "Generated outputs, reports, presentations, and local analysis artifacts stay out of Git unless explicitly promoted."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating existing repo docs."
