@@ -474,3 +474,39 @@ change_log:
       approval_ref: User-approved implementation plan on 2026-08-05 for a replicable severe-flight, baggage, call, and overbooking radiography.
     policy_effect: SHADOW_ONLY_NO_PRODUCTION_CHANGE
     deck_product_impact: The new review deck may rank severe flight families and describe baggage and direct-call candidate associations, but overbooking remains candidate-shadow and transcript signals remain non-outcomes.
+
+  - id: TRC-2026-08-06-ELAL-WCALLS-V3-PROPOSAL
+    recorded_on: 2026-08-06
+    kind: arik_workbook_rules_wcalls_v3_historical_proposal
+    record_status: PROPOSED
+    previous_change_id: TRC-2026-08-05-SEVERE-FLIGHT-OVERBOOKING-RADIOGRAPHY-PROPOSAL
+    supersedes: null
+    rule_ids:
+      - RUL-V8-OPERATIONAL-ONLY-REV
+      - RUL-CALL-RAIL-FRPR
+      - RUL-OVERBOOKING
+      - RUL-OUTCOME-ELIGIBILITY
+      - RUL-V10-TRANSITION-GUARDRAIL
+    source_artifact_ids:
+      - SRC-RULE-DOC-20260729
+      - SRC-FRICTION-V7
+    contract_ids:
+      - CTR-ATTENTION-LAYERS-V1
+      - CTR-CALL-DIRECT-V3
+      - CTR-OUTCOMES-V1
+      - CTR-OVERBOOKING-AUDIT
+    implementation_artifact_ids:
+      - IMP-ELAL-RULES-REV-RUNNER
+      - IMP-ELAL-RULES-REV-SQL
+      - IMP-ELAL-RULES-REV-REGISTRY
+    validation:
+      - Canonical OneDrive workbook SHA-256 ad22c77781e6d43a88dacea1a6d81098f4d1f2cdd7f36ab69b97ed323e24a04e; rules from 01 Rule Decisions A6:U29 and friction shadow from 03 Friction Review A6:K40.
+      - Historical V3 uses one score_as_of_date equal to MAX(event_date); V8, call context, V9 numeric score, V10 transition, severe chip, quality and friction shadow remain separate.
+      - V2 is unchanged; v3_p is a candidate rendered/dry-run only. Audit materialization, if authorized later, is restricted to append-only ANALYTICS tables ending in _rev.
+      - Direct evidence precedence, exact identity, F_NEG_08 replacement-only behavior, Arik points, V2/V3 schema preservation and single-snapshot V10 limitation are explicit gates.
+    decision:
+      owner: Jacky, ELAL Product Owner, Max, and Arik
+      status: PROPOSED
+      approval_ref: User-approved implementation plan on 2026-08-06; historical shadow validation only and no productive promotion.
+    policy_effect: SHADOW_ONLY_NO_PRODUCTION_CHANGE
+    deck_product_impact: Any review artifact must cite this proposal and state that friction deltas are contrafactual; V10 recovery and operational outcomes are not concluded from one snapshot.

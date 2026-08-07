@@ -1,5 +1,5 @@
 schema_version: 1
-as_of: 2026-08-04
+as_of: 2026-08-05
 source_repository:
   project_id: proj_data_analytics
   root: /Users/jackyb-cqi/repos/proj_data_analytics
@@ -23,6 +23,15 @@ discussion_topics:
       - {file: elal_passenger_journey_product_owner_summary_44slides_20260804_final_no_text_frames.pptx, slides: 46, notes: 46, lifecycle: mandatory_reference}
       - {file: elal_passenger_journey_product_owner_summary_44slides_20260804_final.pptx, slides: 44, notes: 44, lifecycle: prior_comparison}
       - {file: elal_passenger_journey_product_owner_summary_24slides_20260803_candidate.pptx, slides: 26, notes: 26, lifecycle: candidate_history}
+
+  flight_problem_radiography_for_max:
+    purpose: severe flight-family, passenger-level baggage, direct-call, and exact Seat Overbooking candidate-shadow review for Max
+    selection_rule: use v3 for the current governed review; v1 and v2 remain immutable candidate history and do not replace the mandatory Product Owner reference
+    artifacts:
+      - {file: elal_flight_problem_radiography_for_max_20260805_v3.pptx, slides: 18, notes: 18, lifecycle: shadow_review_candidate, focus: severe_flights_baggage_calls_overbooking}
+      - {file: elal_flight_problem_radiography_for_max_20260805_summary_slide.pptx, slides: 1, notes: 1, lifecycle: shadow_review_candidate, focus: all_findings_summary}
+      - {file: elal_flight_problem_radiography_for_max_20260805_v2.pptx, slides: 15, notes: 15, lifecycle: candidate_history, focus: flight_problem_radiography_v2}
+      - {file: elal_flight_problem_radiography_for_max_20260805.pptx, slides: 11, notes: 11, lifecycle: candidate_history, focus: flight_problem_radiography_v1}
 
   eda_data_universe_and_narrative:
     purpose: coverage, grain, source rails, observed signals, and decision narrative alternatives
@@ -77,6 +86,6 @@ discussion_topics:
       - {file: elal_v10_rule_review_revised__updated_20260720_200101.pptx, slides: 19, notes: 19, lifecycle: rule_review_revised}
 
 inventory_check:
-  observed_pptx_count: 41
-  listed_pptx_count: 41
+  observed_pptx_count: 45
+  listed_pptx_count: 45
   exclusions: Office temporary lock files are not presentation artifacts
