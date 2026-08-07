@@ -22,6 +22,7 @@ from negrita_brain.decisions import (  # noqa: E402
 from negrita_brain.doctor import doctor_all, doctor_project  # noqa: E402
 from negrita_brain.documents import catalog_legacy  # noqa: E402
 from negrita_brain.errors import BrainError, MemoryPermissionError  # noqa: E402
+from negrita_brain.git_traceability import snapshot_git  # noqa: E402
 from negrita_brain.installer import Installer  # noqa: E402
 from negrita_brain.memory import (  # noqa: E402
     handoff,
@@ -83,6 +84,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--action", required=True, choices=["read", "write", "commit", "deliverable"]
     )
     gate.add_argument("--path", type=_path)
+
+    git_trace = commands.add_parser(
+        "git-trace", help="Read a privacy-preserving Git worktree snapshot"
+    )
+    _common(git_trace)
 
     event = commands.add_parser("event", help="Append safe execution metadata")
     _common(event)
@@ -237,6 +243,8 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             **common,
         )
         return result, 2 if result["decision"] == "BLOCK" else 0
+    if args.command == "git-trace":
+        return snapshot_git(args.root), 0
     if args.command == "event":
         metadata = {
             key: getattr(args, key)

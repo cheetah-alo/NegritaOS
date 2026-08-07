@@ -31,6 +31,12 @@ class TestBrainCli(unittest.TestCase):
         self.assertEqual(args.provider, "codex")
         self.assertEqual(args.session_key, "thread-a")
 
+    def test_git_trace_that_accepts_a_workspace_root(self) -> None:
+        args = CLI.build_parser().parse_args(["git-trace", "--root", "/tmp/repo"])
+
+        self.assertEqual(args.command, "git-trace")
+        self.assertEqual(args.root, Path("/tmp/repo"))
+
     def test_memory_that_exposes_all_v2_operations(self) -> None:
         parser = CLI.build_parser()
         operations = {

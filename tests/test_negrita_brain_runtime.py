@@ -60,6 +60,12 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertIn("document-control", contract["skills"])
         self.assertTrue(contract_path.is_file())
 
+    def test_resolve_that_persists_git_snapshot_fields(self) -> None:
+        contract = self.resolve()
+
+        self.assertIn("git", contract)
+        self.assertIn("worktree_id", contract["git"])
+
     def test_resolve_that_maps_global_mode_to_project_agent(self) -> None:
         contract = self.resolve()
         self.assertEqual(contract["modes"], ["LP"])

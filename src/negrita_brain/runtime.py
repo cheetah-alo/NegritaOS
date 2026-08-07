@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import os
-import subprocess
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
@@ -21,6 +20,7 @@ from .config import (
 )
 from .documents import DELIVERABLE_EXTENSIONS, is_compliant_deliverable, is_deliverable
 from .errors import MemoryPermissionError, SessionError
+from .git_traceability import snapshot_git
 from .models import (
     append_jsonl,
     file_lock,
@@ -96,24 +96,6 @@ def resolve_session_identity(
         f"{normalized_provider}-default",
         "provider_default",
     )
-
-
-def _git_state(root: Path) -> dict[str, Any]:
-    """Return branch and HEAD without changing repository state."""
-    if not (root / ".git").exists():
-        return {"is_git": False, "branch": None, "head": None}
-
-    def run(*args: str) -> str | None:
-        result = subprocess.run(
-            ["git", *args], cwd=root, capture_output=True, text=True, check=False
-        )
-        return result.stdout.strip() if result.returncode == 0 else None
-
-    return {
-        "is_git": True,
-        "branch": run("branch", "--show-current"),
-        "head": run("rev-parse", "HEAD"),
-    }
 
 
 def _policy_root(context: ProjectContext) -> dict[str, Any]:
@@ -291,7 +273,7 @@ def resolve_session(
             "key_hash": identity.key_hash,
             "source": identity.source,
         },
-        "git": _git_state(context.work_root),
+        "git": snapshot_git(context.work_root),
         "actions": requested_actions,
         "modes": modes,
         "agents": selected_agents or available_agents,
