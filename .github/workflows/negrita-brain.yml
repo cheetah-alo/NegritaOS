@@ -14,7 +14,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: Prepare canonical memory structure
-        run: mkdir -p ~/.negritaos/memory/projects/negritaos/runtime/sessions ~/.negritaos/memory/projects/negritaos/decisions
+        run: |
+          python3 scripts/negrita_brain.py configure codex --apply
+          python3 scripts/negrita_brain.py install --root "$PWD"
       - name: Unit tests
         run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Coverage gate
