@@ -29,7 +29,7 @@ S6. `.codex/rules/negritaos-router.md` reachable; symlinks (if any) dereference
     into the NegritaOS canonical `.codex/rules/` tree.
 S7. `.codex/skills/negritaos-mode-router/SKILL.md` reachable.
 S8. `.codex/commands/` reachable (file or symlink dir).
-S9. Declared `memory_home` exists on disk.
+S9. Registry `project.memory_home` exists; an adapter value is only a matching mirror.
 S10. The canonical project -> registry -> agent/profile asset resolution passes.
 
 Exit codes:
@@ -60,7 +60,13 @@ except ImportError:
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from negrita_brain.config import load_project, project_memory_home  # noqa: E402
+from negrita_brain.config import (  # noqa: E402
+    adapter_memory_home,
+    load_project,
+    project_memory_home,
+)
+from negrita_brain.codex_config import codex_config_status  # noqa: E402
+from negrita_brain.memory import index_is_runtime_owned  # noqa: E402
 from negrita_brain.profiles import resolve_project_profiles  # noqa: E402
 HOME = Path.home()
 PROJECTS_DIR = REPO_ROOT / "projects"
@@ -83,6 +89,10 @@ def _ok(msg: str) -> tuple[bool, str]:
 
 def _fail(msg: str) -> tuple[bool, str]:
     return False, f"[FAIL] {msg}"
+
+
+def _warn(msg: str) -> tuple[bool, str]:
+    return True, f"[WARN] {msg}"
 
 
 def check_claude_alignment() -> tuple[bool, str]:
@@ -186,18 +196,60 @@ def check_no_orphan_sessions() -> tuple[bool, str]:
 
 
 def check_memory_home() -> tuple[bool, str]:
-    project_yaml = REPO_ROOT / ".codex" / "project.yaml"
-    if not project_yaml.exists():
-        return _fail("cannot resolve memory_home: .codex/project.yaml missing")
-    text = project_yaml.read_text(encoding="utf-8")
-    match = re.search(r"memory_home:\s*(\S+)", text)
-    if match is None:
-        return _fail(".codex/project.yaml does not declare memory_home")
-    raw = match.group(1).strip()
-    expanded = Path(raw.replace("~", str(HOME)))
-    if expanded.exists():
-        return _ok(f"memory_home present: {expanded}")
-    return _fail(f"memory_home missing on disk: {expanded}")
+    try:
+        context = load_project(REPO_ROOT, REPO_ROOT)
+    except Exception as exc:
+        return _fail(f"cannot resolve registry memory_home: {exc}")
+    canonical = project_memory_home(context)
+    mirror = adapter_memory_home(context)
+    if mirror is not None and mirror != canonical:
+        return _fail(f"adapter memory_home {mirror} != registry {canonical}")
+    if canonical.exists():
+        return _ok(f"registry memory_home present: {canonical}")
+    return _fail(f"registry memory_home missing on disk: {canonical}")
+
+
+def check_memory_policy() -> tuple[bool, str]:
+    """Verify Memory v2 ownership is explicit in runtime policy."""
+    policy = REPO_ROOT / "core" / "orchestration" / "negrita_brain_policy.yaml"
+    text = policy.read_text(encoding="utf-8") if policy.is_file() else ""
+    required = (
+        "schema_version: 2",
+        "owner: negrita_brain",
+        "persistence: relevant",
+        "active_pointer_strategy: provider_session",
+    )
+    missing = [value for value in required if value not in text]
+    if missing:
+        return _fail(f"Memory v2 policy fields missing: {', '.join(missing)}")
+    return _ok("Memory v2 policy ownership and pointer strategy declared")
+
+
+def check_codex_memory_permission() -> tuple[bool, str]:
+    """Detect whether new Codex tasks can write canonical project memory."""
+    try:
+        status = codex_config_status()
+    except Exception as exc:
+        return _fail(f"cannot validate Codex memory permission: {exc}")
+    if status["configured"]:
+        return _ok("Codex workspace-write includes canonical memory")
+    return _fail(
+        "Codex workspace-write excludes canonical memory; run configure codex --apply"
+    )
+
+
+def check_orphan_memory_homes() -> tuple[bool, str]:
+    """Report memory homes without deleting or reassigning them."""
+    root = HOME / ".negritaos" / "memory" / "projects"
+    if not root.is_dir():
+        return _warn(f"project memory root is absent: {root}")
+    registered = {path.stem for path in PROJECTS_DIR.glob("*.yaml")}
+    orphans = sorted(
+        path.name for path in root.iterdir() if path.is_dir() and path.name not in registered
+    )
+    if not orphans:
+        return _ok("no orphan project memory homes detected")
+    return _warn(f"orphan project memory homes preserved: {', '.join(orphans)}")
 
 
 CHECKS = (
@@ -211,6 +263,9 @@ CHECKS = (
     check_router_skill,
     check_no_orphan_sessions,
     check_memory_home,
+    check_memory_policy,
+    check_codex_memory_permission,
+    check_orphan_memory_homes,
 )
 
 
@@ -264,6 +319,10 @@ def _ok_s(project_id: str, msg: str) -> tuple[bool, str]:
 
 def _fail_s(project_id: str, msg: str) -> tuple[bool, str]:
     return False, f"[FAIL] [{project_id}] {msg}"
+
+
+def _warn_s(project_id: str, msg: str) -> tuple[bool, str]:
+    return True, f"[WARN] [{project_id}] {msg}"
 
 
 def check_sibling(
@@ -345,18 +404,28 @@ def check_sibling(
     else:
         results.append(_fail_s(project_id, ".codex/commands/ missing"))
 
-    # S9 — memory_home exists
-    memory_home_str = _scalar(py_text, "memory_home")
-    if memory_home_str is None:
-        results.append(_fail_s(project_id, "memory_home not declared"))
-    else:
-        memory_home = _expand(memory_home_str)
-        if memory_home.exists():
-            results.append(_ok_s(project_id, f"memory_home present: {memory_home}"))
+    # S9 — registry memory_home is authoritative; adapter value is a mirror only.
+    try:
+        memory_context = load_project(repo, REPO_ROOT)
+        memory_home = project_memory_home(memory_context)
+        mirror = adapter_memory_home(memory_context)
+        if mirror is not None and mirror != memory_home:
+            results.append(
+                _fail_s(
+                    project_id,
+                    f"adapter memory_home {mirror} != registry {memory_home}",
+                )
+            )
+        elif memory_home.exists():
+            results.append(
+                _ok_s(project_id, f"registry memory_home present: {memory_home}")
+            )
         else:
             results.append(
-                _fail_s(project_id, f"memory_home missing on disk: {memory_home}")
+                _fail_s(project_id, f"registry memory_home missing: {memory_home}")
             )
+    except Exception as exc:
+        results.append(_fail_s(project_id, f"memory_home resolution failed: {exc}"))
 
     # S10 — full canonical resolution, using the sibling adapter as the entrypoint
     errors, warnings, resolved_id = validate_resolution(
@@ -384,10 +453,15 @@ def _check_brain_runtime(project_id: str, repo: Path) -> list[tuple[bool, str]]:
     results: list[tuple[bool, str]] = []
     agents = repo / "AGENTS.md"
     claude = repo / "CLAUDE.md"
-    if agents.is_file() and MANAGED_START in agents.read_text(encoding="utf-8", errors="ignore"):
+    agents_text = agents.read_text(encoding="utf-8", errors="ignore") if agents.is_file() else ""
+    if MANAGED_START in agents_text:
         results.append(_ok_s(project_id, "managed AGENTS.md entrypoint present"))
     else:
         results.append(_fail_s(project_id, "managed AGENTS.md entrypoint missing"))
+    if "memory remember|handoff" in agents_text and "--provider codex" in agents_text:
+        results.append(_ok_s(project_id, "AGENTS.md routes project-memory writes through Brain"))
+    else:
+        results.append(_fail_s(project_id, "AGENTS.md still permits or omits Brain-only memory writes"))
     if claude.is_file():
         claude_text = claude.read_text(encoding="utf-8", errors="ignore")
         if MANAGED_START in claude_text and "@AGENTS.md" in claude_text:
@@ -450,7 +524,14 @@ def _check_brain_runtime(project_id: str, repo: Path) -> list[tuple[bool, str]]:
                 )
             )
         memory_home = project_memory_home(context)
-        required_memory = [memory_home / "runtime" / "sessions", memory_home / "decisions"]
+        required_memory = [
+            memory_home / "catalog",
+            memory_home / "decisions",
+            memory_home / "runtime" / "active",
+            memory_home / "runtime" / "sessions",
+            memory_home / "sessions",
+            memory_home / "tasks",
+        ]
         missing_memory = [str(path) for path in required_memory if not path.is_dir()]
         if missing_memory:
             results.append(
@@ -460,7 +541,44 @@ def _check_brain_runtime(project_id: str, repo: Path) -> list[tuple[bool, str]]:
                 )
             )
         else:
-            results.append(_ok_s(project_id, "runtime session and decision memory present"))
+            results.append(_ok_s(project_id, "Memory v2 durable and runtime structure present"))
+        protocol = repo / ".codex" / "skills" / "local-memory-protocol" / "SKILL.md"
+        handoff_command = repo / ".codex" / "commands" / "session-handoff.md"
+        protocol_text = (
+            protocol.read_text(encoding="utf-8", errors="ignore")
+            if protocol.is_file()
+            else ""
+        )
+        handoff_text = (
+            handoff_command.read_text(encoding="utf-8", errors="ignore")
+            if handoff_command.is_file()
+            else ""
+        )
+        if (
+            "Negrita Brain is the only project-memory writer" in protocol_text
+            and "memory handoff" in handoff_text
+            and "write one at <memory_home>" not in handoff_text
+        ):
+            results.append(_ok_s(project_id, "no duplicate command or skill memory writer"))
+        else:
+            results.append(_fail_s(project_id, "duplicate or legacy direct memory writer detected"))
+        if index_is_runtime_owned(memory_home / "index.md"):
+            results.append(
+                _warn_s(
+                    project_id,
+                    "INDEX_RUNTIME_OWNED preserved until explicit safe rebuild",
+                )
+            )
+        else:
+            results.append(_ok_s(project_id, "durable index is not runtime-owned"))
+        local_memory = repo / ".codex" / "memory"
+        if local_memory.is_dir() and any(local_memory.rglob("*")):
+            results.append(
+                _warn_s(
+                    project_id,
+                    f"legacy repo-local memory preserved as non-authoritative: {local_memory}",
+                )
+            )
     except Exception as exc:
         results.append(_fail_s(project_id, f"Negrita Brain resolution failed: {exc}"))
     return results

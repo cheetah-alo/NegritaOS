@@ -108,7 +108,7 @@ Reusable patterns for common domains:
 | `architecture-guardrails` | Boundary and ownership guardrails across backend, analytics, frontend, MCP, and `.codex` |
 | `project-structure` | File placement rules for backend, analytics, frontend, tests, and governance assets |
 | `business-rules` | Deterministic and traceable business-rule guidance |
-| `memory-protocol` | Repository-local persistent memory workflow |
+| `local-memory-protocol` | Brain-only canonical project memory workflow |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills aligned under the documentation-governance structure gate |
 | `document-control` | Keep deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown traceable |
 | `commit-hygiene` | Commit message and scope discipline |

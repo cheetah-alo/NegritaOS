@@ -28,7 +28,7 @@ You must prioritize:
 
 ## Operational Skill Routing (Mandatory)
 - Skills are procedural workflows; rules are mandatory constraints.
-- When the task references prior work, an ongoing feature, a past bug, or the user asks to remember/recall something, you MUST invoke `memory-protocol` first and inspect `.codex/memory/` before proceeding.
+- When the task references prior work, an ongoing feature, a past bug, or the user asks to remember/recall something, you MUST invoke `local-memory-protocol` first and resolve canonical memory through Negrita Brain.
 - When working under profiles `analysis-run` or `eda-pre-ml`, you MUST invoke `eda-reports` first whenever the task involves any of:
   - EDA execution or run folder conventions under `analyses/**/outputs/run_*`
   - Plot generation or plot builders under `data_analytics/**`, `backend/app/analytics/**`, or equivalent analytics paths in this repo
@@ -46,9 +46,12 @@ You must prioritize:
 - Persistent cross-chat memory for NegritaOS-managed projects lives under `~/.negritaos/memory/`.
 - Repo-local `.codex/memory/` directories are legacy or adapter-local stores unless the project registry explicitly makes them canonical.
 - At session start, when relevant to the task, inspect `projects/<project_id>.yaml`, then `~/.negritaos/memory/projects/<project_id>/index.md` and the latest relevant session summary before making assumptions.
-- After meaningful durable work, append a compact observation to `~/.negritaos/memory/projects/<project_id>/observations.jsonl`.
+- Negrita Brain is the only writer. Never edit `index.md`, `sessions/`, `observations.jsonl`, `decisions/`, or `tasks/` directly.
+- After meaningful durable work, use `negrita_brain.py memory remember`.
 - Durable work includes decisions, bug fixes, important discoveries, user constraints, and workflow or config changes that should survive the current chat.
-- Before ending a substantive session, write a short session summary under the project `sessions/` directory and update the project `index.md`.
+- Before ending a substantive session that needs continuation, use `negrita_brain.py memory handoff`; then close the runtime session with its returned `durable_ref`.
+- Ordinary runtime closure does not create durable memory and never rewrites `index.md`.
+- Codex native memory under `~/.codex/memories/` is platform memory, not project memory; Brain does not copy or synchronize it.
 - Memory artifacts must stay concise, searchable, and factual. Do not store raw chat transcripts.
 
 ## Code Quality

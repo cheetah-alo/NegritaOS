@@ -131,13 +131,9 @@ else
 fi
 echo "  [link] .claude -> .codex"
 
-# Step 7 — Ensure memory_home dir exists (read from project.yaml).
-memhome="$(grep -E '^memory_home:' .codex/project.yaml | head -1 | sed -E 's/^memory_home:[ \t]*//; s/^"//; s/"$//')"
-if [[ -n "${memhome}" ]]; then
-  expanded="${memhome/#~/${HOME}}"
-  mkdir -p "${expanded}"
-  echo "  [mkdir] memory_home: ${expanded}"
-fi
+# Step 7 — Let Negrita Brain provision entrypoints and memory structure.
+python3 "${NEGRITAOS_ROOT}/scripts/negrita_brain.py" install --root "${REPO}"
+echo "  [brain] managed entrypoints and Memory v2 structure installed"
 
 # Step 8 — Append backup pattern to .gitignore if present.
 if [[ -f .gitignore ]] && ! grep -q '^\.claude\.bak\.' .gitignore; then

@@ -91,6 +91,62 @@ class TestDoctor(unittest.TestCase):
             any(issue["code"] == "MEMORY_HOME" for issue in report["issues"])
         )
 
+    def test_doctor_that_warns_for_runtime_owned_index(self) -> None:
+        (self.memory / "negritaos" / "index.md").write_text(
+            "# negritaos Memory\n\n## Runtime Sessions\n",
+            encoding="utf-8",
+        )
+
+        report = doctor_project(self.repo, ROOT, self.memory)
+
+        self.assertEqual(report["status"], "WARN")
+        self.assertTrue(
+            any(issue["code"] == "INDEX_RUNTIME_OWNED" for issue in report["issues"])
+        )
+
+    def test_doctor_that_rejects_adapter_memory_mirror_drift(self) -> None:
+        adapter = self.repo / ".codex" / "project.yaml"
+        adapter.write_text(
+            adapter.read_text(encoding="utf-8")
+            + "memory_home: /tmp/not-canonical-memory\n",
+            encoding="utf-8",
+        )
+
+        report = doctor_project(self.repo, ROOT, self.memory)
+
+        self.assertEqual(report["status"], "FAIL")
+        self.assertTrue(
+            any(issue["code"] == "MEMORY_HOME_MIRROR" for issue in report["issues"])
+        )
+
+    def test_doctor_that_rejects_legacy_direct_memory_writer(self) -> None:
+        protocol = self.repo / ".codex" / "skills" / "local-memory-protocol"
+        protocol.unlink()
+        protocol.mkdir(parents=True)
+        (protocol / "SKILL.md").write_text(
+            "Write one at <memory_home>/sessions and update index.md.\n",
+            encoding="utf-8",
+        )
+
+        report = doctor_project(self.repo, ROOT, self.memory)
+
+        self.assertEqual(report["status"], "FAIL")
+        self.assertTrue(
+            any(issue["code"] == "MEMORY_DUPLICATE_WRITER" for issue in report["issues"])
+        )
+
+    def test_doctor_that_warns_for_preserved_repo_local_memory(self) -> None:
+        local = self.repo / ".codex" / "memory"
+        local.mkdir()
+        (local / "legacy.md").write_text("preserve", encoding="utf-8")
+
+        report = doctor_project(self.repo, ROOT, self.memory)
+
+        self.assertEqual(report["status"], "WARN")
+        self.assertTrue(
+            any(issue["code"] == "LEGACY_LOCAL_MEMORY" for issue in report["issues"])
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -29,13 +29,17 @@ def managed_agents_block(negritaos_root: Path) -> str:
         "3. Use the resolved modes, agents, profile closure, rules, skills, "
         "artifact route, and gates.\n"
         f"4. Before writes or commits, run `python3 {cli} gate --root \"$PWD\" "
-        "--action write|commit [--path PATH]`.\n"
+        "--provider codex --action write|commit [--path PATH]`.\n"
         "5. New deliverables use "
         "`documents/<slug>__updated_YYYYMMDD_HHMMSS.<ext>` and "
         "`documents/document_manifest.jsonl`.\n"
-        f"6. Close substantive work with `python3 {cli} close --root \"$PWD\" "
-        "--summary \"...\"`.\n\n"
+        f"6. Persist only reusable findings with `python3 {cli} memory remember|handoff "
+        "--root \"$PWD\" --provider codex ...`.\n"
+        f"7. Close substantive work with `python3 {cli} close --root \"$PWD\" "
+        "--provider codex`. Pass `--durable-ref REF` only after a Brain handoff.\n\n"
         "A `BLOCK` decision is mandatory. A `WARN` decision must be surfaced before proceeding. "
+        "If canonical memory returns `PERMISSION_REQUIRED`, retry with elevated permission or "
+        "run `configure codex --apply`; do not report it as configuration resolution failure. "
         "Never log prompts, responses, file contents, tool outputs, or secrets.\n"
         f"{END}"
     )
@@ -160,6 +164,30 @@ class Installer:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
 
+    def _link_path(
+        self,
+        root: Path,
+        source: Path,
+        destination: Path,
+        project_id: str,
+        dry_run: bool,
+        actions: list[str],
+    ) -> None:
+        """Materialize one canonical asset as an idempotent backed-up symlink."""
+        if destination.exists() and destination.resolve() == source.resolve():
+            return
+        actions.append(f"link:{destination}->{source}")
+        if dry_run:
+            return
+        if destination.exists() or destination.is_symlink():
+            self._backup(root, destination, project_id)
+            if destination.is_dir() and not destination.is_symlink():
+                shutil.rmtree(destination)
+            else:
+                destination.unlink()
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.symlink_to(source, target_is_directory=source.is_dir())
+
     def install(
         self,
         work_root: Path,
@@ -213,25 +241,38 @@ class Installer:
             dry_run,
             actions,
         )
+        command_source = self.negritaos_root / ".codex" / "commands"
+        if command_source.is_dir():
+            for source in sorted(command_source.glob("*.md")):
+                self._link_path(
+                    root,
+                    source,
+                    root / ".codex" / "commands" / source.name,
+                    context.project_id,
+                    dry_run,
+                    actions,
+                )
         skill_root = root / ".codex" / "skills"
         for skill_id in closure.skills:
             source = self.negritaos_root / ".codex" / "skills" / skill_id
             destination = skill_root / skill_id
-            if destination.exists() and destination.resolve() == source.resolve():
-                continue
-            actions.append(f"link:{destination}->{source}")
-            if dry_run:
-                continue
-            if destination.exists() or destination.is_symlink():
-                self._backup(root, destination, context.project_id)
-                if destination.is_dir() and not destination.is_symlink():
-                    shutil.rmtree(destination)
-                else:
-                    destination.unlink()
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            destination.symlink_to(source, target_is_directory=True)
+            self._link_path(
+                root,
+                source,
+                destination,
+                context.project_id,
+                dry_run,
+                actions,
+            )
         memory_home = project_memory_home(context, self.memory_base)
-        for relative in ("runtime/sessions", "decisions"):
+        for relative in (
+            "catalog",
+            "decisions",
+            "runtime/active",
+            "runtime/sessions",
+            "sessions",
+            "tasks",
+        ):
             target = memory_home / relative
             if not target.is_dir():
                 actions.append(f"mkdir:{target}")
@@ -242,7 +283,7 @@ class Installer:
             command = (
                 "#!/bin/sh\n"
                 f"python3 {self.negritaos_root / 'scripts' / 'negrita_brain.py'} "
-                f"gate --root {root} --action commit\n"
+                f"gate --root {root} --provider codex --action commit\n"
             )
             self._write_text(
                 root, hook, command, context.project_id, dry_run, actions

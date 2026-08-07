@@ -53,6 +53,12 @@ def _root(payload: dict[str, Any]) -> Path:
     return Path(raw).expanduser().resolve() if isinstance(raw, str) else Path.cwd()
 
 
+def _session_key(payload: dict[str, Any]) -> str | None:
+    """Return Claude's native session id without logging transcript content."""
+    value = payload.get("session_id")
+    return value if isinstance(value, str) and value.strip() else None
+
+
 def _tool(payload: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     """Extract tool name and input without logging input values."""
     name = payload.get("tool_name")
@@ -96,8 +102,11 @@ def _hook_output(event: str, context: str | None = None, deny: str | None = None
 def handle(event: str, payload: dict[str, Any]) -> int:
     """Handle one hook event without persisting prompts, responses, or outputs."""
     root = _root(payload)
+    session_key = _session_key(payload)
     if event == "SessionStart":
-        contract = resolve_session(root, "claude", ["planning"])
+        contract = resolve_session(
+            root, "claude", ["planning"], session_key=session_key
+        )
         _hook_output(
             event,
             f"Negrita Brain {contract['state']}: {contract['session_id']} | profiles="
@@ -106,11 +115,15 @@ def handle(event: str, payload: dict[str, Any]) -> int:
         return 0
     if event == "UserPromptSubmit":
         try:
-            _, contract, _ = load_active_session(root)
+            _, contract, _ = load_active_session(
+                root, provider="claude", session_key=session_key
+            )
             if contract.get("state") != "READY":
                 raise SessionError("Active contract is closed")
         except BrainError:
-            contract = resolve_session(root, "claude", ["planning"])
+            contract = resolve_session(
+                root, "claude", ["planning"], session_key=session_key
+            )
         _hook_output(
             event,
             f"Negrita Brain {contract['state']}: {contract['session_id']} | profiles="
@@ -120,7 +133,9 @@ def handle(event: str, payload: dict[str, Any]) -> int:
     if event == "PreToolUse":
         tool, tool_input = _tool(payload)
         action, path = _action_and_path(tool, tool_input)
-        result = gate_action(root, action, path)
+        result = gate_action(
+            root, action, path, provider="claude", session_key=session_key
+        )
         if result["decision"] == "BLOCK":
             _hook_output(event, deny="; ".join(result["reasons"]))
             return 2
@@ -140,14 +155,29 @@ def handle(event: str, payload: dict[str, Any]) -> int:
                 "action": action,
                 "file_path": str(path) if path else None,
             },
+            provider="claude",
+            session_key=session_key,
         )
         return 0
     if event == "Stop":
-        record_event(root, "provider_stop", "OK", {"provider": "claude"})
+        record_event(
+            root,
+            "provider_stop",
+            "OK",
+            {"provider": "claude"},
+            provider="claude",
+            session_key=session_key,
+        )
         return 0
     if event == "SessionEnd":
         try:
-            close_session(root, "Claude SessionEnd hook", "INCOMPLETE")
+            close_session(
+                root,
+                "Claude SessionEnd hook",
+                "INCOMPLETE",
+                provider="claude",
+                session_key=session_key,
+            )
         except SessionError:
             pass
         return 0

@@ -143,30 +143,7 @@ if [[ -d "$REPO_PATH/.git" ]]; then
   fi
 fi
 
-mkdir -p "$MEMORY_HOME/sessions" "$MEMORY_HOME/decisions" "$MEMORY_HOME/tasks" "$MEMORY_HOME/legacy_import"
 mkdir -p "$ADAPTER_DIR"
-
-cat > "$MEMORY_HOME/index.md" <<EOF
-# Memory Index: $PROJECT_ID
-
-## Current Focus
-
-- Canonical memory initialized under \`~/.negritaos/memory/projects/$PROJECT_ID\`.
-
-## Latest Session
-
-- No session recorded yet.
-
-## Retrieval Notes
-
-- Start with this index.
-- Search \`observations.jsonl\`, \`sessions/\`, \`decisions/\`, \`tasks/\`, and \`legacy_import/\` with \`rg\`.
-EOF
-
-: > "$MEMORY_HOME/observations.jsonl"
-printf '# Sessions: %s\n' "$PROJECT_ID" > "$MEMORY_HOME/sessions/README.md"
-printf '# Decisions: %s\n' "$PROJECT_ID" > "$MEMORY_HOME/decisions/README.md"
-printf '# Tasks: %s\n' "$PROJECT_ID" > "$MEMORY_HOME/tasks/README.md"
 
 cat > "$REGISTRY_FILE" <<EOF
 project:
@@ -284,9 +261,11 @@ NegritaOS registry: $REGISTRY_FILE
 Rules:
 - Do not copy a full .codex from another project into this repo.
 - Do not store durable private memory here as the canonical source.
-- Update project memory under ~/.negritaos/memory/projects/$PROJECT_ID at session close.
+- Use Negrita Brain memory commands; never write canonical memory files directly.
 - Preserve local repo rules and commands that are specific to this codebase.
 EOF
+
+python3 "$NEGRITA_ROOT/scripts/negrita_brain.py" install --root "$REPO_PATH"
 
 echo "Created project adapter for $PROJECT_ID"
 echo "Registry: $REGISTRY_FILE"

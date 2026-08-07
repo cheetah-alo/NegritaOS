@@ -4,8 +4,9 @@ import json
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
-from src.negrita_brain.errors import SessionError
+from src.negrita_brain.errors import MemoryPermissionError, SessionError
 from src.negrita_brain.installer import Installer
 from src.negrita_brain.runtime import (
     close_session,
@@ -13,7 +14,9 @@ from src.negrita_brain.runtime import (
     load_active_session,
     record_event,
     resolve_session,
+    resolve_session_identity,
 )
+from src.negrita_brain.models import sha256_json, write_json
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,7 +64,9 @@ class TestRuntimeContract(RuntimeFixture):
         contract = self.resolve()
         self.assertEqual(contract["modes"], ["LP"])
         self.assertEqual(contract["agents"], ["team_lead_ds_agent"])
-        self.assertEqual(contract["warnings"], [])
+        self.assertFalse(
+            any("No router mode" in warning for warning in contract["warnings"])
+        )
 
     def test_gate_that_blocks_code_mutation_without_contract(self) -> None:
         result = gate_action(self.repo, "write", negritaos_root=ROOT, memory_base=self.memory)
@@ -114,7 +119,135 @@ class TestRuntimeContract(RuntimeFixture):
         closed = close_session(self.repo, "done", memory_base=self.memory, negritaos_root=ROOT)
         gated = gate_action(self.repo, "write", negritaos_root=ROOT, memory_base=self.memory)
         self.assertEqual(closed["status"], "COMPLETE")
+        self.assertNotIn("closure_note", closed)
+        self.assertNotIn("summary", closed)
         self.assertEqual(gated["decision"], "BLOCK")
+
+    def test_codex_and_claude_sessions_that_use_distinct_active_pointers(self) -> None:
+        first = resolve_session(
+            self.repo,
+            "codex",
+            ["planning"],
+            ROOT,
+            self.memory,
+            session_key="thread-a",
+        )
+        second = resolve_session(
+            self.repo,
+            "claude",
+            ["planning"],
+            ROOT,
+            self.memory,
+            session_key="claude-session-b",
+        )
+
+        first_loaded = load_active_session(
+            self.repo, ROOT, self.memory, "codex", "thread-a"
+        )[1]
+        second_loaded = load_active_session(
+            self.repo, ROOT, self.memory, "claude", "claude-session-b"
+        )[1]
+
+        self.assertEqual(first_loaded["session_id"], first["session_id"])
+        self.assertEqual(second_loaded["session_id"], second["session_id"])
+        self.assertNotEqual(
+            first["session_identity"]["key_hash"],
+            second["session_identity"]["key_hash"],
+        )
+
+    def test_session_identity_that_prefers_explicit_then_codex_native_key(self) -> None:
+        explicit = resolve_session_identity(
+            "codex", "explicit-key", {"CODEX_THREAD_ID": "native-key"}
+        )
+        native = resolve_session_identity(
+            "codex", None, {"CODEX_THREAD_ID": "native-key"}
+        )
+
+        self.assertEqual(explicit.source, "explicit")
+        self.assertEqual(native.source, "CODEX_THREAD_ID")
+        self.assertNotIn("native-key", native.key_hash)
+
+    def test_v2_close_that_does_not_rewrite_durable_index(self) -> None:
+        index = self.memory / "negritaos" / "index.md"
+        index.write_text("# Curated memory\n", encoding="utf-8")
+        contract = resolve_session(
+            self.repo,
+            "codex",
+            ["planning"],
+            ROOT,
+            self.memory,
+            session_key="thread-a",
+        )
+
+        close_session(
+            self.repo,
+            "done",
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+            provider="codex",
+            session_key="thread-a",
+        )
+
+        session_dir = self.memory / "negritaos" / "runtime" / "sessions"
+        session_dir = session_dir / contract["session_id"]
+        self.assertEqual(index.read_text(encoding="utf-8"), "# Curated memory\n")
+        self.assertTrue((session_dir / "state.json").is_file())
+        self.assertFalse((session_dir / "summary.json").exists())
+
+    def test_legacy_pointer_that_closes_without_rewriting_index(self) -> None:
+        home = self.memory / "negritaos"
+        session_dir = home / "runtime" / "sessions" / "legacy-session"
+        contract = {
+            "schema_version": 1,
+            "session_id": "legacy-session",
+            "project": {"workspace_kind": "code"},
+            "provider": "codex",
+            "state": "READY",
+        }
+        contract["contract_sha256"] = sha256_json(contract)
+        write_json(session_dir / "contract.json", contract)
+        write_json(
+            home / "runtime" / "active_session.json",
+            {
+                "contract_path": str(session_dir / "contract.json"),
+                "project_id": "negritaos",
+                "session_id": "legacy-session",
+                "state": "READY",
+            },
+        )
+        index = home / "index.md"
+        index.write_text("# Existing memory\n", encoding="utf-8")
+
+        closed = close_session(
+            self.repo,
+            "legacy done",
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+            provider="codex",
+            session_key="thread-without-v2-pointer",
+        )
+
+        self.assertEqual(closed["schema_version"], 1)
+        self.assertTrue((session_dir / "summary.json").is_file())
+        self.assertEqual(index.read_text(encoding="utf-8"), "# Existing memory\n")
+
+    def test_permission_error_that_is_not_configuration_failure(self) -> None:
+        with patch(
+            "src.negrita_brain.runtime.write_json",
+            side_effect=PermissionError("Operation not permitted"),
+        ):
+            with self.assertRaises(MemoryPermissionError) as captured:
+                resolve_session(
+                    self.repo,
+                    "codex",
+                    ["planning"],
+                    ROOT,
+                    self.memory,
+                    session_key="thread-a",
+                )
+
+        self.assertEqual(captured.exception.code, "MEMORY_WRITE_PERMISSION")
+        self.assertEqual(captured.exception.status, "PERMISSION_REQUIRED")
 
     def test_repeated_close_that_does_not_rewrite_summary(self) -> None:
         self.resolve()

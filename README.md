@@ -185,7 +185,7 @@ skills/
 Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copilot when working in code:
 `negritaos-mode-router`, `rule-compliance-gate`, `create-unittest`, `python-core`, `typescript`,
 `nextjs-15`, `react-19`, `zod-4`, `tailwind-4`, `playwright`, `mcp-server`, `sdd-flow`,
-`commit-hygiene`, `pr-review-deep`, `memory-protocol`, `eda-reports`, `data-contracts`,
+`commit-hygiene`, `pr-review-deep`, `local-memory-protocol`, `eda-reports`, `data-contracts`,
 `dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, `docs-alignment`,
 `document-control`, `cqi-analytical-pptx`, `rule-model-documentation`,
 `dashboard-architecture`, `analytical-eda-governance`,
@@ -203,8 +203,8 @@ literature, validated public datasets, and explicit feasibility gates. Raw impor
 bundles remain reference-only.
 
 Profile resolution supports parent-first `extends` with cycle detection. The
-catalog default `document-delivery` activates `docs-alignment` and
-`document-control` for every project. Analytical decks then inherit
+catalog default `document-delivery` activates `docs-alignment`,
+`document-control`, and `local-memory-protocol` for every project. Analytical decks then inherit
 `analytical-deck-delivery` -> `cqi-analytical-pptx` -> the project-specific
 ELAL or IBC profile.
 
@@ -212,9 +212,10 @@ ELAL or IBC profile.
 
 The executable kernel lives in [src/negrita_brain/](src/negrita_brain/) with a
 thin CLI at [scripts/negrita_brain.py](scripts/negrita_brain.py). Use `resolve`,
-`gate`, `event`, `decision`, `close`, `doctor`, `catalog-legacy`, and `install`
-to turn project configuration into hashed session contracts, enforce writes,
-record safe metadata, and close memory. The full operating contract is
+`gate`, `event`, `decision`, `memory`, `close`, `doctor`, `configure`,
+`catalog-legacy`, and `install` to turn project configuration into hashed
+provider-scoped contracts, enforce writes, and maintain canonical project
+memory without duplicating runtime summaries. The full operating contract is
 [docs/negrita-brain-runtime.md](docs/negrita-brain-runtime.md).
 
 ### 5.3 IDE-time commands (slash-commands)
@@ -229,6 +230,7 @@ Under [.codex/commands/](.codex/commands/). Available as `/command-name` in any 
 | `task-tracker` | In-session task planning and progress tracking |
 | `handoff` | Chat-only continuation summary before clearing context |
 | `session-handoff` | Persistent NegritaOS handoff with canonical memory writes |
+| `brain` | Project memory status, remember, handoff, doctor, and migration wrapper |
 | `roast` | Adversarial idea council for pressure-testing ideas |
 | `commit-push-pr` | Full commit → push → PR workflow with quality gate |
 | `run-quality-checks` | Local QA gate (unittest → coverage → ruff/mypy → gitleaks) |
@@ -300,12 +302,17 @@ Canonical store:
 └── projects/
     └── <project_id>/
         ├── index.md                quick state snapshot
+        ├── observations.jsonl      reusable facts and constraints
         ├── sessions/               session-by-session notes
         ├── decisions/              durable architectural decisions
-        └── tasks/                  in-flight tasks
+        ├── tasks/                  in-flight tasks
+        ├── catalog/                immutable legacy memory inventory
+        └── runtime/                non-narrative contracts, events, and pointers
 ```
 
-The agent skill that governs writes is [.codex/skills/memory-protocol/SKILL.md](.codex/skills/memory-protocol/SKILL.md).
+Negrita Brain is the only writer. The governing skill is
+[.codex/skills/local-memory-protocol/SKILL.md](.codex/skills/local-memory-protocol/SKILL.md).
+Codex native memory under `~/.codex/memories/` is separate and is not synchronized.
 
 Load order at session start (enforced by the router):
 
@@ -404,11 +411,11 @@ TLDR → Context → Objective → … → Risks → Recommendations → Next_Ac
 If a section is missing, ask the agent to re-run with the quality gate enforced.
 
 ### Step 5 — close the session
-At the end, ask the agent to **persist memory**:
+At the end, persist a handoff only when another task needs continuation:
 
 ```text
-Persist this session to ~/.negritaos/memory/projects/<project_id>/sessions/
-following memory-protocol skill. Include decisions, blockers, and next actions.
+Run /brain handoff following local-memory-protocol. Include decisions, blockers,
+ordered next actions, and relevant files; then close with the durable_ref.
 ```
 
 ---
@@ -545,8 +552,8 @@ python3 scripts/validate_registry_paths.py
 ./scripts/migrate_sibling_to_canonical.sh /abs/path
 python3 scripts/validate_alignment.py --sibling /abs/path
 
-# Persist memory at session end
-"Persist this session under ~/.negritaos/memory/projects/<project_id>/sessions/"
+# Persist only a continuation handoff
+/brain handoff
 ```
 
 Modes (quick recall):

@@ -5,7 +5,8 @@ and behavior rules for this repository.
 
 We are not allowed to delete any file. We can override rules by creating new ones with the same ID and higher version, but we cannot delete or modify existing rules, skills, profiles.
 
-We must keep canonical memory updated under `~/.negritaos/memory/`.
+Negrita Brain is the only writer that keeps canonical memory updated under
+`~/.negritaos/memory/`.
 Repository-local `.codex/memory/` is treated as legacy or adapter-local memory
 unless a project registry explicitly makes it canonical.
 
@@ -157,9 +158,9 @@ NegritaOS-managed projects use private local memory outside repositories:
 ```
 
 The repo `.codex` folder may contain `project.yaml` to point at the matching
-NegritaOS registry file and memory location. This prevents durable context from
-being lost when work happens in branches, worktrees, or ignored local agent
-folders.
+NegritaOS registry. Registry `project.memory_home` is authoritative; an adapter
+value is only a validated mirror. Use `negrita_brain.py memory ...` for durable
+writes so context survives branches, worktrees, and ignored local agent folders.
 
 ---
 

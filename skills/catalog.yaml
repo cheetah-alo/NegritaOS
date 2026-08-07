@@ -21,6 +21,7 @@ profiles:
     skills:
       - docs-alignment
       - document-control
+      - local-memory-protocol
   analytical-deck-delivery:
     description: Analytical storytelling layered on baseline document governance.
     extends: document-delivery
@@ -197,6 +198,15 @@ skills:
     status: canonical
     dependencies: []
     side_effects: governed_deliverable_creation
+  - id: local-memory-protocol
+    path: .codex/skills/local-memory-protocol/SKILL.md
+    native_path: null
+    source: NegritaOS-native
+    profiles: [document-delivery]
+    scopes: [root]
+    status: canonical
+    dependencies: []
+    side_effects: governed_durable_memory
   - id: rule-model-documentation
     path: .codex/skills/rule-model-documentation/SKILL.md
     native_path: skills/engineering/rule_model_documentation.md

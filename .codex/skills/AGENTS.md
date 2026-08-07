@@ -14,7 +14,7 @@ Use these skills for detailed patterns on-demand:
 | Skill | Description | URL |
 |-------|-------------|-----|
 | `rule-compliance-gate` | Mandatory pre-flight checklist enforcing active profile rules | [SKILL.md](rule-compliance-gate/SKILL.md) |
-| `memory-protocol` | Repository-local memory workflow for recall, durable discoveries, and session closure | [SKILL.md](memory-protocol/SKILL.md) |
+| `local-memory-protocol` | Brain-only canonical project memory for recall, reusable findings, and handoffs | [SKILL.md](local-memory-protocol/SKILL.md) |
 | `architecture-guardrails` | Boundary and ownership rules across backend, analytics, frontend, MCP, and `.codex` | [SKILL.md](architecture-guardrails/SKILL.md) |
 | `project-structure` | File placement rules for backend, analytics, frontend, tests, and governance assets | [SKILL.md](project-structure/SKILL.md) |
 | `business-rules` | Deterministic and traceable business-rule guidance across backend, frontend, and analytics | [SKILL.md](business-rules/SKILL.md) |
@@ -61,23 +61,23 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 
 | Profile | Skills |
 |---|---|
-| `academic-tfm-research` | `docs-alignment`, `document-control`, `tfm-research-advisor` |
-| `academic-tfm-review` | `docs-alignment`, `document-control`, `tfm-academic-reviewer` |
-| `analytical-dashboard` | `docs-alignment`, `document-control`, `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
-| `analytical-deck-delivery` | `docs-alignment`, `document-control`, `analytics-storytelling-deck` |
-| `analytical-eda` | `docs-alignment`, `document-control`, `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage` |
-| `cqi-analytical-docx-pdf` | `docs-alignment`, `document-control`, `cqi-analytical-docx-pdf` |
-| `cqi-analytical-pptx` | `docs-alignment`, `document-control`, `analytics-storytelling-deck`, `cqi-analytical-pptx` |
-| `data-source-bigquery` | `docs-alignment`, `document-control`, `data-source-adapters`, `bigquery-analysis-governance`, `jinja-bigquery`, `data-contracts`, `data-loading` |
-| `data-source-postgresql` | `docs-alignment`, `document-control`, `data-source-adapters`, `data-contracts`, `data-loading` |
-| `document-delivery` | `docs-alignment`, `document-control` |
-| `elal-analytical-deck` | `docs-alignment`, `document-control`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance` |
-| `elal-eda-governance` | `docs-alignment`, `document-control`, `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
-| `fastapi-nextjs` | `docs-alignment`, `document-control`, `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
-| `ibc-technical-eda-presentation` | `docs-alignment`, `document-control`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation` |
-| `ibc-technical-eda-report` | `docs-alignment`, `document-control`, `cqi-analytical-docx-pdf`, `ibc-technical-eda-report`, `analytical-eda-governance`, `data-contracts` |
-| `rule-model-documentation` | `docs-alignment`, `document-control`, `rule-model-documentation` |
-| `visual-delivery` | `docs-alignment`, `document-control`, `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
+| `academic-tfm-research` | `docs-alignment`, `document-control`, `local-memory-protocol`, `tfm-research-advisor` |
+| `academic-tfm-review` | `docs-alignment`, `document-control`, `local-memory-protocol`, `tfm-academic-reviewer` |
+| `analytical-dashboard` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
+| `analytical-deck-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytics-storytelling-deck` |
+| `analytical-eda` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage` |
+| `cqi-analytical-docx-pdf` | `docs-alignment`, `document-control`, `local-memory-protocol`, `cqi-analytical-docx-pdf` |
+| `cqi-analytical-pptx` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytics-storytelling-deck`, `cqi-analytical-pptx` |
+| `data-source-bigquery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `data-source-adapters`, `bigquery-analysis-governance`, `jinja-bigquery`, `data-contracts`, `data-loading` |
+| `data-source-postgresql` | `docs-alignment`, `document-control`, `local-memory-protocol`, `data-source-adapters`, `data-contracts`, `data-loading` |
+| `document-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol` |
+| `elal-analytical-deck` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance` |
+| `elal-eda-governance` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
+| `fastapi-nextjs` | `docs-alignment`, `document-control`, `local-memory-protocol`, `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
+| `ibc-technical-eda-presentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation` |
+| `ibc-technical-eda-report` | `docs-alignment`, `document-control`, `local-memory-protocol`, `cqi-analytical-docx-pdf`, `ibc-technical-eda-report`, `analytical-eda-governance`, `data-contracts` |
+| `rule-model-documentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `rule-model-documentation` |
+| `visual-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
 ## Auto-invoke Skills
 
@@ -86,9 +86,9 @@ When performing these actions, invoke the corresponding skill first:
 | Action | Skill |
 |--------|-------|
 | Before writing/modifying code or repo files | `rule-compliance-gate` |
-| User asks to remember, recall, or continue prior work | `memory-protocol` |
-| Task references prior decisions, open bugs, or ongoing features | `memory-protocol` |
-| Before ending a substantive session | `memory-protocol` |
+| User asks to remember, recall, or continue prior work | `local-memory-protocol` |
+| Task references prior decisions, open bugs, or ongoing features | `local-memory-protocol` |
+| A substantive session needs a continuation handoff | `local-memory-protocol` |
 | Creating or updating repository documentation | `docs-alignment` |
 | Starting a new or migrated exploratory analysis | `analytical-eda-governance` |
 | Starting a new or migrated BigQuery analysis or source-quality preflight | `bigquery-analysis-governance` |

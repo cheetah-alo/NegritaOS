@@ -1,7 +1,27 @@
 negrita_brain:
-  schema_version: 1
+  schema_version: 2
   timezone: Europe/Madrid
   contract_state_required_for_mutation: READY
+  memory:
+    schema_version: 2
+    owner: negrita_brain
+    persistence: relevant
+    legacy: preserve_and_catalog
+    index_owner: durable_memory
+    active_pointer_strategy: provider_session
+    canonical_home: "~/.negritaos/memory/projects/<project_id>"
+    durable_paths:
+      index: index.md
+      sessions: sessions
+      observations: observations.jsonl
+      decisions: decisions/ledger.jsonl
+      tasks: tasks
+    runtime_paths:
+      sessions: runtime/sessions
+      active: runtime/active/<provider>/<session_key_hash>.json
+    session_key_sources:
+      codex: CODEX_THREAD_ID
+      claude: hook.session_id
   default_mode_map:
     planning: LP
     architecture: LP
@@ -30,6 +50,7 @@ negrita_brain:
       - action
       - file_path
       - decision_ids
+      - durable_ref
     prohibit:
       - prompts
       - responses

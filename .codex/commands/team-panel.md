@@ -75,7 +75,8 @@ Decision Record — <fecha ISO> — <tema>
 ### Paso 4 — Guarda en memoria (opcional)
 
 Si se tomó una decisión definitiva, invita al usuario a confirmarla y guárdala
-en la memoria canónica del proyecto (`~/.negritaos/memory/projects/<project_id>/decisions/`).
+con `negrita_brain.py decision propose|accept`. No escribas directamente en
+`~/.negritaos/memory/projects/<project_id>/decisions/`.
 
 ## Notas
 

@@ -35,9 +35,10 @@ here. For the NegritaOS meta-repo, use:
 
 - Do not copy a full `.codex` from another project into this repo without
   going through the federation review.
-- Do not store durable private memory inside `.codex/memory/`; write to
-  `~/.negritaos/memory/projects/negritaos/`.
-- Update project memory at session close. Use the `memory-protocol` skill.
+- Do not store durable private memory inside `.codex/memory/`; use Negrita
+  Brain as the only writer for `~/.negritaos/memory/projects/negritaos/`.
+- Persist only reusable findings or continuation handoffs. Use the
+  `local-memory-protocol` skill; ordinary `close` remains runtime-only.
 - Engineering rules under `.codex/rules/dev-*.md` apply only to **MR / CR /
   DQ** modes per [rules/global/negritaos_router_rule.md](../rules/global/negritaos_router_rule.md).
 - The `.claude/` folder must remain a symlink to `.codex/` once Phase B4 is

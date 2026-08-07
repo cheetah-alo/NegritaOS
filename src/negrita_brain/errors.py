@@ -17,5 +17,12 @@ class SessionError(BrainError):
     """Raised when a runtime session cannot be found or changed."""
 
 
+class MemoryPermissionError(BrainError):
+    """Raised when canonical memory is valid but not writable by the provider."""
+
+    code = "MEMORY_WRITE_PERMISSION"
+    status = "PERMISSION_REQUIRED"
+
+
 class DecisionError(BrainError):
     """Raised when an append-only decision transition is invalid."""

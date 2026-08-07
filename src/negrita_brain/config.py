@@ -22,6 +22,7 @@ class ProjectContext:
     negritaos_root: Path
     adapter_path: Path
     registry_path: Path
+    adapter: dict[str, Any]
     project: dict[str, Any]
     catalog: dict[str, Any]
     policy: dict[str, Any]
@@ -95,6 +96,7 @@ def load_project(
         negritaos_root=canonical,
         adapter_path=adapter_path,
         registry_path=registry_path,
+        adapter=adapter,
         project=project,
         catalog=catalog,
         policy=policy,
@@ -112,6 +114,14 @@ def project_memory_home(
     if isinstance(raw, str) and raw.strip():
         return Path(raw).expanduser().resolve()
     return Path.home() / ".negritaos" / "memory" / "projects" / context.project_id
+
+
+def adapter_memory_home(context: ProjectContext) -> Path | None:
+    """Return the optional adapter mirror without making it authoritative."""
+    raw = context.adapter.get("memory_home")
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    return Path(raw).expanduser().resolve()
 
 
 def workspace_kind(context: ProjectContext) -> str:

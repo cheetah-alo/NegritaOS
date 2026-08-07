@@ -1,102 +1,66 @@
 ---
 name: local-memory-protocol
 description: >
-  Repository-local persistent memory discipline for Codex contributors.
+  Canonical project memory discipline through Negrita Brain.
   Trigger: Recall requests, durable discoveries, decisions, bugfixes,
-  preferences, session closure, or recovery after compaction.
+  preferences, session handoff, or recovery after compaction.
 license: Apache-2.0
 metadata:
-  author: local
-  version: "2.0"
+  author: negritaos
+  version: "3.0"
 ---
 
-## Purpose
+## Authority
 
-Use this skill to preserve context across chats without any external memory service.
-For NegritaOS, canonical durable memory lives outside project repositories under
-`~/.negritaos/memory/` so it survives branch changes, temporary worktrees, and
-repo-local `.codex` churn.
+Negrita Brain is the only project-memory writer. Canonical project memory remains
+under `~/.negritaos/memory/projects/<project_id>/`; it is not copied into the
+repository or `~/.codex/memories/`.
 
-Repository-local `.codex/memory/` directories are legacy or adapter-local memory
-unless a project registry explicitly says otherwise.
+Never write `index.md`, `sessions/`, `observations.jsonl`, `decisions/`, or
+`tasks/` directly. Use `scripts/negrita_brain.py memory ...`.
 
-## Storage Contract
+## Durable And Runtime Planes
 
-- Personal memory: `~/.negritaos/memory/personal/`
-- Project memory: `~/.negritaos/memory/projects/<project_id>/`
-- Observations: `~/.negritaos/memory/projects/<project_id>/observations.jsonl`
-- Session summaries: `~/.negritaos/memory/projects/<project_id>/sessions/YYYY-MM-DD-session.md`
-- Decisions: `~/.negritaos/memory/projects/<project_id>/decisions/`
-- Task state: `~/.negritaos/memory/projects/<project_id>/tasks/`
-- Working index: `~/.negritaos/memory/projects/<project_id>/index.md`
-- Legacy imports: `~/.negritaos/memory/projects/<project_id>/legacy_import/`
+- Durable: `index.md`, `sessions/`, `observations.jsonl`, `decisions/`, `tasks/`.
+- Runtime metadata: `runtime/sessions/` and provider-scoped pointers under
+  `runtime/active/`.
+- Legacy: preserved and cataloged; never moved, renamed, or rewritten implicitly.
 
-## When to Use
+Runtime closure is not a handoff. `close` records technical state only and never
+regenerates the durable index.
 
-Use this skill when:
-- The user asks to remember, recall, or continue prior work
-- The task references a feature, bug, or design that may have prior context
-- You make a durable decision, fix a non-obvious bug, or discover an important constraint
-- You are closing a substantive session
-- You need to recover after compaction or context loss
+## Read And Recall
 
-## Search Rules
+```bash
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py \
+  memory status --root "$PWD" --provider codex
+```
 
-At session start or before overlapping work:
-- Identify the project via `projects/<project_id>.yaml` or repo-local `.codex/project.yaml`
-- Read the matching `~/.negritaos/memory/projects/<project_id>/index.md`
-- Read relevant personal memory under `~/.negritaos/memory/personal/`
-- Read the latest relevant file under the project `sessions/`
-- Search the project memory with `rg` using project, feature, bug, or file keywords
+Then read the canonical `index.md`, the latest relevant file under `sessions/`,
+and search `observations.jsonl`, `decisions/`, and `tasks/` by task keywords.
 
-On recall requests:
-1. Check the project memory `index.md`
-2. Search the project memory with `rg`
-3. Open the matching session summary or observations
+## Persist By Relevance
 
-## Save Rules
+Use `memory remember` only for reusable facts: architecture, bug causes,
+constraints, decisions, preferences, discoveries, or governance changes.
 
-Append one JSON object to the project `observations.jsonl` after:
-- architecture or implementation decisions
-- bug fixes with non-obvious causes
-- discoveries, constraints, or user preferences
-- meaningful config or workflow changes
+```bash
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py \
+  memory remember --root "$PWD" --provider codex \
+  --type discovery --title "..." --summary "..." --learned "..." \
+  --tag "..." --file "path/to/file"
+```
 
-Use a compact and searchable structure:
-- `timestamp`
-- `project`
-- `type`
-- `title`
-- `tags`
-- `files`
-- `summary`
-- `learned`
+Use `memory handoff` when another task or agent must continue. Include goal,
+discoveries, accomplished work, decisions, blockers, ordered next steps, and
+relevant files. Pass the returned `durable_ref` to `close`.
 
-Write only durable information. Do not dump raw chat history or transient notes.
+Do not persist ordinary exploration, raw chat, prompts, responses, tool output,
+file contents, secrets, or duplicated summaries.
 
-## Session Close Rules
+## Permission Failure
 
-Before ending a substantive session:
-1. Write or update a dated file under the project `sessions/`
-2. Include:
-   - Goal
-   - Discoveries
-   - Accomplished
-   - Next Steps
-   - Relevant Files
-3. Update the project `index.md` with the latest session and current focus
-
-## Recovery Rules
-
-After compaction or context loss:
-1. Read the project memory `index.md`
-2. Read the latest relevant session summary
-3. Continue only after recovering the current goal, discoveries, and next steps
-
-## Writing Guidance
-
-- Keep titles short and searchable
-- Prefer facts over narrative
-- Include file paths when they matter
-- Keep `learned` limited to the non-obvious part
-- One observation should fit on one JSON line
+`PERMISSION_REQUIRED` / `MEMORY_WRITE_PERMISSION` means the canonical path is
+valid but the provider sandbox cannot write it. Retry with elevated permission
+or run `configure codex --apply` and start a new Codex task. Never relabel this
+condition as configuration-resolution failure.

@@ -296,7 +296,7 @@ OUTPUT:
 Formato: Notion-ready markdown
 Idioma: Español (código/SQL en inglés)
 Quality warnings: visible
-Destination: ~/.negritaos/memory/projects/proj_data_analytics/sessions/2026-05-19_eda_tsr_csr_doc.md
+Destination: documents/ with document-control; persist only reusable findings through /brain remember or /brain handoff
 ```
 
 ### Prompt Corto
@@ -311,7 +311,7 @@ Estoy en proj_data_analytics. LOAD: system + memory.
 - Template: analytical_report (10 sections: TL;DR → Next Actions)
 - Gates: findings numbered, recommendations trace findings, plots interpreted
 
-Output: Notion markdown, español, save to memory/sessions/.
+Output: Notion markdown, español, routed by document-control. Use /brain handoff only for continuation memory.
 ```
 
 ---

@@ -55,6 +55,10 @@ class TestHookClassification(unittest.TestCase):
             Path("documents/report__updated_20260805_120000.pdf"),
         )
 
+    def test_claude_session_id_that_is_used_as_brain_session_key(self) -> None:
+        self.assertEqual(HOOK._session_key({"session_id": "claude-123"}), "claude-123")
+        self.assertIsNone(HOOK._session_key({"session_id": ""}))
+
 
 if __name__ == "__main__":
     unittest.main()

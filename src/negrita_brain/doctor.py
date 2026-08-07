@@ -7,9 +7,17 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from .config import NEGRITAOS_ROOT, load_project, project_memory_home
+from .codex_config import codex_config_status
+from .config import (
+    NEGRITAOS_ROOT,
+    adapter_memory_home,
+    load_project,
+    project_memory_home,
+)
 from .decisions import read_decision_state
 from .documents import audit_documents
+from .errors import ConfigurationError
+from .memory import index_is_runtime_owned
 from .profiles import resolve_project_profiles
 
 
@@ -97,6 +105,66 @@ def _check_materialized(
     return issues
 
 
+def _check_memory_writers(root: Path) -> list[dict[str, str]]:
+    """Reject legacy instruction surfaces that can write project memory directly."""
+    issues: list[dict[str, str]] = []
+    agents = root / "AGENTS.md"
+    protocol = root / ".codex" / "skills" / "local-memory-protocol" / "SKILL.md"
+    handoff = root / ".codex" / "commands" / "session-handoff.md"
+    agents_text = agents.read_text(encoding="utf-8", errors="ignore") if agents.is_file() else ""
+    protocol_text = (
+        protocol.read_text(encoding="utf-8", errors="ignore")
+        if protocol.is_file()
+        else ""
+    )
+    handoff_text = (
+        handoff.read_text(encoding="utf-8", errors="ignore")
+        if handoff.is_file()
+        else ""
+    )
+    if (
+        "memory remember|handoff" not in agents_text
+        or "Negrita Brain is the only project-memory writer" not in protocol_text
+        or "memory handoff" not in handoff_text
+        or "write one at <memory_home>" in handoff_text
+    ):
+        issues.append(
+            _issue(
+                "MEMORY_DUPLICATE_WRITER",
+                "ERROR",
+                "AGENTS.md, memory-protocol, or session-handoff still permits or omits Brain-only project-memory writes",
+            )
+        )
+    local_memory = root / ".codex" / "memory"
+    if local_memory.is_dir() and any(local_memory.rglob("*")):
+        issues.append(
+            _issue(
+                "LEGACY_LOCAL_MEMORY",
+                "WARN",
+                f"Repo-local memory is preserved but non-authoritative: {local_memory}",
+            )
+        )
+    return issues
+
+
+def _session_is_closed(session_dir: Path) -> bool:
+    """Recognize both Memory v1 summaries and Memory v2 state files."""
+    if (session_dir / "summary.json").is_file():
+        return True
+    state_path = session_dir / "state.json"
+    if not state_path.is_file():
+        return False
+    try:
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return False
+    return isinstance(state, dict) and str(state.get("status", "")).upper() not in {
+        "",
+        "READY",
+        "OPEN",
+    }
+
+
 def doctor_project(
     work_root: Path,
     negritaos_root: Path = NEGRITAOS_ROOT,
@@ -109,6 +177,7 @@ def doctor_project(
         *_check_entrypoints(context.work_root),
         *_check_hooks(context.work_root),
         *_check_materialized(context.work_root, context.negritaos_root, closure.skills),
+        *_check_memory_writers(context.work_root),
     ]
     if "document-control" not in closure.skills:
         issues.append(
@@ -119,6 +188,16 @@ def doctor_project(
             )
         )
     memory_home = project_memory_home(context, memory_base)
+    mirror = adapter_memory_home(context)
+    registry_memory_home = project_memory_home(context)
+    if mirror is not None and mirror != registry_memory_home:
+        issues.append(
+            _issue(
+                "MEMORY_HOME_MIRROR",
+                "ERROR",
+                f"Adapter memory_home {mirror} differs from registry authority {registry_memory_home}",
+            )
+        )
     if not memory_home.is_dir():
         issues.append(_issue("MEMORY_HOME", "ERROR", f"Memory home is missing: {memory_home}"))
     else:
@@ -126,7 +205,7 @@ def doctor_project(
         open_sessions = []
         if sessions.is_dir():
             for contract in sessions.glob("*/contract.json"):
-                if not (contract.parent / "summary.json").is_file():
+                if not _session_is_closed(contract.parent):
                     open_sessions.append(contract.parent.name)
         if open_sessions:
             issues.append(
@@ -156,6 +235,34 @@ def doctor_project(
                     f"Stale candidates: {', '.join(stale[:5])}",
                 )
             )
+        if index_is_runtime_owned(memory_home / "index.md"):
+            issues.append(
+                _issue(
+                    "INDEX_RUNTIME_OWNED",
+                    "WARN",
+                    "index.md has the Memory v1 Runtime Sessions shape; preserve it and use memory rebuild-index explicitly after v1 sessions close",
+                )
+            )
+    if memory_base is None:
+        try:
+            config_status = codex_config_status()
+        except (ConfigurationError, OSError, ValueError) as exc:
+            issues.append(
+                _issue(
+                    "CODEX_MEMORY_CONFIG",
+                    "WARN",
+                    f"Cannot validate Codex writable roots: {exc}",
+                )
+            )
+        else:
+            if not config_status["configured"]:
+                issues.append(
+                    _issue(
+                        "CODEX_MEMORY_WRITABLE_ROOT",
+                        "WARN",
+                        "Codex workspace-write does not include ~/.negritaos/memory; run configure codex --apply and start a new task",
+                    )
+                )
     audit = audit_documents(context.work_root)
     if audit["outside_documents"] or audit["missing_timestamp"]:
         issues.append(
@@ -221,5 +328,6 @@ def doctor_all(
         "status": "FAIL" if any(item["status"] == "FAIL" for item in reports) else "PASS",
         "projects": reports,
         "orphan_memory_homes": orphans,
-        "duplicate_candidates": [name for name in orphans if name == "negritoos"],
+        "preserved_orphans": [name for name in orphans if name == "negritoos"],
+        "duplicate_candidates": [],
     }

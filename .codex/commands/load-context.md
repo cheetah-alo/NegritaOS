@@ -26,6 +26,7 @@ any non-trivial task in a NegritaOS-managed repo.
    - Confirm `project_id` and `archetype`.
    - Resolve `negrita_registry` and confirm it matches the project id.
    - Run `python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve --root "$PWD" --provider <codex|claude> --action <action>`.
+   - Run `python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py memory status --root "$PWD" --provider <codex|claude>` and use its canonical durable paths and active task state.
    - Use the resulting hashed session contract as the resolved source for
      `skill_profiles`, inherited profile closure, `mode_map`, agents, artifact
      route, and quality gates.
@@ -44,6 +45,8 @@ any non-trivial task in a NegritaOS-managed repo.
 
 5. **Active profile closure**
    - Read `profiles` and `skills` from the READY session contract.
+   - Read durable project context only from the paths returned by `memory status`;
+     never write those paths directly.
    - Confirm parent-first inheritance and the default `document-delivery`
      profile; do not look for a non-existent `codex_profiles.default` field.
 
@@ -63,7 +66,7 @@ any non-trivial task in a NegritaOS-managed repo.
      validated.
 
 8. **Validation**
-   - Run `python3 scripts/negrita_brain.py gate --root "$PWD" --action read`.
+   - Run `python3 scripts/negrita_brain.py gate --root "$PWD" --provider <codex|claude> --action read`.
    - Run `python3 scripts/validate_config_resolution.py`.
    - Run `python3 scripts/validate_alignment.py`.
    - For a declared source contract, run

@@ -101,9 +101,9 @@ unmet criterion + remediation in the output.
 
 ## Step 7 — Memory hooks
 
-After meaningful durable work, follow the `memory-protocol` skill and
-write to `~/.negritaos/memory/projects/<project_id>/`, not to
-`.codex/memory/`.
+After meaningful durable work, follow `local-memory-protocol` and use the
+`negrita_brain.py memory` API. Never write either canonical project memory or
+`.codex/memory/` directly.
 
 ## Multi-mode pipelines
 
@@ -121,8 +121,8 @@ Use a structured context handoff between modes — pass `input_summary`,
 - Skipping Step 5 and producing free-form prose for an `analytical_report`.
 - Treating `.claude/` as a separate source of truth — it is a symlink or
   sync target of `.codex/`.
-- Writing session summaries into `.codex/memory/sessions/` instead of the
-  canonical project memory home.
+- Writing any project memory file directly instead of using the canonical
+  `negrita_brain.py memory` API.
 
 ## Examples
 

@@ -1,154 +1,168 @@
-# Negrita Brain Runtime
+# Negrita Brain Runtime And Memory v2
 
 ## Purpose
 
-Negrita Brain turns NegritaOS configuration into an executable session contract:
+Negrita Brain resolves and enforces:
 
 ```text
-project -> mode -> agent -> rules -> profile closure -> skills
-        -> artifact route -> quality gates -> memory
+project -> mode -> agent -> rules -> profiles -> skills
+        -> artifact route -> quality gates -> runtime -> durable memory
 ```
 
-The kernel is provider-neutral. Codex uses `AGENTS.md`, explicit CLI preflight,
-CI, and an optional pre-commit hook. Claude imports the same `AGENTS.md` through
-`CLAUDE.md` and is enforced by shared lifecycle hooks.
+It is the only supported writer for canonical project memory. Codex native
+memory under `~/.codex/memories/` remains separate platform memory and is never
+copied or synchronized.
 
-## Source Of Truth
+## Sources Of Truth
 
 - Package: `src/negrita_brain/`
 - CLI: `scripts/negrita_brain.py`
 - Claude bridge: `scripts/negrita_brain_hook.py`
-- Runtime policy: `core/orchestration/negrita_brain_policy.yaml`
-- Profile catalog: `skills/catalog.yaml`
+- Policy: `core/orchestration/negrita_brain_policy.yaml`
 - Project registry: `projects/<project_id>.yaml`
-- Project adapter: `<work-root>/.codex/project.yaml`
+- Adapter: `<work-root>/.codex/project.yaml`
 
-## Session Lifecycle
+Registry `project.memory_home` is authoritative. An adapter `memory_home`, when
+present, is a compatibility mirror checked for drift.
 
-Resolve before substantive work:
+## Session Identity And Lifecycle
 
 ```bash
 python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py \
   resolve --root "$PWD" --provider codex --action implementation
 ```
 
-The immutable contract is written under:
+Codex uses `CODEX_THREAD_ID`; Claude hooks pass their `session_id`; CI and human
+automation may pass `--session-key`. Only a SHA-256 key is stored:
 
 ```text
-~/.negritaos/memory/projects/<project_id>/runtime/sessions/<session_id>/contract.json
+runtime/active/<provider>/<session_key_hash>.json
+runtime/sessions/<session_id>/contract.json
 ```
 
-It contains project identity, provider, Git branch/HEAD, actions, modes, agents,
-rules, parent-first profile closure, de-duplicated skills, document route,
-quality gates, warnings, state, and SHA-256.
+If no v2 pointer exists, the loader falls back to the untouched v1
+`runtime/active_session.json`. This lets sessions opened before Memory v2 close
+normally without pointer reassignment or contract rehashing.
 
-Gate mutations and commits:
+Gate and close the same provider task:
 
 ```bash
-python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py \
-  gate --root "$PWD" --action write --path src/module.py
+python3 scripts/negrita_brain.py gate \
+  --root "$PWD" --provider codex --action write --path src/module.py
+python3 scripts/negrita_brain.py close \
+  --root "$PWD" --provider codex
 ```
 
-Close substantive sessions:
+After a durable handoff, add `--durable-ref sessions/example.md` to `close`.
+
+V2 closure writes `state.json`, safe events, pointer state, and optional durable
+references only. It ignores the legacy `--summary` compatibility argument. V1
+fallback closure keeps its existing `summary.json` contract. Neither path
+writes `index.md`.
+
+## Durable Memory
+
+```text
+~/.negritaos/memory/projects/<project_id>/
+├── index.md
+├── observations.jsonl
+├── sessions/
+├── decisions/ledger.jsonl
+├── tasks/
+├── catalog/legacy_memory.jsonl
+└── runtime/
+    ├── active/
+    └── sessions/
+```
+
+Persist only reusable information:
 
 ```bash
-python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py \
-  close --root "$PWD" --summary "Implemented and validated contract routing"
+python3 scripts/negrita_brain.py memory remember \
+  --root "$PWD" --provider codex --type discovery \
+  --title "..." --summary "..." --learned "..."
 ```
 
-`close` writes a summary, appends a safe event, closes the active pointer, and
-refreshes the project memory index. An incomplete or closed contract cannot
-authorize code-repository mutations.
-
-## Profile Inheritance
-
-Profiles use `extends`. Resolution is parent-first, stable, de-duplicated, and
-fails on unknown parents or cycles.
-
-The document chain is:
-
-```text
-document-delivery
-  -> analytical-deck-delivery
-    -> cqi-analytical-pptx
-      -> elal-analytical-deck | ibc-technical-eda-presentation
-```
-
-`document-delivery` is a catalog default, so `docs-alignment` and
-`document-control` apply to every registered project even when a project does
-not declare a presentation profile.
-
-## Decision Ledger
+Create one continuation handoff:
 
 ```bash
-python3 scripts/negrita_brain.py decision propose \
-  --root "$PWD" --kind architecture --title "..." --summary "..."
-python3 scripts/negrita_brain.py decision accept \
-  --root "$PWD" NBD-... --accepted-by owner --acceptance-ref commit:abc123
-python3 scripts/negrita_brain.py decision supersede \
-  --root "$PWD" NBD-... --kind contract --title "..." --summary "..."
+python3 scripts/negrita_brain.py memory handoff \
+  --root "$PWD" --provider codex --title "..." --goal "..." \
+  --accomplished "..." --next-step "..." --file "src/module.py"
 ```
 
-Transitions append to `decisions/ledger.jsonl`. Architecture and contract
-candidates in Git repositories also create a versioned ADR under
-`docs/decisions/`. Corrections append `SUPERSEDED`; history is never rewritten.
+`memory handoff` creates an immutable markdown session and updates only the
+managed durable block in `index.md`, preserving unrelated curated text. Pass
+its `durable_ref` to `close`. Ordinary session closure creates no durable
+narrative.
 
-Commits may carry these trailers:
+## Migration And Recovery
 
-```text
-Negrita-Contract: <session_id>
-Negrita-Decision: <decision_id>
-Negrita-Gates: tests,coverage,alignment
+Preview before applying:
+
+```bash
+python3 scripts/negrita_brain.py memory migrate --root "$PWD" --dry-run
+python3 scripts/negrita_brain.py memory migrate --root "$PWD" --apply
 ```
 
-## Safe Events
+The catalog records path, type, state, size, mtime, hash, authority, and project.
+It is idempotent and never moves or rewrites source files.
 
-`event` stores metadata only: event/session ids, time, kind, status, provider,
-tool, action, file path, and decision ids. Prompts, responses, file contents,
-tool outputs, commands, and secrets are discarded.
+An index containing the v1 `## Runtime Sessions` shape is reported as
+`INDEX_RUNTIME_OWNED`. Rebuild is always explicit:
 
-## Documents And Evidence
-
-New deliverables use:
-
-```text
-documents/<slug>__updated_YYYYMMDD_HHMMSS.<ext>
-documents/document_manifest.jsonl
+```bash
+python3 scripts/negrita_brain.py memory rebuild-index --root "$PWD" --dry-run
+python3 scripts/negrita_brain.py memory rebuild-index --root "$PWD" --apply
 ```
 
-`catalog-legacy` inventories historical deliverables by path, size, mtime, type,
-and hash when safely local. It never moves, renames, or overwrites evidence. It
-does not hash OneDrive CloudStorage files, avoiding placeholder downloads.
+Apply refuses while any v1 session remains open and backs up the old index under
+`legacy_import/index/` before replacement.
 
-## Installation And Audit
+## Provider Permissions
 
-Dry-run first:
+Codex workspace-write needs the canonical memory root:
+
+```bash
+python3 scripts/negrita_brain.py configure codex --check
+python3 scripts/negrita_brain.py configure codex --apply
+```
+
+Apply preserves the rest of `~/.codex/config.toml`, creates a backup, and adds:
+
+```toml
+[sandbox_workspace_write]
+writable_roots = ["/Users/jackyb-cqi/.negritaos/memory"]
+```
+
+The change applies to new Codex tasks. A sandbox denial is emitted as
+`PERMISSION_REQUIRED` with `MEMORY_WRITE_PERMISSION`, never as config resolution
+failure.
+
+## Decisions, Documents, And Safe Events
+
+Decision transitions remain append-only under `decisions/ledger.jsonl` and may
+project architecture/contract ADRs into `docs/decisions/`. New deliverables use
+`documents/<slug>__updated_YYYYMMDD_HHMMSS.<ext>` and the document manifest.
+
+Runtime events permit metadata only: ids, timestamps, status, provider, tool,
+action, file path, decision ids, and durable references. Prompts, responses,
+commands, file contents, tool outputs, transcripts, and secrets are prohibited.
+
+## Installation And Validation
 
 ```bash
 python3 scripts/negrita_brain.py install --root /path/to/project --dry-run
 python3 scripts/negrita_brain.py doctor --root /path/to/project
 python3 scripts/negrita_brain.py doctor --all
-```
-
-Installation preserves local text outside managed blocks and backs up changed
-files under `~/.negritaos/backups/<project_id>/<timestamp>/`. Existing `.codex`
-content and unrelated hooks are retained. Re-running the installer is a no-op.
-
-## Validation
-
-```bash
 python3 -m unittest discover -s tests -p 'test_*.py'
 python3 scripts/check_negrita_brain_coverage.py --fail-under 80
-python3 scripts/validate_skill_catalog.py --project projects/negritaos.yaml
 python3 scripts/validate_config_resolution.py
 python3 scripts/validate_registry_paths.py --root "$PWD"
 python3 scripts/validate_alignment.py
-python3 scripts/audit_document_control.py /path/to/project
 git diff --check
 ```
 
-## Ownership And Update Trigger
-
-Update this contract when CLI interfaces, policy states, hook events, profile
-inheritance, memory layout, or document routing changes. Runtime policy and code
-must change together in one pull request.
+The installer preserves local entrypoint content and unrelated hooks. It creates
+durable/runtime directories but does not migrate memory or modify the Codex user
+configuration automatically.

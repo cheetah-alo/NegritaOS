@@ -1,117 +1,65 @@
 ---
 id: session-handoff
-mode_hint: LP   # Localized Planning — read-only synthesis
+mode_hint: LP
 loads:
   - .codex/project.yaml
   - .codex/local-overrides.md
   - .codex/instruction-manifest.yaml
-  - .codex/skills/memory-protocol/SKILL.md
+  - .codex/skills/local-memory-protocol/SKILL.md
 ---
 
-# Session Handoff (Standup)
+# Persistent Session Handoff
 
-Produce a **self-contained handoff document** — enough for any contributor or
-agent to immediately take over without access to the current chat history.
-
-## When to use
-
-- End of a work session (before context is lost or compacted).
-- Before handing off to another developer or agent.
-- After a context-compaction event: start a new session with this command.
-- On request: "give me a standup", "handoff", "resume", "what's next".
+Produce a self-contained continuation handoff and persist it through Negrita
+Brain. Do not write project memory files directly.
 
 ## Procedure
 
-### Step 1 — Read project identity
+1. Resolve project identity through `.codex/project.yaml` and its canonical
+   registry. Treat registry `project.memory_home` as authoritative.
+2. Run `negrita_brain.py memory status --root "$PWD" --provider <provider>`.
+3. Read the canonical index, latest relevant durable session, recent reusable
+   observations, Git state, and task tracker when present.
+4. Synthesize the output contract below. Use `_(none)_` for empty sections.
+5. Persist exactly one handoff with `negrita_brain.py memory handoff`, mapping
+   each section to its corresponding repeated CLI argument.
+6. Close the runtime session with `negrita_brain.py close ... --durable-ref
+   <returned_ref>`. Runtime closure stores no narrative summary.
 
-```
-.codex/project.yaml → project_id, archetype, memory_home
-.codex/local-overrides.md → active modes, scope restrictions, lexicon
-```
-
-### Step 2 — Read memory
-
-```
-<memory_home>/index.md                → open threads, latest session pointer
-<memory_home>/sessions/<latest>.md   → last session summary
-<memory_home>/observations.jsonl     → tail -20 (most recent durable discoveries)
-```
-
-If `memory_home` is missing or empty, note it explicitly in the output.
-
-### Step 3 — Read git state
-
-```bash
-git log --oneline -15                          # recent commit trail
-git diff --name-only HEAD~5 HEAD               # files touched in last 5 commits
-git status --short                             # uncommitted work
-git stash list                                 # any stashed WIP
-```
-
-### Step 4 — Read task tracker (if exists)
-
-```
-docs/task_tracker.md → current backlog status (done / wip / todo)
-```
-
-If missing, derive task state from git log and memory.
-
-### Step 5 — Synthesize
-
-Produce the output below. Every section is mandatory; write `_(none)_` if empty.
-Keep each section tight — bullet points over prose.
-
----
-
-## Output contract
+## Output Contract
 
 ```markdown
-## Session Handoff — <project_id> — <ISO date>
+## Session Handoff - <project_id> - <ISO date>
 
 ### What was being worked on
-<!-- 3-7 bullets: the concrete task, why it matters, current state -->
-- [ ] <task>: <one-line status (done|in-progress|blocked)>
+- [ ] <task>: <done|in-progress|blocked and concise status>
 
-### Files modified (this session / branch)
-<!-- paths relative to repo root -->
-- `path/to/file.py` — <what changed in one line>
+### Files modified
+- `path/to/file.py` - <what changed>
 
 ### Decisions made
-<!-- non-obvious choices that downstream work depends on -->
-- <decision>: <rationale in one sentence>
+- <decision>: <rationale>
 
 ### Blockers / open questions
-<!-- things that prevented progress or need resolution before next step -->
 - [ ] <blocker>: <why it matters>
 
-### Next steps (ordered)
-<!-- exact next actions — specific enough to start without asking questions -->
-1. <action> → <file or command> — <expected outcome>
-2. …
+### Next steps
+1. <action> -> <file or command> -> <expected outcome>
 
-### Rules / skills required for next steps
-<!-- list the NegritaOS rules and skills the next agent must load -->
-- Rule: `<rule-id>` — <why>
-- Skill: `<skill-id>` — <why>
+### Rules / skills required
+- Skill: `<skill-id>` - <why>
 
 ### Context pitfalls
-<!-- things that are easy to get wrong; warn the next agent explicitly -->
 - <pitfall>: <how to avoid>
 
 ### Resume command
-<!-- the one-liner the next agent/developer should run to boot context -->
-/load-context  →  then read this document  →  then start at "Next steps #1"
+/load-context -> /brain status -> start at Next steps #1
 ```
 
----
+## Enforcement
 
-## Enforcement notes
-
-1. If `memory_home` does not have a session file for the current work, write one
-   at `<memory_home>/sessions/YYYY-MM-DD_<slug>.md` BEFORE producing this output.
-2. Update `<memory_home>/index.md → Latest session` pointer.
-3. If a task tracker exists (`docs/task_tracker.md`), append the session's
-   completed and in-progress entries before producing this output.
-4. This command is **read-only except for** the memory writes in notes 1-3.
-5. Do not write repo-local handoff files such as `docs/handoffs/*`; persistent
-   handoffs belong in canonical NegritaOS memory.
+- `memory handoff` is the only writer for the durable session and managed index.
+- Do not create `docs/handoffs/*` or edit memory `sessions/`/`index.md` manually.
+- Do not persist raw chat, prompts, responses, tool outputs, file contents, or secrets.
+- On `MEMORY_WRITE_PERMISSION`, request elevated permission or configure Codex;
+  do not report `BLOCKED_CONFIG_RESOLUTION`.

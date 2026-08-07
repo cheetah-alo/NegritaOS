@@ -63,6 +63,32 @@ class TestInstaller(unittest.TestCase):
         self.installer.install(self.repo)
         self.assertTrue((self.repo / ".codex" / "skills" / "document-control").exists())
         self.assertTrue((self.repo / ".codex" / "skills" / "docs-alignment").exists())
+        self.assertTrue(
+            (self.repo / ".codex" / "skills" / "local-memory-protocol").exists()
+        )
+        self.assertTrue((self.repo / ".codex" / "commands" / "brain.md").is_file())
+
+    def test_install_that_provisions_memory_v2_structure(self) -> None:
+        self.installer.install(self.repo)
+        home = self.memory / "negritaos"
+
+        for relative in (
+            "catalog",
+            "decisions",
+            "runtime/active",
+            "runtime/sessions",
+            "sessions",
+            "tasks",
+        ):
+            self.assertTrue((home / relative).is_dir(), relative)
+
+    def test_managed_agents_that_routes_memory_through_brain(self) -> None:
+        self.installer.install(self.repo)
+        agents = (self.repo / "AGENTS.md").read_text(encoding="utf-8")
+
+        self.assertIn("memory remember|handoff", agents)
+        self.assertIn("PERMISSION_REQUIRED", agents)
+        self.assertIn("--provider codex --action", agents)
 
     def test_doctor_that_passes_installed_workspace(self) -> None:
         self.installer.install(self.repo)
