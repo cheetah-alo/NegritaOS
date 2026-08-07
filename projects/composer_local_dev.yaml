@@ -16,9 +16,11 @@ project:
     - compatibility
   agents:
     - code_review_agent
+    - pull_request_reviewer_agent
     - data_quality_sentinel_agent
     - team_lead_ds_agent
     - technical_writer_agent
+    - plot_analysis_agent
   codex_profiles:
     - review
     - refactor

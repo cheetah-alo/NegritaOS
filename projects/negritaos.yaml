@@ -23,7 +23,9 @@ project:
     - decision_support_agent
     - technical_writer_agent
     - presentation_agent
+    - plot_analysis_agent
     - code_review_agent
+    - pull_request_reviewer_agent
     - software_architect_agent
     - tfm_evaluator_agent
     - proposal_validator_agent

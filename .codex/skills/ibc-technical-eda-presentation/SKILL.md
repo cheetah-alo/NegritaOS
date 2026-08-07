@@ -15,7 +15,9 @@ This skill layers on:
 
 1. `presentations:Presentations`
 2. `analytics-storytelling-deck`
-3. `cqi-analytical-pptx`
+3. `evidence-first-plot-analysis` when plots, charts, dashboards, or technical
+   visuals are interpreted.
+4. `cqi-analytical-pptx`
 
 Do not use ELAL-specific passenger-journey, flight, FR/PR, tier, rule-score, or
 Arik semantics in IBC decks.
@@ -57,6 +59,9 @@ Use the CQI analytical visual system:
 - Tables, heatmaps, and bars with declared analytical color roles.
 - Bottom note/takeaway band for the allowed conclusion.
 - Footer with source, grain, window, and slide number.
+- Plot-backed slide messages must separate observation, interpretation, and
+  boundary; cross-plot readings must use `CONFIRMS`, `QUALIFIES`, or
+  `CONTRADICTS`.
 
 ## IBC Vocabulary
 

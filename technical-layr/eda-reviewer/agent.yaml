@@ -15,10 +15,14 @@ agent:
 
   skills:
     - skills/ml/eda_review.md
+    - skills/ml/evidence_first_plot_analysis.md
     - skills/ml/eda_analytics_findings.md
     - skills/engineering/analytical_eda_governance.md
     - skills/engineering/bigquery_analysis_governance.md
     - skills/transversal/evidence_framing.md
+
+  codex_skills:
+    - .codex/skills/evidence-first-plot-analysis/SKILL.md
 
   rules:
     inherit: rules/global/global_rules.yaml
@@ -51,6 +55,7 @@ agent:
     - missing_value_analysis_is_interpreted
     - class_imbalance_is_quantified
     - no_orphan_plots
+    - plot_observation_interpretation_and_boundary_are_separated
     - plot_evidence_contract_is_complete
     - generated_plots_have_visual_QA_or_rendered_review
     - plot_artifact_lineage_is_traceable

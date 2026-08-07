@@ -38,6 +38,7 @@ project:
     - decision_support_agent
     - technical_writer_agent
     - presentation_agent
+    - plot_analysis_agent
     - data_quality_sentinel_agent
     - consulting_delivery_controller_agent
   codex_profiles:

@@ -25,6 +25,7 @@ project:
     - ai_trend_radar_agent
     - technical_writer_agent
     - presentation_agent
+    - plot_analysis_agent
   codex_profiles:
     - analysis-run
   mode_map:

@@ -11,7 +11,8 @@ Create IBC Fiber Network technical EDA reports that use CQI DOCX/PDF formatting
 while preserving IBC-specific evidence boundaries: no premature joins, no
 client-grain overclaim, no ML-readiness claim without gates.
 
-This skill layers on `cqi-analytical-docx-pdf`.
+This skill layers on `cqi-analytical-docx-pdf` and
+`evidence-first-plot-analysis` when reports include analytical visuals.
 
 ## Required Context
 
@@ -26,6 +27,8 @@ Before creating or updating an IBC technical EDA DOCX/PDF, load:
 5. Relevant analysis README, YAML config, manifest, SQL, and output summaries.
 6. `cqi-analytical-docx-pdf` and its IBC PON primer calibration reference when
    the user asks for the existing IBC report format.
+7. `evidence-first-plot-analysis` for every plot, chart, EDA figure, or model
+   diagnostic included in the report.
 
 ## Visual Calibration
 
@@ -39,6 +42,7 @@ That means:
 - Preserve document control, index, cover/header/footer style.
 - Use APA-style tables and figures.
 - Add interpretation blocks for figures and analytical visuals.
+- Separate observation, interpretation, and evidence boundary for every plot.
 - End with traceability and next actions.
 - Render to PDF and inspect every page.
 

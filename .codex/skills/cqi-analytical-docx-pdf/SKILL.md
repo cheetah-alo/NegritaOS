@@ -22,7 +22,9 @@ deliverable:
 3. `docs-alignment` for documentation structure and provenance.
 4. `document-control` for deliverable versioning unless the user explicitly
    provides a project evidence-output folder.
-5. This skill for CQI visual and analytical report formatting.
+5. `evidence-first-plot-analysis` when the report includes plots, charts,
+   dashboard screenshots, EDA figures, or model diagnostics.
+6. This skill for CQI visual and analytical report formatting.
 
 ## Source Of Truth
 

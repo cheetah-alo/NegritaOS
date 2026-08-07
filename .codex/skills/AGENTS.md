@@ -34,6 +34,7 @@ Use these skills for detailed patterns on-demand:
 | `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates, dynamic clauses, identifiers, and query variants | [SKILL.md](jinja-bigquery/SKILL.md) |
 | `branch-pr` | Provider-neutral branch and PR workflow using the project-declared base branch | [SKILL.md](branch-pr/SKILL.md) |
 | `testing-coverage` | Backend, frontend, contract, browser, and coverage gates without provider assumptions | [SKILL.md](testing-coverage/SKILL.md) |
+| `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and code-quality tooling | [SKILL.md](pull-request-risk-review/SKILL.md) |
 | `nate-skill-builder` | NegritaOS adaptation of skill authoring and audit guidance | [SKILL.md](nate-skill-builder/SKILL.md) |
 | `nate-frontend-design` | Opt-in domain-specific frontend design guidance | [SKILL.md](nate-frontend-design/SKILL.md) |
 | `nate-excalidraw-diagram` | Explicit editable Excalidraw diagram workflow | [SKILL.md](nate-excalidraw-diagram/SKILL.md) |
@@ -45,6 +46,7 @@ Use these skills for detailed patterns on-demand:
 | `data-contracts` | Raw/derived contracts, schema validation, casting, and errors | [SKILL.md](data-contracts/SKILL.md) |
 | `data-loading` | Local/BQ loading, lineage hashing, source resolution | [SKILL.md](data-loading/SKILL.md) |
 | `analytics-storytelling-deck` | Finding-first analytical deck structure, baseline alignment, broad-to-narrow evidence zoom, and PPT readability standards | [SKILL.md](analytics-storytelling-deck/SKILL.md) |
+| `evidence-first-plot-analysis` | Evidence-first plot, chart, dashboard, EDA figure, and model diagnostic interpretation for reports and decks | [SKILL.md](evidence-first-plot-analysis/SKILL.md) |
 | `eda-analytics-findings` | Convert EDA plots, cohorts, funnels, and segment summaries into defensible findings | [SKILL.md](eda-analytics-findings/SKILL.md) |
 | `ml-model-findings` | Convert model metrics, thresholds, lift, and explainability outputs into defensible findings | [SKILL.md](ml-model-findings/SKILL.md) |
 | `business-proposal-findings` | Convert proposals, ROI narratives, feasibility notes, and decision briefs into structured findings | [SKILL.md](business-proposal-findings/SKILL.md) |
@@ -73,9 +75,11 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 | `document-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol` |
 | `elal-analytical-deck` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance` |
 | `elal-eda-governance` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
+| `evidence-first-plot-analysis` | `docs-alignment`, `document-control`, `local-memory-protocol`, `evidence-first-plot-analysis` |
 | `fastapi-nextjs` | `docs-alignment`, `document-control`, `local-memory-protocol`, `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
 | `ibc-technical-eda-presentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation` |
 | `ibc-technical-eda-report` | `docs-alignment`, `document-control`, `local-memory-protocol`, `cqi-analytical-docx-pdf`, `ibc-technical-eda-report`, `analytical-eda-governance`, `data-contracts` |
+| `pull-request-risk-review` | `docs-alignment`, `document-control`, `local-memory-protocol`, `pull-request-risk-review`, `pr-review-deep` |
 | `rule-model-documentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `rule-model-documentation` |
 | `visual-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
@@ -106,6 +110,7 @@ When performing these actions, invoke the corresponding skill first:
 | Create, edit, audit, export, or visually QA a CQI/CQISense analytical DOCX/PDF report | `cqi-analytical-docx-pdf` |
 | Create or edit an IBC technical EDA, bridge-readiness, or ML-readiness PPTX deck | `ibc-technical-eda-presentation` |
 | Create or edit an IBC technical EDA DOCX/PDF report, source-readiness memo, join-readiness memo, or ML-readiness evidence pack | `ibc-technical-eda-report` |
+| Interpret, compare, review, or write about plots, charts, dashboard visuals, EDA figures, model diagnostic plots, or plot-backed claims | `evidence-first-plot-analysis` |
 | Convert EDA plots, cohorts, funnels, segments, or outcome rates into claims | `eda-analytics-findings` |
 | Convert model metrics, thresholds, lift, SHAP, or leakage review into claims | `ml-model-findings` |
 | Create documentation for rule-based models, rules engines, scoring, boosters, persistence, sticky logic, decay, sensitivity analysis, or validation plots | `rule-model-documentation` |
@@ -120,6 +125,7 @@ When performing these actions, invoke the corresponding skill first:
 | Change BigQuery, PostgreSQL, or other data-source adapters and physical object routing | `data-source-adapters` |
 | Write or review Jinja templates that render BigQuery SQL, dynamic CTEs, filters, projections, joins, identifiers, or query variants | `jinja-bigquery` |
 | Prepare a branch, choose a PR base, or assemble review evidence | `branch-pr` |
+| Review a pull request, evaluate PR risk, check merge readiness, assess auto-approval, or inspect GitHub PR checks | `pull-request-risk-review` |
 | Change behavior, contracts, visual states, or browser flows requiring coverage evidence | `testing-coverage` |
 | Modify EDA outputs, plots, dashboards, or run-scoped output layout | `eda-reports` |
 | Review or create churn, recall, DiscReq, retention, recontact, or account journey pressure metrics | `churn-recall-indicator-audit` |

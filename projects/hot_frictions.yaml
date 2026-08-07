@@ -50,6 +50,7 @@ project_registry:
       - eda_reviewer_agent       # EDA quality review
       - technical_writer_agent   # Notion/Confluence docs
       - presentation_agent       # Executive slide decks
+      - plot_analysis_agent
     
     secondary:
       - model_review_agent       # Si hay modelos predictivos

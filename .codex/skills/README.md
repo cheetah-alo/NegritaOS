@@ -73,6 +73,7 @@ Reusable patterns for common domains:
 | `data-contracts` | Dataset schema contracts and validation |
 | `data-loading` | Data ingestion, source resolution, lineage |
 | `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates and dynamic query variants |
+| `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and Python quality checks |
 | `analytical-eda-governance` | Provider-neutral structure, manifests, contracts, immutable runs, and evidence gates for new or migrated EDA |
 | `bigquery-analysis-governance` | BigQuery source-quality preflight for grain, capture-to-load latency, freshness, SLA, and evidence |
 | `elal-eda-governance` | Opt-in ELAL EDA semantics for operational severity, proxy labels, blocked states, and third subtitle |
@@ -80,6 +81,7 @@ Reusable patterns for common domains:
 | `cqi-analytical-pptx` | CQI/CQISense analytical PowerPoint delivery, evidence notes, release QA, readability audits, and mobile podcast contracts |
 | `cqi-analytical-docx-pdf` | CQI/CQISense analytical Word/PDF reports with APA tables/figures, render QA, visual inspection, and document-control governance |
 | `ibc-technical-eda-report` | IBC technical EDA DOCX/PDF reports, source-readiness memos, join-readiness guardrails, and ML-readiness evidence limits |
+| `evidence-first-plot-analysis` | Evidence-first interpretation and comparison of plots, charts, dashboard visuals, EDA figures, and model diagnostics for reports and decks |
 | `rule-model-documentation` | CQI-style documentation for deterministic rule-based models, scoring layers, boosters, lifecycle behavior, validation plots, and recommendations |
 | `dashboard-architecture` | Maintainable modular dashboard architecture; forbids monolithic dashboard HTML as final source |
 | `analytics-storytelling-deck` | Finding-first analytical deck structure, baseline alignment, broad-to-narrow evidence zoom, and PPT readability standards |
@@ -113,6 +115,7 @@ Reusable patterns for common domains:
 | `document-control` | Keep deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown traceable |
 | `commit-hygiene` | Commit message and scope discipline |
 | `pr-review-deep` | Deep technical review protocol |
+| `pull-request-risk-review` | PR risk scoring, merge-gate evidence, CI/check status, and quality-tooling review |
 | `sdd-flow` | Spec-driven phased delivery workflow |
 
 ### Federated Skill Profiles

@@ -130,6 +130,38 @@ def _memory_policy(context: ProjectContext) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+def _agent_codex_skill_ids(context: ProjectContext, agent_ids: list[str]) -> list[str]:
+    """Return catalog skill ids referenced by selected agents' codex_skills."""
+    if not agent_ids:
+        return []
+    catalog_paths = {
+        entry.get("path"): entry.get("id")
+        for entry in context.catalog.get("skills", [])
+        if isinstance(entry, dict)
+        and isinstance(entry.get("path"), str)
+        and isinstance(entry.get("id"), str)
+    }
+    integrator = load_yaml(context.negritaos_root / "integrator.yaml").get(
+        "negrita_os", {}
+    )
+    agents = integrator.get("agents", {}) if isinstance(integrator, dict) else {}
+    if not isinstance(agents, dict):
+        return []
+    skill_ids: list[str] = []
+    for agent_id in agent_ids:
+        agent = agents.get(agent_id)
+        if not isinstance(agent, dict):
+            continue
+        codex_skills = agent.get("codex_skills", [])
+        if not isinstance(codex_skills, list):
+            continue
+        for raw_path in codex_skills:
+            skill_id = catalog_paths.get(raw_path)
+            if isinstance(skill_id, str) and skill_id not in skill_ids:
+                skill_ids.append(skill_id)
+    return skill_ids
+
+
 def _session_id(project_id: str, now: datetime) -> str:
     """Create a sortable session identifier."""
     return f"NBS-{project_id}-{now.strftime('%Y%m%d_%H%M%S')}-{uuid.uuid4().hex[:8]}"
@@ -238,6 +270,11 @@ def resolve_session(
             selected_agents.append(agent)
     memory_home = project_memory_home(context, memory_base)
     memory_policy = _memory_policy(context)
+    agent_skill_ids = _agent_codex_skill_ids(context, selected_agents)
+    resolved_skill_ids = list(closure.skills)
+    for skill_id in agent_skill_ids:
+        if skill_id not in resolved_skill_ids:
+            resolved_skill_ids.append(skill_id)
     contract: dict[str, Any] = {
         "schema_version": 2,
         "session_id": session_id,
@@ -264,7 +301,8 @@ def resolve_session(
             "rules/global/negritaos_router_rule.md",
             "core/orchestration/negrita_brain_policy.yaml",
         ],
-        "skills": list(closure.skills),
+        "skills": resolved_skill_ids,
+        "agent_skills": agent_skill_ids,
         "artifact_route": {
             "directory": str(context.work_root / str(route.get("directory", "documents"))),
             "manifest": str(

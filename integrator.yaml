@@ -40,10 +40,13 @@ negrita_os:
 
     plot_interpretation:
       required_fields:
-        - what_it_shows
         - how_to_read_it
-        - why_it_matters
-        - operational_takeaway
+        - time_space_grain
+        - observation
+        - interpretation
+        - boundary
+        - cross_plot_relationship
+        - takeaway
 
     task_output:
       required_fields:
@@ -142,6 +145,7 @@ negrita_os:
         - skills/executive/presentation_storyline.md
         - skills/executive/analytics_storytelling_deck.md
         - skills/executive/cqi_analytical_pptx.md
+        - skills/ml/evidence_first_plot_analysis.md
         - skills/ml/eda_analytics_findings.md
         - skills/ml/ml_model_findings.md
         - skills/business/business_proposal_findings.md
@@ -150,6 +154,8 @@ negrita_os:
         - skills/transversal/tldr_writer.md
         - skills/transversal/evidence_framing.md
         - skills/governance/risk_framing.md
+      codex_skills:
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/presentation/presentation_rules.yaml
@@ -170,6 +176,7 @@ negrita_os:
       quality_gate:
         - each_slide_has_one_core_message
         - each_chart_has_takeaway
+        - plot_takeaways_state_observation_interpretation_and_boundary
         - analytics_decks_start_with_findings_then_baseline
         - cqi_analytical_decks_apply_cqi_analytical_pptx_when_applicable
         - presentation_uses_note_terminology
@@ -420,10 +427,13 @@ negrita_os:
         - ml_governance_reviewer
       skills:
         - skills/ml/eda_review.md
+        - skills/ml/evidence_first_plot_analysis.md
         - skills/ml/eda_analytics_findings.md
         - skills/engineering/analytical_eda_governance.md
         - skills/engineering/bigquery_analysis_governance.md
         - skills/transversal/evidence_framing.md
+      codex_skills:
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/ml/ml_rules.yaml
@@ -440,8 +450,43 @@ negrita_os:
         - grain_and_cardinality_are_checked
         - latency_and_freshness_are_separate
         - no_orphan_plots
+        - plot_observation_interpretation_and_boundary_are_separated
         - plot_evidence_contract_is_complete
         - data_readiness_verdict_is_explicit
+
+    plot_analysis_agent:
+      description: "Interprets and compares plots with evidence-first boundaries for EDA, model review, reports, and decks."
+      persona:
+        - senior_data_scientist
+        - evidence_governance_reviewer
+        - analytical_story_editor
+      skills:
+        - skills/ml/evidence_first_plot_analysis.md
+        - skills/ml/eda_analytics_findings.md
+        - skills/ml/ml_model_findings.md
+        - skills/transversal/evidence_framing.md
+      codex_skills:
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/analysis/analysis_rules.yaml
+        - rules/writing/writing_rules.yaml
+      templates:
+        - templates/eda_report_template.md
+      output_modes:
+        - plot_interpretation
+        - plot_comparison
+        - evidence_boundary_note
+        - report_plot_narrative
+        - deck_plot_takeaway
+      quality_gate:
+        - plot_type_axes_units_scale_and_marks_are_explained
+        - denominator_population_filters_and_grain_are_explicit
+        - time_scope_and_spatial_scope_are_explicit
+        - observation_interpretation_and_boundary_are_separated
+        - cross_plot_relationship_is_classified_when_multiple_plots_are_used
+        - no_causal_claim_without_design_support
+        - takeaway_states_what_the_plot_tells_and_does_not_tell
 
     model_review_agent:
       description: "Reviews ML models, EDA, explainability outputs, and operational readiness."
@@ -453,12 +498,15 @@ negrita_os:
         - skills/ml/model_review.md
         - skills/ml/eda_review.md
         - skills/ml/eda_analytics_findings.md
+        - skills/ml/evidence_first_plot_analysis.md
         - skills/engineering/analytical_eda_governance.md
         - skills/engineering/bigquery_analysis_governance.md
         - skills/ml/ml_model_findings.md
         - skills/ml/explainability_review.md
         - skills/ml/leakage_detection.md
         - skills/ml/operational_rule_extraction.md
+      codex_skills:
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/ml/ml_rules.yaml
@@ -481,6 +529,7 @@ negrita_os:
         - split_strategy_is_reviewed
         - leakage_risk_is_assessed
         - metrics_are_interpreted_in_context
+        - model_plots_separate_observation_interpretation_and_boundary
         - plot_evidence_contract_is_complete_when_plots_are_used
         - processed_vs_not_processed_states_are_not_collapsed
         - operational_rules_are_not_overclaimed
@@ -501,6 +550,9 @@ negrita_os:
         - skills/engineering/reproducibility_review.md
         - skills/engineering/logging_config_review.md
         - skills/ml/model_review.md
+      codex_skills:
+        - .codex/skills/pull-request-risk-review/SKILL.md
+        - .codex/skills/pr-review-deep/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/engineering/engineering_rules.yaml
@@ -523,6 +575,46 @@ negrita_os:
         - logging_is_reviewed
         - data_leakage_paths_are_checked
         - tests_or_validation_are_recommended
+
+    pull_request_reviewer_agent:
+      description: "Performs shadow-mode PR risk review before approval, merge, or escalation decisions."
+      persona:
+        - senior_code_reviewer
+        - release_risk_reviewer
+        - code_quality_reviewer
+      skills:
+        - skills/engineering/pull_request_risk_review.md
+        - skills/engineering/python_quality_review.md
+        - skills/engineering/sql_bigquery_review.md
+        - skills/engineering/jinja-bigquery/SKILL.md
+        - skills/engineering/bigquery_analysis_governance.md
+        - skills/engineering/data_source_adapter_governance.md
+        - skills/engineering/reproducibility_review.md
+        - skills/engineering/logging_config_review.md
+      codex_skills:
+        - .codex/skills/pull-request-risk-review/SKILL.md
+        - .codex/skills/pr-review-deep/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/engineering/engineering_rules.yaml
+      rubrics:
+        - rubrics/code_quality_rubric.yaml
+        - rubrics/mlops_readiness_rubric.yaml
+      templates:
+        - templates/pr_review_comment_template.md
+        - templates/code_review_report_template.md
+      output_modes:
+        - pr_risk_review
+        - merge_gate_assessment
+        - pull_request_comments
+        - changes_required_summary
+      quality_gate:
+        - full_diff_is_inspected
+        - required_checks_are_complete_and_passed_or_gap_is_blocking
+        - risk_dimensions_are_scored_with_evidence
+        - hard_stops_override_numeric_score
+        - flake8_pylint_mypy_mccabe_coverage_vulture_are_reported_for_python_prs
+        - auto_approve_allowed_is_false_in_v1
 
     software_architect_agent:
       description: "Designs maintainable modular repository architecture before implementation starts."
@@ -572,12 +664,14 @@ negrita_os:
         - technical_documentation_owner
       skills:
         - skills/writing/notion_report.md
+        - skills/ml/evidence_first_plot_analysis.md
         - skills/ml/eda_analytics_findings.md
         - skills/executive/executive_summary.md
         - skills/transversal/tldr_writer.md
         - skills/transversal/evidence_framing.md
         - skills/governance/risk_framing.md
       codex_skills:
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
         - .codex/skills/cqi-analytical-docx-pdf/SKILL.md
         - .codex/skills/ibc-technical-eda-report/SKILL.md
       rules:
@@ -600,6 +694,7 @@ negrita_os:
       quality_gate:
         - every_section_has_purpose
         - every_plot_has_takeaway
+        - plot_narrative_states_how_to_read_observation_interpretation_and_boundary
         - assumptions_are_explicit
         - next_actions_are_clear
 
@@ -788,6 +883,15 @@ negrita_os:
 
       code_review:
         use_agent: code_review_agent
+
+      pull_request_review:
+        use_agent: pull_request_reviewer_agent
+
+      pr_risk_review:
+        use_agent: pull_request_reviewer_agent
+
+      merge_gate:
+        use_agent: pull_request_reviewer_agent
 
       refactor:
         use_agent: code_review_agent

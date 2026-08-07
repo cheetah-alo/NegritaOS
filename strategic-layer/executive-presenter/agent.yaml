@@ -19,7 +19,11 @@ agent:
     - skills/executive/presentation_storyline.md
     - skills/executive/analytics_storytelling_deck.md
     - skills/executive/cqi_analytical_pptx.md
+    - skills/ml/evidence_first_plot_analysis.md
     - skills/transversal/tldr_writer.md
+
+  codex_skills:
+    - .codex/skills/evidence-first-plot-analysis/SKILL.md
 
   rules:
     inherit: rules/global/global_rules.yaml
@@ -57,6 +61,7 @@ agent:
     - narrative_arc_is_top_down
     - each_slide_has_one_core_message
     - each_chart_has_takeaway
+    - plot_takeaways_state_observation_interpretation_and_boundary
     - claims_are_traceable_to_source_paths
     - recommendation_is_decision_oriented
     - appendix_separates_methodology

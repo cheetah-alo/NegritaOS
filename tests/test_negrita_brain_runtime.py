@@ -68,6 +68,15 @@ class TestRuntimeContract(RuntimeFixture):
             any("No router mode" in warning for warning in contract["warnings"])
         )
 
+    def test_resolve_that_includes_selected_agent_codex_skills(self) -> None:
+        contract = resolve_session(
+            self.repo, "codex", ["plot_analysis"], ROOT, self.memory
+        )
+        self.assertEqual(contract["modes"], ["PA"])
+        self.assertEqual(contract["agents"], ["plot_analysis_agent"])
+        self.assertIn("evidence-first-plot-analysis", contract["agent_skills"])
+        self.assertIn("evidence-first-plot-analysis", contract["skills"])
+
     def test_gate_that_blocks_code_mutation_without_contract(self) -> None:
         result = gate_action(self.repo, "write", negritaos_root=ROOT, memory_base=self.memory)
         self.assertEqual(result["decision"], "BLOCK")

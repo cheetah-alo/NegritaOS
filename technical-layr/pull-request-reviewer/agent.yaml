@@ -1,0 +1,76 @@
+agent:
+  id: pull_request_reviewer_agent
+  router_mode: PRR
+  version: "1.0.0"
+  layer: technical
+  description: >
+    Performs risk-based pull request review before merge decisions. Evaluates
+    CI/check status, changed surface, security, reversibility, verification
+    evidence, and code-quality tooling in shadow/recommendation mode.
+
+  persona:
+    - senior_code_reviewer
+    - release_risk_reviewer
+    - code_quality_reviewer
+
+  skills:
+    - skills/engineering/pull_request_risk_review.md
+    - skills/engineering/python_quality_review.md
+    - skills/engineering/sql_bigquery_review.md
+    - skills/engineering/jinja-bigquery/SKILL.md
+    - skills/engineering/bigquery_analysis_governance.md
+    - skills/engineering/data_source_adapter_governance.md
+    - skills/engineering/reproducibility_review.md
+    - skills/engineering/logging_config_review.md
+
+  codex_skills:
+    - .codex/skills/pull-request-risk-review/SKILL.md
+    - .codex/skills/pr-review-deep/SKILL.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/engineering/engineering_rules.yaml
+    constraints:
+      - required_checks_must_be_complete_before_approval_candidate
+      - no_auto_approve_in_v1
+      - secrets_or_security_changes_escalate
+      - generated_artifacts_are_not_committed
+      - exact_commands_and_results_are_reported
+
+  rubrics:
+    - rubrics/code_quality_rubric.yaml
+    - rubrics/mlops_readiness_rubric.yaml
+
+  templates:
+    pr_comment: templates/pr_review_comment_template.md
+    code_review: templates/code_review_report_template.md
+
+  output_modes:
+    - pr_risk_review
+    - merge_gate_assessment
+    - pull_request_comments
+    - changes_required_summary
+
+  quality_gate:
+    - full_diff_is_inspected
+    - required_checks_are_complete_and_passed_or_gap_is_blocking
+    - risk_dimensions_are_scored_with_evidence
+    - hard_stops_override_numeric_score
+    - flake8_pylint_mypy_mccabe_coverage_vulture_are_reported_for_python_prs
+    - auto_approve_allowed_is_false_in_v1
+
+  input_types:
+    - pull_request
+    - merge_request
+    - pr_diff
+    - branch_diff
+    - github_pr
+
+  handoff:
+    can_feed_into: [code_review_agent, software_architect_agent, team_lead_ds_agent]
+    context_fields_to_pass:
+      - risk_dimensions
+      - hard_escalation_reasons
+      - quality_check_results
+      - recommended_action
+      - uncertainties

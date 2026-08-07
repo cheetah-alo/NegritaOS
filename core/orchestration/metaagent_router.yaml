@@ -88,10 +88,51 @@ metaagent_router:
         - improvement_plan
         - scorecard
 
+    plot_analysis:
+      id: PA
+      label: "Evidence-First Plot Analysis"
+      agent: plot_analysis_agent
+      trigger_signals:
+        - plot analysis
+        - analyze this plot
+        - interpret this chart
+        - interpret these plots
+        - compare these plots
+        - chart evidence
+        - chart interpretation
+        - visualization interpretation
+        - dashboard plot narrative
+        - explain this figure
+        - plot takeaway
+        - what does this plot tell us
+        - what does this chart not prove
+      input_types:
+        - plot image
+        - chart
+        - dashboard screenshot
+        - EDA output
+        - model diagnostic plot
+        - report draft with plots
+        - deck with charts
+      output_types:
+        - plot_interpretation
+        - plot_comparison
+        - evidence_boundary_note
+        - report_plot_narrative
+        - deck_plot_takeaway
+
     technical_documentation:
       id: TD
       label: "Technical Documentation"
       agent: technical_writer_agent
+      specialist_agents:
+        evidence_first_plot_analysis:
+          agent: plot_analysis_agent
+          when:
+            - writing about plots in Markdown, DOCX, or PDF
+            - interpreting charts in a technical report
+            - converting plot evidence into report narrative
+            - documenting evidence boundaries for a figure
       trigger_signals:
         - write a notion doc
         - confluence page
@@ -102,6 +143,9 @@ metaagent_router:
         - DOCX report
         - PDF report
         - technical EDA report
+        - report with plots
+        - plot-backed report
+        - chart narrative for report
         - IBC technical EDA report
         - source-readiness memo
         - join-readiness memo
@@ -125,9 +169,18 @@ metaagent_router:
       id: MR
       label: "ML / EDA / Model Review"
       agent: model_review_agent
+      specialist_agents:
+        evidence_first_plot_analysis:
+          agent: plot_analysis_agent
+          when:
+            - interpreting EDA plots
+            - interpreting model diagnostic plots
+            - interpreting SHAP, lift, confusion matrix, or feature importance visuals
+            - comparing plots for support, contradiction, or qualification
       trigger_signals:
         - review this model
         - EDA report
+        - EDA plot interpretation
         - feature importance
         - model performance
         - SHAP analysis
@@ -140,6 +193,9 @@ metaagent_router:
         - churn model
         - classification report
         - confusion matrix
+        - lift chart
+        - feature importance plot
+        - diagnostic plot
         - operational rules
         - segmentation
         - clustering review
@@ -160,6 +216,14 @@ metaagent_router:
       label: "Code / Repository Work"
       agent: code_review_agent
       specialist_agents:
+        pull_request_risk_review:
+          agent: pull_request_reviewer_agent
+          when:
+            - reviewing a pull request or merge request
+            - evaluating PR risk before approval
+            - checking merge gate readiness
+            - assessing auto-approval eligibility in shadow mode
+            - reviewing GitHub PR checks or CI status
         software_architecture:
           agent: software_architect_agent
           when:
@@ -174,6 +238,11 @@ metaagent_router:
       trigger_signals:
         - review this code
         - PR review
+        - PR risk review
+        - pull request review
+        - merge gate
+        - auto approve PR
+        - GitHub PR checks
         - software architect
         - architecture plan
         - repo structure
@@ -209,10 +278,15 @@ metaagent_router:
         - Python file
         - SQL query
         - repository link
+        - pull request
+        - merge request
+        - branch diff
         - notebook
         - DAG definition
       output_types:
         - code_review_report
+        - pr_risk_review
+        - merge_gate_assessment
         - repository_blueprint
         - architecture_review
         - modularization_plan
@@ -221,10 +295,44 @@ metaagent_router:
         - pull_request_comments
         - technical_debt_register
 
+    pull_request_risk_review:
+      id: PRR
+      label: "Pull Request Risk Review"
+      agent: pull_request_reviewer_agent
+      trigger_signals:
+        - PR risk review
+        - pull request review
+        - merge gate
+        - auto approve PR
+        - GitHub PR checks
+        - review this PR
+        - review this pull request
+        - PR approval
+        - merge readiness
+      input_types:
+        - pull request
+        - merge request
+        - pr diff
+        - branch diff
+        - github pr
+      output_types:
+        - pr_risk_review
+        - merge_gate_assessment
+        - pull_request_comments
+        - changes_required_summary
+
     executive_presentation:
       id: EP
       label: "Executive Presentation"
       agent: presentation_agent
+      specialist_agents:
+        evidence_first_plot_analysis:
+          agent: plot_analysis_agent
+          when:
+            - writing slide takeaways from plots
+            - explaining charts in speaker notes
+            - comparing charts across an analytical deck
+            - checking evidence boundaries for deck visuals
       trigger_signals:
         - make a deck
         - presentation slides
@@ -235,6 +343,9 @@ metaagent_router:
         - top-down narrative
         - one-pager
         - stakeholder brief
+        - plot takeaway for deck
+        - chart-backed slide
+        - deck with charts
       input_types:
         - analytical report
         - raw findings

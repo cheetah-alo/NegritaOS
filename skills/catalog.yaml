@@ -43,6 +43,15 @@ profiles:
       - data-loading
       - testing-coverage
       - docs-alignment
+  evidence-first-plot-analysis:
+    description: Evidence-first interpretation and comparison of plots across reports, decks, dashboards, EDA, and model review.
+    skills:
+      - evidence-first-plot-analysis
+  pull-request-risk-review:
+    description: Shadow-mode PR risk gate for CI status, security, verification evidence, and code-quality tooling.
+    skills:
+      - pull-request-risk-review
+      - pr-review-deep
   elal-eda-governance:
     description: Opt-in ELAL passenger-journey EDA semantics and evidence states.
     skills:
@@ -180,6 +189,24 @@ skills:
     status: canonical
     dependencies: [jinja2, bq]
     side_effects: read_only_render_review
+  - id: evidence-first-plot-analysis
+    path: .codex/skills/evidence-first-plot-analysis/SKILL.md
+    native_path: skills/ml/evidence_first_plot_analysis.md
+    source: NegritaOS-native
+    profiles: [evidence-first-plot-analysis]
+    scopes: [root, analytics, plots, reporting, presentation, model-review]
+    status: canonical
+    dependencies: []
+    side_effects: none
+  - id: pull-request-risk-review
+    path: .codex/skills/pull-request-risk-review/SKILL.md
+    native_path: skills/engineering/pull_request_risk_review.md
+    source: NegritaOS-native
+    profiles: [pull-request-risk-review]
+    scopes: [root, backend, frontend, data_analytics, review]
+    status: canonical
+    dependencies: [python3, flake8, pylint, mypy, vulture, pytest]
+    side_effects: read_only_review
   - id: analytics-storytelling-deck
     path: .codex/skills/analytics-storytelling-deck/SKILL.md
     native_path: skills/executive/analytics_storytelling_deck.md
@@ -330,7 +357,7 @@ skills:
   - id: pr-review-deep
     path: .codex/skills/pr-review-deep/SKILL.md
     source: skills/skills_engram/pr-review-deep/SKILL.md
-    profiles: [analytical-dashboard]
+    profiles: [analytical-dashboard, pull-request-risk-review]
     scopes: [root, backend, frontend, data_analytics]
     status: canonical
     dependencies: []

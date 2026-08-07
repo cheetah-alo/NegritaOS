@@ -35,9 +35,11 @@ project:
     - technical_documentation
   agents:
     - code_review_agent
+    - pull_request_reviewer_agent
     - software_architect_agent
     - technical_writer_agent
     - presentation_agent
+    - plot_analysis_agent
     - decision_support_agent
     - team_lead_ds_agent
   codex_profiles:

@@ -51,12 +51,14 @@ project:
     activation: analysis_and_eda_modes_only
   agents:
     - code_review_agent
+    - pull_request_reviewer_agent
     - software_architect_agent
     - data_quality_sentinel_agent
     - model_review_agent
     - technical_writer_agent
     - team_lead_ds_agent
     - presentation_agent
+    - plot_analysis_agent
   codex_profiles:
     - review
     - refactor

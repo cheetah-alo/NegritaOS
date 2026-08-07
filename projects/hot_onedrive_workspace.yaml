@@ -53,10 +53,12 @@ project:
     - decision_support_agent
     - team_lead_ds_agent
     - code_review_agent
+    - pull_request_reviewer_agent
     - model_review_agent
     - data_quality_sentinel_agent
     - technical_writer_agent
     - presentation_agent
+    - plot_analysis_agent
   codex_profiles:
     - analysis-run
     - review

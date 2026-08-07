@@ -14,6 +14,7 @@ Layering:
 ```text
 Presentations / Artifact Tool
 -> analytics-storytelling-deck
+-> evidence-first-plot-analysis when charts, plots, or visual evidence are used
 -> cqi-analytical-pptx
 -> optional project profile, for example elal-analytical-deck
 ```
@@ -63,6 +64,10 @@ The zip bundle is a distribution artifact, not the primary source.
 9. For new CQI/CQISense decks, use the deck patterns in
    `references/deck-patterns.md` unless a user-provided template owns the
    structure.
+10. Plot-backed slide messages must apply `evidence-first-plot-analysis`:
+    explain how to read the plot, separate observation from interpretation,
+    state the evidence boundary, and classify cross-plot relationships when
+    multiple visuals are used.
 
 ## Analytical Evidence Block
 
@@ -80,6 +85,7 @@ Deduplication:
 Evidence status:
 Limitation:
 Allowed conclusion:
+Plot relationship:
 [/Evidence]
 ```
 

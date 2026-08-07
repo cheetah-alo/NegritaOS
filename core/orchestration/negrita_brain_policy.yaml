@@ -29,7 +29,12 @@ negrita_brain:
     writeup: TD
     implementation: CR
     code_review: CR
+    pull_request_review: PRR
+    pr_risk_review: PRR
+    merge_gate: PRR
     review: CR
+    plot_analysis: PA
+    chart_interpretation: PA
     deck: EP
     presentation: EP
     eda: MR

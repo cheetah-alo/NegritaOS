@@ -40,7 +40,9 @@ project:
     - data_quality_sentinel_agent
     - model_review_agent
     - presentation_agent
+    - plot_analysis_agent
     - code_review_agent
+    - pull_request_reviewer_agent
     - tfm_evaluator_agent
     - tfm_research_advisor_agent
     - ai_trend_radar_agent

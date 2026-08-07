@@ -75,9 +75,11 @@ project:
     - model_review_agent
     - data_quality_sentinel_agent
     - code_review_agent
+    - pull_request_reviewer_agent
     - team_lead_ds_agent
     - technical_writer_agent
     - presentation_agent
+    - plot_analysis_agent
     - ai_trend_radar_agent
   codex_profiles:
     - analysis-run

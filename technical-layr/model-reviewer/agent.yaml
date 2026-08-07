@@ -17,11 +17,15 @@ agent:
   skills:
     - skills/ml/model_review.md
     - skills/ml/eda_review.md
+    - skills/ml/evidence_first_plot_analysis.md
     - skills/engineering/analytical_eda_governance.md
     - skills/engineering/bigquery_analysis_governance.md
     - skills/ml/leakage_detection.md
     - skills/ml/explainability_review.md
     - skills/ml/operational_rule_extraction.md
+
+  codex_skills:
+    - .codex/skills/evidence-first-plot-analysis/SKILL.md
 
   rules:
     inherit: rules/global/global_rules.yaml
@@ -57,6 +61,7 @@ agent:
     - split_strategy_is_assessed
     - leakage_risk_is_evaluated
     - metrics_are_interpreted_in_business_context
+    - model_plots_separate_observation_interpretation_and_boundary
     - operational_rules_are_qualified_with_support_metrics
     - model_limitations_are_explicit
     - next_validation_steps_are_recommended

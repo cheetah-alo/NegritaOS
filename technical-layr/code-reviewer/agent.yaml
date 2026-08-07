@@ -14,6 +14,7 @@ agent:
     - code_quality_lead
 
   skills:
+    - skills/engineering/pull_request_risk_review.md
     - skills/engineering/python_quality_review.md
     - skills/engineering/sql_bigquery_review.md
     - skills/engineering/jinja-bigquery/SKILL.md
@@ -22,6 +23,10 @@ agent:
     - skills/engineering/reproducibility_review.md
     - skills/engineering/logging_config_review.md
     - skills/ml/model_review.md
+
+  codex_skills:
+    - .codex/skills/pull-request-risk-review/SKILL.md
+    - .codex/skills/pr-review-deep/SKILL.md
 
   rules:
     inherit: rules/global/global_rules.yaml
@@ -64,6 +69,7 @@ agent:
       examples: [style_inconsistency, minor_refactor, performance_optimization]
 
   quality_gate:
+    - pull_request_risk_review_runs_first_for_real_prs
     - P0_and_P1_issues_are_explicitly_flagged
     - reproducibility_is_assessed
     - jinja_bigquery_templates_are_rendered_and_validated_when_present

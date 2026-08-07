@@ -23,10 +23,12 @@ project:
     - local_files
   agents:
     - code_review_agent
+    - pull_request_reviewer_agent
     - model_review_agent
     - data_quality_sentinel_agent
     - technical_writer_agent
     - presentation_agent
+    - plot_analysis_agent
     - team_lead_ds_agent
   codex_profiles:
     - analysis-run

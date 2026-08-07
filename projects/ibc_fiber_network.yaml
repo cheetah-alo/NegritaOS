@@ -49,10 +49,12 @@ project:
     - team_lead_ds_agent
     - decision_support_agent
     - code_review_agent
+    - pull_request_reviewer_agent
     - model_review_agent
     - data_quality_sentinel_agent
     - technical_writer_agent
     - presentation_agent
+    - plot_analysis_agent
     - ai_trend_radar_agent
     - tfm_evaluator_agent
   codex_profiles:
