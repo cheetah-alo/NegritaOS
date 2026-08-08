@@ -23,6 +23,7 @@ from negrita_brain.doctor import doctor_all, doctor_project  # noqa: E402
 from negrita_brain.documents import catalog_legacy  # noqa: E402
 from negrita_brain.errors import BrainError, MemoryPermissionError  # noqa: E402
 from negrita_brain.git_traceability import snapshot_git  # noqa: E402
+from negrita_brain.git_trailers import build_brain_trailers  # noqa: E402
 from negrita_brain.installer import Installer  # noqa: E402
 from negrita_brain.memory import (  # noqa: E402
     handoff,
@@ -36,6 +37,7 @@ from negrita_brain.runtime import (  # noqa: E402
     gate_action,
     record_event,
     resolve_session,
+    load_active_session,
 )
 
 
@@ -89,6 +91,14 @@ def build_parser() -> argparse.ArgumentParser:
         "git-trace", help="Read a privacy-preserving Git worktree snapshot"
     )
     _common(git_trace)
+
+    git_trailers = commands.add_parser(
+        "git-trailers", help="Build safe Negrita trailers from the active contract"
+    )
+    _common(git_trailers)
+    _session(git_trailers)
+    git_trailers.add_argument("--gate", action="append", dest="gates")
+    git_trailers.add_argument("--decision-id", action="append", dest="decision_ids")
 
     event = commands.add_parser("event", help="Append safe execution metadata")
     _common(event)
@@ -258,6 +268,20 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         return result, 2 if result["decision"] == "BLOCK" else 0
     if args.command == "git-trace":
         return snapshot_git(args.root), 0
+    if args.command == "git-trailers":
+        _, contract, _ = load_active_session(
+            args.root,
+            args.negritaos_root,
+            args.memory_root,
+            args.provider,
+            args.session_key,
+        )
+        return {
+            "session_id": contract["session_id"],
+            "trailers": build_brain_trailers(
+                contract, args.gates, args.decision_ids
+            ),
+        }, 0
     if args.command == "event":
         metadata = {
             key: getattr(args, key)

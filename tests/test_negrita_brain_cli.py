@@ -37,6 +37,23 @@ class TestBrainCli(unittest.TestCase):
         self.assertEqual(args.command, "git-trace")
         self.assertEqual(args.root, Path("/tmp/repo"))
 
+    def test_git_trailers_that_accepts_gates_and_decisions(self) -> None:
+        args = CLI.build_parser().parse_args(
+            [
+                "git-trailers",
+                "--gate",
+                "write",
+                "--gate",
+                "commit",
+                "--decision-id",
+                "DEC-1",
+            ]
+        )
+
+        self.assertEqual(args.command, "git-trailers")
+        self.assertEqual(args.gates, ["write", "commit"])
+        self.assertEqual(args.decision_ids, ["DEC-1"])
+
     def test_event_that_accepts_git_commit_metadata(self) -> None:
         args = CLI.build_parser().parse_args(
             [
