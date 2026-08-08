@@ -37,6 +37,27 @@ class TestBrainCli(unittest.TestCase):
         self.assertEqual(args.command, "git-trace")
         self.assertEqual(args.root, Path("/tmp/repo"))
 
+    def test_event_that_accepts_git_commit_metadata(self) -> None:
+        args = CLI.build_parser().parse_args(
+            [
+                "event",
+                "--kind",
+                "commit",
+                "--status",
+                "OK",
+                "--commit-sha",
+                "abc123",
+                "--parent-sha",
+                "parent123",
+                "--changed-file-count",
+                "2",
+            ]
+        )
+
+        self.assertEqual(args.commit_sha, "abc123")
+        self.assertEqual(args.parent_shas, ["parent123"])
+        self.assertEqual(args.changed_file_count, 2)
+
     def test_memory_that_exposes_all_v2_operations(self) -> None:
         parser = CLI.build_parser()
         operations = {

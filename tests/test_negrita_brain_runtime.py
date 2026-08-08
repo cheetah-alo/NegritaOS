@@ -129,6 +129,40 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertNotIn("secret", text)
         self.assertEqual(event["tool"], "Write")
 
+    def test_commit_event_that_links_safe_git_metadata_to_contract(self) -> None:
+        contract = self.resolve()
+        event = record_event(
+            self.repo,
+            "commit",
+            "OK",
+            {
+                "commit_sha": "abc123",
+                "parent_shas": ["parent123"],
+                "worktree_id": "abc789",
+                "prompt": "secret",
+            },
+            ROOT,
+            self.memory,
+        )
+
+        self.assertEqual(event["commit_sha"], "abc123")
+        self.assertEqual(event["contract_sha256"], contract["contract_sha256"])
+        self.assertNotIn("prompt", event)
+
+    def test_commit_event_that_discards_invalid_git_metadata(self) -> None:
+        self.resolve()
+        event = record_event(
+            self.repo,
+            "commit",
+            "OK",
+            {"commit_sha": {"raw": "value"}, "insertions": -1},
+            ROOT,
+            self.memory,
+        )
+
+        self.assertNotIn("commit_sha", event)
+        self.assertNotIn("insertions", event)
+
     def test_close_that_makes_future_mutation_fail_closed(self) -> None:
         self.resolve()
         closed = close_session(self.repo, "done", memory_base=self.memory, negritaos_root=ROOT)

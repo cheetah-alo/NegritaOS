@@ -100,6 +100,19 @@ def build_parser() -> argparse.ArgumentParser:
     event.add_argument("--path", dest="file_path")
     event.add_argument("--decision-id", action="append", dest="decision_ids")
     event.add_argument("--acceptance-ref")
+    event.add_argument("--commit-sha")
+    event.add_argument("--tree-sha")
+    event.add_argument("--parent-sha", action="append", dest="parent_shas")
+    event.add_argument("--branch")
+    event.add_argument("--worktree-id")
+    event.add_argument("--base-ref")
+    event.add_argument("--merge-base")
+    event.add_argument("--gate-status")
+    event.add_argument("--evidence-status")
+    event.add_argument("--changed-file-count", type=int)
+    event.add_argument("--insertions", type=int)
+    event.add_argument("--deletions", type=int)
+    event.add_argument("--path-fingerprint")
 
     decision = commands.add_parser("decision", help="Manage append-only decisions")
     decision_commands = decision.add_subparsers(dest="decision_command", required=True)
@@ -248,7 +261,26 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
     if args.command == "event":
         metadata = {
             key: getattr(args, key)
-            for key in ("provider", "tool", "action", "file_path", "decision_ids")
+            for key in (
+                "provider",
+                "tool",
+                "action",
+                "file_path",
+                "decision_ids",
+                "commit_sha",
+                "tree_sha",
+                "parent_shas",
+                "branch",
+                "worktree_id",
+                "base_ref",
+                "merge_base",
+                "gate_status",
+                "evidence_status",
+                "changed_file_count",
+                "insertions",
+                "deletions",
+                "path_fingerprint",
+            )
         }
         recorded = record_event(
             args.root,

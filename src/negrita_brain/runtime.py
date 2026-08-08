@@ -35,13 +35,41 @@ from .profiles import resolve_project_profiles
 
 SAFE_EVENT_KEYS = {
     "action",
+    "base_ref",
+    "branch",
+    "changed_file_count",
+    "commit_sha",
+    "deletions",
     "decision_ids",
     "durable_ref",
+    "evidence_status",
     "file_path",
+    "gate_status",
+    "insertions",
+    "merge_base",
+    "parent_shas",
+    "path_fingerprint",
     "provider",
     "status",
     "tool",
+    "tree_sha",
+    "worktree_id",
 }
+GIT_EVENT_KINDS = {"commit", "git_reconciled", "git_snapshot"}
+GIT_STRING_KEYS = {
+    "base_ref",
+    "branch",
+    "commit_sha",
+    "evidence_status",
+    "gate_status",
+    "merge_base",
+    "path_fingerprint",
+    "tree_sha",
+    "worktree_id",
+}
+GIT_INTEGER_KEYS = {"changed_file_count", "deletions", "insertions"}
+GIT_LIST_KEYS = {"parent_shas"}
+GIT_HEX_KEYS = {"commit_sha", "merge_base", "path_fingerprint", "tree_sha", "worktree_id"}
 VALID_PROVIDERS = {"codex", "claude", "ci", "human"}
 
 
@@ -450,6 +478,66 @@ def gate_action(
     }
 
 
+def _safe_git_value(key: str, value: Any) -> bool:
+    """Validate Git event values without accepting paths or arbitrary payloads."""
+    if key in GIT_STRING_KEYS:
+        if not isinstance(value, str) or not value or len(value) > 512:
+            return False
+        if "\n" in value or "\r" in value:
+            return False
+        if key in GIT_HEX_KEYS:
+            return all(character in "0123456789abcdef" for character in value.lower())
+        return True
+    if key in GIT_INTEGER_KEYS:
+        return isinstance(value, int) and not isinstance(value, bool) and value >= 0
+    if key in GIT_LIST_KEYS:
+        return (
+            isinstance(value, list)
+            and len(value) <= 32
+            and all(
+                isinstance(item, str)
+                and 0 < len(item) <= 128
+                and all(character in "0123456789abcdef" for character in item.lower())
+                for item in value
+            )
+        )
+    return True
+
+
+def _safe_event_metadata(
+    metadata: dict[str, Any] | None,
+    event_kind: str,
+) -> dict[str, Any]:
+    """Filter general and Git-specific event metadata by explicit contract."""
+    safe: dict[str, Any] = {}
+    for key, value in (metadata or {}).items():
+        if key not in SAFE_EVENT_KEYS or value is None:
+            continue
+        if key in GIT_STRING_KEYS | GIT_INTEGER_KEYS | GIT_LIST_KEYS:
+            if event_kind not in GIT_EVENT_KINDS or not _safe_git_value(key, value):
+                continue
+        safe[key] = value
+    return safe
+
+
+def _add_git_event_defaults(
+    safe: dict[str, Any],
+    event_kind: str,
+    contract: dict[str, Any],
+) -> None:
+    """Attach immutable session linkage to Git events without trusting input."""
+    if event_kind not in GIT_EVENT_KINDS:
+        return
+    git_state = contract.get("git", {})
+    if not isinstance(git_state, dict):
+        git_state = {}
+    safe["git_event_schema_version"] = 1
+    safe["contract_sha256"] = contract["contract_sha256"]
+    for key in ("base_ref", "branch", "merge_base", "worktree_id"):
+        if key not in safe and git_state.get(key) is not None:
+            safe[key] = git_state[key]
+
+
 def record_event(
     work_root: Path,
     event_kind: str,
@@ -470,11 +558,8 @@ def record_event(
         session_key,
         environ,
     )
-    safe = {
-        key: value
-        for key, value in (metadata or {}).items()
-        if key in SAFE_EVENT_KEYS and value is not None
-    }
+    safe = _safe_event_metadata(metadata, event_kind)
+    _add_git_event_defaults(safe, event_kind, contract)
     event = {
         "event_id": f"NBE-{uuid.uuid4().hex}",
         "event_kind": event_kind,
