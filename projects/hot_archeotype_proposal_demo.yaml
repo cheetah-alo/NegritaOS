@@ -30,6 +30,7 @@ project:
     - presentation_agent
     - plot_analysis_agent
     - team_lead_ds_agent
+    - git_tree_governance_agent
   codex_profiles:
     - analysis-run
     - review

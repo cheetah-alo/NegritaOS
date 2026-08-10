@@ -21,7 +21,7 @@ Same prompt, same client, same answer. Drift is engineered out.
 
 1. [Mental Model — the 5 building blocks](#1-mental-model)
 2. [Repository Map](#2-repository-map)
-3. [The 8 Operational Modes](#3-the-8-operational-modes)
+3. [Operational Modes](#3-operational-modes)
 4. [Agents — what each one does](#4-agents)
 5. [Skills — reusable cognitive units](#5-skills)
 6. [Rules — non-negotiable contracts](#6-rules)
@@ -107,7 +107,7 @@ NegritaOS/
 
 ---
 
-## 3. The 8 Operational Modes
+## 3. Operational Modes
 
 Every request is classified into exactly one mode (mixed requests run a pipeline).
 
@@ -121,6 +121,7 @@ Every request is classified into exactly one mode (mixed requests run a pipeline
 | **EP** | Executive Presentation | `presentation_agent` | Decks, board summaries, one-pagers |
 | **DQ** | Data Quality / Escalation | `data_quality_sentinel_agent` | Schema drift, KPI anomaly, RCA, incidents |
 | **RT** | Research / Trends / TFM | `ai_trend_radar_agent` + `tfm_research_advisor_agent` | AI trend digests, paper reviews, evidence-backed TFM topic proposals |
+| **GT** | Git Tree Governance | `git_tree_governance_agent` | Branch/worktree audits, branch debt, recovery, rebase/cherry-pick review, safe cleanup |
 
 Canonical definition: [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md).
 Full trigger keywords: [core/orchestration/metaagent_router.yaml](core/orchestration/metaagent_router.yaml).
@@ -403,7 +404,8 @@ A shorter version works too — the router will still pick the right agent from 
 - `@agent:CR …` for code review
 - `@agent:DQ …` for data-quality incidents
 - `@agent:EP …` for presentations
-- … see [§3](#3-the-8-operational-modes)
+- `@agent:GT …` for Git branch/worktree governance
+- … see [§3](#3-operational-modes)
 
 ### Step 4 — accept the answer flow
 Every reply should follow the `default_output_contract` declared in [integrator.yaml](integrator.yaml) for its agent:
@@ -557,7 +559,7 @@ python3 scripts/validate_alignment.py --sibling /abs/path
 ```
 
 Modes (quick recall):
-**LP** lead · **AE** academic · **TD** docs · **MR** model · **CR** code · **EP** present · **DQ** data-quality · **RT** research
+**LP** lead · **AE** academic · **TD** docs · **MR** model · **CR** code · **EP** present · **DQ** data-quality · **RT** research · **GT** Git tree
 
 ---
 

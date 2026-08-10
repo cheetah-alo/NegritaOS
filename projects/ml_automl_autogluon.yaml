@@ -28,6 +28,7 @@ project:
     - technical_writer_agent
     - presentation_agent
     - plot_analysis_agent
+    - git_tree_governance_agent
   codex_profiles:
     - analysis-run
     - eda-pre-ml

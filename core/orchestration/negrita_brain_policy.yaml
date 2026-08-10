@@ -32,6 +32,9 @@ negrita_brain:
     pull_request_review: PRR
     pr_risk_review: PRR
     merge_gate: PRR
+    git_tree_governance: GT
+    git_tree_review: GT
+    branch_lifecycle_audit: GT
     review: CR
     plot_analysis: PA
     chart_interpretation: PA

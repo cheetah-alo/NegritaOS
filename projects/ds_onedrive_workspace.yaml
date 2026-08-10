@@ -47,6 +47,7 @@ project:
     - tfm_research_advisor_agent
     - ai_trend_radar_agent
     - paper_review_agent
+    - git_tree_governance_agent
   codex_profiles:
     - review
     - analysis-run

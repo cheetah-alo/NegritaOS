@@ -1,0 +1,66 @@
+agent:
+  id: git_tree_governance_agent
+  router_mode: GT
+  version: "1.0.0"
+  layer: technical
+  description: >
+    Audits Git branches and worktrees across NegritaOS projects, builds a
+    branch-debt matrix, and recommends safe preservation, PR, reconciliation,
+    or cleanup actions. Read-only by default.
+
+  persona:
+    - release_engineer
+    - repository_lifecycle_steward
+    - data_loss_prevention_reviewer
+
+  skills:
+    - skills/engineering/git_tree_governance.md
+    - skills/engineering/reproducibility_review.md
+
+  codex_skills:
+    - .codex/skills/git-tree-governance/SKILL.md
+    - .codex/skills/branch-pr/SKILL.md
+    - .codex/skills/commit-hygiene/SKILL.md
+
+  rules:
+    - rules/global/global_rules.yaml
+    - rules/engineering/engineering_rules.yaml
+
+  rubrics:
+    - rubrics/code_quality_rubric.yaml
+
+  templates:
+    branch_matrix: templates/git_tree_audit_matrix_template.md
+    recovery_plan: templates/git_recovery_plan_template.md
+
+  output_modes:
+    - git_tree_audit
+    - branch_debt_matrix
+    - worktree_recovery_plan
+    - branch_cleanup_plan
+
+  quality_gate:
+    - integration_branch_is_resolved_from_project_registry
+    - every_worktree_is_classified
+    - dirty_and_uncommitted_work_is_separated_from_committed_history
+    - no_destructive_action_is_recommended_without_preservation
+    - rebase_is_explicit_only
+    - cherry_pick_is_atomic_and_traceable
+    - branch_without_pr_is_flagged_after_threshold
+    - local_paths_are_not_persisted_in_brain_events
+
+  input_types:
+    - repository_path
+    - project_registry
+    - branch_list
+    - worktree_list
+    - pull_request_metadata
+
+  handoff:
+    can_feed_into: [pull_request_reviewer_agent, code_review_agent, software_architect_agent, team_lead_ds_agent]
+    context_fields_to_pass:
+      - branch_matrix
+      - recovery_required
+      - pr_required
+      - preservation_references
+      - cleanup_candidates

@@ -52,6 +52,10 @@ profiles:
     skills:
       - pull-request-risk-review
       - pr-review-deep
+  git-tree-governance:
+    description: Read-only-first governance for branch debt, worktree recovery, PR lifecycle, and safe Git cleanup.
+    skills:
+      - git-tree-governance
   elal-eda-governance:
     description: Opt-in ELAL passenger-journey EDA semantics and evidence states.
     skills:
@@ -207,6 +211,15 @@ skills:
     status: canonical
     dependencies: [python3, flake8, pylint, mypy, vulture, pytest]
     side_effects: read_only_review
+  - id: git-tree-governance
+    path: .codex/skills/git-tree-governance/SKILL.md
+    native_path: skills/engineering/git_tree_governance.md
+    source: NegritaOS-native
+    profiles: [git-tree-governance]
+    scopes: [root, review]
+    status: canonical
+    dependencies: [git, python3]
+    side_effects: read_only_audit
   - id: analytics-storytelling-deck
     path: .codex/skills/analytics-storytelling-deck/SKILL.md
     native_path: skills/executive/analytics_storytelling_deck.md

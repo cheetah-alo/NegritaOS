@@ -11,8 +11,8 @@ provides:
   - output-contract-enforcement
 description: >
   Binds NegritaOS' master agent registry (integrator.yaml) and metaagent router
-  to any agent client operating in this repository. Defines the 8 operational
-  modes (LP/AE/TD/MR/CR/EP/DQ/RT), their routing keywords, and the contract
+  to any agent client operating in this repository. Defines the operational
+  modes (LP/AE/TD/MR/CR/EP/DQ/RT/GT), their routing keywords, and the contract
   resolution order between NegritaOS-native rules and repo-local adapter rules.
 version: 1.0.0
 applyTo: [repo, agents, prompts, claude, codex, copilot]
@@ -42,7 +42,7 @@ Before producing output, an agent MUST:
    and the global style in [integrator.yaml](../../integrator.yaml) →
    `global_style`.
 
-## 2. Eight operational modes
+## 2. Operational modes
 
 | Mode ID | Label | Agent in `integrator.yaml` | Primary triggers |
 |---|---|---|---|
@@ -54,6 +54,7 @@ Before producing output, an agent MUST:
 | **EP** | Executive Presentation | `presentation_agent` | deck, slides, executive summary, board, one-pager |
 | **DQ** | Data Quality / Escalation | `data_quality_sentinel_agent` | data quality, schema drift, KPI anomaly, RCA, incident |
 | **RT** | Research / Trends / TFM Topics | `ai_trend_radar_agent` or specialist `tfm_research_advisor_agent` | AI trend, paper review, blockchain watch, TFM topic |
+| **GT** | Git Tree Governance | `git_tree_governance_agent` | branch audit, worktree audit, branch debt, Git recovery, safe cleanup |
 
 Full trigger lists live in
 [core/orchestration/metaagent_router.yaml](../../core/orchestration/metaagent_router.yaml).

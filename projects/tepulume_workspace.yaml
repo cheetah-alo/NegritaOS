@@ -34,6 +34,7 @@ project:
     - code_review_agent
     - pull_request_reviewer_agent
     - software_architect_agent
+    - git_tree_governance_agent
   codex_profiles:
     - review
     - refactor

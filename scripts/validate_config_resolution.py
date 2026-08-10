@@ -43,6 +43,7 @@ ASSET_KEYS = ("skills", "rules", "rubrics", "templates", "codex_skills")
 PROFILE_AGENT_REQUIREMENTS = {
     "academic-tfm-review": {"tfm_evaluator_agent"},
     "academic-tfm-research": {"tfm_research_advisor_agent"},
+    "git-tree-governance": {"git_tree_governance_agent"},
 }
 
 

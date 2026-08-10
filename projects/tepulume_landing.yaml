@@ -42,6 +42,7 @@ project:
     - plot_analysis_agent
     - decision_support_agent
     - team_lead_ds_agent
+    - git_tree_governance_agent
   codex_profiles:
     - review
     - refactor

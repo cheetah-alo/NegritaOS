@@ -18,6 +18,17 @@ project:
   skill_profiles:
     - academic-tfm-review
     - academic-tfm-research
+    - git-tree-governance
+  integration_branch: main
+  git_governance:
+    worktree_mode: one_objective_per_worktree
+    dirty_context_blocks_new_mutation: true
+    detached_worktree_read_only: true
+    wip_checkpoint_allowed: true
+    max_unmerged_commits: 5
+    rebase: explicit_only
+    cherry_pick: atomic_only
+    deletion_requires_inventory_backup_approval: true
   agents:
     - team_lead_ds_agent
     - decision_support_agent
@@ -32,6 +43,10 @@ project:
     - paper_review_agent
     - tfm_research_advisor_agent
     - ai_trend_radar_agent
+    - git_tree_governance_agent
+  mode_map:
+    git_tree_review: GT
+    branch_lifecycle_audit: GT
   expected_outputs:
     - decision_memo
     - operating_model

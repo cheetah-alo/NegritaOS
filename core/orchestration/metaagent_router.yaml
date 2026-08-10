@@ -321,6 +321,36 @@ metaagent_router:
         - pull_request_comments
         - changes_required_summary
 
+    git_tree_governance:
+      id: GT
+      label: "Git Tree Governance"
+      agent: git_tree_governance_agent
+      trigger_signals:
+        - git tree review
+        - branch audit
+        - worktree audit
+        - branch debt
+        - branch lifecycle
+        - recover uncommitted work
+        - recover git work
+        - reconcile branches
+        - reconcile worktrees
+        - branch cleanup plan
+        - safe git cleanup
+        - rebase plan
+        - cherry-pick audit
+      input_types:
+        - repository path
+        - project registry
+        - branch list
+        - worktree list
+        - pull request metadata
+      output_types:
+        - git_tree_audit
+        - branch_debt_matrix
+        - worktree_recovery_plan
+        - branch_cleanup_plan
+
     executive_presentation:
       id: EP
       label: "Executive Presentation"

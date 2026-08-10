@@ -81,6 +81,7 @@ project:
     - presentation_agent
     - plot_analysis_agent
     - ai_trend_radar_agent
+    - git_tree_governance_agent
   codex_profiles:
     - analysis-run
     - eda-pre-ml

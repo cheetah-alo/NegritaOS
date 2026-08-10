@@ -74,6 +74,7 @@ Reusable patterns for common domains:
 | `data-loading` | Data ingestion, source resolution, lineage |
 | `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates and dynamic query variants |
 | `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and Python quality checks |
+| `git-tree-governance` | Read-only-first branch, worktree, branch debt, recovery, rebase, cherry-pick, and cleanup governance |
 | `analytical-eda-governance` | Provider-neutral structure, manifests, contracts, immutable runs, and evidence gates for new or migrated EDA |
 | `bigquery-analysis-governance` | BigQuery source-quality preflight for grain, capture-to-load latency, freshness, SLA, and evidence |
 | `elal-eda-governance` | Opt-in ELAL EDA semantics for operational severity, proxy labels, blocked states, and third subtitle |
@@ -116,6 +117,7 @@ Reusable patterns for common domains:
 | `commit-hygiene` | Commit message and scope discipline |
 | `pr-review-deep` | Deep technical review protocol |
 | `pull-request-risk-review` | PR risk scoring, merge-gate evidence, CI/check status, and quality-tooling review |
+| `git-tree-governance` | Branch/worktree inventory, recovery classification, PR debt, and safe cleanup decisions |
 | `sdd-flow` | Spec-driven phased delivery workflow |
 
 ### Federated Skill Profiles

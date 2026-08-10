@@ -205,6 +205,31 @@ def validate_project(catalog: dict[str, Any], project_path: Path) -> list[str]:
         not isinstance(integration_branch, str) or not integration_branch.strip()
     ):
         errors.append(f"{project_path}: integration_branch must be a non-empty string")
+    if "git-tree-governance" in declared_profiles:
+        if not isinstance(integration_branch, str) or not integration_branch.strip():
+            errors.append(
+                f"{project_path}: git-tree-governance requires integration_branch"
+            )
+        policy = project.get("git_governance")
+        if not isinstance(policy, dict):
+            errors.append(
+                f"{project_path}: git-tree-governance requires git_governance mapping"
+            )
+        else:
+            required_policy = (
+                "dirty_context_blocks_new_mutation",
+                "detached_worktree_read_only",
+                "max_unmerged_commits",
+                "rebase",
+                "cherry_pick",
+                "deletion_requires_inventory_backup_approval",
+            )
+            missing_policy = [key for key in required_policy if key not in policy]
+            if missing_policy:
+                errors.append(
+                    f"{project_path}: git_governance missing "
+                    f"{', '.join(missing_policy)}"
+                )
     data_source = project.get("data_source")
     if "data-source-bigquery" in declared_profiles and data_source is None:
         errors.append(

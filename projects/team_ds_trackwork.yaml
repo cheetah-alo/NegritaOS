@@ -41,6 +41,7 @@ project:
     - plot_analysis_agent
     - data_quality_sentinel_agent
     - consulting_delivery_controller_agent
+    - git_tree_governance_agent
   codex_profiles:
     - review
     - analysis-run

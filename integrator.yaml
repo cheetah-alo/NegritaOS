@@ -616,6 +616,42 @@ negrita_os:
         - flake8_pylint_mypy_mccabe_coverage_vulture_are_reported_for_python_prs
         - auto_approve_allowed_is_false_in_v1
 
+    git_tree_governance_agent:
+      description: "Audits branch and worktree lifecycle, branch debt, recovery state, and safe cleanup decisions."
+      persona:
+        - release_engineer
+        - repository_lifecycle_steward
+        - data_loss_prevention_reviewer
+      skills:
+        - skills/engineering/git_tree_governance.md
+        - skills/engineering/reproducibility_review.md
+      codex_skills:
+        - .codex/skills/git-tree-governance/SKILL.md
+        - .codex/skills/branch-pr/SKILL.md
+        - .codex/skills/commit-hygiene/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/engineering/engineering_rules.yaml
+      rubrics:
+        - rubrics/code_quality_rubric.yaml
+      templates:
+        - templates/git_tree_audit_matrix_template.md
+        - templates/git_recovery_plan_template.md
+      output_modes:
+        - git_tree_audit
+        - branch_debt_matrix
+        - worktree_recovery_plan
+        - branch_cleanup_plan
+      quality_gate:
+        - integration_branch_is_resolved_from_project_registry
+        - every_worktree_is_classified
+        - dirty_and_uncommitted_work_is_separated_from_committed_history
+        - no_destructive_action_is_recommended_without_preservation
+        - rebase_is_explicit_only
+        - cherry_pick_is_atomic_and_traceable
+        - branch_without_pr_is_flagged_after_threshold
+        - local_paths_are_not_persisted_in_brain_events
+
     software_architect_agent:
       description: "Designs maintainable modular repository architecture before implementation starts."
       persona:
@@ -892,6 +928,12 @@ negrita_os:
 
       merge_gate:
         use_agent: pull_request_reviewer_agent
+
+      git_tree_review:
+        use_agent: git_tree_governance_agent
+
+      branch_lifecycle_audit:
+        use_agent: git_tree_governance_agent
 
       refactor:
         use_agent: code_review_agent

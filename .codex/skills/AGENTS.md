@@ -35,6 +35,7 @@ Use these skills for detailed patterns on-demand:
 | `branch-pr` | Provider-neutral branch and PR workflow using the project-declared base branch | [SKILL.md](branch-pr/SKILL.md) |
 | `testing-coverage` | Backend, frontend, contract, browser, and coverage gates without provider assumptions | [SKILL.md](testing-coverage/SKILL.md) |
 | `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and code-quality tooling | [SKILL.md](pull-request-risk-review/SKILL.md) |
+| `git-tree-governance` | Read-only-first branch, worktree, branch debt, recovery, rebase, cherry-pick, and cleanup governance | [SKILL.md](git-tree-governance/SKILL.md) |
 | `nate-skill-builder` | NegritaOS adaptation of skill authoring and audit guidance | [SKILL.md](nate-skill-builder/SKILL.md) |
 | `nate-frontend-design` | Opt-in domain-specific frontend design guidance | [SKILL.md](nate-frontend-design/SKILL.md) |
 | `nate-excalidraw-diagram` | Explicit editable Excalidraw diagram workflow | [SKILL.md](nate-excalidraw-diagram/SKILL.md) |
@@ -80,6 +81,7 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 | `ibc-technical-eda-presentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation` |
 | `ibc-technical-eda-report` | `docs-alignment`, `document-control`, `local-memory-protocol`, `cqi-analytical-docx-pdf`, `ibc-technical-eda-report`, `analytical-eda-governance`, `data-contracts` |
 | `pull-request-risk-review` | `docs-alignment`, `document-control`, `local-memory-protocol`, `pull-request-risk-review`, `pr-review-deep` |
+| `git-tree-governance` | `docs-alignment`, `document-control`, `local-memory-protocol`, `git-tree-governance` |
 | `rule-model-documentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `rule-model-documentation` |
 | `visual-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
@@ -126,6 +128,7 @@ When performing these actions, invoke the corresponding skill first:
 | Write or review Jinja templates that render BigQuery SQL, dynamic CTEs, filters, projections, joins, identifiers, or query variants | `jinja-bigquery` |
 | Prepare a branch, choose a PR base, or assemble review evidence | `branch-pr` |
 | Review a pull request, evaluate PR risk, check merge readiness, assess auto-approval, or inspect GitHub PR checks | `pull-request-risk-review` |
+| Audit branches or worktrees, inspect branch debt, recover Git context, or plan safe cleanup | `git-tree-governance` |
 | Change behavior, contracts, visual states, or browser flows requiring coverage evidence | `testing-coverage` |
 | Modify EDA outputs, plots, dashboards, or run-scoped output layout | `eda-reports` |
 | Review or create churn, recall, DiscReq, retention, recontact, or account journey pressure metrics | `churn-recall-indicator-audit` |

@@ -59,6 +59,7 @@ project:
     - team_lead_ds_agent
     - presentation_agent
     - plot_analysis_agent
+    - git_tree_governance_agent
   codex_profiles:
     - review
     - refactor
