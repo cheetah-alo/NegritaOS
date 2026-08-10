@@ -478,6 +478,44 @@ def _open_v1_sessions(home: Path) -> list[str]:
     return sorted(result)
 
 
+def legacy_sessions(
+    work_root: Path,
+    negritaos_root: Path = NEGRITAOS_ROOT,
+    memory_base: Path | None = None,
+) -> dict[str, Any]:
+    """List Memory v1 sessions without exposing narrative content."""
+    context = load_project(work_root, negritaos_root)
+    home = project_memory_home(context, memory_base)
+    sessions_root = home / "runtime" / "sessions"
+    rows: list[dict[str, Any]] = []
+    if sessions_root.is_dir():
+        for session_dir in sorted(sessions_root.iterdir()):
+            contract_path = session_dir / "contract.json"
+            if not contract_path.is_file():
+                continue
+            try:
+                contract = read_json(contract_path)
+                schema = int(contract.get("schema_version", 1))
+            except (OSError, ValueError, TypeError, json.JSONDecodeError):
+                continue
+            if schema != 1:
+                continue
+            _, state = _runtime_session_state(session_dir)
+            rows.append(
+                {
+                    "has_events": (session_dir / "events.jsonl").is_file(),
+                    "has_summary": (session_dir / "summary.json").is_file(),
+                    "session_id": session_dir.name,
+                    "state": state,
+                }
+            )
+    return {
+        "project_id": context.project_id,
+        "sessions": rows,
+        "status": "READY",
+    }
+
+
 def _rebuilt_index(home: Path, project_id: str) -> str:
     block = _managed_index_block(home, project_id, iso_timestamp())
     return f"# {project_id} Memory\n\n{block}\n"

@@ -40,9 +40,10 @@ runtime/active/<provider>/<session_key_hash>.json
 runtime/sessions/<session_id>/contract.json
 ```
 
-If no v2 pointer exists, the loader falls back to the untouched v1
-`runtime/active_session.json`. This lets sessions opened before Memory v2 close
-normally without pointer reassignment or contract rehashing.
+If no v2 pointer exists and no explicit `--session-key` was supplied, the
+loader may use the compatibility v1 `runtime/active_session.json`. An explicit
+`--session-key` never falls back to that global pointer, because doing so could
+select the wrong legacy session.
 
 Gate and close the same provider task:
 
@@ -51,6 +52,19 @@ python3 scripts/negrita_brain.py gate \
   --root "$PWD" --provider codex --action write --path src/module.py
 python3 scripts/negrita_brain.py close \
   --root "$PWD" --provider codex
+```
+
+When the only blocker is the legacy Memory v1 recovery itself, a human may
+authorize that narrowly named path explicitly. The authorization requires an
+actor and a reason; without it, the gate remains `BLOCK`:
+
+```bash
+python3 scripts/negrita_brain.py gate \
+  --root "$PWD" --provider codex --action commit \
+  --authorize-legacy-recovery \
+  --recovery-scope legacy-memory-v1 \
+  --authorized-by "human" \
+  --authorization-reason "Commit the legacy session selector repair"
 ```
 
 After a durable handoff, add `--durable-ref sessions/example.md` to `close`.
@@ -118,6 +132,34 @@ python3 scripts/negrita_brain.py memory rebuild-index --root "$PWD" --apply
 
 Apply refuses while any v1 session remains open and backs up the old index under
 `legacy_import/index/` before replacement.
+
+### Authorized Legacy Session Closure
+
+List legacy sessions without reading narrative content:
+
+```bash
+python3 scripts/negrita_brain.py memory legacy-sessions --root "$PWD"
+```
+
+Close one exact v1 session only after explicit human authorization. The command
+creates a backup under `legacy_import/authorized_closures/`, records the
+authorized-by value and reason in `summary.json`, and leaves the original
+contract and events intact:
+
+```bash
+python3 scripts/negrita_brain.py close \
+  --root "$PWD" \
+  --legacy-session-id SESSION_ID \
+  --authorize-legacy-close \
+  --authorized-by "human" \
+  --authorization-reason "Approved legacy session migration" \
+  --summary "Legacy session closed after review"
+```
+
+Do not use `--session-key` to close a v1 session. The command rejects that
+ambiguous path and requires `--legacy-session-id`. After every intended v1
+session is explicitly closed, run `rebuild-index --dry-run`, inspect the
+preview, and only then apply it.
 
 ## Provider Permissions
 

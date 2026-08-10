@@ -82,6 +82,24 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertEqual(result["decision"], "BLOCK")
         self.assertIsNone(result["session_id"])
 
+    def test_gate_that_allows_explicit_legacy_recovery_authorization(self) -> None:
+        with patch(
+            "src.negrita_brain.runtime._git_state",
+            return_value={"branch": "fix/close-legacy-memory-v1-sessions"},
+        ):
+            result = gate_action(
+                self.repo,
+                "commit",
+                negritaos_root=ROOT,
+                memory_base=self.memory,
+                authorize_legacy_recovery=True,
+                authorized_by="human",
+                authorization_reason="Commit the selector repair",
+                recovery_scope="legacy-memory-v1",
+            )
+        self.assertEqual(result["decision"], "ALLOW")
+        self.assertEqual(result["authorization"]["authorized_by"], "human")
+
     def test_resolve_that_blocks_uninstalled_code_workspace(self) -> None:
         (self.repo / "AGENTS.md").unlink()
         contract = self.resolve()
@@ -203,7 +221,7 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertTrue((session_dir / "state.json").is_file())
         self.assertFalse((session_dir / "summary.json").exists())
 
-    def test_legacy_pointer_that_closes_without_rewriting_index(self) -> None:
+    def test_legacy_session_that_closes_only_with_explicit_authorization(self) -> None:
         home = self.memory / "negritaos"
         session_dir = home / "runtime" / "sessions" / "legacy-session"
         contract = {
@@ -227,18 +245,63 @@ class TestRuntimeContract(RuntimeFixture):
         index = home / "index.md"
         index.write_text("# Existing memory\n", encoding="utf-8")
 
+        with self.assertRaisesRegex(SessionError, "Explicit authorization"):
+            close_session(
+                self.repo,
+                "legacy done",
+                negritaos_root=ROOT,
+                memory_base=self.memory,
+                legacy_session_id="legacy-session",
+            )
+
         closed = close_session(
             self.repo,
             "legacy done",
             negritaos_root=ROOT,
             memory_base=self.memory,
-            provider="codex",
-            session_key="thread-without-v2-pointer",
+            legacy_session_id="legacy-session",
+            authorize_legacy_close=True,
+            authorized_by="human",
+            authorization_reason="Approved legacy session migration",
         )
 
         self.assertEqual(closed["schema_version"], 1)
         self.assertTrue((session_dir / "summary.json").is_file())
         self.assertEqual(index.read_text(encoding="utf-8"), "# Existing memory\n")
+        self.assertTrue(Path(closed["backup_path"]).is_dir())
+        self.assertEqual(closed["authorization"]["authorized_by"], "human")
+
+    def test_session_key_does_not_fall_back_to_global_legacy_pointer(self) -> None:
+        home = self.memory / "negritaos"
+        session_dir = home / "runtime" / "sessions" / "legacy-session"
+        contract = {
+            "schema_version": 1,
+            "session_id": "legacy-session",
+            "project": {"workspace_kind": "code"},
+            "provider": "codex",
+            "state": "READY",
+        }
+        contract["contract_sha256"] = sha256_json(contract)
+        write_json(session_dir / "contract.json", contract)
+        write_json(
+            home / "runtime" / "active_session.json",
+            {
+                "contract_path": str(session_dir / "contract.json"),
+                "project_id": "negritaos",
+                "session_id": "legacy-session",
+                "state": "READY",
+            },
+        )
+
+        with self.assertRaisesRegex(SessionError, "--legacy-session-id"):
+            close_session(
+                self.repo,
+                "legacy done",
+                negritaos_root=ROOT,
+                memory_base=self.memory,
+                provider="codex",
+                session_key="thread-without-v2-pointer",
+            )
 
     def test_permission_error_that_is_not_configuration_failure(self) -> None:
         with patch(

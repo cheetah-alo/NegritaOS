@@ -73,3 +73,14 @@ the repository explicitly declares a tracked report location.
   explicit user request and available connector permissions.
 - `auto_approve_allowed` remains `false`.
 - Low risk returns `approve_candidate`, not a merge action.
+
+## Brain Degraded-State Strategy
+
+Keep PR review and fix execution as separate lanes:
+
+- `review_only` can run with a missing READY Brain contract and must report
+  `BLOCKED_CONFIG_RESOLUTION` as a limitation without mutating code or Git.
+- `fix_execution` requires a READY contract. Legacy Memory v1 blockers route to
+  `git_tree_governance_agent` (`GT`) for explicit, backed-up session recovery.
+- After recovery, resolve a new READY session and rerun PRR before applying the
+  fixes. PRR must not silently close or repair Brain sessions itself.

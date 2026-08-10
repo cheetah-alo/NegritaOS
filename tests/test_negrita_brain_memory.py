@@ -10,6 +10,7 @@ from src.negrita_brain.installer import Installer
 from src.negrita_brain.memory import (
     INDEX_START,
     handoff,
+    legacy_sessions,
     memory_status,
     migrate_memory,
     rebuild_index,
@@ -137,6 +138,23 @@ class TestDurableMemory(MemoryFixture):
 
 
 class TestMemoryMigration(MemoryFixture):
+    def test_legacy_session_inventory_is_narrative_free(self) -> None:
+        legacy = self.home / "runtime" / "sessions" / "legacy-session"
+        legacy.mkdir(parents=True)
+        (legacy / "contract.json").write_text(
+            json.dumps({"schema_version": 1}), encoding="utf-8"
+        )
+        (legacy / "events.jsonl").write_text('{"status":"OK"}\n', encoding="utf-8")
+
+        result = legacy_sessions(self.repo, ROOT, self.memory)
+
+        self.assertEqual(result["sessions"], [{
+            "has_events": True,
+            "has_summary": False,
+            "session_id": "legacy-session",
+            "state": "active",
+        }])
+
     def test_migration_that_is_idempotent_and_preserves_sources(self) -> None:
         legacy = self.home / "runtime" / "sessions" / "legacy-session"
         legacy.mkdir(parents=True)

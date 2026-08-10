@@ -34,6 +34,21 @@ V1 is `shadow/recommendation` only.
 - Medium or high-risk PRs require `human_review` or `changes_required`.
 - Missing critical evidence returns `insufficient_evidence` or `blocked`.
 
+## Brain Degraded-State Strategy
+
+PRR has two separate lanes:
+
+- `review_only`: may inspect a PR and report findings when Brain has no READY
+  contract, but must return `BLOCKED_CONFIG_RESOLUTION` as an execution
+  limitation and may not mutate code or Git state.
+- `fix_execution`: requires a READY Brain contract. If the blocker is legacy
+  Memory v1, hand off to `git_tree_governance_agent`/`GT` for explicit recovery;
+  do not bypass the gate from PRR.
+
+After recovery, resolve a new READY session and rerun PRR before applying the
+requested fixes. A PR review must never become the mechanism that silently
+repairs or closes Brain sessions.
+
 ## Required Inputs
 
 Collect and cite the evidence actually inspected:

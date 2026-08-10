@@ -6,6 +6,7 @@
 .codex/config.toml
 .codex/memory/
 .codex/settings.local.json
+.vscode/
 
 # Runtime/cache artifacts
 __pycache__/

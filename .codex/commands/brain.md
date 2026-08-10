@@ -23,6 +23,10 @@ Codex and `claude` in Claude.
   FAIL, WARN, permission, legacy-index, and open-session conditions.
 - `/brain migrate`: run `memory migrate --dry-run` unless the user explicitly
   requests `--apply`.
+- `/brain legacy-sessions`: list Memory v1 session IDs and closure state without
+  reading narrative content.
+- `/brain authorize-legacy-close`: require the user to name the exact v1
+  session, authorized-by value, and reason; create a backup before closing it.
 
 Never write canonical memory directly. A permission failure requires elevation
 or `configure codex --apply`, followed by a new Codex task.

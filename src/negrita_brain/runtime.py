@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import shutil
 import subprocess
 import uuid
 from dataclasses import dataclass
@@ -43,6 +44,8 @@ SAFE_EVENT_KEYS = {
     "tool",
 }
 VALID_PROVIDERS = {"codex", "claude", "ci", "human"}
+LEGACY_RECOVERY_SCOPE = "legacy-memory-v1"
+RECOVERY_BRANCH_PREFIXES = ("fix/", "chore/brain-")
 
 
 @dataclass(frozen=True)
@@ -69,6 +72,7 @@ class _SessionHandle:
     session_dir: Path
     pointer_path: Path
     legacy: bool
+    update_pointer: bool = True
 
 
 def resolve_session_identity(
@@ -189,6 +193,51 @@ def _active_pointer(
 def _legacy_pointer(context: ProjectContext, memory_base: Path | None) -> Path:
     """Return the Memory v1 workspace-global pointer."""
     return project_memory_home(context, memory_base) / "runtime" / "active_session.json"
+
+
+def _verified_contract(session_dir: Path) -> dict[str, Any]:
+    """Load one session contract and verify its immutable hash."""
+    contract_path = session_dir / "contract.json"
+    if not contract_path.is_file():
+        raise SessionError(f"Session contract is missing: {contract_path}")
+    contract = read_json(contract_path)
+    expected = contract.pop("contract_sha256", None)
+    actual = sha256_json(contract)
+    contract["contract_sha256"] = expected
+    if expected != actual:
+        raise SessionError(f"Session contract hash mismatch: {contract_path}")
+    return contract
+
+
+def _load_legacy_handle(
+    work_root: Path,
+    negritaos_root: Path,
+    memory_base: Path | None,
+    session_id: str,
+) -> _SessionHandle:
+    """Select one Memory v1 session by its exact persisted id."""
+    if not session_id or Path(session_id).name != session_id:
+        raise SessionError("legacy-session-id must be one session directory name")
+    context = load_project(work_root, negritaos_root)
+    session_dir = _session_dir(context, session_id, memory_base)
+    contract = _verified_contract(session_dir)
+    if int(contract.get("schema_version", 1)) != 1:
+        raise SessionError(f"Session is not a Memory v1 session: {session_id}")
+    if (session_dir / "summary.json").is_file() or (session_dir / "state.json").is_file():
+        raise SessionError(f"Session is already closed: {session_id}")
+    pointer_path = _legacy_pointer(context, memory_base)
+    update_pointer = False
+    if pointer_path.is_file():
+        pointer = read_json(pointer_path)
+        update_pointer = pointer.get("session_id") == session_id
+    return _SessionHandle(
+        context,
+        contract,
+        session_dir,
+        pointer_path,
+        True,
+        update_pointer=update_pointer,
+    )
 
 
 def _permission_error(memory_home: Path, exc: PermissionError) -> MemoryPermissionError:
@@ -367,12 +416,17 @@ def _load_active_handle(
     session_key: str | None,
     environ: Mapping[str, str] | None,
 ) -> _SessionHandle:
-    """Load and verify a v2 pointer, falling back to an untouched v1 pointer."""
+    """Load a v2 pointer, using the v1 pointer only without explicit selection."""
     context = load_project(work_root, negritaos_root)
     identity = resolve_session_identity(provider, session_key, environ)
     pointer_path = _active_pointer(context, identity, memory_base)
     legacy = False
     if not pointer_path.is_file():
+        if session_key:
+            raise SessionError(
+                "No Memory v2 pointer for session-key; use --legacy-session-id "
+                "to select a Memory v1 session explicitly"
+            )
         pointer_path = _legacy_pointer(context, memory_base)
         legacy = True
     if not pointer_path.is_file():
@@ -381,12 +435,7 @@ def _load_active_handle(
     contract_path = Path(str(pointer.get("contract_path", ""))).expanduser()
     if not contract_path.is_file():
         raise SessionError(f"Active contract is missing: {contract_path}")
-    contract = read_json(contract_path)
-    expected = contract.pop("contract_sha256", None)
-    actual = sha256_json(contract)
-    contract["contract_sha256"] = expected
-    if expected != actual:
-        raise SessionError(f"Session contract hash mismatch: {contract_path}")
+    contract = _verified_contract(contract_path.parent)
     if pointer.get("state") != "READY":
         contract["state"] = str(pointer.get("state", "CLOSED"))
     return _SessionHandle(context, contract, contract_path.parent, pointer_path, legacy)
@@ -415,6 +464,10 @@ def gate_action(
     memory_base: Path | None = None,
     provider: str | None = None,
     session_key: str | None = None,
+    authorize_legacy_recovery: bool = False,
+    authorized_by: str | None = None,
+    authorization_reason: str | None = None,
+    recovery_scope: str | None = None,
     environ: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     """Authorize, warn, or block an action under the selected contract."""
@@ -439,14 +492,41 @@ def gate_action(
     rules = policy.get("enforcement", {}).get(kind, {})
     reasons: list[str] = []
     decision = "ALLOW"
+    authorization: dict[str, str] | None = None
     if normalized != "read" and not ready:
-        policy_key = (
-            "commit_without_ready_contract"
-            if normalized == "commit"
-            else "mutation_without_ready_contract"
-        )
-        decision = str(rules.get(policy_key, "warn")).upper()
-        reasons.append("Mutation requires an active READY session contract")
+        if authorize_legacy_recovery:
+            branch = _git_state(context.work_root).get("branch")
+            if recovery_scope != LEGACY_RECOVERY_SCOPE:
+                raise SessionError(
+                    f"Legacy recovery requires recovery_scope={LEGACY_RECOVERY_SCOPE}"
+                )
+            if not isinstance(branch, str) or not branch.startswith(RECOVERY_BRANCH_PREFIXES):
+                raise SessionError(
+                    "Legacy recovery authorization requires a fix/ or chore/brain- branch"
+                )
+            if not authorized_by or not authorization_reason:
+                raise SessionError(
+                    "Legacy recovery authorization requires authorized_by and reason"
+                )
+            decision = "ALLOW"
+            authorization = {
+                "authorized_by": authorized_by,
+                "reason": authorization_reason,
+                "mode": "explicit_legacy_recovery_override",
+                "scope": recovery_scope,
+                "branch": branch,
+            }
+            reasons.append(
+                "Human authorization recorded for the legacy-memory recovery path"
+            )
+        else:
+            policy_key = (
+                "commit_without_ready_contract"
+                if normalized == "commit"
+                else "mutation_without_ready_contract"
+            )
+            decision = str(rules.get(policy_key, "warn")).upper()
+            reasons.append("Mutation requires an active READY session contract")
     if file_path is not None and file_path.suffix.lower() in DELIVERABLE_EXTENSIONS:
         candidate = file_path if file_path.is_absolute() else context.work_root / file_path
         if is_deliverable(candidate, context.work_root) and not is_compliant_deliverable(
@@ -465,6 +545,7 @@ def gate_action(
         "reasons": reasons,
         "session_id": contract.get("session_id") if contract else None,
         "workspace_kind": kind,
+        "authorization": authorization,
     }
 
 
@@ -516,16 +597,37 @@ def close_session(
     memory_base: Path | None = None,
     provider: str | None = None,
     session_key: str | None = None,
+    legacy_session_id: str | None = None,
+    authorize_legacy_close: bool = False,
+    authorized_by: str | None = None,
+    authorization_reason: str | None = None,
     durable_refs: list[str] | None = None,
     environ: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     """Close one selected session without rewriting durable project memory."""
-    handle = _load_active_handle(
-        work_root, negritaos_root, memory_base, provider, session_key, environ
-    )
+    if legacy_session_id and session_key:
+        raise SessionError("Choose session-key or legacy-session-id, not both")
+    if authorize_legacy_close and not legacy_session_id:
+        raise SessionError("authorize_legacy_close requires legacy_session_id")
+    if legacy_session_id:
+        if not authorize_legacy_close:
+            raise SessionError(
+                "Explicit authorization is required to close a Memory v1 session"
+            )
+        if not authorized_by or not authorization_reason:
+            raise SessionError(
+                "Legacy session closure requires authorized_by and authorization_reason"
+            )
+        handle = _load_legacy_handle(
+            work_root, negritaos_root, memory_base, legacy_session_id
+        )
+    else:
+        handle = _load_active_handle(
+            work_root, negritaos_root, memory_base, provider, session_key, environ
+        )
     context = handle.context
     contract = handle.contract
-    if contract.get("state") != "READY":
+    if not legacy_session_id and contract.get("state") != "READY":
         raise SessionError(f"Session is already closed: {contract['session_id']}")
     closed_at = iso_timestamp()
     refs = list(dict.fromkeys(durable_refs or []))
@@ -538,6 +640,27 @@ def close_session(
         "session_id": contract["session_id"],
         "status": status.upper(),
     }
+    backup_path: Path | None = None
+    if legacy_session_id:
+        memory_home = project_memory_home(context, memory_base)
+        backup_path = (
+            memory_home
+            / "legacy_import"
+            / "authorized_closures"
+            / closed_at.replace(":", "").replace("+", "_")
+            / legacy_session_id
+        )
+        backup_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(handle.session_dir, backup_path)
+        legacy_pointer = _legacy_pointer(context, memory_base)
+        if legacy_pointer.is_file():
+            shutil.copy2(legacy_pointer, backup_path.parent / legacy_pointer.name)
+        closed["authorization"] = {
+            "authorized_by": authorized_by,
+            "reason": authorization_reason,
+            "mode": "explicit_legacy_session_close",
+        }
+        closed["backup_path"] = str(backup_path)
     if summary and handle.legacy:
         closed["summary"] = summary
     state_path = handle.session_dir / ("summary.json" if handle.legacy else "state.json")
@@ -558,7 +681,8 @@ def close_session(
     try:
         with file_lock(memory_home / "runtime" / ".project.lock"):
             write_json(state_path, closed)
-            write_json(handle.pointer_path, pointer)
+            if handle.update_pointer:
+                write_json(handle.pointer_path, pointer)
         append_jsonl(
             handle.session_dir / "events.jsonl",
             {

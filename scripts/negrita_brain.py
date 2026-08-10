@@ -25,6 +25,7 @@ from negrita_brain.errors import BrainError, MemoryPermissionError  # noqa: E402
 from negrita_brain.installer import Installer  # noqa: E402
 from negrita_brain.memory import (  # noqa: E402
     handoff,
+    legacy_sessions,
     memory_status,
     migrate_memory,
     rebuild_index,
@@ -83,6 +84,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--action", required=True, choices=["read", "write", "commit", "deliverable"]
     )
     gate.add_argument("--path", type=_path)
+    gate.add_argument(
+        "--authorize-legacy-recovery",
+        action="store_true",
+        help="Explicitly authorize the blocked Memory v1 recovery path",
+    )
+    gate.add_argument("--authorized-by")
+    gate.add_argument("--authorization-reason")
+    gate.add_argument("--recovery-scope")
 
     event = commands.add_parser("event", help="Append safe execution metadata")
     _common(event)
@@ -124,6 +133,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     close.add_argument("--status", default="COMPLETE")
     close.add_argument("--durable-ref", action="append", dest="durable_refs")
+    close.add_argument(
+        "--legacy-session-id",
+        help="Select one exact Memory v1 session for an authorized closure",
+    )
+    close.add_argument(
+        "--authorize-legacy-close",
+        action="store_true",
+        help="Authorize the selected Memory v1 closure after backup",
+    )
+    close.add_argument("--authorized-by")
+    close.add_argument("--authorization-reason")
 
     memory = commands.add_parser("memory", help="Manage canonical durable project memory")
     memory_commands = memory.add_subparsers(dest="memory_command", required=True)
@@ -154,6 +174,10 @@ def build_parser() -> argparse.ArgumentParser:
     _common(migrate)
     migrate.add_argument("--all", action="store_true")
     _apply_switch(migrate)
+    legacy_sessions_parser = memory_commands.add_parser(
+        "legacy-sessions", help="List Memory v1 sessions without reading narratives"
+    )
+    _common(legacy_sessions_parser)
     rebuild = memory_commands.add_parser("rebuild-index")
     _common(rebuild)
     _apply_switch(rebuild)
@@ -234,6 +258,10 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             args.path,
             provider=args.provider,
             session_key=args.session_key,
+            authorize_legacy_recovery=args.authorize_legacy_recovery,
+            authorized_by=args.authorized_by,
+            authorization_reason=args.authorization_reason,
+            recovery_scope=args.recovery_scope,
             **common,
         )
         return result, 2 if result["decision"] == "BLOCK" else 0
@@ -288,6 +316,10 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             args.status,
             provider=args.provider,
             session_key=args.session_key,
+            legacy_session_id=args.legacy_session_id,
+            authorize_legacy_close=args.authorize_legacy_close,
+            authorized_by=args.authorized_by,
+            authorization_reason=args.authorization_reason,
             durable_refs=args.durable_refs,
             **common,
         ), 0
@@ -299,6 +331,8 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
                 session_key=args.session_key,
                 **common,
             ), 0
+        if args.memory_command == "legacy-sessions":
+            return legacy_sessions(args.root, **common), 0
         if args.memory_command == "remember":
             return remember(
                 args.root,
