@@ -28,6 +28,7 @@ negrita_brain:
     documentation: TD
     writeup: TD
     implementation: CR
+    write: CR
     code_review: CR
     pull_request_review: PRR
     pr_risk_review: PRR
