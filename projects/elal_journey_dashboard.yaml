@@ -99,5 +99,5 @@ project:
     - "Backend source-of-truth is backend/app with FastAPI and BigQuery aggregate endpoints."
     - "Apply dashboard-architecture before creating or changing dashboard UI/source structure; do not create one-file dashboard monoliths."
     - "Apply data-contracts and data-quality-sentinel review for endpoint schema, metric, row-grain, join, or BigQuery field changes."
-    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, or HTML deliverables under documents/ unless updating existing repo docs."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, or HTML deliverables under an explicit user-selected output path; documents/ remains an optional repository-local default."
     - "Existing ELAL journey-intelligence work in proj_data_analytics may provide reusable contract context, but this repo owns the dashboard app runtime."

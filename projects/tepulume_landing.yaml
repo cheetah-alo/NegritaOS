@@ -88,4 +88,4 @@ project:
     - "Preserve app/, public/, tests/, .openai/hosting.json, and hosting identity when changing the site."
     - "Run npm test for validation when web source changes are made."
     - "Keep brand/copy decisions aligned with tepulume_social, but do not mix editorial-calendar artifacts into the landing source tree."
-    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating existing repo docs."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under an explicit user-selected output path; documents/ remains optional."

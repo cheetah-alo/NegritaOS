@@ -81,7 +81,7 @@ project:
     - "Workspace root is not a Git repository; do not assume git operations are available here."
     - "Treat PDFs, DOCX, XLSX, XLSM, ZIP files, notebooks, and OneDrive sync artifacts as local evidence unless the user explicitly asks to modify them."
     - "Do not move, delete, rename, normalize, or rewrite synced OneDrive artifacts by default."
-    - "Apply document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating an existing user-owned artifact."
+    - "Apply document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under an explicit user-selected output path; documents/ is optional, and existing user-owned artifacts are not moved."
     - "Use DQ mode for evaluation spreadsheets, anonymization tooling, data-quality checks, or artifact inventories."
     - "Use TD mode for TFM guidance, academic documentation, tribunal material, or structured writeups."
     - "tfm_proposal_corpus is intentionally unset until the authoritative previous-proposal directory is confirmed; the research advisor must mark differentiation as unverified meanwhile."

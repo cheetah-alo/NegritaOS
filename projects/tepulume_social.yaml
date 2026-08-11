@@ -79,4 +79,4 @@ project:
     - "Use TD mode for brand voice, content strategy, captions, post drafts, and editorial revisions."
     - "Use DQ mode for source registry checks, calendar completeness, evidence status, and publishing readiness."
     - "Keep social content operations separate from landing/web source changes; cross-link brand decisions through tepulume_workspace."
-    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating existing repo docs."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under an explicit user-selected output path; documents/ remains optional."

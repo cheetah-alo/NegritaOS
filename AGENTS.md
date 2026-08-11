@@ -7,7 +7,7 @@ This workspace is governed by NegritaOS. Before substantive work:
 2. Run `python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve --root "$PWD" --provider codex --action <action>`.
 3. Use the resolved modes, agents, profile closure, rules, skills, artifact route, and gates.
 4. Before writes or commits, run `python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py gate --root "$PWD" --provider codex --action write|commit [--path PATH]`.
-5. New deliverables use `documents/<slug>__updated_YYYYMMDD_HHMMSS.<ext>` and `documents/document_manifest.jsonl`.
+5. New deliverables use a user-selected output path. Keep the `<slug>__updated_YYYYMMDD_HHMMSS.<ext>` version suffix; external PPTX/DOCX/PDF artifacts are not added to Git by default.
 6. Persist only reusable findings with `python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py memory remember|handoff --root "$PWD" --provider codex ...`.
 7. Close substantive work with `python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py close --root "$PWD" --provider codex`. Pass `--durable-ref REF` only after a Brain handoff.
 

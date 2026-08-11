@@ -83,7 +83,11 @@ def build_parser() -> argparse.ArgumentParser:
     gate.add_argument(
         "--action", required=True, choices=["read", "write", "commit", "deliverable"]
     )
-    gate.add_argument("--path", type=_path)
+    gate.add_argument(
+        "--path",
+        type=_path,
+        help="Explicit output path for deliverables; may be outside the repository",
+    )
     gate.add_argument(
         "--authorize-legacy-recovery",
         action="store_true",

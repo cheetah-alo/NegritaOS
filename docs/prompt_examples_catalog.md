@@ -296,7 +296,7 @@ OUTPUT:
 Formato: Notion-ready markdown
 Idioma: Español (código/SQL en inglés)
 Quality warnings: visible
-Destination: documents/ with document-control; persist only reusable findings through /brain remember or /brain handoff
+Destination: explicit user-selected path with document-control; persist only reusable findings through /brain remember or /brain handoff
 ```
 
 ### Prompt Corto

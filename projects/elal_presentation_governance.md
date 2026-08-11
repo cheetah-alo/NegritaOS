@@ -29,7 +29,8 @@ having complete notes as specified below.
 
 ## Safe source rule
 
-PPTX documents under `documents/` are local client artifacts and may be open.
+PPTX artifacts in a user-selected local or external output folder are client
+artifacts and may be open; do not move them into the repository unless asked.
 Before editing, obtain the exact, closed source path from Jacky, verify it, and
 work from a duplicate. A similar filename, a `final` suffix, or a file visible
 in a directory does not identify an editable source. Organization means a

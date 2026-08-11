@@ -264,13 +264,13 @@ def doctor_project(
                     )
                 )
     audit = audit_documents(context.work_root)
-    if audit["outside_documents"] or audit["missing_timestamp"]:
+    if audit["missing_timestamp"]:
         issues.append(
             _issue(
                 "LEGACY_DOCUMENTS",
                 "WARN",
-                "Legacy/noncompliant deliverables: "
-                f"{len(set(audit['outside_documents'] + audit['missing_timestamp']))}",
+                "Deliverables missing the required version suffix: "
+                f"{len(audit['missing_timestamp'])}",
             )
         )
     errors = sum(issue["level"] == "ERROR" for issue in issues)

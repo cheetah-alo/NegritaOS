@@ -81,8 +81,19 @@ negrita_brain:
       noncompliant_deliverable: warn
       immutable_existing_artifacts: true
   artifact_route:
+    selection: user_selected
     directory: documents
     manifest: documents/document_manifest.jsonl
+    manifest_mode: optional_for_external
+    require_explicit_path_for: [md, pptx, ppt, pdf, docx, doc, html]
+    default_git_policy:
+      md: tracked_candidate
+      pptx: external
+      ppt: external
+      pdf: external
+      docx: external
+      doc: external
+      html: external
     filename_pattern: "<slug>__updated_YYYYMMDD_HHMMSS.<ext>"
     timezone: Europe/Madrid
   quality_gates:

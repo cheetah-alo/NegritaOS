@@ -84,5 +84,5 @@ project:
     - "Use TD mode for structured bitacora updates, decision memos, leadership summaries, or requirement narratives."
     - "Use DQ mode for CSV/XLSX inventory, activity reconciliation, evidence completeness, or traceability checks."
     - "Treat existing PDFs, DOC/DOCX, CSVs, and synced OneDrive artifacts as evidence; do not move, delete, rename, normalize, or overwrite them unless explicitly requested."
-    - "Apply document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating an existing user-owned artifact."
+    - "Apply document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under an explicit user-selected output path; documents/ is optional, and existing user-owned artifacts are not moved."
     - "When summarizing work status, separate completed work, in-progress work, blocked work, pending decisions, dependencies, and objective alignment."

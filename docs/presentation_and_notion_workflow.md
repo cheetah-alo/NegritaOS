@@ -52,10 +52,12 @@ Load `.codex/skills/document-control/SKILL.md` before creating or updating
 deliverable decks, PDFs, Word docs, HTML deliverables, or Notion/Confluence
 markdown.
 
-- Deliverables live under `documents/` at the active work root.
-- Filenames use `<slug>__updated_YYYYMMDD_HHMMSS.<ext>` with Europe/Madrid time.
+- The user selects the exact output path before a deck or matching document is created.
+- `documents/` is a compatible repository-local default, not a mandatory folder.
+- PPTX, PDF, and DOCX artifacts outside the repository are external by default and are not added to Git.
+- Filenames use `<slug>__updated_YYYYMMDD_HHMMSS.<ext>` with Europe/Madrid time unless the user defines another versioning convention.
 - Updates create new timestamped versions; previous versions are not overwritten.
-- Append each version to `documents/document_manifest.jsonl`.
+- For tracked repository artifacts, append each version to the applicable manifest. For external binaries, record the path, hash, and Git policy in Brain memory or an external sidecar manifest.
 - Existing scattered deliverables should be audited before migration; do not
   bulk-move historical files without an explicit migration request.
 - The active Negrita Brain session contract must resolve `document-delivery`.

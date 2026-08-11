@@ -1,8 +1,9 @@
 """Audit document-control placement and filename compliance.
 
 This script is intentionally read-only. It reports deliverable artifacts that
-are outside a `documents/` folder or whose filename does not include the
-required `__updated_YYYYMMDD_HHMMSS` suffix.
+are repository-local and whose filename does not include the required
+`__updated_YYYYMMDD_HHMMSS` suffix. A repository-local path outside
+`documents/` is reported for visibility but is valid when explicitly selected.
 """
 
 from __future__ import annotations
@@ -74,7 +75,7 @@ def main() -> int:
     print_section("Outside documents/", root, outside_documents, args.limit)
     print_section("Missing timestamp suffix", root, missing_timestamp, args.limit)
 
-    if outside_documents or missing_timestamp:
+    if missing_timestamp:
         return 1
     return 0
 

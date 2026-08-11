@@ -62,8 +62,12 @@ def is_deliverable(path: Path, root: Path) -> bool:
     return not any(part in SOURCE_PARTS for part in parts[:-1])
 
 
-def is_compliant_deliverable(path: Path, root: Path) -> bool:
-    """Return whether a deliverable follows directory and timestamp policy."""
+def is_compliant_deliverable(
+    path: Path, root: Path, *, user_selected_route: bool = False
+) -> bool:
+    """Return whether a deliverable follows the active route and name policy."""
+    if user_selected_route:
+        return TIMESTAMPED_NAME.fullmatch(path.name) is not None
     try:
         relative = path.resolve().relative_to(root.resolve())
     except ValueError:

@@ -104,4 +104,4 @@ project:
     - "Use CR mode for SQL pipeline changes and runner changes; prefer small, ordered scripts over ad hoc monolithic SQL."
     - "Use MR mode for topology-grain selection, trap-to-call association, prediction evaluation, and model-readiness interpretation."
     - "Generated outputs, reports, presentations, and local analysis artifacts stay out of Git unless explicitly promoted."
-    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating existing repo docs."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under an explicit user-selected output path; documents/ remains optional."

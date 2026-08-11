@@ -114,4 +114,4 @@ project:
     - "Use DQ mode for schema drift, duplicate-grain checks, null/coverage audits, control-group consistency, and BigQuery dry-run readiness."
     - "Use CR mode for DAG SQL, incremental inserts, table creation, and production SQL changes."
     - "Use MR mode for churn/model interpretation, segment distribution, overlap, lift, and leakage/readiness claims."
-    - "Preserve the existing PDF evaluation in docs/ as evidence; new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables must use document-control under documents/."
+    - "Preserve the existing PDF evaluation in docs/ as evidence; new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables must use document-control under an explicit user-selected output path."

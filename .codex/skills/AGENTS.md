@@ -19,7 +19,7 @@ Use these skills for detailed patterns on-demand:
 | `project-structure` | File placement rules for backend, analytics, frontend, tests, and governance assets | [SKILL.md](project-structure/SKILL.md) |
 | `business-rules` | Deterministic and traceable business-rule guidance across backend, frontend, and analytics | [SKILL.md](business-rules/SKILL.md) |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
-| `document-control` | Govern deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown under timestamped `documents/` outputs | [SKILL.md](document-control/SKILL.md) |
+| `document-control` | Govern user-selected deliverable paths, timestamping, manifests, and Git policy for documents, decks, PDFs, DOCX, HTML, and markdown | [SKILL.md](document-control/SKILL.md) |
 | `cqi-analytical-pptx` | CQI/CQISense analytical PowerPoint creation, editing, evidence notes, release QA, readability audits, and mobile podcast contracts | [SKILL.md](cqi-analytical-pptx/SKILL.md) |
 | `cqi-analytical-docx-pdf` | CQI/CQISense analytical Word/PDF reports with APA tables/figures, render QA, visual inspection, and document-control governance | [SKILL.md](cqi-analytical-docx-pdf/SKILL.md) |
 | `ibc-technical-eda-presentation` | IBC technical EDA, bridge-readiness, and ML-readiness decks using CQI visual/evidence standards | [SKILL.md](ibc-technical-eda-presentation/SKILL.md) |

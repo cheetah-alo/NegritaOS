@@ -185,7 +185,10 @@ failure.
 
 Decision transitions remain append-only under `decisions/ledger.jsonl` and may
 project architecture/contract ADRs into `docs/decisions/`. New deliverables use
-`documents/<slug>__updated_YYYYMMDD_HHMMSS.<ext>` and the document manifest.
+a user-selected output path. Keep the
+`<slug>__updated_YYYYMMDD_HHMMSS.<ext>` suffix unless the user specifies another
+versioning convention. `documents/` is an optional repository-local default;
+external PPTX, DOCX, and PDF artifacts are not tracked by default.
 
 Runtime events permit metadata only: ids, timestamps, status, provider, tool,
 action, file path, decision ids, and durable references. Prompts, responses,

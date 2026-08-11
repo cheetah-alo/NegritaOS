@@ -58,6 +58,8 @@ class TestRuntimeContract(RuntimeFixture):
         contract_path = contract_path / contract["session_id"] / "contract.json"
         self.assertEqual(len(contract["contract_sha256"]), 64)
         self.assertIn("document-control", contract["skills"])
+        self.assertEqual(contract["artifact_route"]["selection"], "user_selected")
+        self.assertIn("pptx", contract["artifact_route"]["require_explicit_path_for"])
         self.assertTrue(contract_path.is_file())
 
     def test_resolve_that_maps_global_mode_to_project_agent(self) -> None:
@@ -122,8 +124,24 @@ class TestRuntimeContract(RuntimeFixture):
             negritaos_root=ROOT,
             memory_base=self.memory,
         )
+        external = gate_action(
+            self.repo,
+            "write",
+            Path("/tmp/report__updated_20260805_120000.pdf"),
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+        )
+        missing_destination = gate_action(
+            self.repo,
+            "deliverable",
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+        )
         self.assertEqual(blocked["decision"], "BLOCK")
         self.assertEqual(allowed["decision"], "ALLOW")
+        self.assertEqual(external["decision"], "ALLOW")
+        self.assertEqual(missing_destination["decision"], "BLOCK")
+        self.assertIn("External deliverable route", external["reasons"][-1])
 
     def test_event_that_discards_prompt_and_output_fields(self) -> None:
         contract = self.resolve()

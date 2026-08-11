@@ -32,6 +32,14 @@ class TestDocumentControl(unittest.TestCase):
         compliant = root / "documents" / "report__updated_20260805_120000.pdf"
         self.assertTrue(is_deliverable(compliant, root))
         self.assertTrue(is_compliant_deliverable(compliant, root))
+        external = Path("/external/report__updated_20260805_120000.pdf")
+        self.assertTrue(is_compliant_deliverable(external, root, user_selected_route=True))
+        selected_repo_path = Path("/workspace/reports/report__updated_20260805_120000.pdf")
+        self.assertTrue(
+            is_compliant_deliverable(
+                selected_repo_path, root, user_selected_route=True
+            )
+        )
 
     def test_cloud_artifact_that_is_not_downloaded_for_hash(self) -> None:
         cloud_root = Path("/Users/example/Library/CloudStorage/OneDrive-Personal/project")

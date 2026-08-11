@@ -72,4 +72,4 @@ project:
     - "Use LP mode for cross-workstream planning, brand positioning, roadmap, dependencies, and prioritization."
     - "Use TD mode for brand narrative, content strategy, and editorial writeups."
     - "Use DQ mode for calendar completeness, source verification, evidence inventory, or publishing readiness checks."
-    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under documents/ unless updating existing repo docs."
+    - "Use document-control for new agent-authored reports, decks, PDFs, DOCX, HTML deliverables, or markdown deliverables under an explicit user-selected output path; documents/ remains optional."

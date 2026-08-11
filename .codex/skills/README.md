@@ -77,7 +77,7 @@ Reusable patterns for common domains:
 | `analytical-eda-governance` | Provider-neutral structure, manifests, contracts, immutable runs, and evidence gates for new or migrated EDA |
 | `bigquery-analysis-governance` | BigQuery source-quality preflight for grain, capture-to-load latency, freshness, SLA, and evidence |
 | `elal-eda-governance` | Opt-in ELAL EDA semantics for operational severity, proxy labels, blocked states, and third subtitle |
-| `document-control` | Timestamped `documents/` placement and manifest governance for deliverables |
+| `document-control` | User-selected deliverable routing, timestamping, manifest, and Git-policy governance |
 | `cqi-analytical-pptx` | CQI/CQISense analytical PowerPoint delivery, evidence notes, release QA, readability audits, and mobile podcast contracts |
 | `cqi-analytical-docx-pdf` | CQI/CQISense analytical Word/PDF reports with APA tables/figures, render QA, visual inspection, and document-control governance |
 | `ibc-technical-eda-report` | IBC technical EDA DOCX/PDF reports, source-readiness memos, join-readiness guardrails, and ML-readiness evidence limits |

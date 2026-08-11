@@ -353,11 +353,17 @@ def resolve_session(
         "skills": resolved_skill_ids,
         "agent_skills": agent_skill_ids,
         "artifact_route": {
+            "selection": route.get("selection", "canonical_default"),
             "directory": str(context.work_root / str(route.get("directory", "documents"))),
             "manifest": str(
                 context.work_root
                 / str(route.get("manifest", "documents/document_manifest.jsonl"))
             ),
+            "manifest_mode": route.get("manifest_mode", "required"),
+            "require_explicit_path_for": list(
+                route.get("require_explicit_path_for", [])
+            ),
+            "default_git_policy": dict(route.get("default_git_policy", {})),
             "filename_pattern": route.get("filename_pattern"),
             "timezone": route.get("timezone", "Europe/Madrid"),
         },
@@ -527,16 +533,45 @@ def gate_action(
             )
             decision = str(rules.get(policy_key, "warn")).upper()
             reasons.append("Mutation requires an active READY session contract")
+    route = policy.get("artifact_route", {})
+    user_selected_route = route.get("selection") == "user_selected"
+    required_extensions = {
+        str(value).lower().lstrip(".")
+        for value in route.get("require_explicit_path_for", [])
+    }
+    if normalized == "deliverable" and user_selected_route and file_path is None:
+        if "*" in required_extensions or required_extensions:
+            route_decision = str(rules.get("noncompliant_deliverable", "warn")).upper()
+            if route_decision == "BLOCK" or decision == "ALLOW":
+                decision = route_decision
+            reasons.append(
+                "Deliverable destination must be explicitly selected before creation"
+            )
     if file_path is not None and file_path.suffix.lower() in DELIVERABLE_EXTENSIONS:
         candidate = file_path if file_path.is_absolute() else context.work_root / file_path
-        if is_deliverable(candidate, context.work_root) and not is_compliant_deliverable(
+        if user_selected_route:
+            compliant = is_compliant_deliverable(
+                candidate, context.work_root, user_selected_route=True
+            )
+            if not compliant:
+                route_decision = str(rules.get("noncompliant_deliverable", "warn")).upper()
+                if route_decision == "BLOCK" or decision == "ALLOW":
+                    decision = route_decision
+                reasons.append(
+                    "Deliverable names must use <slug>__updated_YYYYMMDD_HHMMSS.<ext>"
+                )
+            elif not candidate.resolve().is_relative_to(context.work_root.resolve()):
+                reasons.append(
+                    "External deliverable route explicitly selected; artifact is not tracked by default"
+                )
+        elif is_deliverable(candidate, context.work_root) and not is_compliant_deliverable(
             candidate, context.work_root
         ):
             route_decision = str(rules.get("noncompliant_deliverable", "warn")).upper()
             if route_decision == "BLOCK" or decision == "ALLOW":
                 decision = route_decision
             reasons.append(
-                "New deliverables must use documents/<slug>__updated_YYYYMMDD_HHMMSS.<ext>"
+                "Deliverable names must use <slug>__updated_YYYYMMDD_HHMMSS.<ext>"
             )
     return {
         "action": normalized,

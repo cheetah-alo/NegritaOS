@@ -72,14 +72,18 @@ document_metadata_standards:
   deliverable_file_policy:
     description: >
       Placement, naming, and manifest requirements for deliverable artifacts
-      generated or updated by NegritaOS agents.
+      generated or updated by NegritaOS agents. The destination is selected by
+      the user; documents/ remains a compatible repository-local default.
     governed_extensions: [md, pptx, ppt, pdf, docx, doc, html]
+    destination_policy: "user_selected"
     canonical_folder: "documents/"
+    external_binary_default: true
     timestamp_timezone: "Europe/Madrid"
     filename_format: "<slug>__updated_YYYYMMDD_HHMMSS.<ext>"
     filename_regex: "^[a-z0-9][a-z0-9_]*__updated_[0-9]{8}_[0-9]{6}\\.(md|pptx|ppt|pdf|docx|doc|html)$"
     update_policy: "Each update creates a new timestamped version; do not overwrite prior versions."
     manifest_path: "documents/document_manifest.jsonl"
+    external_manifest_policy: "optional; record path, hash, and Git policy in Brain catalog or sidecar manifest"
     excluded_source_docs:
       - "README.md"
       - ".codex/*"
@@ -211,8 +215,8 @@ document_metadata_standards:
         > - **Quality Status:** ✅ Passed
 
     deliverable_creation:
-      action: "Reject deliverable output outside documents/ unless user explicitly overrides"
-      message: "Deliverables must be written under documents/ with an __updated_YYYYMMDD_HHMMSS timestamp and manifest record."
+      action: "Require an explicit destination; accept repository or external paths"
+      message: "Select the deliverable destination before writing. Use an __updated_YYYYMMDD_HHMMSS timestamp; external binaries are not tracked by default."
 
   examples:
     model_review_report:

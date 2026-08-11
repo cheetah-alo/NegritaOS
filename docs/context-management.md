@@ -10,8 +10,9 @@ This document defines the architecture for managing agent context in this reposi
 
 `src/negrita_brain/` resolves the declarative layers below into one hashed
 runtime contract. `AGENTS.md` is the Codex entrypoint; `CLAUDE.md` imports it,
-and `.codex/settings.json` adds Claude lifecycle enforcement. See
-`docs/negrita-brain-runtime.md` for commands, state, memory, and audit behavior.
+and `.codex/settings.json` adds Claude lifecycle enforcement. Artifact
+destinations are user-selected; see `docs/negrita-brain-runtime.md` for
+commands, state, memory, and audit behavior.
 
 ### Rules (`.codex/rules/`)
 

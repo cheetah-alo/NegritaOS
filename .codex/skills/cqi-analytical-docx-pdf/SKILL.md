@@ -105,8 +105,9 @@ and `operational_takeaway`.
 
 ## Placement And Versioning
 
-Default to `document-control`: timestamped deliverables under the active work
-root's `documents/` folder with a manifest.
+Default to `document-control`: timestamped deliverables under the user-selected
+output root. `documents/` is an optional repository-local default; external
+DOCX/PDF artifacts are not added to Git by default.
 
 If the user provides an evidence-output folder, preserve that folder convention
 and create versioned filenames there without overwriting prior artifacts. Report

@@ -42,7 +42,7 @@ or `.html`), also apply `document-control`.
 | Document class | Examples | Required action |
 |---|---|---|
 | Source documentation | `README.md`, `docs/*.md`, `.codex/*`, `rules/*`, `skills/*`, templates | Keep beside source of truth and update in the same change set. |
-| Deliverable documentation | Notion/Confluence markdown, stakeholder report, deck, PDF, DOCX, HTML | Use `document-control`; write under `documents/` with timestamp and manifest. |
+| Deliverable documentation | Notion/Confluence markdown, stakeholder report, deck, PDF, DOCX, HTML | Use `document-control`; select the output path, preserve versioning, and use a manifest when tracked. |
 | Decision documentation | ADR, decision memo, architecture note | Use the closest template and record context, decision, alternatives, impact, and update trigger. |
 | Analytical documentation | EDA report, model review, KPI explanation, findings memo | Use the relevant findings/reporting skill and cite source paths or run IDs. |
 
@@ -82,5 +82,5 @@ scope, source of truth, current behavior, and validation explicit.
 - [ ] `.codex` rules and skills are internally consistent
 - [ ] Document class is explicit: source documentation or deliverable documentation
 - [ ] Required structure is present or intentionally compressed for a small doc
-- [ ] Deliverables use `documents/` timestamp naming and manifest records
+- [ ] Deliverables use the selected output path, timestamp naming, and applicable manifest records
 - [ ] Open questions, future work, and limitations are labeled as such
