@@ -492,7 +492,7 @@ def _check_brain_runtime(project_id: str, repo: Path) -> list[tuple[bool, str]]:
         missing_skills = [
             skill_id
             for skill_id in closure.skills
-            if not (repo / ".codex" / "skills" / skill_id).exists()
+            if not (repo / ".codex" / "skills" / skill_id / "SKILL.md").is_file()
         ]
         if missing_skills:
             results.append(

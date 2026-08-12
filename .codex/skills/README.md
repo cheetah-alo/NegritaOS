@@ -21,7 +21,17 @@ Run the setup script to configure skills for all supported AI coding assistants:
 ./skills/setup.sh
 ```
 
-This creates symlinks so each tool finds skills in its expected location:
+This creates symlinks so each tool finds skills in its expected location. The
+discoverable entrypoint is always a direct folder named after the canonical
+skill ID, containing `SKILL.md`:
+
+`.codex/skills/<skill-id>/SKILL.md`
+
+The same path is exposed to Claude through the `.claude -> .codex`
+compatibility symlink. Native guidance under `skills/engineering/`,
+`skills/academic/`, or imported reference bundles is not a direct invocation
+point. It is loaded by the canonical wrapper or by an agent's `integrator.yaml`
+references.
 
 | Tool | Symlink Created |
 |------|-----------------|
@@ -128,7 +138,9 @@ guidance.
 Project adapters declare `skill_profiles` and `data_source` in their canonical
 project registry. Use `scripts/validate_skill_catalog.py` before materializing
 an adapter and `scripts/materialize_project_skills.py <repo> --dry-run` before
-linking profile-selected skills. Raw imported bundles remain reference-only.
+linking profile-selected skills. The materializer preserves the catalog ID even
+when the canonical source is a compatibility symlink. Raw imported bundles
+remain reference-only.
 
 New or migrated BigQuery analyses must also pass the source-quality preflight
 defined by `bigquery-analysis-governance`. PostgreSQL, files, API, and academic

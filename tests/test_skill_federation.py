@@ -7,7 +7,7 @@ from tempfile import TemporaryDirectory
 from scripts.materialize_project_skills import materialize, selected_skills
 from scripts.sync_skill_catalog import render_profiles, update_agents
 from scripts.validate_config_resolution import validate_resolution
-from scripts.validate_skill_catalog import CATALOG, _load_yaml, validate_project
+from scripts.validate_skill_catalog import CATALOG, _load_yaml, validate_catalog, validate_project
 from scripts.validate_source_quality_contract import (
     measure_ingestion_latency_seconds,
     validate_source_contract,
@@ -47,6 +47,24 @@ class TestSkillProfileSelection(unittest.TestCase):
             )
             self.assertEqual(materialize(repo, dry_run=True), 0)
             self.assertFalse((adapter / "skills").exists())
+
+    def test_materialize_preserves_canonical_skill_id_when_source_is_a_symlink(self) -> None:
+        """Compatibility symlinks must not rename the adapter entrypoint."""
+        with TemporaryDirectory() as temporary_directory:
+            repo = Path(temporary_directory)
+            adapter = repo / ".codex"
+            adapter.mkdir()
+            (adapter / "project.yaml").write_text(
+                "negrita_registry: registry.yaml\n", encoding="utf-8"
+            )
+            (repo / "registry.yaml").write_text(
+                "project:\n  skill_profiles:\n    - document-delivery\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(materialize(repo, dry_run=False), 0)
+            self.assertTrue((adapter / "skills" / "local-memory-protocol" / "SKILL.md").is_file())
+            self.assertFalse((adapter / "skills" / "memory-protocol").exists())
 
     def test_postgresql_profile_accepts_its_declared_dialect(self) -> None:
         catalog = {
@@ -94,6 +112,10 @@ class TestSkillCatalogSynchronization(unittest.TestCase):
         self.assertIn("before", updated)
         self.assertIn("new", updated)
         self.assertIn("## Auto-invoke Skills", updated)
+
+    def test_catalog_requires_direct_canonical_activation_paths(self) -> None:
+        """Canonical skills must be discoverable from one direct entrypoint root."""
+        self.assertEqual(validate_catalog(_load_yaml(CATALOG)), [])
 
 
 class TestConfigurationResolution(unittest.TestCase):

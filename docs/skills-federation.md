@@ -147,6 +147,21 @@ The materializer links only canonical `.codex/skills` directories selected by
 profile. It preserves local overrides by creating timestamped backups before
 replacing a real directory. Raw Engram/Nate directories are never linked.
 
+### Direct activation contract
+
+Codex and Claude discover a skill through the canonical adapter entrypoint:
+
+```text
+.codex/skills/<skill-id>/SKILL.md
+```
+
+`.claude/skills/` is a compatibility view of the same directory. A native
+source such as `skills/engineering/<name>/SKILL.md` is not itself a portable
+adapter entrypoint, even when it is a valid skill document. The catalog and
+materializer must expose the canonical ID as the folder name; physical source
+symlinks must not rename it. A skill is not available to an adapter until this
+direct `SKILL.md` path exists and resolves successfully.
+
 ## Quality Gates
 
 - Catalog IDs and canonical paths are unique and resolvable.

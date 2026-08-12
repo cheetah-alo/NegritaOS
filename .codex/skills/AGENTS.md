@@ -5,6 +5,7 @@
 - Start here for cross-repo norms about skills and agent routing.
 - Skills are optional workflows; rules are mandatory and live under `.codex/rules/`.
 - Every skill folder must contain a `SKILL.md`; only router-enabled skills also include an `AGENTS.md`.
+- Directly invocable skills must be exposed as `.codex/skills/<skill-id>/SKILL.md`; native `skills/engineering/` and reference bundles are not adapter entrypoints.
 - If no profile is specified, select a fallback profile based on intent.
 
 ## Available Skills

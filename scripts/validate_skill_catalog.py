@@ -65,6 +65,8 @@ def _path(value: str) -> Path:
 def validate_catalog(catalog: dict[str, Any]) -> list[str]:
     """Return validation errors for the catalog structure and files."""
     errors: list[str] = []
+    source_policy = catalog.get("catalog", {}).get("source_policy", {})
+    activation_root = str(source_policy.get("canonical_activation_root", ".codex/skills")).strip("/")
     profiles = catalog.get("profiles")
     skills = catalog.get("skills")
     if not isinstance(profiles, dict):
@@ -102,6 +104,11 @@ def validate_catalog(catalog: dict[str, Any]) -> list[str]:
             errors.append(f"{skill_id}: missing canonical path {path_value}")
             continue
         if status in {"canonical", "adapted"} and path.name == "SKILL.md":
+            expected_path = f"{activation_root}/{skill_id}/SKILL.md"
+            if path_value != expected_path:
+                errors.append(
+                    f"{skill_id}: canonical activation path must be {expected_path}, got {path_value}"
+                )
             if path.parent.name != skill_id:
                 errors.append(
                     f"{skill_id}: directory {path.parent.name!r} does not match id"

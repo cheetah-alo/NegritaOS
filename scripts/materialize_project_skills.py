@@ -58,10 +58,17 @@ def materialize(repo: Path, dry_run: bool) -> int:
     timestamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
     for skill_id in selected:
         entry = skills_by_id[skill_id]
-        source_file = (ROOT / entry["path"]).resolve()
+        # Keep the catalog ID as the adapter entrypoint name. Resolving the
+        # source before taking its parent can collapse compatibility symlinks
+        # such as local-memory-protocol -> memory-protocol.
+        source_file = ROOT / entry["path"]
         source = source_file.parent
-        destination = target_root / source.name
-        if destination.is_symlink() and destination.resolve() == source:
+        if source.name != skill_id:
+            raise ValueError(
+                f"catalog skill {skill_id!r} must expose its source from a directory named {skill_id!r}"
+            )
+        destination = target_root / skill_id
+        if destination.is_symlink() and destination.resolve() == source.resolve():
             print(f"[OK] {skill_id}: already linked")
             continue
         backup = destination.with_name(f"{destination.name}.preCanonical.{timestamp}")
