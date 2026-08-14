@@ -1,0 +1,87 @@
+project:
+  id: fibe_ibc_hot_cw_workspace
+  name: "Fibe IBC HOT CW Evidence Workspace"
+  version: "1.0.0"
+  description: >
+    OneDrive-backed IBC/HOT evidence and delivery workspace containing CQI
+    presentation sources, steering decks, technical reports, DQ questions,
+    variable dictionaries, ML-readiness material, and brand templates. This
+    is a delivery/evidence workspace, not the executable IBC Fiber Network
+    source repository.
+  local_paths:
+    primary: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/Fibe- IBC-HOT-cw"
+  memory_home: "~/.negritaos/memory/projects/fibe_ibc_hot_cw_workspace"
+  archetypes:
+    - eda_analytics
+    - data_quality
+    - executive_delivery
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - bigquery
+    - sql
+    - data_quality_audit
+    - ml_readiness
+    - plot_generation
+    - executive_synthesis
+    - executive_presentation
+    - spreadsheet_review
+    - pdf_review
+    - docx_review
+    - deck_review
+    - evidence_inventory
+    - local_files
+  skill_profiles:
+    - document-delivery
+    - analytical-eda
+    - data-source-bigquery
+    - analytical-deck-delivery
+    - cqi-analytical-pptx
+    - cqi-analytical-docx-pdf
+    - ibc-technical-eda-presentation
+    - ibc-technical-eda-report
+  data_source:
+    provider: bigquery
+    dialect: google_standard_sql
+    source_of_truth: governed_remote_source
+    access: read_only
+  analysis_governance:
+    phase: warn_first
+    scope: IBC/HOT evidence review, data-quality analysis, and ML-readiness documentation
+    activation: only_when_running_analysis_or_promoting_evidence
+  expected_outputs:
+    - evidence_inventory
+    - data_quality_report
+    - technical_report
+    - analytical_report
+    - executive_presentation
+    - implementation_plan
+    - model_readiness_review
+    - task_register
+  related_projects:
+    - ibc_fiber_network
+    - fiber_network_trap_analytics
+    - fiber_hourly_analytics_sql
+    - proj_data_analytics
+  notes:
+    - "This workspace is not a Git repository; do not assume commit or branch operations are available here."
+    - "Existing PPTX, DOCX, PDF, XLSX, ZIP, and sync artifacts are immutable evidence by default; do not move, rename, normalize, or overwrite them."
+    - "New agent-authored reports and decks route to team-lead-qaqc/documents/ with timestamped names and document_manifest.jsonl."
+    - "Keep IBC technical evidence, HOT business context, and CQI brand/template sources distinguishable; do not collapse them into one lineage."
+    - "Do not infer live BigQuery coverage, customer impact, topology joins, severity, or ML readiness from local presentations or historical documents."
+    - "Use the IBC technical EDA profiles for source readiness, grain, no-fanout, as-of, and ML-readiness gates before promoting any claim."
+  agents:
+    - consulting_delivery_controller_agent
+    - team_lead_ds_agent
+    - decision_support_agent
+    - code_review_agent
+    - pull_request_reviewer_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - presentation_agent
+    - plot_analysis_agent
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true
