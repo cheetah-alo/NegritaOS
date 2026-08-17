@@ -33,6 +33,7 @@ from negrita_brain.memory import (  # noqa: E402
 )
 from negrita_brain.runtime import (  # noqa: E402
     close_session,
+    close_stale_runtime_sessions,
     gate_action,
     record_event,
     resolve_session,
@@ -182,6 +183,17 @@ def build_parser() -> argparse.ArgumentParser:
         "legacy-sessions", help="List Memory v1 sessions without reading narratives"
     )
     _common(legacy_sessions_parser)
+    close_stale = memory_commands.add_parser(
+        "close-stale-runtime",
+        help="Close old Memory v2 runtime sessions after explicit authorization",
+    )
+    _common(close_stale)
+    close_stale.add_argument("--older-than-days", type=int, default=1)
+    close_stale.add_argument("--session-id", action="append", dest="session_ids")
+    close_stale.add_argument("--status", default="STALE_CLOSED")
+    close_stale.add_argument("--authorized-by")
+    close_stale.add_argument("--authorization-reason")
+    _apply_switch(close_stale)
     rebuild = memory_commands.add_parser("rebuild-index")
     _common(rebuild)
     _apply_switch(rebuild)
@@ -337,6 +349,17 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             ), 0
         if args.memory_command == "legacy-sessions":
             return legacy_sessions(args.root, **common), 0
+        if args.memory_command == "close-stale-runtime":
+            return close_stale_runtime_sessions(
+                args.root,
+                older_than_days=args.older_than_days,
+                session_ids=args.session_ids,
+                apply_changes=args.apply,
+                authorized_by=args.authorized_by,
+                authorization_reason=args.authorization_reason,
+                status=args.status,
+                **common,
+            ), 0
         if args.memory_command == "remember":
             return remember(
                 args.root,

@@ -109,13 +109,19 @@ Return `blocked` or `insufficient_evidence` when any of these apply:
 - generated coverage/tmp/output/local artifacts are committed;
 - the diff cannot be inspected fully.
 
+Test changes are a separate integrity review. Weakening assertions, deleting
+failures, skipping checks, suppressing exceptions, adding unexplained
+tolerances, or rewriting expected results raises `verification_gap` and may be
+a hard escalation. A bug fix also requires the original runtime reproduction,
+not only a green unit or browser test.
+
 ## Python Code Quality Checks
 
 Use the project venv when available. Do not install packages globally.
 
 ```bash
-source <venv>/bin/activate
-pip install flake8 flake8-docstrings pep8-naming pylint mypy vulture pytest pytest-mccabe
+scripts/setup_pr_quality_tools.sh
+source .venv-pr-quality/bin/activate
 flake8 --version
 pylint --version
 ```
@@ -131,10 +137,19 @@ mypy <path_to_folder> --ignore-missing-imports
 pytest --mccabe tests/
 pytest --cov=src tests/
 vulture <path_to_folder>
+python3 scripts/run_detect_secrets_scan.py
+pip-audit
 ```
 
 Notes:
 
+- CI runs `detect-secrets` through `scripts/run_detect_secrets_scan.py`.
+  Existing historical false positives are captured in `.secrets.baseline`;
+  unbaselined findings block. `gitleaks` is a future optional hardening layer,
+  not the v1 CI scanner.
+- `scripts/run_pr_quality_checks.sh` treats unittest, coverage, and
+  `detect-secrets` as required. Lint/type/complexity/dead-code/package-audit
+  checks are advisory in v1 unless `PR_QUALITY_STRICT=1`.
 - `C901` indicates cyclomatic complexity from Flake8/McCabe.
 - `R0913`, `R0914`, `R0915`, and `R0916` are Pylint design-risk signals.
 - Pylint `C0116` is `missing-function-docstring`; type hinting is primarily

@@ -14,7 +14,7 @@ metadata:
 # Nate Excalidraw Diagram Adapter
 
 This is an explicit, user-invoked adaptation of
-`skills/skill_nate/excalidraw-diagram/SKILL (1).md`. Preserve editability,
+`skills/skill_nate/excalidraw-diagram/SKILL.md`. Preserve editability,
 readable contrast, stable coordinates, meaningful labels, and clear ownership
 boundaries. Use Excalidraw JSON or the project's approved editable format;
 never present a raster image as the editable source.

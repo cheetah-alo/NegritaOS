@@ -27,6 +27,8 @@ Use this skill when:
 5. Validate contracts, APIs, and user-visible semantics against implementation.
 6. Check docs, prompts, and `.codex` guidance for drift.
 7. Flag commit hygiene or scope problems separately from functional issues.
+8. Apply the strict test-integrity rule to every changed test and require the
+   original runtime reproduction for a fix claim.
 
 ## Merge Gate
 

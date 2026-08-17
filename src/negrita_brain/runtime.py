@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import uuid
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -238,6 +238,164 @@ def _load_legacy_handle(
         True,
         update_pointer=update_pointer,
     )
+
+
+def _runtime_session_is_closed(session_dir: Path) -> bool:
+    """Return whether a runtime session already has a closure marker."""
+    if (session_dir / "summary.json").is_file():
+        return True
+    state_path = session_dir / "state.json"
+    if not state_path.is_file():
+        return False
+    try:
+        state = read_json(state_path)
+    except (OSError, ValueError):
+        return False
+    return isinstance(state, dict) and str(state.get("status", "")).upper() not in {
+        "",
+        "READY",
+        "OPEN",
+    }
+
+
+def _created_at(contract: Mapping[str, Any]) -> datetime | None:
+    """Parse a runtime contract timestamp when available."""
+    raw_value = contract.get("created_at")
+    if not isinstance(raw_value, str) or not raw_value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(raw_value)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.astimezone()
+    return parsed
+
+
+def close_stale_runtime_sessions(
+    work_root: Path,
+    negritaos_root: Path = NEGRITAOS_ROOT,
+    memory_base: Path | None = None,
+    older_than_days: int = 1,
+    session_ids: list[str] | None = None,
+    apply_changes: bool = False,
+    authorized_by: str | None = None,
+    authorization_reason: str | None = None,
+    status: str = "STALE_CLOSED",
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    """Close old Memory v2 runtime sessions through an explicit maintenance action."""
+    if older_than_days < 0:
+        raise SessionError("older_than_days must be >= 0")
+    if apply_changes and (not authorized_by or not authorization_reason):
+        raise SessionError(
+            "Closing stale runtime sessions requires authorized_by and authorization_reason"
+        )
+    context = load_project(work_root, negritaos_root)
+    memory_home = project_memory_home(context, memory_base)
+    runtime = memory_home / "runtime"
+    sessions_root = runtime / "sessions"
+    selected = set(session_ids or [])
+    if any(Path(session_id).name != session_id for session_id in selected):
+        raise SessionError("session-id must be one session directory name")
+    current = now or now_madrid()
+    cutoff = current - timedelta(days=older_than_days)
+    planned: list[dict[str, Any]] = []
+    skipped: list[dict[str, str]] = []
+    closed: list[dict[str, Any]] = []
+    if not sessions_root.is_dir():
+        return {
+            "apply": apply_changes,
+            "closed": closed,
+            "planned": planned,
+            "project_id": context.project_id,
+            "skipped": skipped,
+            "status": "READY",
+        }
+    for contract_path in sorted(sessions_root.glob("*/contract.json")):
+        session_dir = contract_path.parent
+        session_id = session_dir.name
+        if selected and session_id not in selected:
+            continue
+        contract = _verified_contract(session_dir)
+        if int(contract.get("schema_version", 1)) != 2:
+            skipped.append({"session_id": session_id, "reason": "not_memory_v2"})
+            continue
+        if _runtime_session_is_closed(session_dir):
+            skipped.append({"session_id": session_id, "reason": "already_closed"})
+            continue
+        created_at = _created_at(contract)
+        if created_at is None:
+            skipped.append({"session_id": session_id, "reason": "missing_created_at"})
+            continue
+        if created_at > cutoff:
+            skipped.append({"session_id": session_id, "reason": "too_recent"})
+            continue
+        planned_item = {
+            "actions": contract.get("actions", []),
+            "created_at": contract.get("created_at"),
+            "provider": contract.get("provider"),
+            "session_id": session_id,
+        }
+        planned.append(planned_item)
+        if not apply_changes:
+            continue
+        closed_at = iso_timestamp()
+        closed_state: dict[str, Any] = {
+            "authorization": {
+                "authorized_by": authorized_by,
+                "mode": "explicit_stale_runtime_close",
+                "reason": authorization_reason,
+            },
+            "closed_at": closed_at,
+            "contract_sha256": contract["contract_sha256"],
+            "project_id": context.project_id,
+            "schema_version": 2,
+            "session_id": session_id,
+            "status": status.upper(),
+        }
+        identity = contract.get("session_identity", {})
+        provider = contract.get("provider")
+        key_hash = identity.get("key_hash") if isinstance(identity, dict) else None
+        pointer_path: Path | None = None
+        if isinstance(provider, str) and isinstance(key_hash, str):
+            pointer_path = runtime / "active" / provider / f"{key_hash}.json"
+        with file_lock(runtime / ".project.lock"):
+            write_json(session_dir / "state.json", closed_state)
+            if pointer_path and pointer_path.is_file():
+                pointer = read_json(pointer_path)
+                if pointer.get("session_id") == session_id:
+                    pointer.update(
+                        {
+                            "schema_version": 2,
+                            "session_id": session_id,
+                            "state": "CLOSED",
+                            "updated_at": closed_at,
+                        }
+                    )
+                    write_json(pointer_path, pointer)
+        append_jsonl(
+            session_dir / "events.jsonl",
+            {
+                "event_id": f"NBE-{uuid.uuid4().hex}",
+                "event_kind": "stale_runtime_session_closed",
+                "occurred_at": closed_at,
+                "session_id": session_id,
+                "status": status.upper(),
+            },
+        )
+        closed.append(closed_state)
+    return {
+        "apply": apply_changes,
+        "closed": closed,
+        "closed_count": len(closed),
+        "older_than_days": older_than_days,
+        "planned": planned,
+        "planned_count": len(planned),
+        "project_id": context.project_id,
+        "skipped": skipped,
+        "status": "READY",
+    }
 
 
 def _permission_error(memory_home: Path, exc: PermissionError) -> MemoryPermissionError:
@@ -539,19 +697,22 @@ def gate_action(
         str(value).lower().lstrip(".")
         for value in route.get("require_explicit_path_for", [])
     }
-    if normalized == "deliverable" and user_selected_route and file_path is None:
+    if normalized == "deliverable" and file_path is None:
         if "*" in required_extensions or required_extensions:
             route_decision = str(rules.get("noncompliant_deliverable", "warn")).upper()
             if route_decision == "BLOCK" or decision == "ALLOW":
                 decision = route_decision
             reasons.append(
-                "Deliverable destination must be explicitly selected before creation"
+                "Deliverable path must be provided under the canonical team-lead-qaqc/documents route"
             )
     if file_path is not None and file_path.suffix.lower() in DELIVERABLE_EXTENSIONS:
         candidate = file_path if file_path.is_absolute() else context.work_root / file_path
         if user_selected_route:
             compliant = is_compliant_deliverable(
-                candidate, context.work_root, user_selected_route=True
+                candidate,
+                context.work_root,
+                user_selected_route=True,
+                canonical_directory=str(route.get("directory", "documents")),
             )
             if not compliant:
                 route_decision = str(rules.get("noncompliant_deliverable", "warn")).upper()
@@ -564,8 +725,20 @@ def gate_action(
                 reasons.append(
                     "External deliverable route explicitly selected; artifact is not tracked by default"
                 )
+        elif (
+            route.get("selection") == "canonical_default"
+            and not candidate.resolve().is_relative_to(context.work_root.resolve())
+        ):
+            route_decision = str(rules.get("noncompliant_deliverable", "warn")).upper()
+            if route_decision == "BLOCK" or decision == "ALLOW":
+                decision = route_decision
+            reasons.append(
+                "Deliverables must remain inside the repository canonical team-lead-qaqc/documents route"
+            )
         elif is_deliverable(candidate, context.work_root) and not is_compliant_deliverable(
-            candidate, context.work_root
+            candidate,
+            context.work_root,
+            canonical_directory=str(route.get("directory", "documents")),
         ):
             route_decision = str(rules.get("noncompliant_deliverable", "warn")).upper()
             if route_decision == "BLOCK" or decision == "ALLOW":

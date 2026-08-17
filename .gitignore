@@ -13,16 +13,25 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+.venv/
+.venv-pr-quality/
+.coverage
+htmlcov/
 
 # Local environment and credentials
 .env
 .env.*
 *.pem
 *.key
+.secrets.baseline.local
 
 # Generated outputs and scratch material
 outputs/
 *.log
+*_output.txt
+*_report.txt
+quality-reports/
 
 # Large local presentation samples and generated analytical artifacts
 zsmash/presentation-samples/**/*.zip

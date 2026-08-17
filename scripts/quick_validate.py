@@ -9,12 +9,17 @@ import re
 import sys
 
 
+PATH_PREFIXES = (".", "brands/", "rules/", "skills/", "templates/")
+SHELL_MARKERS = (" ", "\t", "\n", "$", "|", ";", "&", ">", "<")
+GLOB_MARKERS = "*?[]"
+
+
 def parse_frontmatter(text: str) -> dict[str, str]:
     if not text.startswith("---\n"):
-      return {}
+        return {}
     end = text.find("\n---", 4)
     if end == -1:
-      return {}
+        return {}
     data: dict[str, str] = {}
     for line in text[4:end].splitlines():
       if ":" not in line:
@@ -22,6 +27,13 @@ def parse_frontmatter(text: str) -> dict[str, str]:
       key, value = line.split(":", 1)
       data[key.strip()] = value.strip()
     return data
+
+
+def is_verifiable_path_reference(value: str) -> bool:
+    """Return true for single path-like code spans, not shell commands."""
+    if not value.startswith(PATH_PREFIXES) or "/" not in value:
+        return False
+    return not any(marker in value for marker in SHELL_MARKERS)
 
 
 def validate_skill(root: pathlib.Path) -> list[str]:
@@ -49,12 +61,18 @@ def validate_skill(root: pathlib.Path) -> list[str]:
         for script in scripts:
             if script.is_file() and script.suffix not in {".mjs", ".js", ".py", ".sh"}:
                 failures.append(f"unexpected script suffix: {script}")
+    workspace = pathlib.Path.cwd()
     linked_paths = re.findall(r"`([^`\n]+)`", text)
     for linked in linked_paths:
-        if linked.startswith((".", "brands/", "rules/", "skills/", "templates/")) and "/" in linked:
-            candidate = (pathlib.Path.cwd() / linked).resolve()
-            if not candidate.exists():
-                failures.append(f"referenced path missing: {linked}")
+        if not is_verifiable_path_reference(linked):
+            continue
+        if any(marker in linked for marker in GLOB_MARKERS):
+            if not list(workspace.glob(linked)):
+                failures.append(f"referenced path pattern has no matches: {linked}")
+            continue
+        candidate = (workspace / linked).resolve()
+        if not candidate.exists():
+            failures.append(f"referenced path missing: {linked}")
     return failures
 
 

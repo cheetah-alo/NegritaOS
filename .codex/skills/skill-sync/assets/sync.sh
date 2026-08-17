@@ -5,8 +5,8 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")"
-SKILLS_DIR="$REPO_ROOT/skills"
+REPO_ROOT="$(dirname "$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")")"
+SKILLS_DIR="$REPO_ROOT/.codex/skills"
 
 # Colors
 RED='\033[0;31m'
@@ -44,6 +44,17 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
+    if [ -n "$FILTER_SCOPE" ]; then
+        echo -e "${RED}--scope is not supported by the Bash 3 fallback. Use Python sync or Bash 4+.${NC}"
+        exit 2
+    fi
+    if $DRY_RUN; then
+        exec python3 "$REPO_ROOT/scripts/sync_skill_catalog.py"
+    fi
+    exec python3 "$REPO_ROOT/scripts/sync_skill_catalog.py" --write
+fi
 
 # Map scope to AGENTS.md path
 get_agents_path() {

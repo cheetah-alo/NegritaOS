@@ -18,26 +18,51 @@ project:
   skill_profiles:
     - academic-tfm-review
     - academic-tfm-research
+    - adversarial-browser-qa
+    - notion-registry-sync
+    - knowledge-orchestration
   agents:
     - team_lead_ds_agent
     - decision_support_agent
     - technical_writer_agent
+    - documentation_reviewer_agent
+    - gitbook_publisher_agent
+    - telecom_customer_journey_agent
+    - network_fiber_wifi_agent
+    - aviation_passenger_journey_agent
     - presentation_agent
     - plot_analysis_agent
     - code_review_agent
     - pull_request_reviewer_agent
+    - browser_qa_headed_agent
+    - browser_qa_headless_agent
     - software_architect_agent
     - tfm_evaluator_agent
     - proposal_validator_agent
     - paper_review_agent
     - tfm_research_advisor_agent
     - ai_trend_radar_agent
+  mode_map:
+    system_audit: CR
+    code_review: CR
+    pull_request_review: CR
+    technical_documentation: TD
+    writeup: TD
+    gitbook_documentation: TD
+    planning: LP
+    deck: EP
+    academic_review: AE
+    academic_research: AE
+    research: RT
   expected_outputs:
     - decision_memo
     - operating_model
     - implementation_plan
     - task_register
     - notion_doc
+    - gitbook_doc
+    - verified_knowledge_package
+    - gitbook_publication_manifest
     - executive_presentation
   preservation:
     backup_required_before_migration: true

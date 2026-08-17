@@ -2,6 +2,7 @@
 
 import json
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -10,6 +11,7 @@ from src.negrita_brain.errors import MemoryPermissionError, SessionError
 from src.negrita_brain.installer import Installer
 from src.negrita_brain.runtime import (
     close_session,
+    close_stale_runtime_sessions,
     gate_action,
     load_active_session,
     record_event,
@@ -58,7 +60,13 @@ class TestRuntimeContract(RuntimeFixture):
         contract_path = contract_path / contract["session_id"] / "contract.json"
         self.assertEqual(len(contract["contract_sha256"]), 64)
         self.assertIn("document-control", contract["skills"])
-        self.assertEqual(contract["artifact_route"]["selection"], "user_selected")
+        self.assertEqual(contract["artifact_route"]["selection"], "canonical_default")
+        self.assertTrue(contract["artifact_route"]["directory"].endswith("team-lead-qaqc/documents"))
+        self.assertTrue(
+            contract["artifact_route"]["manifest"].endswith(
+                "team-lead-qaqc/documents/document_manifest.jsonl"
+            )
+        )
         self.assertIn("pptx", contract["artifact_route"]["require_explicit_path_for"])
         self.assertTrue(contract_path.is_file())
 
@@ -120,6 +128,13 @@ class TestRuntimeContract(RuntimeFixture):
         allowed = gate_action(
             self.repo,
             "write",
+            Path("team-lead-qaqc/documents/report__updated_20260805_120000.pdf"),
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+        )
+        legacy_documents = gate_action(
+            self.repo,
+            "write",
             Path("documents/report__updated_20260805_120000.pdf"),
             negritaos_root=ROOT,
             memory_base=self.memory,
@@ -139,9 +154,10 @@ class TestRuntimeContract(RuntimeFixture):
         )
         self.assertEqual(blocked["decision"], "BLOCK")
         self.assertEqual(allowed["decision"], "ALLOW")
-        self.assertEqual(external["decision"], "ALLOW")
+        self.assertEqual(legacy_documents["decision"], "BLOCK")
+        self.assertEqual(external["decision"], "BLOCK")
         self.assertEqual(missing_destination["decision"], "BLOCK")
-        self.assertIn("External deliverable route", external["reasons"][-1])
+        self.assertIn("canonical team-lead-qaqc/documents", external["reasons"][-1])
 
     def test_event_that_discards_prompt_and_output_fields(self) -> None:
         contract = self.resolve()
@@ -320,6 +336,64 @@ class TestRuntimeContract(RuntimeFixture):
                 provider="codex",
                 session_key="thread-without-v2-pointer",
             )
+
+    def test_stale_runtime_closure_requires_authorization_and_skips_recent(self) -> None:
+        home = self.memory / "negritaos"
+        sessions = home / "runtime" / "sessions"
+        now = datetime(2026, 8, 17, 12, 0, tzinfo=timezone.utc)
+
+        def write_contract(session_id: str, created_at: datetime) -> Path:
+            session_dir = sessions / session_id
+            contract = {
+                "actions": ["review"],
+                "created_at": created_at.isoformat(),
+                "provider": "codex",
+                "schema_version": 2,
+                "session_id": session_id,
+                "session_identity": {"key_hash": session_id[-8:]},
+                "state": "READY",
+            }
+            contract["contract_sha256"] = sha256_json(contract)
+            write_json(session_dir / "contract.json", contract)
+            return session_dir
+
+        stale_dir = write_contract("stale-session", now - timedelta(days=3))
+        recent_dir = write_contract("recent-session", now)
+
+        preview = close_stale_runtime_sessions(
+            self.repo,
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+            older_than_days=1,
+            now=now,
+        )
+        self.assertEqual(preview["planned_count"], 1)
+        self.assertFalse((stale_dir / "state.json").exists())
+
+        with self.assertRaisesRegex(SessionError, "authorized_by"):
+            close_stale_runtime_sessions(
+                self.repo,
+                negritaos_root=ROOT,
+                memory_base=self.memory,
+                older_than_days=1,
+                apply_changes=True,
+                now=now,
+            )
+
+        closed = close_stale_runtime_sessions(
+            self.repo,
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+            older_than_days=1,
+            apply_changes=True,
+            authorized_by="human",
+            authorization_reason="Approved stale runtime cleanup",
+            now=now,
+        )
+
+        self.assertEqual(closed["closed_count"], 1)
+        self.assertTrue((stale_dir / "state.json").is_file())
+        self.assertFalse((recent_dir / "state.json").exists())
 
     def test_permission_error_that_is_not_configuration_failure(self) -> None:
         with patch(

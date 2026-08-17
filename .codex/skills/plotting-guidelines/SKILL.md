@@ -1,6 +1,10 @@
 ---
 id: plotting-guidelines
 name: plotting-guidelines
+description: >
+  Business-quality plotting standards for EDA, dashboards, and analytical
+  reports, including evidence contracts, readable labels, subtitles, legends,
+  support thresholds, and artifact traceability.
 domain: ml-eda
 metadata:
   scope: [plotting, eda, visualization, ml, analytics]

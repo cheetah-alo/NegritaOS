@@ -161,6 +161,31 @@ ambiguous path and requires `--legacy-session-id`. After every intended v1
 session is explicitly closed, run `rebuild-index --dry-run`, inspect the
 preview, and only then apply it.
 
+### Authorized Stale Runtime Closure
+
+Memory v2 runtime sessions can become stale when a provider process ends
+without calling `close`. Close only old sessions, never by editing files
+manually:
+
+```bash
+python3 scripts/negrita_brain.py memory close-stale-runtime \
+  --root "$PWD" \
+  --older-than-days 1 \
+  --dry-run
+```
+
+Apply requires explicit human authorization and writes only runtime
+`state.json` closure metadata:
+
+```bash
+python3 scripts/negrita_brain.py memory close-stale-runtime \
+  --root "$PWD" \
+  --older-than-days 1 \
+  --apply \
+  --authorized-by "human" \
+  --authorization-reason "Approved stale runtime cleanup"
+```
+
 ## Provider Permissions
 
 Codex workspace-write needs the canonical memory root:
@@ -184,11 +209,12 @@ failure.
 ## Decisions, Documents, And Safe Events
 
 Decision transitions remain append-only under `decisions/ledger.jsonl` and may
-project architecture/contract ADRs into `docs/decisions/`. New deliverables use
-a user-selected output path. Keep the
+project architecture/contract ADRs into `docs/decisions/`. New reports, PPTX,
+DOCX, and PDF deliverables use `team-lead-qaqc/documents/` and keep the
 `<slug>__updated_YYYYMMDD_HHMMSS.<ext>` suffix unless the user specifies another
-versioning convention. `documents/` is an optional repository-local default;
-external PPTX, DOCX, and PDF artifacts are not tracked by default.
+versioning convention. Each version is appended with SHA-256 and provenance to
+`team-lead-qaqc/documents/document_manifest.jsonl`; files remain tracked
+candidates and are not staged or published automatically.
 
 Runtime events permit metadata only: ids, timestamps, status, provider, tool,
 action, file path, decision ids, and durable references. Prompts, responses,

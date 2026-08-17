@@ -2,7 +2,7 @@
 name: skill-sync
 description: >
   Syncs skill metadata to AGENTS.md Auto-invoke sections.
-  Trigger: When updating skill metadata (metadata.scope/metadata.auto_invoke), regenerating Auto-invoke tables, or running ./skills/skill-sync/assets/sync.sh (including --dry-run/--scope).
+  Trigger: When updating skill metadata (metadata.scope/metadata.auto_invoke), regenerating Auto-invoke tables, or running .codex/skills/skill-sync/assets/sync.sh (including --dry-run/--scope).
 license: Apache-2.0
 metadata:
   author: generic
@@ -59,12 +59,12 @@ Skills can have multiple scopes: `scope: [frontend, backend]`
 ### After Creating/Modifying a Skill
 
 ```bash
-./skills/skill-sync/assets/sync.sh
+.codex/skills/skill-sync/assets/sync.sh
 ```
 
 ### What It Does
 
-1. Reads all `skills/*/SKILL.md` files
+1. Reads all `.codex/skills/*/SKILL.md` files
 2. Extracts `metadata.scope` and `metadata.auto_invoke`
 3. Generates Auto-invoke tables for each AGENTS.md
 4. Updates the `### Auto-invoke Skills` section in each file
@@ -102,13 +102,13 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
 ```bash
 # Sync all AGENTS.md files
-./skills/skill-sync/assets/sync.sh
+.codex/skills/skill-sync/assets/sync.sh
 
 # Dry run (show what would change)
-./skills/skill-sync/assets/sync.sh --dry-run
+.codex/skills/skill-sync/assets/sync.sh --dry-run
 
 # Sync specific scope only
-./skills/skill-sync/assets/sync.sh --scope frontend
+.codex/skills/skill-sync/assets/sync.sh --scope frontend
 ```
 
 ---
@@ -117,5 +117,5 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
 - [ ] Added `metadata.scope` to new/modified skill
 - [ ] Added `metadata.auto_invoke` with action description
-- [ ] Ran `./skills/skill-sync/assets/sync.sh`
+- [ ] Ran `.codex/skills/skill-sync/assets/sync.sh`
 - [ ] Verified AGENTS.md files updated correctly
