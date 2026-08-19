@@ -11,8 +11,16 @@ technical readouts, EDA findings, model-readiness reviews, and decision briefs.
 
 - Dark navy background.
 - Short title and decision question.
-- Two to four numbered agenda bullets or decision pillars.
+- Do not place the agenda on the cover.
+- Use at most one short context line or decision question below the title.
 - Footer with CQI/CQISense, team, date, and slide count when known.
+
+### Agenda
+
+- Always place the agenda immediately after the cover.
+- Use sections that match the actual narrative order and divider titles.
+- Keep the wording audience-facing; do not list implementation steps or plot
+  construction methods.
 
 ### Executive Summary
 
@@ -66,6 +74,14 @@ Every analytical slide should expose:
 7. footer source/window metadata;
 8. speaker notes with the structured `[Evidence]` block.
 
+## Deck Length
+
+- New or materially rewritten analytical decks contain 10 to 80 slides in
+  total, including appendix slides.
+- Do not impose audience-specific or per-section slide caps.
+- A scoped repair to an existing deck may preserve an explicitly approved
+  slide count when changing the count is outside the requested scope.
+
 ## Visual System
 
 - Use the CQI cobalt rail on white analytical slides.
@@ -78,6 +94,15 @@ Every analytical slide should expose:
 
 ## Evidence Discipline
 
+- Inventory the selected analysis run, manifests, CSV/Parquet/JSON outputs,
+  plots, and hashes before considering query execution.
+- Default to `reuse_only` for deck corrections and visual restyling.
+- Use `targeted_refresh` only for specifically identified missing or stale
+  evidence and its direct dependency chain.
+- Use `full_refresh` only with explicit user authorization and a bounded,
+  read-only query preflight.
+- Record reused artifacts and executed queries separately in the delivery
+  manifest.
 - Do not use a chart title to overclaim beyond the underlying grain and
   denominator.
 - Keep source rails separate unless join-safety evidence is declared.

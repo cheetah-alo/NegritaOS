@@ -26,6 +26,12 @@ rewrite historical packages merely to satisfy the layout.
    plot/config manifest.
 3. Confirm grain, denominator, source coverage, output status vocabulary, and
    run directory before interpreting results.
+4. Inventory reusable run-scoped CSV/Parquet/JSON outputs, plot registries,
+   rendered plots, and hashes before requesting any query refresh for a deck or
+   report.
+
+Deck-only changes use `reuse_only`; a missing artifact does not authorize a
+full analysis rerun.
 
 Use provider-specific source skills, such as
 `bigquery-analysis-governance`, when the selected source requires them.

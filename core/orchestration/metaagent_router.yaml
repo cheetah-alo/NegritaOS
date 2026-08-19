@@ -92,6 +92,13 @@ metaagent_router:
       id: PA
       label: "Evidence-First Plot Analysis"
       agent: plot_analysis_agent
+      specialist_agents:
+        quality_bar_gauntlet:
+          agent: quality_gauntlet_agent
+          when:
+            - comparing plots against a named reference plot or report
+            - requiring a separate critic for plot narrative quality
+            - benchmarking chart readability or analytical explanation
       trigger_signals:
         - plot analysis
         - analyze this plot
@@ -126,6 +133,12 @@ metaagent_router:
       label: "Technical Documentation"
       agent: technical_writer_agent
       specialist_agents:
+        quality_bar_gauntlet:
+          agent: quality_gauntlet_agent
+          when:
+            - comparing a document against a named reference report
+            - auditing DOCX or PDF quality against a template
+            - requiring a separate critic before publication
         evidence_first_plot_analysis:
           agent: plot_analysis_agent
           when:
@@ -170,6 +183,12 @@ metaagent_router:
       label: "ML / EDA / Model Review"
       agent: model_review_agent
       specialist_agents:
+        quality_bar_gauntlet:
+          agent: quality_gauntlet_agent
+          when:
+            - benchmarking model review quality against a named report or paper
+            - requiring a separate critic for EDA or model-readiness outputs
+            - comparing analytical claims against a reference methodology
         evidence_first_plot_analysis:
           agent: plot_analysis_agent
           when:
@@ -216,6 +235,12 @@ metaagent_router:
       label: "Code / Repository Work"
       agent: code_review_agent
       specialist_agents:
+        quality_bar_gauntlet:
+          agent: quality_gauntlet_agent
+          when:
+            - benchmarking code against a named repository or test suite
+            - requiring separate builder and critic contexts for a high-risk change
+            - comparing implementation quality against a concrete reference
         pull_request_risk_review:
           agent: pull_request_reviewer_agent
           when:
@@ -299,6 +324,13 @@ metaagent_router:
       id: PRR
       label: "Pull Request Risk Review"
       agent: pull_request_reviewer_agent
+      specialist_agents:
+        quality_bar_gauntlet:
+          agent: quality_gauntlet_agent
+          when:
+            - PR review requires benchmarked comparison
+            - PR risk review needs a separate critic loop
+            - approval candidate depends on a named reference or test bar
       trigger_signals:
         - PR risk review
         - pull request review
@@ -321,11 +353,52 @@ metaagent_router:
         - pull_request_comments
         - changes_required_summary
 
+    quality_bar_gauntlet:
+      id: QG
+      label: "Quality Bar Gauntlet"
+      agent: quality_gauntlet_agent
+      trigger_signals:
+        - QG
+        - quality gauntlet
+        - gauntlet this
+        - gauntlet loop
+        - compare against a reference
+        - compare against this benchmark
+        - beat this benchmark
+        - quality bar review
+        - benchmarked quality review
+        - separate builder and critic
+        - blind critic review
+        - do not self approve
+      input_types:
+        - goal
+        - reference artifact
+        - code diff
+        - pull request
+        - dashboard screenshot
+        - plot
+        - PPTX deck
+        - DOCX report
+        - PDF report
+        - research brief
+      output_types:
+        - quality_bar_contract
+        - gauntlet_prompt
+        - benchmark_comparison_report
+        - critic_findings
+        - pass_with_evidence_summary
+
     executive_presentation:
       id: EP
       label: "Executive Presentation"
       agent: presentation_agent
       specialist_agents:
+        quality_bar_gauntlet:
+          agent: quality_gauntlet_agent
+          when:
+            - comparing a deck against a named reference deck
+            - auditing slide quality before stakeholder delivery
+            - requiring a separate critic for narrative, visual, or evidence quality
         evidence_first_plot_analysis:
           agent: plot_analysis_agent
           when:
@@ -456,6 +529,10 @@ metaagent_router:
         role: task_generator
         modes_applicable: [LP, DQ]
         action: "Extract actionable next steps. Assign owners where known. Flag blockers."
+      - step: 6
+        role: quality_bar_critic
+        modes_applicable: [QG]
+        action: "Compare the actual output against the named bar, record evidence, and return PASS, PASS_WITH_WARNINGS, FAIL, or BLOCKED."
 
     pipeline_examples:
       - label: "Model Review → Notion Doc → Executive Slides"

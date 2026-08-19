@@ -14,6 +14,8 @@ CQI/CQISense analytical PowerPoint decks.
   finding-first narrative and evidence order.
 - Apply `.codex/skills/cqi-analytical-pptx/SKILL.md` for CQI visual,
   inherited-template, speaker-note evidence, release QA, and podcast contracts.
+- Apply `skills/executive/presentation_evidence_reuse.md`; reuse validated
+  run-scoped evidence by default and never run queries for deck-only changes.
 - Use `brands/cqi/brand_style/CQISense_Design_System/` as editable visual
   source of truth.
 - For ELAL analytical decks, additionally apply
@@ -23,4 +25,5 @@ CQI/CQISense analytical PowerPoint decks.
 
 A CQI analytical deck is not release-ready until slide count, note count,
 evidence notes, readability thresholds, forbidden terms, placeholders, canvas,
-aggregate reconciliations, and final/current hashes have been validated.
+aggregate reconciliations, evidence refresh mode, reused artifacts, executed
+queries, and final/current hashes have been validated.

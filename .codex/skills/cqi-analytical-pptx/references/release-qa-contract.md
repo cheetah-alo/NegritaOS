@@ -15,6 +15,11 @@ source_deck: /absolute/path/source.pptx
 output_deck: /absolute/path/output.pptx
 expected_slide_count: 70
 expected_note_count: 70
+refresh_mode: reuse_only
+reused_artifacts: []
+stale_or_missing_artifacts: []
+targeted_queries: []
+full_refresh_authorized: false
 preserve_existing_canvas: true
 preserve_existing_template: true
 interpretation: RULE_REACH_NOT_CAUSAL_IMPACT
@@ -38,16 +43,21 @@ skill.
 2. Confirm temporary outputs are ignored or outside the repo.
 3. Create a per-run temp directory.
 4. Inspect every source slide and build a frame map.
-5. Reconcile populations, denominators, stacks, and candidate universes.
-6. Edit inherited slides only through declared frame-map elements.
-7. Render all slides and a contact sheet.
-8. Run release, readability, notes, reconciliation, placeholders, canvas, and
+5. Inventory run manifests, governed tabular extracts, plot registries,
+   rendered plots, and hashes before any query execution.
+6. Declare `reuse_only`, `targeted_refresh`, or `full_refresh`. Deck-only changes
+   must remain `reuse_only`; full refresh requires explicit authorization and
+   cost preflight.
+7. Reconcile populations, denominators, stacks, and candidate universes.
+8. Edit inherited slides only through declared frame-map elements.
+9. Render all slides and a contact sheet.
+10. Run release, readability, notes, reconciliation, placeholders, canvas, and
    forbidden-term audits.
-9. Create an explicit backup of the previous version.
-10. Publish an immutable version.
-11. Update `current` only after QA passes.
-12. Compare final and current hashes.
-13. Confirm final `git status` matches the initial status when required.
+11. Create an explicit backup of the previous version.
+12. Publish an immutable version.
+13. Update `current` only after QA passes.
+14. Compare final and current hashes.
+15. Confirm final `git status` matches the initial status when required.
 
 ## Podcast Companion
 

@@ -34,6 +34,9 @@ any non-trivial task in a NegritaOS-managed repo.
      `skills`, `rubrics`, `templates`, and `codex_skills` references.
    - Resolve profile skills through `skills/catalog.yaml`; do not infer availability
      from files copied into a sibling `.codex/skills/` directory.
+   - In Claude Code, resolve `.codex/agents/<mode-lowercase>.md` only as a
+     native alias wrapper. The canonical source is still the registry/router/
+     integrator chain. Example: `PRR` is invoked as `--agent prr` in Claude.
 
 3. **System contract**
    - Read `.codex/system.md` — operator-style contract for this repo.
@@ -53,6 +56,9 @@ any non-trivial task in a NegritaOS-managed repo.
 6. **Router**
    - Read `rules/global/negritaos_router_rule.md` (canonical).
    - Read `.codex/skills/AGENTS.md` and `.codex/skills/negritaos-mode-router/SKILL.md`.
+   - Read `.codex/agents/<mode-lowercase>.md` when running in Claude native
+     agent mode; do not treat a missing uppercase Claude agent name as a missing
+     NegritaOS agent before config resolution.
    - Detect the current request mode using the trigger table + per-project `mode_map`.
 
 7. **BigQuery analysis entry gate**
@@ -83,7 +89,7 @@ Single structured report:
 - Project: <project_id>
 - Archetype: <archetype>
 - Profile: <profile_id> (<file>)
-- Mode (detected): <LP|AE|TD|MR|CR|EP|DQ|RT>
+- Mode (detected): <LP|AE|TD|MR|CR|PRR|QG|PA|EP|DQ|RT>
 - Mode source: <mode_map override | global trigger | default>
 
 ## Rules auto-loaded for this mode

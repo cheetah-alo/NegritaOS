@@ -42,6 +42,30 @@ references.
 
 After running setup, restart your AI coding assistant to load the skills.
 
+## Claude Agent Aliases
+
+Claude Code does not discover NegritaOS router modes directly. It discovers
+native agents from `.codex/agents/*.md`. NegritaOS generates thin lowercase
+aliases for every canonical mode:
+
+```text
+PRR -> --agent prr
+TD  -> --agent td
+MR  -> --agent mr
+QG  -> --agent qg
+```
+
+The aliases are generated from `core/orchestration/metaagent_router.yaml` and
+`integrator.yaml`; do not hand-maintain them as separate contracts. Refresh all
+registered adapters with:
+
+```bash
+python3 scripts/sync_claude_agent_aliases.py --all-projects --write
+python3 scripts/validate_claude_agent_aliases.py --all-projects
+```
+
+See [docs/claude-agent-aliases.md](../../docs/claude-agent-aliases.md).
+
 ## How to Use Skills
 
 Skills are automatically discovered by the AI agent. To manually load a skill during a session:
@@ -84,10 +108,12 @@ Reusable patterns for common domains:
 | `data-loading` | Data ingestion, source resolution, lineage |
 | `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates and dynamic query variants |
 | `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and Python quality checks |
+| `quality-bar-gauntlet` | Benchmark-driven builder/critic loop against a named, fetchable, comparable reference for code, dashboards, plots, PPTX, DOCX/PDF, Markdown, and research |
 | `analytical-eda-governance` | Provider-neutral structure, manifests, contracts, immutable runs, and evidence gates for new or migrated EDA |
 | `bigquery-analysis-governance` | BigQuery source-quality preflight for grain, capture-to-load latency, freshness, SLA, and evidence |
 | `elal-eda-governance` | Opt-in ELAL EDA semantics for operational severity, proxy labels, blocked states, and third subtitle |
 | `document-control` | User-selected deliverable routing, timestamping, manifest, and Git-policy governance |
+| `plain-language-rewrite` | On-demand rewrite for dense or jargon-heavy technical content, preserving exact evidence, paths, commands, numbers, and blockers |
 | `cqi-analytical-pptx` | CQI/CQISense analytical PowerPoint delivery, evidence notes, release QA, readability audits, and mobile podcast contracts |
 | `cqi-analytical-docx-pdf` | CQI/CQISense analytical Word/PDF reports with APA tables/figures, render QA, visual inspection, and document-control governance |
 | `ibc-technical-eda-report` | IBC technical EDA DOCX/PDF reports, source-readiness memos, join-readiness guardrails, and ML-readiness evidence limits |
@@ -126,6 +152,7 @@ Reusable patterns for common domains:
 | `commit-hygiene` | Commit message and scope discipline |
 | `pr-review-deep` | Deep technical review protocol |
 | `pull-request-risk-review` | PR risk scoring, merge-gate evidence, CI/check status, and quality-tooling review |
+| `quality-bar-gauntlet` | Benchmarked quality comparison with separate builder/critic review |
 | `sdd-flow` | Spec-driven phased delivery workflow |
 
 ### Federated Skill Profiles

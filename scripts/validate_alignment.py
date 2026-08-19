@@ -12,7 +12,9 @@ Meta-repo checks (NegritaOS itself):
 7. `.codex/skills/negritaos-mode-router/SKILL.md` exists.
 8. `.codex/memory/sessions/` does not contain a moneyflowlist-style orphan
    referencing `frontend/src/` (a heuristic from the Jun-1 cleanup).
-9. The active project's canonical memory home exists under
+9. `.codex/agents/<mode>.md` contains Claude-native aliases for every
+   NegritaOS router mode.
+10. The active project's canonical memory home exists under
    `~/.negritaos/memory/projects/<project_id>/`.
 
 Sibling-repo checks (when --siblings is on, the default):
@@ -31,6 +33,7 @@ S7. `.codex/skills/negritaos-mode-router/SKILL.md` reachable.
 S8. `.codex/commands/` reachable (file or symlink dir).
 S9. Registry `project.memory_home` exists; an adapter value is only a matching mirror.
 S10. The canonical project -> registry -> agent/profile asset resolution passes.
+S11. `.codex/agents/<mode>.md` exposes NegritaOS modes as Claude-native aliases.
 
 Exit codes:
     0 — all checks pass.
@@ -54,8 +57,10 @@ from typing import Callable, Iterable
 
 try:
     from .validate_config_resolution import validate_resolution
+    from .validate_claude_agent_aliases import validate_repo as validate_claude_aliases
 except ImportError:
     from validate_config_resolution import validate_resolution
+    from validate_claude_agent_aliases import validate_repo as validate_claude_aliases
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -180,6 +185,14 @@ def check_router_skill() -> tuple[bool, str]:
     return _fail(".codex/skills/negritaos-mode-router/SKILL.md missing")
 
 
+def check_claude_agent_aliases() -> tuple[bool, str]:
+    """Ensure NegritaOS router modes are invocable as Claude native agents."""
+    errors = validate_claude_aliases(REPO_ROOT, REPO_ROOT)
+    if errors:
+        return _fail(f"Claude agent aliases invalid: {errors[0]}")
+    return _ok(".codex/agents exposes every router mode as a Claude alias")
+
+
 def check_no_orphan_sessions() -> tuple[bool, str]:
     sessions = REPO_ROOT / ".codex" / "memory" / "sessions"
     if not sessions.exists():
@@ -261,6 +274,7 @@ CHECKS = (
     check_canonical_router_rule,
     check_adapter_router_stub,
     check_router_skill,
+    check_claude_agent_aliases,
     check_no_orphan_sessions,
     check_memory_home,
     check_memory_policy,
@@ -442,7 +456,18 @@ def check_sibling(
         suffix = f" ({len(warnings)} warning(s))" if warnings else ""
         results.append(_ok_s(project_id, f"canonical config resolution passed{suffix}"))
 
-    # S11-S15 — executable Negrita Brain enforcement surfaces.
+    # S11 — Claude-native aliases for all NegritaOS router modes
+    alias_errors = validate_claude_aliases(repo, REPO_ROOT)
+    if alias_errors:
+        results.append(
+            _fail_s(project_id, f"Claude agent aliases invalid: {alias_errors[0]}")
+        )
+    else:
+        results.append(
+            _ok_s(project_id, "Claude agent aliases expose every router mode")
+        )
+
+    # S12-S16 — executable Negrita Brain enforcement surfaces.
     results.extend(_check_brain_runtime(project_id, repo))
 
     return results
@@ -453,30 +478,64 @@ def _check_brain_runtime(project_id: str, repo: Path) -> list[tuple[bool, str]]:
     results: list[tuple[bool, str]] = []
     agents = repo / "AGENTS.md"
     claude = repo / "CLAUDE.md"
-    agents_text = agents.read_text(encoding="utf-8", errors="ignore") if agents.is_file() else ""
-    if MANAGED_START in agents_text:
+    agents_readable = True
+    try:
+        agents_text = (
+            agents.read_text(encoding="utf-8", errors="ignore")
+            if agents.is_file()
+            else ""
+        )
+    except OSError as exc:
+        agents_readable = False
+        results.append(_fail_s(project_id, f"AGENTS.md unreadable: {exc}"))
+        agents_text = ""
+    if not agents_readable:
+        pass
+    elif MANAGED_START in agents_text:
         results.append(_ok_s(project_id, "managed AGENTS.md entrypoint present"))
     else:
         results.append(_fail_s(project_id, "managed AGENTS.md entrypoint missing"))
-    if "memory remember|handoff" in agents_text and "--provider codex" in agents_text:
+    if not agents_readable:
+        pass
+    elif "memory remember|handoff" in agents_text and "--provider codex" in agents_text:
         results.append(_ok_s(project_id, "AGENTS.md routes project-memory writes through Brain"))
     else:
-        results.append(_fail_s(project_id, "AGENTS.md still permits or omits Brain-only memory writes"))
+        results.append(
+            _fail_s(
+                project_id,
+                "AGENTS.md still permits or omits Brain-only memory writes",
+            )
+        )
     if claude.is_file():
-        claude_text = claude.read_text(encoding="utf-8", errors="ignore")
-        if MANAGED_START in claude_text and "@AGENTS.md" in claude_text:
+        claude_readable = True
+        try:
+            claude_text = claude.read_text(encoding="utf-8", errors="ignore")
+        except OSError as exc:
+            claude_readable = False
+            results.append(_fail_s(project_id, f"CLAUDE.md unreadable: {exc}"))
+            claude_text = ""
+        if not claude_readable:
+            pass
+        elif MANAGED_START in claude_text and "@AGENTS.md" in claude_text:
             results.append(_ok_s(project_id, "CLAUDE.md imports managed AGENTS.md"))
         else:
             results.append(_fail_s(project_id, "CLAUDE.md managed import missing"))
     else:
         results.append(_fail_s(project_id, "CLAUDE.md missing"))
     settings_path = repo / ".codex" / "settings.json"
+    settings_readable = True
     try:
         settings = json.loads(settings_path.read_text(encoding="utf-8"))
         hooks = settings.get("hooks", {}) if isinstance(settings, dict) else {}
         missing_hooks = sorted(BRAIN_HOOK_EVENTS - set(hooks))
-    except (OSError, json.JSONDecodeError, TypeError):
-        missing_hooks = sorted(BRAIN_HOOK_EVENTS)
+    except OSError as exc:
+        settings_readable = False
+        results.append(_fail_s(project_id, f".codex/settings.json unreadable: {exc}"))
+        missing_hooks = []
+    except (json.JSONDecodeError, TypeError) as exc:
+        settings_readable = False
+        results.append(_fail_s(project_id, f".codex/settings.json invalid: {exc}"))
+        missing_hooks = []
     if missing_hooks:
         results.append(
             _fail_s(
@@ -484,7 +543,7 @@ def _check_brain_runtime(project_id: str, repo: Path) -> list[tuple[bool, str]]:
                 f"Negrita Brain hooks missing: {', '.join(missing_hooks)}",
             )
         )
-    else:
+    elif settings_readable:
         results.append(_ok_s(project_id, "all Negrita Brain hooks present"))
     try:
         context = load_project(repo, REPO_ROOT)

@@ -7,7 +7,8 @@ agent:
     Creates executive and technical presentations from analytical material.
     Applies top-down narrative structure. Each slide carries one message,
     backed by one key data point. Never generates unsupported claims.
-    Always builds from an existing analysis output — not from scratch.
+    Always builds from existing analysis outputs before considering query
+    execution. Deck-only corrections never trigger analytical queries.
 
   persona:
     - executive_storyteller
@@ -18,11 +19,13 @@ agent:
     - skills/executive/executive_summary.md
     - skills/executive/presentation_storyline.md
     - skills/executive/analytics_storytelling_deck.md
+    - skills/executive/presentation_evidence_reuse.md
     - skills/executive/cqi_analytical_pptx.md
     - skills/ml/evidence_first_plot_analysis.md
     - skills/transversal/tldr_writer.md
 
   codex_skills:
+    - .codex/skills/analytics-storytelling-deck/SKILL.md
     - .codex/skills/evidence-first-plot-analysis/SKILL.md
 
   rules:
@@ -34,12 +37,18 @@ agent:
       - rules/branding/branding_rules.yaml
     constraints:
       - top_down_storytelling_required
+      - agenda_required_immediately_after_cover
+      - analytical_decks_use_10_to_80_total_slides_including_appendix
+      - no_audience_or_section_specific_slide_caps
       - one_message_per_slide_enforced
       - every_chart_must_have_labeled_takeaway
       - appendix_separates_methodology_from_main_story
       - no_slide_without_speaker_notes
       - audience_must_be_defined_before_structure
       - cqi_analytical_decks_require_release_and_evidence_qa
+      - existing_analysis_artifacts_are_inventoried_before_queries
+      - deck_only_changes_use_reuse_only_mode
+      - full_refresh_requires_explicit_user_authorization_and_cost_preflight
 
   rubrics:
     - rubrics/presentation_quality_rubric.yaml
@@ -59,6 +68,8 @@ agent:
     - audience_is_defined
     - audience_profile_is_selected
     - narrative_arc_is_top_down
+    - agenda_is_present
+    - analytical_deck_total_slide_count_is_between_10_and_80
     - each_slide_has_one_core_message
     - each_chart_has_takeaway
     - plot_takeaways_state_observation_interpretation_and_boundary
@@ -66,6 +77,8 @@ agent:
     - recommendation_is_decision_oriented
     - appendix_separates_methodology
     - deck_language_matches_user_request_or_source_deck
+    - evidence_refresh_mode_is_declared
+    - reused_artifacts_and_executed_queries_are_reported
 
   input_types:
     - analytical_report
@@ -74,8 +87,8 @@ agent:
     - research_synthesis
 
   audience_types:
-    - c_level: "Board, C-Suite. No jargon. Decision-ready. Max 10 slides."
-    - senior_management: "VPs, Directors. Limited jargon. KPI-oriented. Max 15 slides."
+    - c_level: "Board, C-Suite. No jargon. Decision-ready."
+    - senior_management: "VPs, Directors. Limited jargon. KPI-oriented."
     - technical_team: "DS, Engineering. Full methodology acceptable. Appendix encouraged."
     - mixed: "Split deck: executive narrative + technical appendix."
 

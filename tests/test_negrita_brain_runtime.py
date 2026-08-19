@@ -54,17 +54,17 @@ class RuntimeFixture(unittest.TestCase):
 class TestRuntimeContract(RuntimeFixture):
     """Verifies deterministic contract and state behavior."""
 
-    def test_resolve_that_persists_hash_and_document_defaults(self) -> None:
+    def test_resolve_that_persists_hash_and_user_selected_document_route(self) -> None:
         contract = self.resolve()
         contract_path = self.memory / "negritaos" / "runtime" / "sessions"
         contract_path = contract_path / contract["session_id"] / "contract.json"
         self.assertEqual(len(contract["contract_sha256"]), 64)
         self.assertIn("document-control", contract["skills"])
-        self.assertEqual(contract["artifact_route"]["selection"], "canonical_default")
-        self.assertTrue(contract["artifact_route"]["directory"].endswith("team-lead-qaqc/documents"))
+        self.assertEqual(contract["artifact_route"]["selection"], "user_selected")
+        self.assertTrue(contract["artifact_route"]["directory"].endswith("documents"))
         self.assertTrue(
             contract["artifact_route"]["manifest"].endswith(
-                "team-lead-qaqc/documents/document_manifest.jsonl"
+                "documents/document_manifest.jsonl"
             )
         )
         self.assertIn("pptx", contract["artifact_route"]["require_explicit_path_for"])
@@ -132,7 +132,7 @@ class TestRuntimeContract(RuntimeFixture):
             negritaos_root=ROOT,
             memory_base=self.memory,
         )
-        legacy_documents = gate_action(
+        selected_repo_path = gate_action(
             self.repo,
             "write",
             Path("documents/report__updated_20260805_120000.pdf"),
@@ -154,10 +154,10 @@ class TestRuntimeContract(RuntimeFixture):
         )
         self.assertEqual(blocked["decision"], "BLOCK")
         self.assertEqual(allowed["decision"], "ALLOW")
-        self.assertEqual(legacy_documents["decision"], "BLOCK")
-        self.assertEqual(external["decision"], "BLOCK")
+        self.assertEqual(selected_repo_path["decision"], "ALLOW")
+        self.assertEqual(external["decision"], "ALLOW")
         self.assertEqual(missing_destination["decision"], "BLOCK")
-        self.assertIn("canonical team-lead-qaqc/documents", external["reasons"][-1])
+        self.assertIn("not tracked by default", external["reasons"][-1])
 
     def test_event_that_discards_prompt_and_output_fields(self) -> None:
         contract = self.resolve()

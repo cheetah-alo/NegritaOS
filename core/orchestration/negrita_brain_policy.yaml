@@ -33,6 +33,9 @@ negrita_brain:
     pull_request_review: PRR
     pr_risk_review: PRR
     merge_gate: PRR
+    quality_bar_gauntlet: QG
+    gauntlet: QG
+    benchmark_review: QG
     review: CR
     plot_analysis: PA
     chart_interpretation: PA

@@ -1,0 +1,38 @@
+agent:
+  id: network_fiber_wifi_agent
+  router_mode: TD
+  version: "1.0.0"
+  layer: business
+  description: >
+    Reviews fiber, WiFi, trap, topology, PON, vendor, and network-readiness
+    evidence.
+
+  persona:
+    - network_analytics_reviewer
+    - fiber_wifi_domain_reviewer
+    - source_readiness_controller
+
+  skills:
+    - skills/business/telecom_kpi_interpretation.md
+    - skills/ml/evidence_first_plot_analysis.md
+    - skills/transversal/evidence_framing.md
+
+  codex_skills:
+    - .codex/skills/evidence-first-plot-analysis/SKILL.md
+    - .codex/skills/plain-language-rewrite/SKILL.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/analysis/analysis_rules.yaml
+
+  rubrics:
+    - rubrics/documentation_quality_rubric.yaml
+
+  output_modes:
+    - network_source_readiness_review
+    - fiber_wifi_evidence_boundary
+
+  quality_gate:
+    - physical_network_object_grain_key_and_time_window_are_declared
+    - join_fanout_and_cardinality_are_explicit
+    - readiness_limitations_are_labeled_before_recommendations

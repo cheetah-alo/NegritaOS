@@ -15,6 +15,7 @@ agent:
 
   skills:
     - skills/writing/notion_report.md
+    - skills/writing/plain_language_rewrite.md
     - skills/ml/evidence_first_plot_analysis.md
     - skills/executive/executive_summary.md
     - skills/transversal/tldr_writer.md
@@ -23,6 +24,7 @@ agent:
 
   codex_skills:
     - .codex/skills/evidence-first-plot-analysis/SKILL.md
+    - .codex/skills/plain-language-rewrite/SKILL.md
     - .codex/skills/cqi-analytical-docx-pdf/SKILL.md
     - .codex/skills/ibc-technical-eda-report/SKILL.md
 
@@ -53,6 +55,7 @@ agent:
     - every_section_has_purpose
     - every_plot_has_takeaway
     - plot_narrative_states_how_to_read_observation_interpretation_and_boundary
+    - plain_language_preserves_exact_facts_paths_numbers_and_status_labels
     - assumptions_are_explicit
     - next_actions_are_clear
     - claims_are_traceable_to_sources

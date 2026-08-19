@@ -24,7 +24,7 @@ context to inform and improve the next task.
 Project: <project_id from .codex/project.yaml>
 Branch:  <git branch>
 Owner:   <name>
-Mode:    <NegritaOS mode: LP/AE/TD/MR/CR/EP/DQ/RT>
+Mode:    <NegritaOS mode: LP/AE/TD/MR/CR/PRR/QG/PA/EP/DQ/RT>
 
 ## Backlog (ordered)
 

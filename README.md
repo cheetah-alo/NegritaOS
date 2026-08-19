@@ -21,7 +21,7 @@ Same prompt, same client, same answer. Drift is engineered out.
 
 1. [Mental Model — the 5 building blocks](#1-mental-model)
 2. [Repository Map](#2-repository-map)
-3. [The 8 Operational Modes](#3-the-8-operational-modes)
+3. [The Operational Modes](#3-the-operational-modes)
 4. [Agents — what each one does](#4-agents)
 5. [Skills — reusable cognitive units](#5-skills)
 6. [Rules — non-negotiable contracts](#6-rules)
@@ -95,7 +95,8 @@ NegritaOS/
 │
 ├── .codex/                         canonical engineering adapter (loaded by Claude/Codex/Copilot)
 │   ├── rules/                      22 dev-* rules (naming, logging, errors, …)
-│   ├── skills/                     IDE-time skills (32 skills: typescript, react-19, dev-logging, plotting-guidelines, …)
+│   ├── skills/                     IDE-time skills (typescript, react-19, dev-logging, plotting-guidelines, …)
+│   ├── agents/                     Claude-native aliases for NegritaOS router modes
 │   ├── commands/                   slash-commands (load-context, system-audit, handoff, roast, run-quality-checks, …)
 │   └── instruction-manifest.yaml   manifest read by Claude/Codex/Copilot
 ├── .claude -> .codex               Claude compatibility alias; never a separate source of truth
@@ -107,7 +108,7 @@ NegritaOS/
 
 ---
 
-## 3. The 8 Operational Modes
+## 3. The Operational Modes
 
 Every request is classified into exactly one mode (mixed requests run a pipeline).
 
@@ -118,6 +119,9 @@ Every request is classified into exactly one mode (mixed requests run a pipeline
 | **TD** | Technical Documentation | `technical_writer_agent` | Notion / Confluence pages, technical memos, postmortems |
 | **MR** | ML / EDA / Model Review | `model_review_agent` | Model review, EDA, SHAP, leakage, XGBoost / AutoGluon / EBM |
 | **CR** | Code / Repository Work | `code_review_agent` | Code review, PRs, refactors, SQL, pipelines, MLflow |
+| **PRR** | Pull Request Risk Review | `pull_request_reviewer_agent` | PR risk, merge gates, CI/check evidence |
+| **QG** | Quality Bar Gauntlet | `quality_gauntlet_agent` | Benchmark-driven builder/critic loops against a named reference |
+| **PA** | Evidence-First Plot Analysis | `plot_analysis_agent` | Plot, chart, dashboard, and model visual interpretation |
 | **EP** | Executive Presentation | `presentation_agent` | Decks, board summaries, one-pagers |
 | **DQ** | Data Quality / Escalation | `data_quality_sentinel_agent` | Schema drift, KPI anomaly, RCA, incidents |
 | **RT** | Research / Trends / TFM | `ai_trend_radar_agent` + `tfm_research_advisor_agent` | AI trend digests, paper reviews, evidence-backed TFM topic proposals |
@@ -125,7 +129,12 @@ Every request is classified into exactly one mode (mixed requests run a pipeline
 Canonical definition: [rules/global/negritaos_router_rule.md](rules/global/negritaos_router_rule.md).
 Full trigger keywords: [core/orchestration/metaagent_router.yaml](core/orchestration/metaagent_router.yaml).
 
-You can force a mode in any prompt: `@agent:MR review this churn model`.
+You can force a mode in any prompt: `@agent:MR review this churn model` or
+`@agent:QG gauntlet this against <reference>`.
+
+Claude Code native agent selection uses lowercase aliases: `--agent prr`,
+`--agent td`, `--agent mr`, etc. Uppercase IDs remain the NegritaOS router
+modes. See [docs/claude-agent-aliases.md](docs/claude-agent-aliases.md).
 
 ---
 
@@ -153,6 +162,7 @@ All agents are defined in [integrator.yaml](integrator.yaml) with the same shape
 | `tfm_evaluator_agent` | Master's thesis proposals, milestones, tribunal reports. |
 | `model_review_agent` | ML model review with explicit leakage, split-strategy and target-definition checks. |
 | `code_review_agent` | Python / SQL / pipeline review, MLOps readiness, reproducibility. |
+| `quality_gauntlet_agent` | Benchmarked quality loop with separate builder and critic against a real reference. |
 | `technical_writer_agent` | Notion / Confluence docs with explicit assumptions & next actions. |
 | `team_lead_ds_agent` | Ambiguity → requirements → tasks → roadmap → escalation. |
 | `ai_trend_radar_agent` | AI / blockchain trend & paper radar with hype-vs-reality classification. |
@@ -189,7 +199,7 @@ Under [.codex/skills/](.codex/skills/). Auto-discovered by Claude / Codex / Copi
 `dev-logging`, `plotting-guidelines`, `data-loading`, `data-analytics`, `docs-alignment`,
 `document-control`, `cqi-analytical-pptx`, `rule-model-documentation`,
 `dashboard-architecture`, `analytical-eda-governance`,
-`bigquery-analysis-governance`, `jinja-bigquery`, …
+`bigquery-analysis-governance`, `jinja-bigquery`, `quality-bar-gauntlet`, …
 
 Each skill is a folder with a `SKILL.md` describing **when to trigger** and **what to do**.
 
@@ -201,6 +211,11 @@ the final TFM reviewer and read-only benchmark calibration. The
 `academic-tfm-research` profile proposes differentiated TFM titles with recent
 literature, validated public datasets, and explicit feasibility gates. Raw imported
 bundles remain reference-only.
+
+Use `quality-bar-gauntlet` when an artifact must be compared against a named,
+fetchable, comparable bar. It works for code, PRs, dashboards, plots, PPTX,
+DOCX/PDF, Markdown, and research deliverables. The usage guide is
+[docs/quality-bar-gauntlet.md](docs/quality-bar-gauntlet.md).
 
 Profile resolution supports parent-first `extends` with cycle detection. The
 catalog default `document-delivery` activates `docs-alignment`,
@@ -338,6 +353,7 @@ Every project repository that wants NegritaOS governance becomes an **adapter**:
 │   ├── project.yaml                  declares project_id + negrita_registry path
 │   ├── settings.json                 shared Claude lifecycle hooks
 │   ├── rules/*.md     → symlinks    →  NegritaOS/.codex/rules/*.md
+│   ├── agents/*.md    → symlinks    →  NegritaOS/.codex/agents/*.md
 │   ├── skills/AGENTS.md             →  NegritaOS canonical
 │   ├── skills/negritaos-mode-router →  NegritaOS canonical
 │   ├── commands/      → symlink     →  NegritaOS/.codex/commands/
@@ -401,9 +417,11 @@ A shorter version works too — the router will still pick the right agent from 
 ### Step 3 — name the mode if you want full control
 - `@agent:MR …` for model review
 - `@agent:CR …` for code review
+- `@agent:PRR …` for pull-request risk review
+- `@agent:QG …` for benchmarked quality-bar gauntlets
 - `@agent:DQ …` for data-quality incidents
 - `@agent:EP …` for presentations
-- … see [§3](#3-the-8-operational-modes)
+- … see [§3](#3-the-operational-modes)
 
 ### Step 4 — accept the answer flow
 Every reply should follow the `default_output_contract` declared in [integrator.yaml](integrator.yaml) for its agent:
@@ -448,11 +466,19 @@ This is **idempotent and safe to re-run**. It:
 cd /Users/jackyb-cqi/repos/NegritaOS
 python3 scripts/validate_alignment.py --sibling /absolute/path/to/repo
 ```
-Expect `10/10 OK`. If anything fails, the script prints the exact missing symlink or path.
+Expect all checks to pass. If anything fails, the script prints the exact
+missing symlink, alias, rule, skill, memory path, or registry reference.
 
 ### Step 4 — commit NegritaOS changes
 The only file you should commit in NegritaOS is the new `projects/<project_id>.yaml`.
 The sibling repo gets `.codex/project.yaml` (real file) and a `.gitignore` entry — symlinks are local.
+
+If Claude-native agents are needed immediately, refresh aliases with:
+
+```bash
+python3 scripts/sync_claude_agent_aliases.py --repo /absolute/path/to/repo --write
+python3 scripts/validate_claude_agent_aliases.py --repo /absolute/path/to/repo
+```
 
 ---
 
@@ -496,6 +522,8 @@ The sibling repo gets `.codex/project.yaml` (real file) and a `.gitignore` entry
 | [scripts/validate_config_resolution.py](scripts/validate_config_resolution.py) | Resolves `.codex/project.yaml` → project registry → profiles/mode map/agents → integrator assets → catalog and wrappers. **Run before answering or committing config changes.** |
 | [scripts/validate_registry_paths.py](scripts/validate_registry_paths.py) | Verifies every path referenced in `integrator.yaml`, rubrics, templates, skills resolves on disk. |
 | [scripts/validate_skill_catalog.py](scripts/validate_skill_catalog.py) | Validates federated skill IDs, frontmatter, profiles, sources, and project data-source declarations. |
+| [scripts/sync_claude_agent_aliases.py](scripts/sync_claude_agent_aliases.py) | Generates `.codex/agents/<mode>.md` wrappers so NegritaOS modes are invocable as Claude native aliases. |
+| [scripts/validate_claude_agent_aliases.py](scripts/validate_claude_agent_aliases.py) | Validates Claude aliases for NegritaOS and registered sibling project adapters. |
 | [scripts/validate_source_quality_contract.py](scripts/validate_source_quality_contract.py) | Validates logical grain, keys, timestamp roles, latency/freshness semantics, SLA, and source-quality evidence for new or migrated BigQuery analyses. |
 | [scripts/materialize_project_skills.py](scripts/materialize_project_skills.py) | Dry-runs or links profile-selected canonical skills into a sibling adapter with backups. |
 | [scripts/sync_skill_catalog.py](scripts/sync_skill_catalog.py) | Synchronizes federated profiles into the canonical `.codex/skills/AGENTS.md`. |
@@ -540,6 +568,8 @@ If steps 3–6 disagree on something non-trivial, the agent **must ask** before 
 cd ~/repos/<project_id> && code .
 # then in chat:
 @agent:<MODE> <task>
+# in Claude native agent picker/CLI:
+--agent <mode-lowercase>   # example: --agent prr
 # or paste the full activation block from §10
 
 # Validate the system after edits
@@ -557,7 +587,7 @@ python3 scripts/validate_alignment.py --sibling /abs/path
 ```
 
 Modes (quick recall):
-**LP** lead · **AE** academic · **TD** docs · **MR** model · **CR** code · **EP** present · **DQ** data-quality · **RT** research
+**LP** lead · **AE** academic · **TD** docs · **MR** model · **CR** code · **PRR** PR risk · **QG** gauntlet · **PA** plots · **EP** present · **DQ** data-quality · **RT** research
 
 ---
 

@@ -10,17 +10,24 @@ rubric:
       - audience_is_defined
       - decision_or_action_required_is_stated
       - narrative_pattern_is_applied
-      - executive_summary_slide_is_present_and_first
+      - agenda_is_present_immediately_after_the_cover
+      - executive_summary_follows_the_agenda
       - appendix_is_separated_from_main_deck
-      - deck_length_matches_audience_or_approved_release_config
+      - analytical_deck_has_10_to_80_total_slides_including_appendix
+      - no_audience_or_section_specific_slide_cap_was_applied
+      - existing_deck_repairs_preserve_an_explicitly_approved_exact_count_when_needed
+      - evidence_artifacts_are_inventoried_before_any_query_execution
+      - deck_only_changes_use_reuse_only_mode
+      - full_refresh_has_explicit_user_authorization_and_cost_preflight
       - correct_domain_finding_skill_is_applied_when_evidence_is_domain_specific
       - cqi_analytical_decks_apply_cqi_analytical_pptx_skill_when_applicable
 
-    audience_length_guidance:
-      c_level: "Max 10 slides (excluding appendix)"
-      senior_management: "Max 15 slides"
-      technical_team: "Max 25 slides"
-      mixed: "Split: 10 executive + N technical appendix slides"
+    analytical_deck_length_contract:
+      minimum_total_slides: 10
+      maximum_total_slides: 80
+      includes_appendix: true
+      audience_specific_caps: forbidden
+      per_section_caps: forbidden
 
   slide_level_gates:
     required_per_slide:
@@ -66,6 +73,10 @@ rubric:
       - "Slides equate calls with members, candidate association with exact match, or rule reach with causal effect"
       - "Existing deck canvas is overwritten with a universal size instead of preserving inherited masters and layouts"
       - "Analytical deck skips baseline/calculation alignment before detailed evidence"
+      - "A title, notes, layout, readability, agenda, or styling correction triggers analytical queries"
+      - "All analysis queries are rerun without an explicit full-refresh request"
+      - "Existing run-scoped CSV, Parquet, JSON, plot, or manifest evidence is ignored"
+      - "A targeted evidence gap is expanded into an unrelated full analysis rerun"
     narrative:
       - "Deck that builds up to a finding the audience already knew"
       - "Narrative that contradicts the recommendation"

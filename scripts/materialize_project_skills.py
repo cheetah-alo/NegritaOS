@@ -51,6 +51,10 @@ def materialize(repo: Path, dry_run: bool) -> int:
 
     skills_by_id = {entry["id"]: entry for entry in catalog["skills"]}
     target_root = repo / ".codex" / "skills"
+    canonical_skills_root = ROOT / ".codex" / "skills"
+    if target_root.exists() and target_root.resolve() == canonical_skills_root.resolve():
+        print(f"[OK] {repo}: .codex/skills already points to canonical skills root")
+        return 0
     if not target_root.exists() and dry_run:
         print(f"[DRY-RUN] would create {target_root}")
     elif not target_root.exists():
@@ -65,7 +69,8 @@ def materialize(repo: Path, dry_run: bool) -> int:
         source = source_file.parent
         if source.name != skill_id:
             raise ValueError(
-                f"catalog skill {skill_id!r} must expose its source from a directory named {skill_id!r}"
+                f"catalog skill {skill_id!r} must expose its source from "
+                f"a directory named {skill_id!r}"
             )
         destination = target_root / skill_id
         if destination.is_symlink() and destination.resolve() == source.resolve():

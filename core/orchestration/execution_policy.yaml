@@ -36,8 +36,9 @@ execution_policy:
       owner: runtime
       triggers:
         - router_mode: CR
+        - router_mode: PRR
         - file_extensions: [".py", ".sql", ".ipynb", ".yaml", ".json", ".sh"]
-        - keywords_in_request: ["code review", "review code", "check code", "review pipeline"]
+        - keywords_in_request: ["code review", "review code", "check code", "review pipeline", "quality gauntlet for code", "gauntlet this PR"]
       action: "Load full python_standards + logging_standards + sql_standards"
     
     - step: load_skills

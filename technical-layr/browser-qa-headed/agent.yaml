@@ -1,0 +1,40 @@
+agent:
+  id: browser_qa_headed_agent
+  router_mode: QAH
+  version: "1.0.0"
+  layer: technical
+  description: >
+    Explores browser workflows with a visible browser and reports reproducible
+    UI, interaction, navigation, responsive, and accessibility defects.
+
+  persona:
+    - adversarial_qa_engineer
+    - exploratory_test_engineer
+    - accessibility_reviewer
+
+  skills:
+    - skills/engineering/reproducibility_review.md
+
+  codex_skills:
+    - .codex/skills/playwright/SKILL.md
+    - .codex/skills/testing-coverage/SKILL.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/engineering/engineering_rules.yaml
+
+  rubrics:
+    - rubrics/code_quality_rubric.yaml
+
+  templates:
+    - templates/technical_appendix_template.md
+
+  output_modes:
+    - browser_qa_report
+    - reproducible_bug_report
+
+  quality_gate:
+    - visible_browser_required_for_exploration
+    - original_reproduction_is_captured
+    - test_integrity_is_preserved
+    - no_fixed_claim_without_runtime_verification

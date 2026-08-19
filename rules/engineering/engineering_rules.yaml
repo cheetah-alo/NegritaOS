@@ -4,15 +4,18 @@ engineering_rules:
     Engineering rules for code quality, Python standards, infrastructure, and ML pipelines.
     These rules are AUTOMATICALLY ACTIVE when:
     - Router mode is CR (Code Review)
+    - Router mode is PRR (Pull Request Risk Review)
     - Any code file (.py, .sql, .yaml, .html, .js, .ts, .jsx, .tsx, .css) is being reviewed or generated
     - Code blocks appear in technical documentation
     - Model review includes code/pipeline review
+    - Quality Bar Gauntlet evaluates code, SQL, a PR, or a pipeline artifact
 
   automatic_activation_triggers:
     - router_mode: CR
+    - router_mode: PRR
     - file_extensions: [".py", ".sql", ".ipynb", ".yaml", ".json", ".sh", ".html", ".js", ".ts", ".jsx", ".tsx", ".css"]
-    - agent_ids: [code_review_agent, software_architect_agent, model_review_agent, technical_writer_agent]
-    - contexts: [code_generation, code_review, pipeline_review, reproducibility_check]
+    - agent_ids: [code_review_agent, pull_request_reviewer_agent, quality_gauntlet_agent, software_architect_agent, model_review_agent, technical_writer_agent]
+    - contexts: [code_generation, code_review, pull_request_review, pipeline_review, reproducibility_check, quality_gauntlet_for_code_or_pr]
 
   python_standards:
     description: "PEP8 + ML/DS production best practices"

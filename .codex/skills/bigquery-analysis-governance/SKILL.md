@@ -49,3 +49,9 @@ unsupported coverage into zero-valued evidence.
 If the BigQuery analysis uses Jinja-rendered SQL, also load `jinja-bigquery`
 before editing or reviewing the template. Validate the rendered GoogleSQL, not
 only the template source.
+
+For downstream PPTX or report work, inventory existing run manifests,
+CSV/Parquet/JSON outputs, plot registries, plots, and hashes first. Use
+`reuse_only` by default, `targeted_refresh` for a named gap, and `full_refresh`
+only with explicit user authorization plus SELECT-only cost preflight. Deck-only
+changes never execute BigQuery queries.

@@ -18,7 +18,7 @@ Ask follow-up questions until that confidence is reached.
 
 ## Procedure
 
-1. **Detect mode** via the NegritaOS router (LP / AE / TD / MR / CR / EP / DQ / RT).
+1. **Detect mode** via the NegritaOS router (LP / AE / TD / MR / CR / PRR / QG / PA / EP / DQ / RT).
    - Default to `LP` (Localized Planning) for this gate.
    - If the project has a `mode_map` in `projects/<project>.yaml`, honor it.
 

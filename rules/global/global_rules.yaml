@@ -5,6 +5,10 @@ global_rules:
     avoid_hype_language: true
     avoid_overexplaining: true
     avoid_unnecessary_emojis: true
+    prefer_plain_language: true
+    answer_first: true
+    preserve_exact_paths_commands_numbers_and_status_labels: true
+    explain_unavoidable_jargon_on_first_use: true
 
 
   reasoning:
@@ -42,3 +46,5 @@ global_rules:
     tone: professional_technical
     verbosity: adaptive
     prioritize_clarity_over_academic_flourish: true
+    use_short_sentences_for_user_facing_output: true
+    simplify_language_without_weakening_precision: true

@@ -21,6 +21,7 @@ project:
     - adversarial-browser-qa
     - notion-registry-sync
     - knowledge-orchestration
+    - quality-bar-gauntlet
   agents:
     - team_lead_ds_agent
     - decision_support_agent
@@ -34,6 +35,7 @@ project:
     - plot_analysis_agent
     - code_review_agent
     - pull_request_reviewer_agent
+    - quality_gauntlet_agent
     - browser_qa_headed_agent
     - browser_qa_headless_agent
     - software_architect_agent
@@ -45,7 +47,12 @@ project:
   mode_map:
     system_audit: CR
     code_review: CR
-    pull_request_review: CR
+    pull_request_review: PRR
+    pr_risk_review: PRR
+    quality_bar_gauntlet: QG
+    gauntlet: QG
+    benchmark_review: QG
+    plot_analysis: PA
     technical_documentation: TD
     writeup: TD
     gitbook_documentation: TD
@@ -63,6 +70,8 @@ project:
     - gitbook_doc
     - verified_knowledge_package
     - gitbook_publication_manifest
+    - quality_bar_contract
+    - benchmark_comparison_report
     - executive_presentation
   preservation:
     backup_required_before_migration: true

@@ -1,0 +1,52 @@
+quality_bar_contract:
+  schema_version: 1
+  project_id: ""
+  router_mode: QG
+  requested_by: user
+  created_at: ""
+
+  objective: ""
+  artifact_under_review:
+    type: "code | pr | dashboard | plot | pptx | docx | pdf | markdown | research | model_review | other"
+    path_or_url: ""
+    owner_project: ""
+    current_status: "draft | candidate | ready_for_review | blocked"
+
+  reference_bar:
+    name: ""
+    path_or_url: ""
+    reason_selected: ""
+    named: false
+    fetchable: false
+    comparable: false
+    limitations: []
+
+  scope:
+    units:
+      - id: ""
+        description: ""
+        domain_skills: []
+        required_evidence: []
+
+  execution:
+    lead_agent: quality_gauntlet_agent
+    builder_agents: []
+    critic_agents: []
+    smoother_agent: ""
+    max_budget_or_time: ""
+    paid_api_allowed: false
+    external_publish_allowed: false
+
+  evidence:
+    commands: []
+    tests: []
+    renders_or_screenshots: []
+    source_paths: []
+    hashes: []
+    unresolved_gaps: []
+
+  result:
+    status: "PASS | PASS_WITH_WARNINGS | FAIL | BLOCKED"
+    critic_decision: ""
+    largest_remaining_gap: ""
+    next_action: ""

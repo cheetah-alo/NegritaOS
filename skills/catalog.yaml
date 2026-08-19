@@ -22,6 +22,20 @@ profiles:
       - docs-alignment
       - document-control
       - local-memory-protocol
+      - plain-language-rewrite
+  plain-language-writing:
+    description: On-demand clear-language rewrite and jargon reduction without weakening technical precision.
+    skills:
+      - plain-language-rewrite
+  adversarial-browser-qa:
+    description: Compatibility profile for browser QA governance while the dedicated QA skill package is staged separately.
+    extends: document-delivery
+  notion-registry-sync:
+    description: Compatibility profile for Notion inventory synchronization while dedicated registry sync tooling is staged separately.
+    extends: document-delivery
+  knowledge-orchestration:
+    description: Compatibility profile for cross-surface knowledge orchestration while GitBook/Notion publication tooling is staged separately.
+    extends: document-delivery
   analytical-deck-delivery:
     description: Analytical storytelling layered on baseline document governance.
     extends: document-delivery
@@ -47,11 +61,18 @@ profiles:
     description: Evidence-first interpretation and comparison of plots across reports, decks, dashboards, EDA, and model review.
     skills:
       - evidence-first-plot-analysis
+      - quality-bar-gauntlet
   pull-request-risk-review:
     description: Shadow-mode PR risk gate for CI status, security, verification evidence, and code-quality tooling.
     skills:
       - pull-request-risk-review
       - pr-review-deep
+      - quality-bar-gauntlet
+  quality-bar-gauntlet:
+    description: Benchmark-driven quality loop with separate builder/critic review against a named, fetchable, comparable reference.
+    extends: document-delivery
+    skills:
+      - quality-bar-gauntlet
   elal-eda-governance:
     description: Opt-in ELAL passenger-journey EDA semantics and evidence states.
     skills:
@@ -120,11 +141,13 @@ profiles:
     extends: analytical-deck-delivery
     skills:
       - cqi-analytical-pptx
+      - quality-bar-gauntlet
   cqi-analytical-docx-pdf:
     description: CQI analytical Word/PDF delivery, APA figure/table standards, render QA, and document-control governance.
     extends: document-delivery
     skills:
       - cqi-analytical-docx-pdf
+      - quality-bar-gauntlet
   ibc-technical-eda-presentation:
     description: IBC technical EDA and ML-readiness decks layered on CQI PPTX governance.
     extends: cqi-analytical-pptx
@@ -207,6 +230,15 @@ skills:
     status: canonical
     dependencies: [python3, flake8, pylint, mypy, vulture, pytest]
     side_effects: read_only_review
+  - id: quality-bar-gauntlet
+    path: .codex/skills/quality-bar-gauntlet/SKILL.md
+    native_path: skills/engineering/quality_bar_gauntlet.md
+    source: NegritaOS-native
+    profiles: [quality-bar-gauntlet, evidence-first-plot-analysis, pull-request-risk-review, cqi-analytical-pptx, cqi-analytical-docx-pdf]
+    scopes: [root, backend, frontend, data_analytics, presentation, documentation, review]
+    status: canonical
+    dependencies: []
+    side_effects: review_loop_with_subagents
   - id: analytics-storytelling-deck
     path: .codex/skills/analytics-storytelling-deck/SKILL.md
     native_path: skills/executive/analytics_storytelling_deck.md
@@ -225,6 +257,15 @@ skills:
     status: canonical
     dependencies: []
     side_effects: governed_deliverable_creation
+  - id: plain-language-rewrite
+    path: .codex/skills/plain-language-rewrite/SKILL.md
+    native_path: skills/writing/plain_language_rewrite.md
+    source: NegritaOS-native
+    profiles: [document-delivery, plain-language-writing]
+    scopes: [root, documentation, review]
+    status: canonical
+    dependencies: []
+    side_effects: style_only_rewrite
   - id: local-memory-protocol
     path: .codex/skills/local-memory-protocol/SKILL.md
     native_path: null

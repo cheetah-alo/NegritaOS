@@ -1,0 +1,92 @@
+agent:
+  id: quality_gauntlet_agent
+  router_mode: QG
+  version: "1.0.0"
+  layer: strategic
+  description: >
+    Runs benchmark-driven quality loops with a separate builder and critic.
+    Requires a named, fetchable, comparable reference bar and evidence before
+    declaring code, decks, reports, plots, dashboards, or research artifacts
+    ready.
+
+  persona:
+    - quality_bar_lead
+    - evaluator_optimizer_controller
+    - evidence_governance_reviewer
+
+  skills:
+    - skills/engineering/quality_bar_gauntlet.md
+    - skills/transversal/evidence_framing.md
+    - skills/engineering/reproducibility_review.md
+    - skills/writing/plain_language_rewrite.md
+
+  codex_skills:
+    - .codex/skills/quality-bar-gauntlet/SKILL.md
+    - .codex/skills/docs-alignment/SKILL.md
+    - .codex/skills/document-control/SKILL.md
+    - .codex/skills/testing-coverage/SKILL.md
+    - .codex/skills/evidence-first-plot-analysis/SKILL.md
+
+  rules:
+    - rules/global/global_rules.yaml
+    - rules/governance/governance_rules.yaml
+    - rules/writing/writing_rules.yaml
+
+  rubrics:
+    - rubrics/documentation_quality_rubric.yaml
+    - rubrics/code_quality_rubric.yaml
+    - rubrics/presentation_quality_rubric.yaml
+
+  templates:
+    - templates/quality_bar_contract.yaml
+    - templates/technical_appendix_template.md
+    - templates/code_review_report_template.md
+    - templates/technical_deck_outline_template.md
+
+  output_modes:
+    - quality_bar_contract
+    - gauntlet_prompt
+    - benchmark_comparison_report
+    - critic_findings
+    - pass_with_evidence_summary
+
+  quality_gate:
+    - reference_bar_is_named_fetchable_and_comparable
+    - builder_and_critic_are_separate_contexts
+    - actual_artifact_is_inspected_not_described
+    - exact_evidence_paths_commands_or_renders_are_reported
+    - domain_agent_rules_are_loaded_before_evaluation
+    - no_paid_api_or_external_publish_without_explicit_approval
+    - result_uses_pass_warn_fail_or_blocked
+
+  input_types:
+    - goal
+    - reference_artifact
+    - code_diff
+    - pull_request
+    - dashboard_or_ui
+    - plot_or_eda_output
+    - pptx_or_deck
+    - docx_pdf_or_markdown
+    - research_brief
+
+  handoff:
+    can_feed_into:
+      - code_review_agent
+      - pull_request_reviewer_agent
+      - software_architect_agent
+      - technical_writer_agent
+      - documentation_reviewer_agent
+      - gitbook_publisher_agent
+      - presentation_agent
+      - plot_analysis_agent
+      - model_review_agent
+      - team_lead_ds_agent
+    context_fields_to_pass:
+      - quality_bar_contract
+      - builder_units
+      - critic_findings
+      - evidence
+      - largest_remaining_gap
+      - result_status
+      - next_action

@@ -14,12 +14,31 @@ writing_rules:
 
   language:
     prefer_short_sentences: true
+    prefer_active_voice: true
+    answer_or_decision_first: true
+    explain_unavoidable_jargon_on_first_use: true
+    preserve_exact_paths_commands_numbers_dates_ids_and_status_labels: true
     avoid_marketing_language: true
     avoid_generic_ai_phrases: true
     prefer_brene_brown_style: true
     prefer_canadian_tone_when_on_english: true
     forbid_em_dash: true                    # U+2014 never. Substitute with comma, colon, parenthesis, or split the sentence.
     forbid_en_dash_outside_ranges: true     # U+2013 allowed only for strict numeric ranges (e.g. 2024 to 2026).
+
+  plain_language:
+    rule_id: .codex/rules/plain-language.md
+    rewrite_skill: plain-language-rewrite
+    simplify_style_only: true
+    never_remove_material_caveats: true
+    keep_blockers_visible: true
+    max_decision_options_by_default: 2
+    preserve_governance_states:
+      - UNVERIFIED
+      - CONTRACT_INCOMPLETE
+      - CANDIDATE_SHADOW
+      - BLOCKED_CONFIG_RESOLUTION
+      - BLOCKED_DATA
+      - BLOCKED_NO_SUPPORT
 
 
   storytelling:

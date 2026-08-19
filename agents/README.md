@@ -5,6 +5,7 @@ with a defined contract, skill set, rule set, and output interface.
 
 For routing logic, see: `core/orchestration/metaagent_router.yaml`
 For execution policy, see: `core/orchestration/execution_policy.yaml`
+For Claude-native aliases, see: `docs/claude-agent-aliases.md`
 
 ---
 
@@ -23,6 +24,7 @@ For execution policy, see: `core/orchestration/execution_policy.yaml`
 | MR | eda_reviewer_agent | technical | ML / EDA / Model Review | Focused EDA completeness and correctness review |
 | CR | code_review_agent | technical | Code / Repository Work | Reviews Python, SQL, and ML pipelines for production readiness |
 | CR | software_architect_agent | technical | Code / Repository Work | Designs maintainable modular repo structures with quality score >=80 |
+| QG | quality_gauntlet_agent | strategic | Quality Bar Gauntlet | Runs benchmarked builder/critic loops against named reference bars |
 | EP | presentation_agent | strategic | Executive Presentation | Builds top-down executive and technical presentations |
 | EP | decision_support_agent | strategic | Leadership Planning | Structures complex decisions for senior leadership |
 | DQ | data_quality_sentinel_agent | technical | Data Quality / Escalation | Detects, documents, and escalates data quality incidents |
@@ -32,6 +34,30 @@ For execution policy, see: `core/orchestration/execution_policy.yaml`
 | BZ_MF | moneyflow_analyst_agent | business | MoneyFlow Analytics | Revenue, ARPU, billing analytics para operadores telecom |
 | BZ_HOT | hot_operations_agent | business | Hot / HotMobile Operations | Churn, segmentación, NPS y entregas CQISense para Hot |
 | BZ_UVI | uvi_master_ia_agent | business | UVI Máster IA | Evaluación y tutoría de TFMs — Máster IA UVI |
+
+---
+
+## Claude Native Invocation
+
+NegritaOS modes are uppercase router IDs. Claude Code native subagents are
+lowercase markdown aliases generated under `.codex/agents/`.
+
+| Use case | Invocation |
+|---|---|
+| NegritaOS prompt routing | `@agent:PRR review PR #25` |
+| Claude native agent selection | `--agent prr` |
+| Claude command palette | select `prr`, `td`, `mr`, `qg`, etc. |
+
+Do not create one-off local agents for canonical modes. Update
+`core/orchestration/metaagent_router.yaml` and `integrator.yaml`, then run:
+
+```bash
+python3 scripts/sync_claude_agent_aliases.py --all-projects --write
+python3 scripts/validate_claude_agent_aliases.py --all-projects
+```
+
+The generated files are wrappers only; the source of truth remains the router,
+integrator, rules, skills, and project registry.
 
 ---
 
@@ -54,6 +80,7 @@ NEGRITAOS/
 │   ├── decision-support/       → decision_support_agent
 │   ├── executive-presenter/    → presentation_agent
 │   ├── jira-import/            → jira_import_agent
+│   ├── quality-gauntlet/       → quality_gauntlet_agent
 │   ├── team-lead-ds/           → team_lead_ds_agent
 │   └── technical-writer/       → technical_writer_agent
 │
@@ -79,7 +106,7 @@ Every `agent.yaml` contains:
 ```yaml
 agent:
   id:               # Unique agent identifier
-  router_mode:      # Router mode ID (LP / AE / TD / MR / CR / EP / DQ / RT)
+  router_mode:      # Router mode ID (LP / AE / TD / MR / CR / PRR / QG / PA / EP / DQ / RT)
   version:          # Semantic version
   layer:            # academic / intelligence / strategic / technical
   description:      # What this agent does and what it does NOT do

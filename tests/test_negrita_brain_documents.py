@@ -26,6 +26,9 @@ class TestDocumentControl(unittest.TestCase):
         self.assertFalse(is_deliverable(root / "README.md", root))
         self.assertFalse(is_deliverable(root / "docs" / "architecture.md", root))
         self.assertFalse(is_deliverable(root / "src" / "template.html", root))
+        self.assertFalse(
+            is_deliverable(root / ".venv-pr-quality" / "lib" / "report.html", root)
+        )
 
     def test_timestamped_document_that_is_compliant(self) -> None:
         root = Path("/workspace")
@@ -38,6 +41,26 @@ class TestDocumentControl(unittest.TestCase):
         self.assertTrue(
             is_compliant_deliverable(
                 selected_repo_path, root, user_selected_route=True
+            )
+        )
+
+    def test_configured_canonical_directory_that_is_enforced(self) -> None:
+        root = Path("/workspace")
+        canonical = root / "team-lead-qaqc" / "documents"
+        compliant = canonical / "report__updated_20260805_120000.pdf"
+        outside = root / "documents" / "report__updated_20260805_120000.pdf"
+        self.assertTrue(
+            is_compliant_deliverable(
+                compliant,
+                root,
+                canonical_directory="team-lead-qaqc/documents",
+            )
+        )
+        self.assertFalse(
+            is_compliant_deliverable(
+                outside,
+                root,
+                canonical_directory="team-lead-qaqc/documents",
             )
         )
 

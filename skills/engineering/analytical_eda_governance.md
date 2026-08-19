@@ -14,6 +14,10 @@ under the package SQL directory, and configuration/manifests under `config/`.
 Run artifacts belong under `outputs/run_<id>/` and must include a hash-bearing
 run manifest.
 
+Run-scoped CSV, Parquet, JSON, plot registries, rendered plots, and summary
+artifacts are reusable downstream evidence. Deck and report workflows inventory
+these outputs before requesting any source query refresh.
+
 Historical packages are not silently rewritten. A `legacy/v<N>/` directory is
 an audit-only quarantine: it is excluded from active manifests and normal
 execution until a migration is recorded.
@@ -32,3 +36,13 @@ execution until a migration is recorded.
 
 This profile applies to new or explicitly migrated analyses. It does not make
 ELAL-specific operational-severity or subtitle rules global.
+
+## Downstream refresh boundary
+
+- Narrative, notes, layout, readability, agenda, and visual-emphasis changes do
+  not rerun analysis queries.
+- Plot restyling consumes the existing validated tabular output by default.
+- A missing or stale artifact permits only a named targeted refresh unless the
+  user explicitly authorizes a full refresh.
+- New query results use a new immutable run directory and never overwrite the
+  evidence behind an existing deck release.

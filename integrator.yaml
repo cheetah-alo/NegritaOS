@@ -144,6 +144,7 @@ negrita_os:
       skills:
         - skills/executive/presentation_storyline.md
         - skills/executive/analytics_storytelling_deck.md
+        - skills/executive/presentation_evidence_reuse.md
         - skills/executive/cqi_analytical_pptx.md
         - skills/ml/evidence_first_plot_analysis.md
         - skills/ml/eda_analytics_findings.md
@@ -155,7 +156,9 @@ negrita_os:
         - skills/transversal/evidence_framing.md
         - skills/governance/risk_framing.md
       codex_skills:
+        - .codex/skills/analytics-storytelling-deck/SKILL.md
         - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/presentation/presentation_rules.yaml
@@ -175,6 +178,8 @@ negrita_os:
         - executive_summary
       quality_gate:
         - each_slide_has_one_core_message
+        - agenda_is_present_immediately_after_cover
+        - analytical_deck_total_slide_count_is_between_10_and_80
         - each_chart_has_takeaway
         - plot_takeaways_state_observation_interpretation_and_boundary
         - analytics_decks_start_with_findings_then_baseline
@@ -184,6 +189,9 @@ negrita_os:
         - chart_claims_reference_overall_or_baseline_when_comparing_rates
         - recommendation_is_decision_oriented
         - appendix_separates_methodology_from_main_story
+        - evidence_artifacts_are_inventoried_before_query_execution
+        - deck_only_changes_do_not_execute_queries
+        - full_refresh_requires_explicit_user_authorization_and_cost_preflight
 
     decision_support_agent:
       description: "Structures complex technical decisions for senior leadership consumption."
@@ -434,6 +442,7 @@ negrita_os:
         - skills/transversal/evidence_framing.md
       codex_skills:
         - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/ml/ml_rules.yaml
@@ -553,6 +562,7 @@ negrita_os:
       codex_skills:
         - .codex/skills/pull-request-risk-review/SKILL.md
         - .codex/skills/pr-review-deep/SKILL.md
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/engineering/engineering_rules.yaml
@@ -594,6 +604,7 @@ negrita_os:
       codex_skills:
         - .codex/skills/pull-request-risk-review/SKILL.md
         - .codex/skills/pr-review-deep/SKILL.md
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/engineering/engineering_rules.yaml
@@ -615,6 +626,51 @@ negrita_os:
         - hard_stops_override_numeric_score
         - flake8_pylint_mypy_mccabe_coverage_vulture_are_reported_for_python_prs
         - auto_approve_allowed_is_false_in_v1
+
+    quality_gauntlet_agent:
+      description: "Runs benchmark-driven quality loops using a named reference, separate builder/critic contexts, and evidence-backed pass/fail decisions."
+      persona:
+        - quality_bar_lead
+        - evaluator_optimizer_controller
+        - evidence_governance_reviewer
+      skills:
+        - skills/engineering/quality_bar_gauntlet.md
+        - skills/transversal/evidence_framing.md
+        - skills/engineering/reproducibility_review.md
+        - skills/writing/plain_language_rewrite.md
+      codex_skills:
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
+        - .codex/skills/docs-alignment/SKILL.md
+        - .codex/skills/document-control/SKILL.md
+        - .codex/skills/testing-coverage/SKILL.md
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/governance/governance_rules.yaml
+        - rules/writing/writing_rules.yaml
+      rubrics:
+        - rubrics/documentation_quality_rubric.yaml
+        - rubrics/code_quality_rubric.yaml
+        - rubrics/presentation_quality_rubric.yaml
+      templates:
+        - templates/quality_bar_contract.yaml
+        - templates/technical_appendix_template.md
+        - templates/code_review_report_template.md
+        - templates/technical_deck_outline_template.md
+      output_modes:
+        - quality_bar_contract
+        - gauntlet_prompt
+        - benchmark_comparison_report
+        - critic_findings
+        - pass_with_evidence_summary
+      quality_gate:
+        - reference_bar_is_named_fetchable_and_comparable
+        - builder_and_critic_are_separate_contexts
+        - actual_artifact_is_inspected_not_described
+        - exact_evidence_paths_commands_or_renders_are_reported
+        - domain_agent_rules_are_loaded_before_evaluation
+        - no_paid_api_or_external_publish_without_explicit_approval
+        - result_uses_pass_warn_fail_or_blocked
 
     software_architect_agent:
       description: "Designs maintainable modular repository architecture before implementation starts."
@@ -664,6 +720,7 @@ negrita_os:
         - technical_documentation_owner
       skills:
         - skills/writing/notion_report.md
+        - skills/writing/plain_language_rewrite.md
         - skills/ml/evidence_first_plot_analysis.md
         - skills/ml/eda_analytics_findings.md
         - skills/executive/executive_summary.md
@@ -672,8 +729,10 @@ negrita_os:
         - skills/governance/risk_framing.md
       codex_skills:
         - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/plain-language-rewrite/SKILL.md
         - .codex/skills/cqi-analytical-docx-pdf/SKILL.md
         - .codex/skills/ibc-technical-eda-report/SKILL.md
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/writing/writing_rules.yaml
@@ -695,8 +754,77 @@ negrita_os:
         - every_section_has_purpose
         - every_plot_has_takeaway
         - plot_narrative_states_how_to_read_observation_interpretation_and_boundary
+        - plain_language_preserves_exact_facts_paths_numbers_and_status_labels
         - assumptions_are_explicit
         - next_actions_are_clear
+
+    documentation_reviewer_agent:
+      description: "Reviews documentation for structure, traceability, evidence boundaries, and publication readiness."
+      persona:
+        - documentation_quality_reviewer
+        - evidence_governance_editor
+        - technical_knowledge_controller
+      skills:
+        - skills/writing/notion_report.md
+        - skills/writing/plain_language_rewrite.md
+        - skills/transversal/evidence_framing.md
+      codex_skills:
+        - .codex/skills/docs-alignment/SKILL.md
+        - .codex/skills/document-control/SKILL.md
+        - .codex/skills/plain-language-rewrite/SKILL.md
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/writing/writing_rules.yaml
+        - rules/governance/governance_rules.yaml
+      rubrics:
+        - rubrics/documentation_quality_rubric.yaml
+      templates:
+        - templates/notion_report_template.md
+        - templates/technical_appendix_template.md
+      output_modes:
+        - documentation_review
+        - documentation_coverage_report
+        - publication_readiness_review
+      quality_gate:
+        - source_of_truth_is_named
+        - paths_and_commands_resolve
+        - evidence_status_is_preserved
+        - limitations_and_open_questions_are_explicit
+        - publication_status_is_not_claimed_without_evidence
+
+    gitbook_publisher_agent:
+      description: "Prepares GitBook-ready documentation and reports publication blockers when external sync is unavailable."
+      persona:
+        - documentation_release_controller
+        - knowledge_base_maintainer
+        - gitbook_publication_operator
+      skills:
+        - skills/writing/notion_report.md
+        - skills/writing/plain_language_rewrite.md
+        - skills/transversal/evidence_framing.md
+      codex_skills:
+        - .codex/skills/docs-alignment/SKILL.md
+        - .codex/skills/document-control/SKILL.md
+        - .codex/skills/plain-language-rewrite/SKILL.md
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/writing/writing_rules.yaml
+        - rules/governance/governance_rules.yaml
+      rubrics:
+        - rubrics/documentation_quality_rubric.yaml
+      templates:
+        - templates/notion_report_template.md
+      output_modes:
+        - gitbook_sync_plan
+        - gitbook_ready_markdown
+        - blocked_gitbook_sync
+      quality_gate:
+        - local_source_paths_exist
+        - page_hierarchy_is_declared
+        - publisher_does_not_reinterpret_findings
+        - blocked_external_sync_is_reported_when_connector_is_unavailable
 
     team_lead_ds_agent:
       description: "Turns ambiguity into requirements, tasks, roadmaps, escalations, and follow-up systems."
@@ -845,6 +973,139 @@ negrita_os:
         - evidence_is_reproducible
         - resolution_criteria_are_clear
 
+    browser_qa_headed_agent:
+      description: "Explores browser workflows with a visible browser and reports reproducible UI defects."
+      persona:
+        - adversarial_qa_engineer
+        - exploratory_test_engineer
+        - accessibility_reviewer
+      skills:
+        - skills/engineering/reproducibility_review.md
+      codex_skills:
+        - .codex/skills/playwright/SKILL.md
+        - .codex/skills/testing-coverage/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/engineering/engineering_rules.yaml
+      rubrics:
+        - rubrics/code_quality_rubric.yaml
+      templates:
+        - templates/technical_appendix_template.md
+      output_modes:
+        - browser_qa_report
+        - reproducible_bug_report
+      quality_gate:
+        - visible_browser_required_for_exploration
+        - original_reproduction_is_captured
+        - test_integrity_is_preserved
+        - no_fixed_claim_without_runtime_verification
+
+    browser_qa_headless_agent:
+      description: "Replays browser workflows headlessly for deterministic regression and CI evidence."
+      persona:
+        - regression_test_engineer
+        - ci_qa_engineer
+        - adversarial_qa_engineer
+      skills:
+        - skills/engineering/reproducibility_review.md
+      codex_skills:
+        - .codex/skills/playwright/SKILL.md
+        - .codex/skills/testing-coverage/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/engineering/engineering_rules.yaml
+      rubrics:
+        - rubrics/code_quality_rubric.yaml
+      templates:
+        - templates/technical_appendix_template.md
+      output_modes:
+        - browser_regression_report
+        - browser_qa_report
+      quality_gate:
+        - exact_headless_command_is_reported
+        - baseline_and_replay_results_are_separated
+        - original_path_is_replayed_for_fix_claims
+        - no_test_changes_to_make_a_failure_green
+
+    telecom_customer_journey_agent:
+      description: "Reviews telecom customer journey evidence before durable documentation."
+      persona:
+        - telecom_customer_journey_reviewer
+        - senior_data_scientist
+        - operational_evidence_reviewer
+      skills:
+        - skills/business/telecom_kpi_interpretation.md
+        - skills/ml/eda_analytics_findings.md
+        - skills/ml/evidence_first_plot_analysis.md
+        - skills/transversal/evidence_framing.md
+      codex_skills:
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/plain-language-rewrite/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/writing/writing_rules.yaml
+      rubrics:
+        - rubrics/documentation_quality_rubric.yaml
+      output_modes:
+        - telecom_journey_knowledge_review
+        - customer_journey_evidence_boundary
+      quality_gate:
+        - grain_denominator_population_and_time_window_are_declared
+        - proxies_are_labeled
+        - unsupported_cross_project_reuse_is_marked_unverified
+
+    network_fiber_wifi_agent:
+      description: "Reviews fiber, WiFi, trap, topology, PON, vendor, and network-readiness evidence."
+      persona:
+        - network_analytics_reviewer
+        - fiber_wifi_domain_reviewer
+        - source_readiness_controller
+      skills:
+        - skills/business/telecom_kpi_interpretation.md
+        - skills/ml/evidence_first_plot_analysis.md
+        - skills/transversal/evidence_framing.md
+      codex_skills:
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/plain-language-rewrite/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/analysis/analysis_rules.yaml
+      rubrics:
+        - rubrics/documentation_quality_rubric.yaml
+      output_modes:
+        - network_source_readiness_review
+        - fiber_wifi_evidence_boundary
+      quality_gate:
+        - physical_network_object_grain_key_and_time_window_are_declared
+        - join_fanout_and_cardinality_are_explicit
+        - readiness_limitations_are_labeled_before_recommendations
+
+    aviation_passenger_journey_agent:
+      description: "Reviews aviation passenger journey evidence before durable documentation."
+      persona:
+        - aviation_customer_journey_reviewer
+        - journey_evidence_reviewer
+        - analytical_governance_reviewer
+      skills:
+        - skills/ml/eda_analytics_findings.md
+        - skills/ml/evidence_first_plot_analysis.md
+        - skills/transversal/evidence_framing.md
+      codex_skills:
+        - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/plain-language-rewrite/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/writing/writing_rules.yaml
+      rubrics:
+        - rubrics/documentation_quality_rubric.yaml
+      output_modes:
+        - aviation_journey_knowledge_review
+        - passenger_evidence_boundary
+      quality_gate:
+        - journey_grain_and_time_window_are_declared
+        - operational_snapshots_proxies_scores_segments_and_chips_are_separated
+        - limitations_are_explicit_before_recommendations
+
   routing_rules:
 
     if_user_asks_for:
@@ -893,6 +1154,12 @@ negrita_os:
       merge_gate:
         use_agent: pull_request_reviewer_agent
 
+      quality_bar_gauntlet:
+        use_agent: quality_gauntlet_agent
+
+      benchmark_comparison:
+        use_agent: quality_gauntlet_agent
+
       refactor:
         use_agent: code_review_agent
 
@@ -910,6 +1177,27 @@ negrita_os:
 
       confluence_document:
         use_agent: technical_writer_agent
+
+      documentation_review:
+        use_agent: documentation_reviewer_agent
+
+      gitbook_publication:
+        use_agent: gitbook_publisher_agent
+
+      browser_qa_headed:
+        use_agent: browser_qa_headed_agent
+
+      browser_qa_headless:
+        use_agent: browser_qa_headless_agent
+
+      telecom_customer_journey:
+        use_agent: telecom_customer_journey_agent
+
+      network_fiber_wifi:
+        use_agent: network_fiber_wifi_agent
+
+      aviation_passenger_journey:
+        use_agent: aviation_passenger_journey_agent
 
       jira_tasks:
         use_agent: team_lead_ds_agent

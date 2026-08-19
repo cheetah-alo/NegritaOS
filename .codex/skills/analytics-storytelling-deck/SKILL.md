@@ -16,6 +16,11 @@ Apply the canonical NegritaOS skill at `skills/executive/analytics_storytelling_
 Core rules:
 
 - Start with findings, then baseline/calculation alignment.
+- Include an agenda immediately after the cover.
+- New or materially rewritten analytical decks use 10 to 80 total slides,
+  including appendices. Do not impose audience-specific or per-section caps.
+- Apply `skills/executive/presentation_evidence_reuse.md`: reuse existing
+  run-scoped evidence by default and never run queries for deck-only changes.
 - Move broad to narrow: population → signal layer → family → subcategory → attribute → context overlays → interactions/sequences → mechanism/action.
 - Use `note`, not `caveat`.
 - Font: follow `rules/presentation/presentation_rules.yaml`.

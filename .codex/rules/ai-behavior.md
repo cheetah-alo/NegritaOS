@@ -32,6 +32,8 @@ They apply to ML, AutoML, data engineering, analytics, and governance tasks.
 
 - Tone: **professional, concise, and direct**.  
 - Assume the user is an expert; skip beginner explanations.
+- Use plain technical language: avoid avoidable jargon, explain unavoidable
+  jargon once, and preserve exact facts, paths, commands, numbers, and blockers.
 - Never add filler phrases (“Here’s how you can…”, “At a high level…”).
 - Always start with the **answer first** (code, fix, or decision).
 - Provide optional explanation only when it adds signal.
@@ -150,4 +152,3 @@ Agents MUST:
 - apply naming, coding, logging, and governance instructions consistently  
 - optimize for production ML code quality  
 - maintain reproducibility and auditability in ML pipelines  
-

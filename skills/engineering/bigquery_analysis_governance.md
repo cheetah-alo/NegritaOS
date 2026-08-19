@@ -50,6 +50,23 @@ not converted into a zero-filled result.
   evidence, freshness, limits, and unresolved caveats.
 - Outputs use immutable `outputs/run_<id>/` directories and must not mix runs.
 
+## Downstream evidence refresh
+
+Presentation and report updates default to `reuse_only`. Before running a
+BigQuery query, inventory matching run manifests, CSV/Parquet/JSON outputs,
+plot registries, rendered plots, and query/config hashes.
+
+- Deck-only wording, agenda, notes, layout, readability, or styling changes do
+  not execute queries.
+- A named missing or stale metric may use `targeted_refresh` for only its
+  dependency chain.
+- `full_refresh` requires explicit user authorization, a bounded SELECT-only dry
+  run, partition/window declaration, and estimated bytes/cost.
+- Missing evidence is reported as a gap; it is not permission to rerun every
+  query.
+- Targeted and full refresh outputs use a new immutable run directory and are
+  recorded separately from reused artifacts.
+
 ## Warn-first publication state
 
 During adoption, a missing or incomplete source-quality contract may execute,

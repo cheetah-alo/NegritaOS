@@ -20,7 +20,7 @@ This file is a stub. The canonical rule lives at
 
 Load that file first. It defines:
 
-- the 8 operational modes (LP/AE/TD/MR/CR/EP/DQ/RT),
+- the operational and specialist modes (LP/AE/TD/MR/CR/PRR/QG/PA/EP/DQ/RT),
 - binding to [integrator.yaml](../../integrator.yaml),
 - output contract enforcement,
 - federation rules between NegritaOS and adapter `.codex/rules/dev-*.md`,

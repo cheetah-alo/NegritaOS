@@ -40,6 +40,14 @@ presentation_rules:
     default_tone: concise_decision_oriented
 
   structure:
+    agenda_required_after_cover: true
+    analytical_deck_total_slide_range:
+      minimum: 10
+      maximum: 80
+      includes_appendix: true
+      audience_specific_caps_forbidden: true
+      per_section_caps_forbidden: true
+      existing_deck_exception: preserve_an_explicitly_approved_exact_count_for_a_scoped_repair
     one_main_message_per_slide: true
     speaker_notes_required: true
     appendix_separates_methodology: true
@@ -60,6 +68,27 @@ presentation_rules:
         number_size_pt: 180
         title_size_pt: 60
         subtitle_size_pt: 24
+
+  evidence_reuse:
+    default_refresh_mode: reuse_only
+    allowed_refresh_modes:
+      - reuse_only
+      - targeted_refresh
+      - full_refresh
+    artifact_inventory_required_before_query_execution: true
+    reuse_priority:
+      - run_manifest_and_analysis_manifest
+      - validated_csv_parquet_json_and_table_extracts
+      - plot_registry_and_existing_rendered_plots
+      - query_config_and_source_contract_hashes
+      - targeted_query_for_a_named_gap
+    deck_only_edits_must_not_execute_queries: true
+    plot_restyle_uses_existing_tabular_outputs_by_default: true
+    targeted_refresh_requires_named_missing_or_stale_evidence: true
+    full_refresh_requires_explicit_user_authorization: true
+    full_refresh_requires_select_only_dry_run_and_cost_preflight: true
+    missing_evidence_does_not_authorize_a_full_rerun: true
+    executed_queries_must_be_recorded_in_the_delivery_manifest: true
 
   brand:
     cqi_brand_reference: brands/cqi/brand_style/brand_style.md

@@ -22,6 +22,9 @@
 | strategic | technical_writer_agent | TD |
 | technical | model_review_agent | MR |
 | technical | code_review_agent | CR |
+| technical | pull_request_reviewer_agent | PRR |
+| strategic | quality_gauntlet_agent | QG |
+| technical | plot_analysis_agent | PA |
 | strategic | presentation_agent | EP |
 | technical | data_quality_sentinel_agent | DQ |
 | intelligence | ai_trend_radar_agent | RT |

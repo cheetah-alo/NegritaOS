@@ -61,16 +61,23 @@ Before writing slide content:
 ## Deck Structure Template
 
 ```
-Slide 1: Title + Agenda (optional)
-Slide 2: TL;DR / Executive Summary (always)
-Slide 3–N-2: Main story (SCR / Evidence / Options)
+Slide 1: Title / decision question
+Slide 2: Agenda (always)
+Slide 3: TL;DR / Executive Summary (always)
+Slide 4–N-2: Main story (SCR / Evidence / Options)
 Slide N-1: Recommendation and next actions
 Slide N: Appendix separator (if appendix follows)
 Appendix Slides: Methodology, raw data, additional analysis
 ```
 
+For new or materially rewritten analytical decks, use 10 to 80 total slides,
+including the appendix. Do not impose audience-specific or per-section caps.
+For a scoped repair of an existing deck, preserve an explicitly approved exact
+slide count when changing it is outside the request.
+
 ## Rules
 - Appendix is never part of the main story
+- Agenda is always present immediately after the cover
 - Every chart slide has a headline that states the takeaway, not the chart type
   - Bad headline: "Feature Importance Chart"
   - Good headline: "Tenure and Contract Type Drive 68% of Churn Risk"

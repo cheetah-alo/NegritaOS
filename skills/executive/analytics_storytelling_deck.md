@@ -12,6 +12,18 @@ For CQI/CQISense analytical PowerPoint delivery, this is the narrative layer.
 Apply `.codex/skills/cqi-analytical-pptx/SKILL.md` after this skill for brand,
 template, evidence-notes, release QA, and optional podcast contracts.
 
+Apply `skills/executive/presentation_evidence_reuse.md` before requesting any
+data refresh. Existing run-scoped evidence is the default input to a deck.
+
+## Deck Length
+
+- New or materially rewritten analytical decks contain 10 to 80 total slides,
+  including appendices.
+- Do not set audience-specific or per-section slide caps.
+- A scoped repair of an existing deck may preserve an explicitly approved exact
+  count when changing the count is outside the request.
+- Always include an agenda immediately after the cover.
+
 ## Required Story Order
 
 Use this order unless the user explicitly provides a different deck structure:
@@ -83,6 +95,8 @@ For each slide:
 Slide N:
   Finding:
   Evidence object:
+  Evidence artifact path:
+  Refresh mode: reuse_only | targeted_refresh | full_refresh
   How calculated:
   Base / denominator:
   Main KPI(s):

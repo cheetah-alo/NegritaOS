@@ -1,0 +1,40 @@
+agent:
+  id: browser_qa_headless_agent
+  router_mode: QAL
+  version: "1.0.0"
+  layer: technical
+  description: >
+    Replays browser workflows headlessly for deterministic regression and CI
+    evidence.
+
+  persona:
+    - regression_test_engineer
+    - ci_qa_engineer
+    - adversarial_qa_engineer
+
+  skills:
+    - skills/engineering/reproducibility_review.md
+
+  codex_skills:
+    - .codex/skills/playwright/SKILL.md
+    - .codex/skills/testing-coverage/SKILL.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/engineering/engineering_rules.yaml
+
+  rubrics:
+    - rubrics/code_quality_rubric.yaml
+
+  templates:
+    - templates/technical_appendix_template.md
+
+  output_modes:
+    - browser_regression_report
+    - browser_qa_report
+
+  quality_gate:
+    - exact_headless_command_is_reported
+    - baseline_and_replay_results_are_separated
+    - original_path_is_replayed_for_fix_claims
+    - no_test_changes_to_make_a_failure_green

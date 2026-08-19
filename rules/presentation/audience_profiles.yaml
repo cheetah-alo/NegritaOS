@@ -3,7 +3,7 @@ audience_profiles:
   ceo_product_owner:
     language: english
     tone: executive, concise, decision-oriented
-    max_main_slides: 10
+    deck_length_policy: analytical_total_10_to_80_slides
     narrative_pattern_priority:
       - Situation-Complication-Resolution
       - Evidence-Insight-Recommendation
@@ -22,7 +22,7 @@ audience_profiles:
   data_scientist_peer:
     language: english
     tone: technical, precise, evidence-first
-    max_main_slides: 15
+    deck_length_policy: analytical_total_10_to_80_slides
     narrative_pattern_priority:
       - Evidence-Insight-Recommendation
       - Options-Tradeoffs-Decision
@@ -42,7 +42,7 @@ audience_profiles:
   mixed_leadership_technical:
     language: english
     tone: executive-first with technical appendix
-    max_main_slides: 12
+    deck_length_policy: analytical_total_10_to_80_slides
     narrative_pattern_priority:
       - Situation-Complication-Resolution
       - Evidence-Insight-Recommendation

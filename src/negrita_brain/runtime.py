@@ -702,9 +702,14 @@ def gate_action(
             route_decision = str(rules.get("noncompliant_deliverable", "warn")).upper()
             if route_decision == "BLOCK" or decision == "ALLOW":
                 decision = route_decision
-            reasons.append(
-                "Deliverable path must be provided under the canonical team-lead-qaqc/documents route"
-            )
+            if user_selected_route:
+                reasons.append(
+                    "Deliverable path must be explicitly selected and use the required versioned filename"
+                )
+            else:
+                reasons.append(
+                    "Deliverable path must be provided under the configured canonical route"
+                )
     if file_path is not None and file_path.suffix.lower() in DELIVERABLE_EXTENSIONS:
         candidate = file_path if file_path.is_absolute() else context.work_root / file_path
         if user_selected_route:
@@ -733,7 +738,7 @@ def gate_action(
             if route_decision == "BLOCK" or decision == "ALLOW":
                 decision = route_decision
             reasons.append(
-                "Deliverables must remain inside the repository canonical team-lead-qaqc/documents route"
+                "Deliverables must remain inside the configured repository route"
             )
         elif is_deliverable(candidate, context.work_root) and not is_compliant_deliverable(
             candidate,

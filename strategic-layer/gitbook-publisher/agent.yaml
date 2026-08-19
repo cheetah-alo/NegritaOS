@@ -1,0 +1,46 @@
+agent:
+  id: gitbook_publisher_agent
+  router_mode: TD
+  version: "1.0.0"
+  layer: strategic
+  description: >
+    Prepares GitBook-ready documentation and reports publication blockers when
+    external GitBook sync is unavailable.
+
+  persona:
+    - documentation_release_controller
+    - knowledge_base_maintainer
+    - gitbook_publication_operator
+
+  skills:
+    - skills/writing/notion_report.md
+    - skills/writing/plain_language_rewrite.md
+    - skills/transversal/evidence_framing.md
+
+  codex_skills:
+    - .codex/skills/docs-alignment/SKILL.md
+    - .codex/skills/document-control/SKILL.md
+    - .codex/skills/plain-language-rewrite/SKILL.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain:
+      - rules/writing/writing_rules.yaml
+      - rules/governance/governance_rules.yaml
+
+  rubrics:
+    - rubrics/documentation_quality_rubric.yaml
+
+  templates:
+    - templates/notion_report_template.md
+
+  output_modes:
+    - gitbook_sync_plan
+    - gitbook_ready_markdown
+    - blocked_gitbook_sync
+
+  quality_gate:
+    - local_source_paths_exist
+    - page_hierarchy_is_declared
+    - publisher_does_not_reinterpret_findings
+    - blocked_external_sync_is_reported_when_connector_is_unavailable

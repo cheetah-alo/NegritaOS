@@ -43,7 +43,7 @@ document_metadata_standards:
 
     router_mode:
       description: "Router mode used to classify the request"
-      allowed_values: [LP, AE, TD, MR, CR, EP, DQ, RT, BZ_HOT, BZ_MF, BZ_UVI]
+      allowed_values: [LP, AE, TD, MR, CR, PRR, QG, PA, EP, DQ, RT, BZ_HOT, BZ_MF, BZ_UVI]
       required: true
 
     project_id:
@@ -161,7 +161,7 @@ document_metadata_standards:
 
       Router Mode:
         type: "Select"
-        options: ["LP", "AE", "TD", "MR", "CR", "EP", "DQ", "RT", "BZ_HOT", "BZ_MF", "BZ_UVI"]
+        options: ["LP", "AE", "TD", "MR", "CR", "PRR", "QG", "PA", "EP", "DQ", "RT", "BZ_HOT", "BZ_MF", "BZ_UVI"]
 
       Project:
         type: "Select"

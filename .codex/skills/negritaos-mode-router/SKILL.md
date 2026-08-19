@@ -20,7 +20,7 @@ It tells an agent client *how* to enter a session correctly.
 Invoke this skill when ANY of the following is true:
 
 - A new chat session starts in this repository.
-- The request matches one of the 8 mode trigger lists in
+- The request matches one of the operational or specialist mode trigger lists in
   [core/orchestration/metaagent_router.yaml](../../../core/orchestration/metaagent_router.yaml).
 - The user mentions an agent name from
   [integrator.yaml](../../../integrator.yaml).
@@ -66,16 +66,36 @@ read and apply:
 The agent's `rules` list is **authoritative** for this turn. They are
 NegritaOS-native (e.g. `rules/ml/ml_rules.yaml`), not `.codex/rules/dev-*.md`.
 
+## Step 3a — Claude native alias bridge
+
+Claude Code native subagents are discovered from `.codex/agents/*.md` and use
+lowercase names. Treat the NegritaOS mode ID as the canonical concept and the
+Claude file as a thin adapter:
+
+- `PRR` → `.codex/agents/prr.md` → `pull_request_reviewer_agent`
+- `TD` → `.codex/agents/td.md` → `technical_writer_agent`
+- `MR` → `.codex/agents/mr.md` → `model_review_agent`
+- `QG` → `.codex/agents/qg.md` → `quality_gauntlet_agent`
+
+If a user writes `@agent:PRR` or `PRR: ...`, do not ask what `PRR` means. Run
+canonical resolution first. Only report `ROUTING_UNAVAILABLE` when
+`projects/<project_id>.yaml` does not declare the canonical agent returned by
+the router.
+
 ## Step 4 — Merge with adapter rules (engineering modes only)
 
-If the active mode is **MR**, **CR**, or **DQ**:
+If the active mode is **MR**, **CR**, **PRR**, or **DQ**:
 
 1. Load the active codex profile from `.codex/profiles/`.
 2. Load the rules it activates from `.codex/rules/`.
 3. Merge with NegritaOS rules using the conflict order from the canonical
    router rule (NegritaOS wins).
 
-If the active mode is **AE**, **RT**, **EP**, **LP**, or **TD**:
+If the active mode is **QG**, load the domain rules for the artifact under
+review: code/PR/data QG uses engineering rules; PPTX/DOCX/PDF QG uses document
+and presentation rules; plot/EDA QG uses plot and source-quality rules.
+
+If the active mode is **AE**, **RT**, **EP**, **LP**, **TD**, or **PA**:
 
 - Do NOT load `.codex/rules/dev-*.md`. Use NegritaOS skills only.
 
@@ -121,6 +141,8 @@ Use a structured context handoff between modes — pass `input_summary`,
 - Skipping Step 5 and producing free-form prose for an `analytical_report`.
 - Treating `.claude/` as a separate source of truth — it is a symlink or
   sync target of `.codex/`.
+- Treating `PRR` as missing because Claude native selection expects
+  lowercase `--agent prr`.
 - Writing any project memory file directly instead of using the canonical
   `negrita_brain.py memory` API.
 
@@ -136,3 +158,10 @@ Use a structured context handoff between modes — pass `input_summary`,
   rules.
 - *"refactor the BigQuery pipeline"* → **CR**, `code_review_agent`, merge
   NegritaOS engineering rules + adapter `data-sql-governance.md`.
+- *"review PR #12 as a merge gate"* → **PRR**,
+  `pull_request_reviewer_agent`, output `risk_review`, shadow recommendation.
+- *"QG gauntlet this DOCX against the CQI report template"* → **QG**,
+  `quality_gauntlet_agent`, load document-control and the relevant DOCX/PDF
+  skill before judging against the reference.
+- *"analyze this heatmap"* → **PA**, `plot_analysis_agent`, output
+  evidence-first plot interpretation.

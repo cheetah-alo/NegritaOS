@@ -59,24 +59,27 @@ def is_deliverable(path: Path, root: Path) -> bool:
         parts = path.relative_to(root).parts
     except ValueError:
         return False
-    return not any(part in SOURCE_PARTS for part in parts[:-1])
+    return not any(
+        part in SOURCE_PARTS or part.startswith(".venv") for part in parts[:-1]
+    )
 
 
 def is_compliant_deliverable(
-    path: Path, root: Path, *, user_selected_route: bool = False
+    path: Path,
+    root: Path,
+    *,
+    user_selected_route: bool = False,
+    canonical_directory: str = "documents",
 ) -> bool:
     """Return whether a deliverable follows the active route and name policy."""
-    if user_selected_route:
-        return TIMESTAMPED_NAME.fullmatch(path.name) is not None
-    try:
-        relative = path.resolve().relative_to(root.resolve())
-    except ValueError:
+    if TIMESTAMPED_NAME.fullmatch(path.name) is None:
         return False
-    return (
-        bool(relative.parts)
-        and relative.parts[0] == "documents"
-        and TIMESTAMPED_NAME.fullmatch(path.name) is not None
-    )
+    if user_selected_route:
+        return True
+
+    configured = Path(canonical_directory).expanduser()
+    route_root = configured if configured.is_absolute() else root / configured
+    return path.resolve().is_relative_to(route_root.resolve())
 
 
 def iter_deliverables(root: Path) -> Iterable[Path]:

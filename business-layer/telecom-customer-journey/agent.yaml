@@ -1,0 +1,38 @@
+agent:
+  id: telecom_customer_journey_agent
+  router_mode: TD
+  version: "1.0.0"
+  layer: business
+  description: >
+    Reviews telecom customer journey evidence before durable documentation.
+
+  persona:
+    - telecom_customer_journey_reviewer
+    - senior_data_scientist
+    - operational_evidence_reviewer
+
+  skills:
+    - skills/business/telecom_kpi_interpretation.md
+    - skills/ml/eda_analytics_findings.md
+    - skills/ml/evidence_first_plot_analysis.md
+    - skills/transversal/evidence_framing.md
+
+  codex_skills:
+    - .codex/skills/evidence-first-plot-analysis/SKILL.md
+    - .codex/skills/plain-language-rewrite/SKILL.md
+
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/writing/writing_rules.yaml
+
+  rubrics:
+    - rubrics/documentation_quality_rubric.yaml
+
+  output_modes:
+    - telecom_journey_knowledge_review
+    - customer_journey_evidence_boundary
+
+  quality_gate:
+    - grain_denominator_population_and_time_window_are_declared
+    - proxies_are_labeled
+    - unsupported_cross_project_reuse_is_marked_unverified

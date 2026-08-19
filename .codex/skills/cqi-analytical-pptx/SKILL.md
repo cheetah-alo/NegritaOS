@@ -68,6 +68,14 @@ The zip bundle is a distribution artifact, not the primary source.
     explain how to read the plot, separate observation from interpretation,
     state the evidence boundary, and classify cross-plot relationships when
     multiple visuals are used.
+11. Always place a separate agenda slide immediately after the cover.
+12. New or materially rewritten analytical decks contain 10 to 80 total slides,
+    including appendices. Do not impose audience-specific or per-section caps.
+13. Apply `skills/executive/presentation_evidence_reuse.md`. The default refresh
+    mode is `reuse_only`; deck-only changes never execute analytical queries.
+14. `full_refresh` requires explicit user authorization and a provider-specific
+    cost preflight. Missing one artifact authorizes only a proposed or approved
+    targeted refresh, not a full rerun.
 
 ## Analytical Evidence Block
 
@@ -98,16 +106,19 @@ Presentation tool as well.
 2. Confirm outputs and intermediates are ignored or outside the repo.
 3. Use a per-run temporary directory.
 4. Inspect every slide in the source deck.
-5. Build a complete frame map before editing.
-6. Reconcile populations, denominators, stacks, and candidate universes before
+5. Inventory existing run manifests, CSV/Parquet/JSON extracts, plot registries,
+   rendered plots, and hashes. Declare `reuse_only`, `targeted_refresh`, or
+   `full_refresh` before any query execution.
+6. Build a complete frame map before editing.
+7. Reconcile populations, denominators, stacks, and candidate universes before
    designing.
-7. Duplicate inherited slides and edit declared elements only.
-8. Render slides and inspect all slides plus a contact sheet.
-9. Run release, readability, notes, terms, placeholders, canvas, overflow, and
+8. Duplicate inherited slides and edit declared elements only.
+9. Render slides and inspect all slides plus a contact sheet.
+10. Run release, readability, notes, terms, placeholders, canvas, overflow, and
    template-fidelity audits.
-10. Back up the prior version, publish an immutable version, update `current`
+11. Back up the prior version, publish an immutable version, update `current`
     only after QA passes, and compare hashes.
-11. Confirm final `git status` matches the initial status when release config
+12. Confirm final `git status` matches the initial status when release config
     requires it.
 
 ## Project Profiles
@@ -126,6 +137,7 @@ Presentation tool as well.
 - `references/deck-patterns.md`
 - `references/elal-analytical-profile.md`
 - `references/release-qa-contract.md`
+- `skills/executive/presentation_evidence_reuse.md`
 
 ## Scripts
 

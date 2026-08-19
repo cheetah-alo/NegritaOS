@@ -11,8 +11,8 @@ provides:
   - output-contract-enforcement
 description: >
   Binds NegritaOS' master agent registry (integrator.yaml) and metaagent router
-  to any agent client operating in this repository. Defines the 8 operational
-  modes (LP/AE/TD/MR/CR/EP/DQ/RT), their routing keywords, and the contract
+  to any agent client operating in this repository. Defines the operational
+  and specialist modes (LP/AE/TD/MR/CR/PRR/QG/PA/EP/DQ/RT), their routing keywords, and the contract
   resolution order between NegritaOS-native rules and repo-local adapter rules.
 version: 1.0.0
 applyTo: [repo, agents, prompts, claude, codex, copilot]
@@ -42,7 +42,7 @@ Before producing output, an agent MUST:
    and the global style in [integrator.yaml](../../integrator.yaml) →
    `global_style`.
 
-## 2. Eight operational modes
+## 2. Operational And Specialist Modes
 
 | Mode ID | Label | Agent in `integrator.yaml` | Primary triggers |
 |---|---|---|---|
@@ -51,6 +51,9 @@ Before producing output, an agent MUST:
 | **TD** | Technical Documentation | `technical_writer_agent` | notion doc, confluence, technical memo, postmortem |
 | **MR** | ML / EDA / Model Review | `model_review_agent` | model review, EDA, SHAP, leakage, XGBoost, AutoGluon, EBM, churn |
 | **CR** | Code / Repository Work | `code_review_agent` | code review, PR, refactor, SQL, pipeline, MLflow |
+| **PRR** | Pull Request Risk Review | `pull_request_reviewer_agent` | PR risk review, merge gate, CI status, auto approve request |
+| **QG** | Quality Bar Gauntlet | `quality_gauntlet_agent` | QG, gauntlet this, compare against benchmark, quality bar review |
+| **PA** | Plot Analysis | `plot_analysis_agent` | plot analysis, chart critique, figure narrative, visualization evidence |
 | **EP** | Executive Presentation | `presentation_agent` | deck, slides, executive summary, board, one-pager |
 | **DQ** | Data Quality / Escalation | `data_quality_sentinel_agent` | data quality, schema drift, KPI anomaly, RCA, incident |
 | **RT** | Research / Trends / TFM Topics | `ai_trend_radar_agent` or specialist `tfm_research_advisor_agent` | AI trend, paper review, blockchain watch, TFM topic |
@@ -104,8 +107,12 @@ Per `zsmash/revision_de_claude.md`:
 - NegritaOS-only modes (**AE, RT, EP, LP, TD**) execute against NegritaOS
   `rules/` + `skills/` only. Adapter rules under `.codex/rules/dev-*.md` are
   not loaded for these modes.
-- Engineering modes (**MR, CR, DQ**) execute against NegritaOS rules **plus**
+- Engineering modes (**MR, CR, PRR, DQ**) execute against NegritaOS rules **plus**
   the adapter rules required by the active codex profile.
+- Specialist quality mode **QG** loads the domain rules of the artifact under
+  review: code/PR/data QG loads engineering rules; PPTX/DOCX/PDF QG loads
+  document and presentation rules; plot/EDA QG loads plot and source-quality
+  rules.
 - If a NegritaOS rule and an adapter rule disagree, the NegritaOS rule wins.
   Surface the conflict in the response.
 

@@ -54,6 +54,8 @@ technical codes unchanged.
 
 ## Length
 
-An explicitly approved slide count wins. Guidance such as 10, 15, or 25 slides
-applies to executive bodies, not to dossiers, appendices, or audited analytical
-packs. Validate `expected_slide_count` before publication.
+New or materially rewritten analytical decks contain 10 to 80 total slides,
+including appendices. Do not impose audience-specific or per-section caps. A
+scoped repair of an existing deck may preserve an explicitly approved exact
+count when changing the count is outside the request. Validate
+`expected_slide_count` before publication.
