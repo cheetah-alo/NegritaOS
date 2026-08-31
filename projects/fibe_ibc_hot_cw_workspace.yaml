@@ -9,8 +9,12 @@ project:
     is a delivery/evidence workspace, not the executable IBC Fiber Network
     source repository.
   local_paths:
-    primary: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/Fibe- IBC-HOT-cw"
+    primary: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/Fiber IBC-HOT"
   memory_home: "~/.negritaos/memory/projects/fibe_ibc_hot_cw_workspace"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - eda_analytics
     - data_quality

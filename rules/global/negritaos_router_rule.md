@@ -12,7 +12,7 @@ provides:
 description: >
   Binds NegritaOS' master agent registry (integrator.yaml) and metaagent router
   to any agent client operating in this repository. Defines the operational
-  and specialist modes (LP/AE/TD/MR/CR/PRR/QG/PA/EP/DQ/RT), their routing keywords, and the contract
+  and specialist modes (LP/AE/TD/MR/CR/PRR/DEP/FQA/LQA/QG/PA/EP/DQ/RT), their routing keywords, and the contract
   resolution order between NegritaOS-native rules and repo-local adapter rules.
 version: 1.0.0
 applyTo: [repo, agents, prompts, claude, codex, copilot]
@@ -52,6 +52,9 @@ Before producing output, an agent MUST:
 | **MR** | ML / EDA / Model Review | `model_review_agent` | model review, EDA, SHAP, leakage, XGBoost, AutoGluon, EBM, churn |
 | **CR** | Code / Repository Work | `code_review_agent` | code review, PR, refactor, SQL, pipeline, MLflow |
 | **PRR** | Pull Request Risk Review | `pull_request_reviewer_agent` | PR risk review, merge gate, CI status, auto approve request |
+| **DEP** | TepuFlow Deployment Operations | `pablo_deployment_operator_agent` | deploy TepuFlow, exact commit, DEV/UAT/production promotion |
+| **FQA** | TepuFlow Functional Environment QA | `casilda_functional_qa_agent` | validate deployed URL, release acceptance, production smoke |
+| **LQA** | TepuFlow Lifecycle Adversarial QA | `casilda_lifecycle_qa_agent` | Casilda Flows, UF-00 to UF-13, route/state stress, visual/accessibility QA |
 | **QG** | Quality Bar Gauntlet | `quality_gauntlet_agent` | QG, gauntlet this, compare against benchmark, quality bar review |
 | **PA** | Plot Analysis | `plot_analysis_agent` | plot analysis, chart critique, figure narrative, visualization evidence |
 | **EP** | Executive Presentation | `presentation_agent` | deck, slides, executive summary, board, one-pager |
@@ -107,7 +110,7 @@ Per `zsmash/revision_de_claude.md`:
 - NegritaOS-only modes (**AE, RT, EP, LP, TD**) execute against NegritaOS
   `rules/` + `skills/` only. Adapter rules under `.codex/rules/dev-*.md` are
   not loaded for these modes.
-- Engineering modes (**MR, CR, PRR, DQ**) execute against NegritaOS rules **plus**
+- Engineering modes (**MR, CR, PRR, DEP, FQA, LQA, DQ**) execute against NegritaOS rules **plus**
   the adapter rules required by the active codex profile.
 - Specialist quality mode **QG** loads the domain rules of the artifact under
   review: code/PR/data QG loads engineering rules; PPTX/DOCX/PDF QG loads
@@ -140,13 +143,59 @@ unmet criterion and a remediation suggestion.
 4. Adapter rules under `.codex/rules/` permitted by the active profile.
 5. System defaults in `.codex/system.md`.
 
-## 8. Anti-patterns
+## 8. Browser Profile Resolution
+
+Before authenticated browser work, load the resolved project's
+`browser_context` and
+[browser_profile_routing.yaml](../../core/orchestration/browser_profile_routing.yaml).
+Use `scripts/open_governed_browser.py` to select the declared Brave profile.
+The in-app browser is limited to anonymous or non-profile work and is not a
+substitute for an authenticated Brave session.
+
+If project, purpose, URL, or GitHub organization cannot resolve to one profile,
+return `BLOCKED_BROWSER_PROFILE_RESOLUTION`. Never fall back across account
+profiles and never inspect cookies, passwords, local storage, or session tokens.
+
+## 9. External App Financial Authority
+
+Access to an authenticated account does not grant financial authority. This
+rule applies to every agent and every external access path, including MCP,
+app connectors, browser automation, CLI tools, APIs, SDKs, and cloud consoles.
+
+Without explicit user authorization for the specific operation, an agent MUST
+NOT:
+
+- change an account plan, tier, subscription, or billing method;
+- start or convert a paid trial;
+- purchase credits, tokens, add-ons, domains, seats, licenses, or services;
+- create or scale resources that are billable or enable metered paid features;
+- accept a quote, contract, recurring commitment, or any operation known or
+  likely to incur an incremental charge.
+
+Authorization is never inferred from an account connection, authenticated
+session, request to use an app, prior authorization, existing subscription, or
+stored payment method. It is valid for one specific operation only. Before
+asking, report the provider, account or workspace, exact operation, known price,
+currency, recurrence, and billing effect. If cost is unknown or ambiguous,
+return `BLOCKED_FINANCIAL_AUTHORIZATION` and ask the user before proceeding.
+
+Read-only inspection of existing plan, usage, or billing status is permitted
+only when the inspection itself has no known incremental charge. Never expose
+secrets or full payment details.
+
+## 10. Anti-patterns
 
 - Loading `.codex/rules/dev-*.md` for AE/RT/EP/LP/TD modes.
 - Writing memory to `.codex/memory/` when a canonical project home exists.
 - Producing analytical reports without the mandatory section order.
 - Bypassing the `quality_gate` of the active agent.
 - Treating the duplicated `.claude/` tree as a separate source of truth.
+- Treating `LQA` or `casilda-flows` as an unregistered local persona instead of
+  resolving `casilda_lifecycle_qa_agent` through the canonical project registry.
+- Treating an authenticated external account as authorization to spend money or
+  change its plan.
+- Opening authenticated work in a default or in-app browser without resolving
+  the project's governed Brave profile first.
 
 ## Learnings
 

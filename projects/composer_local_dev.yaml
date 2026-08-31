@@ -5,6 +5,10 @@ project:
   local_paths:
     primary: "/Users/jackyb-cqi/repos/composer-local-dev"
   memory_home: "~/.negritaos/memory/projects/composer_local_dev"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - data_platform
   capabilities:

@@ -22,9 +22,11 @@ deliverable:
 3. `docs-alignment` for documentation structure and provenance.
 4. `document-control` for deliverable versioning unless the user explicitly
    provides a project evidence-output folder.
-5. `evidence-first-plot-analysis` when the report includes plots, charts,
+5. `cqi-analytical-documentation` for the question-to-decision narrative,
+   stakeholder answers, plot discussion, and evidence boundaries.
+6. `evidence-first-plot-analysis` when the report includes plots, charts,
    dashboard screenshots, EDA figures, or model diagnostics.
-6. This skill for CQI visual and analytical report formatting.
+7. This skill for CQI visual and analytical report formatting.
 
 ## Source Of Truth
 
@@ -99,9 +101,10 @@ Interpretation (contrato NegritaOS)
 - Takeaway operativo. ...
 ```
 
-For plots, include the four `plot_interpretation` fields from
-`default_output_contract`: `what_it_shows`, `how_to_read_it`, `why_it_matters`,
-and `operational_takeaway`.
+For plots, apply the complete narrative card in
+`cqi-analytical-documentation/references/plot_discussion.md`, including the
+analytical question, population, grain, window, denominator, baseline,
+observation, interpretation, evidence boundary, and operational implication.
 
 ## Placement And Versioning
 

@@ -76,6 +76,9 @@ Claude file as a thin adapter:
 - `TD` → `.codex/agents/td.md` → `technical_writer_agent`
 - `MR` → `.codex/agents/mr.md` → `model_review_agent`
 - `QG` → `.codex/agents/qg.md` → `quality_gauntlet_agent`
+- `DEP` → `.codex/agents/pablo.md` → `pablo_deployment_operator_agent`
+- `FQA` → `.codex/agents/casilda.md` → `casilda_functional_qa_agent`
+- `LQA` → `.codex/agents/casilda-flows.md` → `casilda_lifecycle_qa_agent`
 
 If a user writes `@agent:PRR` or `PRR: ...`, do not ask what `PRR` means. Run
 canonical resolution first. Only report `ROUTING_UNAVAILABLE` when
@@ -84,7 +87,8 @@ the router.
 
 ## Step 4 — Merge with adapter rules (engineering modes only)
 
-If the active mode is **MR**, **CR**, **PRR**, or **DQ**:
+If the active mode is **MR**, **CR**, **PRR**, **DEP**, **FQA**, **LQA**, or
+**DQ**:
 
 1. Load the active codex profile from `.codex/profiles/`.
 2. Load the rules it activates from `.codex/rules/`.
@@ -118,6 +122,35 @@ required sections; if information is missing, mark it explicitly.
 Before sending the response, walk through `quality_gate` of the active
 agent. If any gate item fails, either fix the response or annotate the
 unmet criterion + remediation in the output.
+
+## Step 6a — External app financial gate
+
+Before using MCP, an app connector, browser automation, a CLI, API, SDK, or
+cloud console, determine whether the intended operation can change a plan,
+subscription, billing method, paid entitlement, resource size, seat count, or
+incur any incremental charge.
+
+- Connected or authenticated does not mean financially authorized.
+- A request to use an app does not authorize a purchase or plan change.
+- Previous approval does not carry forward to another operation.
+- Ask for explicit authorization for the exact operation and state provider,
+  account or workspace, known price, currency, recurrence, and billing effect.
+- If cost is unknown or ambiguous, stop with
+  `BLOCKED_FINANCIAL_AUTHORIZATION`.
+- Read-only account inspection is allowed only when it has no known incremental
+  charge; never expose full payment details or secrets.
+
+## Step 6b — Browser profile gate
+
+Before browser work that depends on an authenticated account, read the
+`browser_context` returned by Negrita Brain and invoke
+`governed-browser-routing`. Resolve project + purpose + URL with
+`scripts/open_governed_browser.py --dry-run` before opening Brave.
+
+- Use the in-app browser only for anonymous or non-profile work.
+- Never substitute another profile when routing is unresolved.
+- Return `BLOCKED_BROWSER_PROFILE_RESOLUTION` on ambiguity or conflict.
+- Never inspect cookies, passwords, local storage, or session tokens.
 
 ## Step 7 — Memory hooks
 
@@ -160,6 +193,9 @@ Use a structured context handoff between modes — pass `input_summary`,
   NegritaOS engineering rules + adapter `data-sql-governance.md`.
 - *"review PR #12 as a merge gate"* → **PRR**,
   `pull_request_reviewer_agent`, output `risk_review`, shadow recommendation.
+- *"Casilda Flows: test UF-00 through UF-13 in UAT"* → **LQA**,
+  `casilda_lifecycle_qa_agent`, output `lifecycle_qa_report`; production stays
+  read-only and omitted or blocked flows cannot pass.
 - *"QG gauntlet this DOCX against the CQI report template"* → **QG**,
   `quality_gauntlet_agent`, load document-control and the relevant DOCX/PDF
   skill before judging against the reference.

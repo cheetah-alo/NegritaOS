@@ -12,6 +12,8 @@ CQI/CQISense analytical PowerPoint decks.
 
 - Apply `skills/executive/analytics_storytelling_deck.md` first for the
   finding-first narrative and evidence order.
+- Apply `.codex/skills/cqi-analytical-documentation/SKILL.md` for analytical
+  prose, plot discussion, evidence boundaries, and discourse-ready talk tracks.
 - Apply `.codex/skills/cqi-analytical-pptx/SKILL.md` for CQI visual,
   inherited-template, speaker-note evidence, release QA, and podcast contracts.
 - Apply `skills/executive/presentation_evidence_reuse.md`; reuse validated
@@ -24,6 +26,6 @@ CQI/CQISense analytical PowerPoint decks.
 ## Quality Gate
 
 A CQI analytical deck is not release-ready until slide count, note count,
-evidence notes, readability thresholds, forbidden terms, placeholders, canvas,
-aggregate reconciliations, evidence refresh mode, reused artifacts, executed
-queries, and final/current hashes have been validated.
+talk-track notes, evidence notes, readability thresholds, forbidden terms,
+placeholders, canvas, aggregate reconciliations, evidence refresh mode, reused
+artifacts, executed queries, and final/current hashes have been validated.

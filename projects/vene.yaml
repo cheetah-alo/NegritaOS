@@ -10,6 +10,10 @@ project:
   local_paths:
     primary: "/Users/jackyb-cqi/repos/backup_repos/vene"
   memory_home: "~/.negritaos/memory/projects/vene"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
   archetypes:
     - eda_analytics
     - data_platform

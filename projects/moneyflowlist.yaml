@@ -1,10 +1,19 @@
 project:
   id: moneyflowlist
   name: "MoneyFlow List"
-  version: "1.0.0"
+  aliases: [TepuFlow]
+  description: >
+    TepuFlow personal-finance product with a Next.js frontend, FastAPI backend,
+    PostgreSQL persistence, governed financial workflows, and staged release
+    management across development, UAT, and production.
+  version: "1.1.0"
   local_paths:
     primary: "/Users/jackyb-cqi/repos/backup_repos/moneyflowlist"
   memory_home: "~/.negritaos/memory/projects/moneyflowlist"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
   archetypes:
     - product_app
     - eda_analytics
@@ -17,6 +26,9 @@ project:
     - kpi_analytics
     - testing
     - release_management
+  skill_profiles:
+    - tepuflow-release-operations
+    - tepuflow-lifecycle-qa
   agents:
     - moneyflow_analyst_agent
     - team_lead_ds_agent
@@ -27,12 +39,43 @@ project:
     - data_quality_sentinel_agent
     - presentation_agent
     - plot_analysis_agent
+    - pablo_deployment_operator_agent
+    - casilda_functional_qa_agent
+    - casilda_lifecycle_qa_agent
+  codex_custom_agents:
+    - pablo
+    - casilda
+    - casilda-flows
+  mode_map:
+    deployment: DEP
+    deploy: DEP
+    functional_qa: FQA
+    environment_qa: FQA
+    lifecycle_qa: LQA
+    adversarial_lifecycle_qa: LQA
+    flow_qa: LQA
   codex_profiles:
     - review
     - refactor
     - web-dev
     - backend
     - analysis-run
+  release_governance:
+    environments: [dev, uat, production]
+    deployment_agent: pablo_deployment_operator_agent
+    functional_qa_agent: casilda_functional_qa_agent
+    lifecycle_qa_agent: casilda_lifecycle_qa_agent
+    lifecycle_contract: "/Users/jackyb-cqi/repos/backup_repos/moneyflowlist/doc/user_lifecycle_flows.md"
+    deployment_provider: vercel
+    edge_provider: cloudflare_tunnel
+    access_state: oauth_authenticated_resources_pending
+    uat_source_branch: main
+    uat_frontend_project: tepuflow-uat
+    uat_backend_runtime: local_docker
+    uat_data_policy: synthetic_only
+    uat_runbook: "/Users/jackyb-cqi/repos/backup_repos/moneyflowlist/doc/vercel-uat-workflow.md"
+    production_approval: explicit_human
+    production_test_policy: read_only
   expected_outputs:
     - sprint_plan
     - release_risk_log
@@ -41,6 +84,9 @@ project:
     - notion_doc
     - executive_summary
     - executive_presentation
+    - lifecycle_qa_report
+    - lifecycle_flow_matrix
+    - journey_bug_register
   preservation:
     backup_required_before_migration: true
     repo_codex_status: "ignored_local"

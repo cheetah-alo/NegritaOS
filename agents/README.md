@@ -24,7 +24,11 @@ For Claude-native aliases, see: `docs/claude-agent-aliases.md`
 | MR | eda_reviewer_agent | technical | ML / EDA / Model Review | Focused EDA completeness and correctness review |
 | CR | code_review_agent | technical | Code / Repository Work | Reviews Python, SQL, and ML pipelines for production readiness |
 | CR | software_architect_agent | technical | Code / Repository Work | Designs maintainable modular repo structures with quality score >=80 |
+| PRR | pull_request_reviewer_agent | technical | Pull Request Risk Review | Evaluates CI, risk, security, and verification evidence before merge decisions |
 | QG | quality_gauntlet_agent | strategic | Quality Bar Gauntlet | Runs benchmarked builder/critic loops against named reference bars |
+| DEP | pablo_deployment_operator_agent | technical | TepuFlow Deployment Operations | Deploys an approved exact commit and records provider and health evidence |
+| FQA | casilda_functional_qa_agent | technical | TepuFlow Functional Environment QA | Tests a deployed revision independently and returns PASS, HOLD, or BLOCKED |
+| LQA | casilda_lifecycle_qa_agent | technical | TepuFlow Lifecycle Adversarial QA | Attempts UF-00 through UF-13, route, state, persistence, visual, accessibility, and controlled-stress failures |
 | EP | presentation_agent | strategic | Executive Presentation | Builds top-down executive and technical presentations |
 | EP | decision_support_agent | strategic | Leadership Planning | Structures complex decisions for senior leadership |
 | DQ | data_quality_sentinel_agent | technical | Data Quality / Escalation | Detects, documents, and escalates data quality incidents |
@@ -47,6 +51,9 @@ lowercase markdown aliases generated under `.codex/agents/`.
 | NegritaOS prompt routing | `@agent:PRR review PR #25` |
 | Claude native agent selection | `--agent prr` |
 | Claude command palette | select `prr`, `td`, `mr`, `qg`, etc. |
+| TepuFlow deployment operator | select `pablo` or write `@agent:DEP` |
+| TepuFlow functional QA | select `casilda` or write `@agent:FQA` |
+| TepuFlow lifecycle adversarial QA | select `casilda-flows` or write `@agent:LQA` |
 
 Do not create one-off local agents for canonical modes. Update
 `core/orchestration/metaagent_router.yaml` and `integrator.yaml`, then run:
@@ -58,6 +65,19 @@ python3 scripts/validate_claude_agent_aliases.py --all-projects
 
 The generated files are wrappers only; the source of truth remains the router,
 integrator, rules, skills, and project registry.
+
+## External App Financial Authority
+
+All agents operate with zero implied spending authority. Authentication through
+MCP, an app connector, browser, CLI, API, SDK, or cloud console permits access
+only; it does not permit an agent to change plans, subscriptions, billing
+methods, paid entitlements, or perform an operation that can incur an
+incremental charge.
+
+The user must explicitly authorize each specific financial operation after the
+agent states the provider, account or workspace, exact operation, and known
+price, currency, recurrence, and billing effect. Prior approval does not carry
+forward. Unknown cost produces `BLOCKED_FINANCIAL_AUTHORIZATION`.
 
 ---
 
@@ -89,6 +109,9 @@ NEGRITAOS/
 │   ├── data-quality-sentinel/  → data_quality_sentinel_agent
 │   ├── eda-reviewer/           → eda_reviewer_agent
 │   ├── model-reviewer/         → model_review_agent
+│   ├── tepuflow-deployment-operator/ → pablo_deployment_operator_agent
+│   ├── tepuflow-functional-qa/ → casilda_functional_qa_agent
+│   ├── tepuflow-lifecycle-qa/ → casilda_lifecycle_qa_agent
 │   └── software-architect/     → software_architect_agent
 │
 └── business-layer/
@@ -106,7 +129,7 @@ Every `agent.yaml` contains:
 ```yaml
 agent:
   id:               # Unique agent identifier
-  router_mode:      # Router mode ID (LP / AE / TD / MR / CR / PRR / QG / PA / EP / DQ / RT)
+  router_mode:      # Router mode ID (LP / AE / TD / MR / CR / PRR / DEP / FQA / LQA / QG / PA / EP / DQ / RT)
   version:          # Semantic version
   layer:            # academic / intelligence / strategic / technical
   description:      # What this agent does and what it does NOT do

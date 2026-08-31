@@ -29,6 +29,17 @@ function textFromXml(xml) {
     .join("\n");
 }
 
+function fieldValue(block, field, fields) {
+  const start = block.indexOf(field);
+  if (start < 0) return null;
+  const valueStart = start + field.length;
+  const laterStarts = fields
+    .map((candidate) => block.indexOf(candidate, valueStart))
+    .filter((candidateStart) => candidateStart >= 0);
+  const valueEnd = laterStarts.length ? Math.min(...laterStarts) : block.length;
+  return block.slice(valueStart, valueEnd).trim();
+}
+
 const requiredFields = [
   "Source:",
   "Window:",
@@ -41,10 +52,21 @@ const requiredFields = [
   "Limitation:",
   "Allowed conclusion:",
 ];
+const requiredTalkTrackFields = [
+  "Question:",
+  "Executive answer:",
+  "How to read:",
+  "What stands out:",
+  "Interpretation:",
+  "Evidence boundary:",
+  "Operational implication:",
+  "Transition:",
+];
 
 const deck = arg("deck");
+const requireTalkTrack = process.argv.includes("--require-talk-track");
 if (!deck || !existsSync(deck)) {
-  console.error("Usage: audit_pptx_notes.mjs --deck <deck.pptx>");
+  console.error("Usage: audit_pptx_notes.mjs --deck <deck.pptx> [--require-talk-track]");
   process.exit(2);
 }
 
@@ -66,9 +88,32 @@ for (const entry of noteEntries) {
     failures.push(`${label}: missing [Evidence] block`);
     continue;
   }
-  const block = text.slice(text.indexOf("[Evidence]"), text.indexOf("[/Evidence]") + "[/Evidence]".length);
+  const block = text.slice(
+    text.indexOf("[Evidence]") + "[Evidence]".length,
+    text.indexOf("[/Evidence]"),
+  );
   for (const field of requiredFields) {
-    if (!block.includes(field)) failures.push(`${label}: missing field ${field}`);
+    const value = fieldValue(block, field, requiredFields);
+    if (value === null) failures.push(`${label}: missing field ${field}`);
+    else if (!value) failures.push(`${label}: empty field ${field}`);
+  }
+  if (requireTalkTrack) {
+    if (!text.includes("[Talk track]") || !text.includes("[/Talk track]")) {
+      failures.push(`${label}: missing [Talk track] block`);
+    } else {
+      const talkTrack = text.slice(
+        text.indexOf("[Talk track]") + "[Talk track]".length,
+        text.indexOf("[/Talk track]"),
+      );
+      for (const field of requiredTalkTrackFields) {
+        const value = fieldValue(talkTrack, field, requiredTalkTrackFields);
+        if (value === null) {
+          failures.push(`${label}: missing talk-track field ${field}`);
+        } else if (!value) {
+          failures.push(`${label}: empty talk-track field ${field}`);
+        }
+      }
+    }
   }
   if (/BLOCKED_DATA|BLOCKED_AUTH|BLOQUEADO/.test(text)) {
     failures.push(`${label}: forbidden stakeholder evidence state in notes`);
@@ -81,4 +126,5 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`[OK] ${deck}: ${noteEntries.length} notes include required evidence blocks`);
+const contract = requireTalkTrack ? "evidence and talk-track blocks" : "evidence blocks";
+console.log(`[OK] ${deck}: ${noteEntries.length} notes include required ${contract}`);

@@ -6,6 +6,10 @@ project:
     primary: "/Users/jackyb-cqi/repos/autogloun/ml_automl_autogluon"
     previous_backup: "/Users/jackyb-cqi/repos/backup_repos/ml_automl_autogluon"
   memory_home: "~/.negritaos/memory/projects/ml_automl_autogluon"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - ml_automl
   capabilities:

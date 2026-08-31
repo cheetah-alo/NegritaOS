@@ -7,10 +7,19 @@ writing_rules:
 
   plots:
     every_plot_requires:
+      - analytical_question
+      - population_grain_window_filters_and_denominator
       - what we are looking on the plot
       - explanation of kpis or calculations on the plot
+      - material_observation_with_support_and_baseline
       - interpretation
+      - explicit_evidence_boundary
       - operational_takeaway
+    presentation_notes:
+      every_slide_requires_talk_track: true
+      non_visual_slides_declare_how_to_read_not_applicable: true
+      talk_track_skill: cqi-analytical-documentation
+      evidence_block_remains_separate: true
 
   language:
     prefer_short_sentences: true
@@ -37,12 +46,14 @@ writing_rules:
       - CONTRACT_INCOMPLETE
       - CANDIDATE_SHADOW
       - BLOCKED_CONFIG_RESOLUTION
+      - BLOCKED_FINANCIAL_AUTHORIZATION
       - BLOCKED_DATA
       - BLOCKED_NO_SUPPORT
 
 
   storytelling:
     use_problem_to_solution_flow: true
+    use_question_answer_evidence_interpretation_boundary_decision_flow: true
     connect_sections_logically: true
     avoid_orphan_sections: true
     align_notion_docs_with_presentation_storyline_when_same_source: true

@@ -14,6 +14,10 @@ project:
     docs: "/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard/docs"
     eda: "/Users/jackyb-cqi/repos/internal-ia-rawdata-dasboard/eda"
   memory_home: "~/.negritaos/memory/projects/elal_journey_dashboard"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - product_app
     - frontend_dashboard

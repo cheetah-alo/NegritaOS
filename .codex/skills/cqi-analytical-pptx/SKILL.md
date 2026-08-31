@@ -15,6 +15,7 @@ Layering:
 Presentations / Artifact Tool
 -> analytics-storytelling-deck
 -> evidence-first-plot-analysis when charts, plots, or visual evidence are used
+-> cqi-analytical-documentation for analytical narrative and talk tracks
 -> cqi-analytical-pptx
 -> optional project profile, for example elal-analytical-deck
 ```
@@ -68,18 +69,38 @@ The zip bundle is a distribution artifact, not the primary source.
     explain how to read the plot, separate observation from interpretation,
     state the evidence boundary, and classify cross-plot relationships when
     multiple visuals are used.
-11. Always place a separate agenda slide immediately after the cover.
-12. New or materially rewritten analytical decks contain 10 to 80 total slides,
+11. Every new or materially changed slide must apply
+    `cqi-analytical-documentation` and include a complete `[Talk track]` block
+    in speaker notes. The notes must guide the discourse rather than repeat the
+    visible slide or explain chart construction. Slides without a visual use
+    `How to read: N/A - no visual`.
+12. Always place a separate agenda slide immediately after the cover.
+13. New or materially rewritten analytical decks contain 10 to 80 total slides,
     including appendices. Do not impose audience-specific or per-section caps.
-13. Apply `skills/executive/presentation_evidence_reuse.md`. The default refresh
+14. Apply `skills/executive/presentation_evidence_reuse.md`. The default refresh
     mode is `reuse_only`; deck-only changes never execute analytical queries.
-14. `full_refresh` requires explicit user authorization and a provider-specific
+15. `full_refresh` requires explicit user authorization and a provider-specific
     cost preflight. Missing one artifact authorizes only a proposed or approved
     targeted refresh, not a full rerun.
 
-## Analytical Evidence Block
+## Speaker Notes Contract
 
-Every analytical slide must include this speaker-notes block:
+Every new or materially changed slide must include:
+
+```text
+[Talk track]
+Question:
+Executive answer:
+How to read:
+What stands out:
+Interpretation:
+Evidence boundary:
+Operational implication:
+Transition:
+[/Talk track]
+```
+
+Every analytical slide must also include this separate evidence block:
 
 ```text
 [Evidence]
@@ -147,7 +168,7 @@ asks otherwise:
 ```bash
 node .codex/skills/cqi-analytical-pptx/scripts/audit_pptx_release.mjs --deck <deck.pptx> --expected-slide-count <n>
 node .codex/skills/cqi-analytical-pptx/scripts/audit_pptx_readability.mjs --deck <deck.pptx>
-node .codex/skills/cqi-analytical-pptx/scripts/audit_pptx_notes.mjs --deck <deck.pptx>
+node .codex/skills/cqi-analytical-pptx/scripts/audit_pptx_notes.mjs --deck <deck.pptx> --require-talk-track
 node .codex/skills/cqi-analytical-pptx/scripts/validate_aggregate_reconciliation.mjs --spec <checks.json>
 node .codex/skills/cqi-analytical-pptx/scripts/build_mobile_podcast.mjs --manifest <manifest.json> --dry-run
 ```

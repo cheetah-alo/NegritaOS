@@ -53,6 +53,7 @@ PRR -> --agent prr
 TD  -> --agent td
 MR  -> --agent mr
 QG  -> --agent qg
+LQA -> --agent casilda-flows
 ```
 
 The aliases are generated from `core/orchestration/metaagent_router.yaml` and
@@ -108,12 +109,15 @@ Reusable patterns for common domains:
 | `data-loading` | Data ingestion, source resolution, lineage |
 | `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates and dynamic query variants |
 | `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and Python quality checks |
+| `environment-release-governance` | Exact-commit deployment and independent DEV/UAT/production functional acceptance |
+| `tepuflow-lifecycle-adversarial-qa` | Full UF-00 to UF-13 TepuFlow journey, route, state, persistence, controlled-stress, responsive, accessibility, and visual QA |
 | `quality-bar-gauntlet` | Benchmark-driven builder/critic loop against a named, fetchable, comparable reference for code, dashboards, plots, PPTX, DOCX/PDF, Markdown, and research |
 | `analytical-eda-governance` | Provider-neutral structure, manifests, contracts, immutable runs, and evidence gates for new or migrated EDA |
 | `bigquery-analysis-governance` | BigQuery source-quality preflight for grain, capture-to-load latency, freshness, SLA, and evidence |
 | `elal-eda-governance` | Opt-in ELAL EDA semantics for operational severity, proxy labels, blocked states, and third subtitle |
 | `document-control` | User-selected deliverable routing, timestamping, manifest, and Git-policy governance |
 | `plain-language-rewrite` | On-demand rewrite for dense or jargon-heavy technical content, preserving exact evidence, paths, commands, numbers, and blockers |
+| `cqi-analytical-documentation` | Evidence-led analytical narrative for EDA, plots, rules, stakeholder questions, reports, and presentation talk tracks |
 | `cqi-analytical-pptx` | CQI/CQISense analytical PowerPoint delivery, evidence notes, release QA, readability audits, and mobile podcast contracts |
 | `cqi-analytical-docx-pdf` | CQI/CQISense analytical Word/PDF reports with APA tables/figures, render QA, visual inspection, and document-control governance |
 | `ibc-technical-eda-report` | IBC technical EDA DOCX/PDF reports, source-readiness memos, join-readiness guardrails, and ML-readiness evidence limits |
@@ -149,9 +153,12 @@ Reusable patterns for common domains:
 | `local-memory-protocol` | Brain-only canonical project memory workflow |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills aligned under the documentation-governance structure gate |
 | `document-control` | Keep deliverable documents, decks, PDFs, DOCX, HTML, and Notion/Confluence markdown traceable |
+| `governed-browser-routing` | Route authenticated BigQuery, GitHub, Jira, and documentation work to the correct Brave profile |
 | `commit-hygiene` | Commit message and scope discipline |
 | `pr-review-deep` | Deep technical review protocol |
 | `pull-request-risk-review` | PR risk scoring, merge-gate evidence, CI/check status, and quality-tooling review |
+| `environment-release-governance` | Deployment preflight, exact revision evidence, environment QA, and production read-only gates |
+| `tepuflow-lifecycle-adversarial-qa` | TepuFlow lifecycle coverage matrix, adversarial browser checks, reproducible bugs, and release-hold evidence |
 | `quality-bar-gauntlet` | Benchmarked quality comparison with separate builder/critic review |
 | `sdd-flow` | Spec-driven phased delivery workflow |
 
@@ -168,6 +175,11 @@ an adapter and `scripts/materialize_project_skills.py <repo> --dry-run` before
 linking profile-selected skills. The materializer preserves the catalog ID even
 when the canonical source is a compatibility symlink. Raw imported bundles
 remain reference-only.
+
+Every resolved profile closure includes the default `governed-browser-access`
+profile. Authenticated browser work must resolve the project's
+`browser_context` and use `scripts/open_governed_browser.py`; the in-app browser
+does not inherit Brave sessions.
 
 New or migrated BigQuery analyses must also pass the source-quality preflight
 defined by `bigquery-analysis-governance`. PostgreSQL, files, API, and academic

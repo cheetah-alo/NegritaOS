@@ -18,6 +18,16 @@ rules:
     depends_on: []
     version: 1.0.0
 
+  - id: browser-profile-routing
+    path: rules/browser-profile-routing.md
+    canonical_path: ../rules/global/browser_profile_routing_rule.md
+    domain: external-access
+    enforcement: strict
+    priority: critical
+    depends_on:
+      - negritaos-router
+    version: 1.0.0
+
   - id: ai-behavior
     path: rules/ai-behavior.md
     domain: meta

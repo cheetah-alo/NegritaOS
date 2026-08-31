@@ -23,7 +23,22 @@ except ImportError:
 
 MANAGED_MARKER = "<!-- NEGRITAOS_CLAUDE_AGENT_ALIAS:START -->"
 DEFAULT_MODEL = "sonnet"
-MODE_ORDER = ["LP", "AE", "TD", "MR", "CR", "PRR", "QG", "PA", "EP", "DQ", "RT"]
+MODE_ORDER = [
+    "LP",
+    "AE",
+    "TD",
+    "MR",
+    "CR",
+    "PRR",
+    "DEP",
+    "FQA",
+    "LQA",
+    "QG",
+    "PA",
+    "EP",
+    "DQ",
+    "RT",
+]
 MODE_ACTIONS = {
     "LP": "planning",
     "AE": "academic_review",
@@ -31,6 +46,9 @@ MODE_ACTIONS = {
     "MR": "model_review",
     "CR": "code_review",
     "PRR": "pull_request_review",
+    "DEP": "deployment",
+    "FQA": "functional_qa",
+    "LQA": "lifecycle_qa",
     "QG": "quality_bar_gauntlet",
     "PA": "plot_analysis",
     "EP": "deck",
@@ -48,7 +66,21 @@ def _as_list(value: Any) -> list[str]:
     return []
 
 
-def _load_modes(root: Path) -> list[dict[str, Any]]:
+def _project_scope(mode: dict[str, Any], mode_id: str) -> list[str]:
+    """Return a strictly typed optional project scope."""
+    value = mode.get("project_scope")
+    if value is None:
+        return []
+    if isinstance(value, str) and value.strip():
+        return [value.strip()]
+    if isinstance(value, list) and all(
+        isinstance(item, str) and item.strip() for item in value
+    ):
+        return [item.strip() for item in value]
+    raise ValueError(f"router mode {mode_id}: project_scope must be a string list")
+
+
+def _load_modes(root: Path, project_id: str | None = None) -> list[dict[str, Any]]:
     """Return router modes enriched with integrator agent metadata."""
     router = _load_yaml(root / "core/orchestration/metaagent_router.yaml")
     integrator = _load_yaml(root / "integrator.yaml")
@@ -62,12 +94,18 @@ def _load_modes(root: Path) -> list[dict[str, Any]]:
         agent_id = mode.get("agent")
         if not isinstance(mode_id, str) or not isinstance(agent_id, str):
             continue
+        project_scope = _project_scope(mode, mode_id)
+        if project_id is not None and project_scope and project_id not in project_scope:
+            continue
+        native_alias = mode.get("native_alias", mode_id.lower())
+        if not isinstance(native_alias, str) or not native_alias.strip():
+            raise ValueError(f"router mode {mode_id}: native_alias must be a string")
         agent = agents.get(agent_id, {})
         rows.append(
             {
                 "mode_key": mode_key,
                 "mode_id": mode_id,
-                "alias": mode_id.lower(),
+                "alias": native_alias.strip(),
                 "label": mode.get("label", mode_key.replace("_", " ").title()),
                 "agent_id": agent_id,
                 "agent_description": agent.get("description", ""),
@@ -80,6 +118,9 @@ def _load_modes(root: Path) -> list[dict[str, Any]]:
             }
         )
     order = {mode_id: index for index, mode_id in enumerate(MODE_ORDER)}
+    aliases = [row["alias"] for row in rows]
+    if len(aliases) != len(set(aliases)):
+        raise ValueError("router modes define duplicate native_alias values")
     return sorted(rows, key=lambda row: order.get(row["mode_id"], 999))
 
 
@@ -267,7 +308,16 @@ def sync_repo(
         return
     timestamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
     source_aliases = aliases if aliases is not None else sync_canonical(root, dry_run=True)
+    adapter = _load_yaml(project_yaml)
+    project_id = adapter.get("project_id")
+    if not isinstance(project_id, str) or not project_id.strip():
+        raise ValueError(f"missing project_id in {project_yaml}")
+    applicable_names = {
+        f"{row['alias']}.md" for row in _load_modes(root, project_id.strip())
+    }
     for source in source_aliases:
+        if source.name not in applicable_names:
+            continue
         destination = target_root / source.name
         _link_alias(source, destination, dry_run, timestamp)
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "CQI Analytical Documentation"
+  short_description: "Evidence-led narrative for analytical outputs"
+  default_prompt: "Use $cqi-analytical-documentation to turn this evidence into a decision-ready analytical narrative."
+policy:
+  allow_implicit_invocation: true

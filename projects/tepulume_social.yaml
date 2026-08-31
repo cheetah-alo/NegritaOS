@@ -16,6 +16,10 @@ project:
     instagram_assets: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/assets/instagram"
     automation: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social/automation"
   memory_home: "~/.negritaos/memory/projects/tepulume_social"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
   archetypes:
     - content_operations
     - brand_strategy

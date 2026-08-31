@@ -1,0 +1,78 @@
+project:
+  id: eda_dashboard
+  name: "eda_dashboard"
+  version: "1.0.0"
+  description: >
+    Modular Python EDA and Dash/TypeScript dashboard repository for reusable
+    loaders, plotting components, analytical pages, and exploratory reports.
+    It is an application and analysis workspace, not a certified production
+    data source.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/eda_dashboard"
+  memory_home: "~/.negritaos/memory/projects/eda_dashboard"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
+  archetypes:
+    - eda_analytics
+    - product_app
+    - frontend_dashboard
+    - data_quality
+  capabilities:
+    - eda
+    - analytics
+    - plots
+    - frontend
+    - product_ux
+    - data_quality_audit
+    - local_files
+    - csv_files
+    - optional_bigquery
+    - dashboard_qa
+  integration_branch: feature/bar_plot_dashboard
+  skill_profiles:
+    - document-delivery
+    - analytical-eda
+    - analytical-dashboard
+  agents:
+    - team_lead_ds_agent
+    - decision_support_agent
+    - software_architect_agent
+    - code_review_agent
+    - pull_request_reviewer_agent
+    - data_quality_sentinel_agent
+    - model_review_agent
+    - technical_writer_agent
+    - presentation_agent
+    - plot_analysis_agent
+    - browser_qa_headless_agent
+  mode_map:
+    dashboard_work: CR
+    dashboard_refactor: CR
+    eda: MR
+    metric_review: MR
+    data_quality_audit: DQ
+    browser_qa: CR
+    deck: EP
+    writeup: TD
+    planning: LP
+  expected_outputs:
+    - modular_dashboard_source
+    - reusable_plot_component
+    - eda_report
+    - data_quality_report
+    - browser_qa_report
+    - technical_memo
+    - executive_presentation
+    - task_register
+  notes:
+    - "Preserve the existing feature/bar_plot_dashboard work and the local modification in src/eda/io/savers.py; do not reset or clean it during adapter installation."
+    - "Dashboard changes must keep data loading, analytical logic, visualization, layout, callbacks, and pages modular; do not introduce one-file dashboard monoliths."
+    - "Optional BigQuery dependencies do not constitute a governed live source; configure data-source-bigquery only after a source contract and access mode are approved."
+    - "Existing notebooks, zrumble experiments, generated outputs, and local data are exploratory or historical until promoted through explicit quality gates."
+    - "New reports, decks, PDFs, DOCX, HTML, and controlled Markdown route to documents/ with timestamped immutable versions and a manifest."
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true

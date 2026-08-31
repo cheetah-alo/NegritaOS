@@ -33,6 +33,9 @@ negrita_brain:
     pull_request_review: PRR
     pr_risk_review: PRR
     merge_gate: PRR
+    lifecycle_qa: LQA
+    adversarial_lifecycle_qa: LQA
+    flow_qa: LQA
     quality_bar_gauntlet: QG
     gauntlet: QG
     benchmark_review: QG
@@ -66,6 +69,47 @@ negrita_brain:
       - file_contents
       - tool_outputs
       - secrets
+  external_app_financial_control:
+    enforcement: strict
+    default_decision: BLOCK
+    blocked_state: BLOCKED_FINANCIAL_AUTHORIZATION
+    applies_to: [mcp, app_connector, browser, cli, api, sdk, cloud_console]
+    explicit_user_authorization_required: true
+    authorization_scope: one_specific_operation
+    authorization_expires_after_operation: true
+    never_infer_authorization_from:
+      - account_connection
+      - authenticated_session
+      - request_to_use_an_app
+      - prior_authorization
+      - existing_subscription
+      - available_payment_method
+    protected_actions:
+      - change_plan_tier_or_subscription
+      - start_or_convert_a_paid_trial
+      - purchase_credits_tokens_addons_domains_or_services
+      - add_paid_seats_or_licenses
+      - create_or_scale_billable_resources
+      - enable_metered_features_with_incremental_cost
+      - change_billing_or_payment_method
+      - accept_a_quote_contract_or_recurring_commitment
+      - perform_an_operation_known_or_likely_to_incur_incremental_cost
+    required_authorization_context:
+      - provider
+      - account_or_workspace
+      - exact_operation
+      - known_price_currency_and_recurrence
+      - effective_date_or_billing_effect
+    unknown_cost_decision: BLOCK
+    unknown_cost_action: ask_user_before_proceeding
+  browser_profile_routing:
+    enforcement: strict
+    config: core/orchestration/browser_profile_routing.yaml
+    launcher: scripts/open_governed_browser.py
+    required_for: authenticated_browser_work
+    blocked_state: BLOCKED_BROWSER_PROFILE_RESOLUTION
+    no_cross_profile_fallback: true
+    in_app_browser_policy: anonymous_or_non_profile_work_only
   enforcement:
     code:
       read: allow

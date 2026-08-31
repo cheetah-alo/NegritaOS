@@ -16,12 +16,14 @@ Use these skills for detailed patterns on-demand:
 | Skill | Description | URL |
 |-------|-------------|-----|
 | `rule-compliance-gate` | Mandatory pre-flight checklist enforcing active profile rules | [SKILL.md](rule-compliance-gate/SKILL.md) |
+| `governed-browser-routing` | Resolve authenticated BigQuery, GitHub, Jira, and documentation work to the correct Brave profile | [SKILL.md](governed-browser-routing/SKILL.md) |
 | `local-memory-protocol` | Brain-only canonical project memory for recall, reusable findings, and handoffs | [SKILL.md](local-memory-protocol/SKILL.md) |
 | `architecture-guardrails` | Boundary and ownership rules across backend, analytics, frontend, MCP, and `.codex` | [SKILL.md](architecture-guardrails/SKILL.md) |
 | `project-structure` | File placement rules for backend, analytics, frontend, tests, and governance assets | [SKILL.md](project-structure/SKILL.md) |
 | `business-rules` | Deterministic and traceable business-rule guidance across backend, frontend, and analytics | [SKILL.md](business-rules/SKILL.md) |
 | `docs-alignment` | Keep implementation, docs, prompts, rules, and skills in sync | [SKILL.md](docs-alignment/SKILL.md) |
 | `document-control` | Govern user-selected deliverable paths, timestamping, manifests, and Git policy for documents, decks, PDFs, DOCX, HTML, and markdown | [SKILL.md](document-control/SKILL.md) |
+| `cqi-analytical-documentation` | Evidence-led analytical narrative for EDA, plots, rules, reports, stakeholder questions, and presentation talk tracks | [SKILL.md](cqi-analytical-documentation/SKILL.md) |
 | `cqi-analytical-pptx` | CQI/CQISense analytical PowerPoint creation, editing, evidence notes, release QA, readability audits, and mobile podcast contracts | [SKILL.md](cqi-analytical-pptx/SKILL.md) |
 | `cqi-analytical-docx-pdf` | CQI/CQISense analytical Word/PDF reports with APA tables/figures, render QA, visual inspection, and document-control governance | [SKILL.md](cqi-analytical-docx-pdf/SKILL.md) |
 | `ibc-technical-eda-presentation` | IBC technical EDA, bridge-readiness, and ML-readiness decks using CQI visual/evidence standards | [SKILL.md](ibc-technical-eda-presentation/SKILL.md) |
@@ -37,6 +39,8 @@ Use these skills for detailed patterns on-demand:
 | `branch-pr` | Provider-neutral branch and PR workflow using the project-declared base branch | [SKILL.md](branch-pr/SKILL.md) |
 | `testing-coverage` | Backend, frontend, contract, browser, and coverage gates without provider assumptions | [SKILL.md](testing-coverage/SKILL.md) |
 | `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and code-quality tooling | [SKILL.md](pull-request-risk-review/SKILL.md) |
+| `environment-release-governance` | Exact-commit deployment, environment promotion, independent functional QA, and production read-only gates | [SKILL.md](environment-release-governance/SKILL.md) |
+| `tepuflow-lifecycle-adversarial-qa` | Adversarial UF-00 to UF-13 lifecycle, route, state, persistence, responsive, accessibility, and visual QA for TepuFlow | [SKILL.md](tepuflow-lifecycle-adversarial-qa/SKILL.md) |
 | `quality-bar-gauntlet` | Benchmark-driven quality loop with separate builder and critic against a named, fetchable, comparable reference | [SKILL.md](quality-bar-gauntlet/SKILL.md) |
 | `nate-skill-builder` | NegritaOS adaptation of skill authoring and audit guidance | [SKILL.md](nate-skill-builder/SKILL.md) |
 | `nate-frontend-design` | Opt-in domain-specific frontend design guidance | [SKILL.md](nate-frontend-design/SKILL.md) |
@@ -67,30 +71,33 @@ Generated from `skills/catalog.yaml`; update the catalog first.
 
 | Profile | Skills |
 |---|---|
-| `academic-tfm-research` | `docs-alignment`, `document-control`, `local-memory-protocol`, `tfm-research-advisor` |
-| `academic-tfm-review` | `docs-alignment`, `document-control`, `local-memory-protocol`, `tfm-academic-reviewer` |
-| `adversarial-browser-qa` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite` |
-| `analytical-dashboard` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
-| `analytical-deck-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `analytics-storytelling-deck` |
-| `analytical-eda` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage` |
-| `cqi-analytical-docx-pdf` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-docx-pdf`, `quality-bar-gauntlet` |
-| `cqi-analytical-pptx` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `quality-bar-gauntlet` |
-| `data-source-bigquery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `data-source-adapters`, `bigquery-analysis-governance`, `jinja-bigquery`, `data-contracts`, `data-loading` |
-| `data-source-postgresql` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `data-source-adapters`, `data-contracts`, `data-loading` |
-| `document-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite` |
-| `elal-analytical-deck` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `elal-eda-governance` |
-| `elal-eda-governance` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
-| `evidence-first-plot-analysis` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `evidence-first-plot-analysis`, `quality-bar-gauntlet` |
-| `fastapi-nextjs` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
-| `ibc-technical-eda-presentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `ibc-technical-eda-presentation` |
-| `ibc-technical-eda-report` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-docx-pdf`, `ibc-technical-eda-report`, `analytical-eda-governance`, `data-contracts` |
-| `knowledge-orchestration` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite` |
-| `notion-registry-sync` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite` |
-| `plain-language-writing` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite` |
-| `pull-request-risk-review` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `pull-request-risk-review`, `pr-review-deep`, `quality-bar-gauntlet` |
-| `quality-bar-gauntlet` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `quality-bar-gauntlet` |
-| `rule-model-documentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `rule-model-documentation` |
-| `visual-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
+| `academic-tfm-research` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `tfm-research-advisor` |
+| `academic-tfm-review` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `tfm-academic-reviewer` |
+| `adversarial-browser-qa` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing` |
+| `analytical-dashboard` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `analytical-dashboard-architecture`, `data-source-adapters`, `dashboard-architecture`, `frontend-web`, `api-design`, `data-contracts`, `playwright`, `commit-hygiene`, `pr-review-deep`, `sdd-flow`, `branch-pr`, `testing-coverage` |
+| `analytical-deck-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `analytics-storytelling-deck` |
+| `analytical-eda` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `analytical-eda-governance`, `data-contracts`, `data-loading`, `testing-coverage` |
+| `cqi-analytical-docx-pdf` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `cqi-analytical-docx-pdf`, `quality-bar-gauntlet` |
+| `cqi-analytical-pptx` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `quality-bar-gauntlet` |
+| `data-source-bigquery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `data-source-adapters`, `bigquery-analysis-governance`, `jinja-bigquery`, `data-contracts`, `data-loading` |
+| `data-source-postgresql` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `data-source-adapters`, `data-contracts`, `data-loading` |
+| `document-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing` |
+| `elal-analytical-deck` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `quality-bar-gauntlet`, `elal-eda-governance` |
+| `elal-eda-governance` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `analytical-eda-governance`, `bigquery-analysis-governance`, `elal-eda-governance` |
+| `evidence-first-plot-analysis` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `evidence-first-plot-analysis`, `quality-bar-gauntlet` |
+| `fastapi-nextjs` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `backend-service`, `api-design`, `frontend-web`, `nextjs-15`, `react-19`, `typescript`, `playwright` |
+| `governed-browser-access` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing` |
+| `ibc-technical-eda-presentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `analytics-storytelling-deck`, `cqi-analytical-pptx`, `quality-bar-gauntlet`, `ibc-technical-eda-presentation` |
+| `ibc-technical-eda-report` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `cqi-analytical-docx-pdf`, `quality-bar-gauntlet`, `ibc-technical-eda-report`, `analytical-eda-governance`, `data-contracts` |
+| `knowledge-orchestration` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing` |
+| `notion-registry-sync` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing` |
+| `plain-language-writing` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing` |
+| `pull-request-risk-review` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `pull-request-risk-review`, `pr-review-deep`, `quality-bar-gauntlet` |
+| `quality-bar-gauntlet` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `quality-bar-gauntlet` |
+| `rule-model-documentation` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `rule-model-documentation` |
+| `tepuflow-lifecycle-qa` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `pull-request-risk-review`, `pr-review-deep`, `quality-bar-gauntlet`, `environment-release-governance`, `playwright`, `testing-coverage`, `branch-pr`, `commit-hygiene`, `tepuflow-lifecycle-adversarial-qa` |
+| `tepuflow-release-operations` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `pull-request-risk-review`, `pr-review-deep`, `quality-bar-gauntlet`, `environment-release-governance`, `playwright`, `testing-coverage`, `branch-pr`, `commit-hygiene` |
+| `visual-delivery` | `docs-alignment`, `document-control`, `local-memory-protocol`, `plain-language-rewrite`, `cqi-analytical-documentation`, `governed-browser-routing`, `nate-frontend-design`, `nate-excalidraw-diagram`, `nate-excalidraw-visuals`, `nate-video-to-website` |
 
 ## Auto-invoke Skills
 
@@ -99,6 +106,7 @@ When performing these actions, invoke the corresponding skill first:
 | Action | Skill |
 |--------|-------|
 | Before writing/modifying code or repo files | `rule-compliance-gate` |
+| Open or control a browser using an authenticated project account | `governed-browser-routing` |
 | User asks to remember, recall, or continue prior work | `local-memory-protocol` |
 | Task references prior decisions, open bugs, or ongoing features | `local-memory-protocol` |
 | A substantive session needs a continuation handoff | `local-memory-protocol` |
@@ -116,6 +124,7 @@ When performing these actions, invoke the corresponding skill first:
 | Modify dataset contracts or schema validation | `data-contracts` |
 | Change data ingestion or source resolution | `data-loading` |
 | Create or edit analytical PPTs, finding decks, or metric-driven storylines | `analytics-storytelling-deck` |
+| Create analytical documentation, explain plots or rules, answer stakeholder questions, or write plot-backed speaker talk tracks | `cqi-analytical-documentation` |
 | Create, edit, audit, release, or podcast a CQI/CQISense analytical PPTX deck | `cqi-analytical-pptx` |
 | Create, edit, audit, export, or visually QA a CQI/CQISense analytical DOCX/PDF report | `cqi-analytical-docx-pdf` |
 | Create or edit an IBC technical EDA, bridge-readiness, or ML-readiness PPTX deck | `ibc-technical-eda-presentation` |
@@ -136,6 +145,8 @@ When performing these actions, invoke the corresponding skill first:
 | Write or review Jinja templates that render BigQuery SQL, dynamic CTEs, filters, projections, joins, identifiers, or query variants | `jinja-bigquery` |
 | Prepare a branch, choose a PR base, or assemble review evidence | `branch-pr` |
 | Review a pull request, evaluate PR risk, check merge readiness, assess auto-approval, or inspect GitHub PR checks | `pull-request-risk-review` |
+| Deploy an exact commit, validate a deployed environment, promote a release, or decide environment readiness | `environment-release-governance` |
+| Test or attempt to break TepuFlow lifecycle flows, routes, state, profile isolation, responsive UI, accessibility, or visual quality | `tepuflow-lifecycle-adversarial-qa` |
 | Run a quality gauntlet, benchmark comparison, beat-this-reference loop, or separate builder/critic review for code, dashboards, PPTX, DOCX, PDF, plots, or research | `quality-bar-gauntlet` |
 | Change behavior, contracts, visual states, or browser flows requiring coverage evidence | `testing-coverage` |
 | Modify EDA outputs, plots, dashboards, or run-scoped output layout | `eda-reports` |

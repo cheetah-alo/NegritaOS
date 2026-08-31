@@ -18,6 +18,10 @@ project:
     docs: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/docs"
     assumptions: "/Users/jackyb-cqi/repos/fiber-hourly-analytics-sql/pipeline_assumptions.md"
   memory_home: "~/.negritaos/memory/projects/fiber_hourly_analytics_sql"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - eda_analytics
     - data_platform

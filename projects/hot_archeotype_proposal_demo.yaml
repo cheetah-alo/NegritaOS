@@ -10,6 +10,10 @@ project:
     primary: "/Users/jackyb-cqi/repos/hot_archeotype_proposal_demo"
     nested_dashboard: "/Users/jackyb-cqi/repos/hot_archeotype_proposal_demo/hot-dashboard"
   memory_home: "~/.negritaos/memory/projects/hot_archeotype_proposal_demo"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - eda_analytics
     - product_app

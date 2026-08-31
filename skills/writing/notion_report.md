@@ -7,6 +7,12 @@
 Produces Notion-ready technical reports with consistent structure, appropriate formatting,
 and operational clarity. The output must be paste-ready into Notion with minimal reformatting.
 
+For analytical reports, plot explanations, rules, validation findings, or
+stakeholder questions, also apply
+`.codex/skills/cqi-analytical-documentation/SKILL.md`. Its question-to-decision
+narrative and evidence-boundary contract takes precedence over generic metric
+summaries in this template.
+
 ## Relationship to Presentations
 
 When the document is generated from the same analytical material as a presentation,
@@ -37,8 +43,12 @@ use `rules/presentation/findings_contract.yaml` as the shared source of truth.
 [Main content. Use H3 for subsections. No more than 2 nesting levels.]
 
 Each finding should follow:
+- **Question:** [what this finding resolves]
+- **Executive answer:** [decision-ready answer]
 - **Finding:** [claim]
 - **Evidence:** [metric/chart/table/source path]
+- **How to read:** [visual grammar when a plot or table is used]
+- **Evidence boundary:** [what cannot be concluded]
 - **Implication:** [why it matters]
 - **Note:** [limitation or uncertainty]
 - **Recommendation:** [action if any]

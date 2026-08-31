@@ -11,6 +11,10 @@ project:
   local_paths:
     primary: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/HOT"
   memory_home: "~/.negritaos/memory/projects/hot_onedrive_workspace"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - eda_analytics
     - data_platform

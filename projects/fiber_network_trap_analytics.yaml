@@ -16,6 +16,10 @@ project:
     card_day_pipeline: "/Users/jackyb-cqi/repos/fiber-network-trap-analytics/scripts/dev/sql/card_day"
     dev_docs: "/Users/jackyb-cqi/repos/fiber-network-trap-analytics/scripts/dev/README.md"
   memory_home: "~/.negritaos/memory/projects/fiber_network_trap_analytics"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - eda_analytics
     - data_platform

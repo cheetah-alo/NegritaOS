@@ -1,0 +1,62 @@
+project:
+  id: analytics_assurance_offer
+  name: "analytics_assurance_offer"
+  version: "1.0.0"
+  description: >
+    Productized analytics-assurance consulting offer covering strategy,
+    service design, marketing, sales operations, delivery templates, and
+    governed client-facing documentation. The repository is a planning and
+    offer-design workspace, not a live customer-data analytics source.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/backup_repos/analytics-assurance-offer"
+  memory_home: "~/.negritaos/memory/projects/analytics_assurance_offer"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
+  archetypes:
+    - business_proposal
+    - service_design
+    - executive_delivery
+  capabilities:
+    - technical_documentation
+    - business_proposal
+    - service_design
+    - sales_operations
+    - data_quality_audit
+    - analytics_assurance
+    - executive_synthesis
+    - local_files
+    - csv_crm
+  integration_branch: main
+  skill_profiles:
+    - document-delivery
+    - analytical-deck-delivery
+  agents:
+    - team_lead_ds_agent
+    - decision_support_agent
+    - technical_writer_agent
+    - documentation_reviewer_agent
+    - presentation_agent
+    - code_review_agent
+    - pull_request_reviewer_agent
+    - proposal_validator_agent
+  expected_outputs:
+    - offer_strategy
+    - service_design
+    - marketing_plan
+    - sales_system
+    - audit_checklist
+    - client_proposal
+    - executive_presentation
+    - implementation_plan
+    - task_register
+  notes:
+    - "Existing docs/, templates/, ops/, and data/leads_seed.csv are preserved source material and are not moved automatically."
+    - "New client-facing DOCX, PDF, PPTX, PPT, HTML, and controlled Markdown deliverables route to documents/ with timestamped immutable versions and a manifest."
+    - "The leads seed is a local CRM planning input; do not infer live outreach, conversion, or customer evidence from it."
+    - "No remote data provider is configured; add a governed data-source profile only when a real source and access contract exist."
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true

@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import Any
 
 from .codex_config import codex_config_status
+from .browser_routing import (
+    load_browser_routing_config,
+    validate_browser_routing_config,
+    validate_project_browser_context,
+)
 from .config import (
     NEGRITAOS_ROOT,
     adapter_memory_home,
@@ -179,6 +184,16 @@ def doctor_project(
         *_check_materialized(context.work_root, context.negritaos_root, closure.skills),
         *_check_memory_writers(context.work_root),
     ]
+    try:
+        browser_config = load_browser_routing_config(context.negritaos_root)
+        browser_errors = [
+            *validate_browser_routing_config(browser_config),
+            *validate_project_browser_context(context.project, browser_config),
+        ]
+    except Exception as exc:
+        browser_errors = [str(exc)]
+    for error in browser_errors:
+        issues.append(_issue("BROWSER_PROFILE_ROUTING", "ERROR", error))
     if "document-control" not in closure.skills:
         issues.append(
             _issue(

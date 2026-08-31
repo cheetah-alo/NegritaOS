@@ -15,6 +15,10 @@ project:
     teams_tfms: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds/Teams TFMs"
     uvalencia: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/ds/00-UValencia"
   memory_home: "~/.negritaos/memory/projects/ds_onedrive_workspace"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
   archetypes:
     - data_analytics
     - academic_research

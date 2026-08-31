@@ -90,6 +90,24 @@ class TestInstaller(unittest.TestCase):
         self.assertIn("PERMISSION_REQUIRED", agents)
         self.assertIn("--provider codex --action", agents)
 
+    def test_managed_agents_that_blocks_unauthorized_external_spend(self) -> None:
+        self.installer.install(self.repo)
+        agents = (self.repo / "AGENTS.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "External account access never grants financial authority", agents
+        )
+        self.assertIn("BLOCKED_FINANCIAL_AUTHORIZATION", agents)
+        self.assertIn("user's explicit authorization for that exact operation", agents)
+
+    def test_managed_agents_that_requires_governed_browser_context(self) -> None:
+        self.installer.install(self.repo)
+        agents = (self.repo / "AGENTS.md").read_text(encoding="utf-8")
+
+        self.assertIn("resolved `browser_context`", agents)
+        self.assertIn("open_governed_browser.py", agents)
+        self.assertIn("BLOCKED_BROWSER_PROFILE_RESOLUTION", agents)
+
     def test_doctor_that_passes_installed_workspace(self) -> None:
         self.installer.install(self.repo)
         report = doctor_project(self.repo, ROOT, self.memory)

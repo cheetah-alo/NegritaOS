@@ -20,6 +20,7 @@ from .config import (
     project_memory_home,
     workspace_kind,
 )
+from .browser_routing import browser_context_summary, load_browser_routing_config
 from .documents import DELIVERABLE_EXTENSIONS, is_compliant_deliverable, is_deliverable
 from .errors import MemoryPermissionError, SessionError
 from .models import (
@@ -452,6 +453,10 @@ def resolve_session(
     )
     quality = policy.get("quality_gates", {}).get(kind, [])
     route = policy.get("artifact_route", {})
+    browser_context = browser_context_summary(
+        context.project,
+        load_browser_routing_config(context.negritaos_root),
+    )
     router = load_yaml(
         context.negritaos_root / "core" / "orchestration" / "metaagent_router.yaml"
     )
@@ -506,6 +511,7 @@ def resolve_session(
         "profiles": list(closure.profiles),
         "rules": [
             "rules/global/negritaos_router_rule.md",
+            "rules/global/browser_profile_routing_rule.md",
             "core/orchestration/negrita_brain_policy.yaml",
         ],
         "skills": resolved_skill_ids,
@@ -525,6 +531,7 @@ def resolve_session(
             "filename_pattern": route.get("filename_pattern"),
             "timezone": route.get("timezone", "Europe/Madrid"),
         },
+        "browser_context": browser_context,
         "memory": {
             "home": str(memory_home),
             "owner": memory_policy.get("owner", "negrita_brain"),
@@ -712,7 +719,15 @@ def gate_action(
                 )
     if file_path is not None and file_path.suffix.lower() in DELIVERABLE_EXTENSIONS:
         candidate = file_path if file_path.is_absolute() else context.work_root / file_path
-        if user_selected_route:
+        candidate_is_external = not candidate.resolve().is_relative_to(
+            context.work_root.resolve()
+        )
+        candidate_is_deliverable = (
+            normalized == "deliverable"
+            or candidate_is_external
+            or is_deliverable(candidate, context.work_root)
+        )
+        if user_selected_route and candidate_is_deliverable:
             compliant = is_compliant_deliverable(
                 candidate,
                 context.work_root,

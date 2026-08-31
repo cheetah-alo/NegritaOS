@@ -6,6 +6,10 @@ project:
     primary: "/Users/jackyb-cqi/repos/proj_data_analytics"
     backup: "/Users/jackyb-cqi/repos/backup_repos/data_analytics"
   memory_home: "~/.negritaos/memory/projects/proj_data_analytics"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - eda_analytics
     - ml_automl
@@ -60,7 +64,7 @@ project:
       source_project_root: "/Users/jackyb-cqi/repos/proj_data_analytics"
       authoritative_reference_deck:
         path: "analyses/poc_elal_passenger_journey/documents/elal_passenger_journey_product_owner_summary_44slides_20260804_final_no_text_frames.pptx"
-        sha256: "b5bbf5eb7b940b7681bcf227cd0bf38e0c953d258d87cd7686a27682d4252c28"
+        sha256: "b5bbf5eb7b940b7681bcf227cd0bf38e0c953d258d87cd7686a27682d4252c28"  # pragma: allowlist secret - artifact provenance hash
         observed_slide_count: 46
         observed_note_count: 46
     elal_rule_traceability:

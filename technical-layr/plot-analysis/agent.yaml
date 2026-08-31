@@ -22,6 +22,7 @@ agent:
 
   codex_skills:
     - .codex/skills/evidence-first-plot-analysis/SKILL.md
+    - .codex/skills/cqi-analytical-documentation/SKILL.md
 
   rules:
     inherit: rules/global/global_rules.yaml
@@ -47,6 +48,7 @@ agent:
     - cross_plot_relationship_is_classified_when_multiple_plots_are_used
     - no_causal_claim_without_design_support
     - takeaway_states_what_the_plot_tells_and_does_not_tell
+    - narrative_connects_the_plot_to_an_operational_decision_or_next_check
 
   input_types:
     - plot_image

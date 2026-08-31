@@ -14,6 +14,10 @@ project:
     tests: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing/tests"
     hosting_config: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing/.openai/hosting.json"
   memory_home: "~/.negritaos/memory/projects/tepulume_landing"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
   archetypes:
     - product_app
     - frontend_web

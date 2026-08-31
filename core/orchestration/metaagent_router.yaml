@@ -113,6 +113,8 @@ metaagent_router:
         - plot takeaway
         - what does this plot tell us
         - what does this chart not prove
+        - analytical plot discussion
+        - narrative for this plot
       input_types:
         - plot image
         - chart
@@ -158,6 +160,10 @@ metaagent_router:
         - technical EDA report
         - report with plots
         - plot-backed report
+        - analytical documentation
+        - executive analytical report
+        - answer Arik questions
+        - Arik question pack
         - chart narrative for report
         - IBC technical EDA report
         - source-readiness memo
@@ -353,6 +359,103 @@ metaagent_router:
         - pull_request_comments
         - changes_required_summary
 
+    deployment_operations:
+      id: DEP
+      native_alias: pablo
+      project_scope: [moneyflowlist]
+      label: "TepuFlow Deployment Operations"
+      agent: pablo_deployment_operator_agent
+      specialist_agents:
+        pull_request_risk_review:
+          agent: pull_request_reviewer_agent
+          when:
+            - release candidate requires merge-risk assessment
+            - required CI or branch evidence is disputed
+            - deployment includes migrations or security-sensitive changes
+      trigger_signals:
+        - Pablo
+        - deploy TepuFlow
+        - deploy exact commit
+        - deploy to DEV
+        - deploy to UAT
+        - deploy to production
+        - Vercel deployment
+        - Cloudflare release
+        - promote TepuFlow
+      input_types:
+        - deployment_request
+        - environment
+        - commit_sha
+        - release_candidate
+      output_types:
+        - deployment_preflight
+        - deployment_evidence
+        - environment_handoff
+        - release_hold
+
+    functional_environment_qa:
+      id: FQA
+      native_alias: casilda
+      project_scope: [moneyflowlist]
+      label: "TepuFlow Functional Environment QA"
+      agent: casilda_functional_qa_agent
+      trigger_signals:
+        - Casilda
+        - functional QA TepuFlow
+        - test deployed URL
+        - validate DEV environment
+        - validate UAT environment
+        - production smoke test
+        - Playwright environment test
+        - release acceptance
+      input_types:
+        - deployed_url
+        - environment
+        - commit_sha
+        - deployment_handoff
+      output_types:
+        - functional_qa_report
+        - release_acceptance_decision
+        - reproducible_bug_report
+        - production_smoke_report
+
+    tepuflow_lifecycle_qa:
+      id: LQA
+      native_alias: casilda-flows
+      project_scope: [moneyflowlist]
+      label: "TepuFlow Lifecycle Adversarial QA"
+      agent: casilda_lifecycle_qa_agent
+      specialist_agents:
+        release_acceptance:
+          agent: casilda_functional_qa_agent
+          when:
+            - lifecycle findings must become an environment release decision
+            - a deployed revision needs independent release acceptance
+      trigger_signals:
+        - Casilda Flows
+        - lifecycle QA TepuFlow
+        - test UF-00 to UF-13
+        - test all TepuFlow user flows
+        - break the TepuFlow user journey
+        - stress TepuFlow flows
+        - audit TepuFlow routes and aliases
+        - TepuFlow visual QA
+        - TepuFlow accessibility QA
+      input_types:
+        - deployed_url
+        - environment
+        - commit_sha
+        - approved_test_identity
+        - lifecycle_flow_scope
+        - deployment_handoff
+      output_types:
+        - lifecycle_qa_plan
+        - lifecycle_qa_report
+        - lifecycle_flow_matrix
+        - journey_bug_register
+        - visual_accessibility_audit
+        - release_hold
+
     quality_bar_gauntlet:
       id: QG
       label: "Quality Bar Gauntlet"
@@ -419,6 +522,9 @@ metaagent_router:
         - plot takeaway for deck
         - chart-backed slide
         - deck with charts
+        - plot narrative in speaker notes
+        - analytical talk track
+        - Arik review deck
       input_types:
         - analytical report
         - raw findings
@@ -533,6 +639,18 @@ metaagent_router:
         role: quality_bar_critic
         modes_applicable: [QG]
         action: "Compare the actual output against the named bar, record evidence, and return PASS, PASS_WITH_WARNINGS, FAIL, or BLOCKED."
+      - step: 7
+        role: deployment_operator
+        modes_applicable: [DEP]
+        action: "Deploy the approved exact commit and produce an environment handoff."
+      - step: 8
+        role: lifecycle_adversarial_qa
+        modes_applicable: [LQA]
+        action: "Exercise the governed TepuFlow lifecycle, state, route, visual, accessibility, and controlled-stress paths and report evidence per flow."
+      - step: 9
+        role: functional_acceptance
+        modes_applicable: [FQA]
+        action: "Test the deployed revision independently and return PASS, HOLD, or BLOCKED."
 
     pipeline_examples:
       - label: "Model Review → Notion Doc → Executive Slides"
@@ -547,6 +665,12 @@ metaagent_router:
       - label: "Data Quality Incident → Escalation Note → DQ Tasks"
         modes: [DQ, LP]
         sequence: [reviewer, structurer, task_generator]
+      - label: "TepuFlow Exact Commit → Deployment → Functional Acceptance"
+        modes: [DEP, FQA]
+        sequence: [deployment_operator, functional_acceptance]
+      - label: "TepuFlow Exact Commit → Lifecycle Adversarial QA → Functional Acceptance"
+        modes: [DEP, LQA, FQA]
+        sequence: [deployment_operator, lifecycle_adversarial_qa, functional_acceptance]
 
   # ─── BUSINESS LAYER MODES ───────────────────────────────────────────────────
 
@@ -655,6 +779,9 @@ metaagent_router:
         - "@agent:MR review this churn model output"
         - "@agent:AE evaluate this thesis abstract"
         - "@agent:LP convert this meeting to Jira tasks"
+        - "@agent:DEP deploy TepuFlow commit <sha> to DEV"
+        - "@agent:FQA validate the deployed TepuFlow URL in UAT"
+        - "@agent:LQA test UF-00 through UF-13 against the deployed TepuFlow URL"
 
     confidence_threshold:
       description: >

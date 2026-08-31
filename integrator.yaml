@@ -158,6 +158,7 @@ negrita_os:
       codex_skills:
         - .codex/skills/analytics-storytelling-deck/SKILL.md
         - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/cqi-analytical-documentation/SKILL.md
         - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
         - rules/global/global_rules.yaml
@@ -178,6 +179,8 @@ negrita_os:
         - executive_summary
       quality_gate:
         - each_slide_has_one_core_message
+        - every_slide_has_a_discourse_ready_talk_track
+        - talk_tracks_separate_interpretation_from_evidence_boundary
         - agenda_is_present_immediately_after_cover
         - analytical_deck_total_slide_count_is_between_10_and_80
         - each_chart_has_takeaway
@@ -442,6 +445,7 @@ negrita_os:
         - skills/transversal/evidence_framing.md
       codex_skills:
         - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/cqi-analytical-documentation/SKILL.md
         - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
         - rules/global/global_rules.yaml
@@ -476,6 +480,7 @@ negrita_os:
         - skills/transversal/evidence_framing.md
       codex_skills:
         - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/cqi-analytical-documentation/SKILL.md
       rules:
         - rules/global/global_rules.yaml
         - rules/analysis/analysis_rules.yaml
@@ -496,6 +501,7 @@ negrita_os:
         - cross_plot_relationship_is_classified_when_multiple_plots_are_used
         - no_causal_claim_without_design_support
         - takeaway_states_what_the_plot_tells_and_does_not_tell
+        - narrative_connects_the_plot_to_an_operational_decision_or_next_check
 
     model_review_agent:
       description: "Reviews ML models, EDA, explainability outputs, and operational readiness."
@@ -627,6 +633,114 @@ negrita_os:
         - flake8_pylint_mypy_mccabe_coverage_vulture_are_reported_for_python_prs
         - auto_approve_allowed_is_false_in_v1
 
+    pablo_deployment_operator_agent:
+      description: "Deploys an exact TepuFlow commit to an authorized environment and records release evidence before independent QA."
+      persona:
+        - release_operator
+        - deployment_evidence_owner
+        - change_control_reviewer
+      skills:
+        - skills/engineering/environment_release_governance.md
+        - skills/engineering/reproducibility_review.md
+        - skills/engineering/pull_request_risk_review.md
+      codex_skills:
+        - .codex/skills/environment-release-governance/SKILL.md
+        - .codex/skills/pull-request-risk-review/SKILL.md
+        - .codex/skills/branch-pr/SKILL.md
+        - .codex/skills/commit-hygiene/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/engineering/engineering_rules.yaml
+      rubrics:
+        - rubrics/mlops_readiness_rubric.yaml
+        - rubrics/code_quality_rubric.yaml
+      templates:
+        - templates/technical_appendix_template.md
+      output_modes:
+        - deployment_preflight
+        - deployment_evidence
+        - environment_handoff
+        - release_hold
+      quality_gate:
+        - target_environment_and_commit_are_explicit
+        - required_ci_migrations_configuration_and_rollback_are_verified
+        - deployed_revision_matches_requested_commit
+        - runtime_health_and_provider_evidence_are_reported
+        - production_requires_explicit_human_approval
+        - casilda_handoff_precedes_ready_status
+
+    casilda_functional_qa_agent:
+      description: "Runs independent TepuFlow browser QA against a deployed revision and returns PASS, HOLD, or BLOCKED without deployment authority."
+      persona:
+        - functional_qa_owner
+        - adversarial_browser_tester
+        - release_acceptance_reviewer
+      skills:
+        - skills/engineering/environment_release_governance.md
+        - skills/engineering/reproducibility_review.md
+      codex_skills:
+        - .codex/skills/environment-release-governance/SKILL.md
+        - .codex/skills/playwright/SKILL.md
+        - .codex/skills/testing-coverage/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/engineering/engineering_rules.yaml
+      rubrics:
+        - rubrics/code_quality_rubric.yaml
+      templates:
+        - templates/technical_appendix_template.md
+      output_modes:
+        - functional_qa_report
+        - release_acceptance_decision
+        - reproducible_bug_report
+        - production_smoke_report
+      quality_gate:
+        - tested_url_environment_and_commit_are_identified
+        - production_paths_are_read_only
+        - test_integrity_is_preserved
+        - exact_commands_counts_and_failure_evidence_are_reported
+        - pass_hold_or_blocked_decision_is_evidence_backed
+
+    casilda_lifecycle_qa_agent:
+      description: "Runs adversarial TepuFlow lifecycle QA across UF-00 through UF-13, routes, state, persistence, visual quality, accessibility, and controlled stress without deployment or autonomous fix authority."
+      persona:
+        - lifecycle_qa_owner
+        - adversarial_e2e_tester
+        - product_state_integrity_reviewer
+        - visual_accessibility_reviewer
+      skills:
+        - skills/engineering/tepuflow_lifecycle_adversarial_qa.md
+        - skills/engineering/environment_release_governance.md
+        - skills/engineering/reproducibility_review.md
+      codex_skills:
+        - .codex/skills/tepuflow-lifecycle-adversarial-qa/SKILL.md
+        - .codex/skills/environment-release-governance/SKILL.md
+        - .codex/skills/playwright/SKILL.md
+        - .codex/skills/testing-coverage/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/engineering/engineering_rules.yaml
+      rubrics:
+        - rubrics/code_quality_rubric.yaml
+      templates:
+        - templates/technical_appendix_template.md
+      output_modes:
+        - lifecycle_qa_plan
+        - lifecycle_qa_report
+        - lifecycle_flow_matrix
+        - journey_bug_register
+        - visual_accessibility_audit
+        - release_hold
+      quality_gate:
+        - environment_url_commit_identity_and_data_policy_are_identified
+        - each_required_uf_flow_has_status_and_evidence
+        - routes_aliases_parameters_state_changes_and_error_paths_are_covered
+        - profile_isolation_persistence_reload_and_browser_history_are_verified
+        - desktop_mobile_keyboard_focus_and_visual_states_are_reviewed
+        - production_paths_are_read_only_and_controlled_stress_is_bounded
+        - exact_commands_counts_reproduction_steps_and_evidence_paths_are_reported
+        - gaps_blockers_and_unverified_flows_cannot_be_reported_as_passed
+
     quality_gauntlet_agent:
       description: "Runs benchmark-driven quality loops using a named reference, separate builder/critic contexts, and evidence-backed pass/fail decisions."
       persona:
@@ -730,6 +844,7 @@ negrita_os:
       codex_skills:
         - .codex/skills/evidence-first-plot-analysis/SKILL.md
         - .codex/skills/plain-language-rewrite/SKILL.md
+        - .codex/skills/cqi-analytical-documentation/SKILL.md
         - .codex/skills/cqi-analytical-docx-pdf/SKILL.md
         - .codex/skills/ibc-technical-eda-report/SKILL.md
         - .codex/skills/quality-bar-gauntlet/SKILL.md
@@ -753,6 +868,7 @@ negrita_os:
       quality_gate:
         - every_section_has_purpose
         - every_plot_has_takeaway
+        - every_analytical_question_has_an_executive_answer
         - plot_narrative_states_how_to_read_observation_interpretation_and_boundary
         - plain_language_preserves_exact_facts_paths_numbers_and_status_labels
         - assumptions_are_explicit
@@ -772,6 +888,7 @@ negrita_os:
         - .codex/skills/docs-alignment/SKILL.md
         - .codex/skills/document-control/SKILL.md
         - .codex/skills/plain-language-rewrite/SKILL.md
+        - .codex/skills/cqi-analytical-documentation/SKILL.md
         - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
         - rules/global/global_rules.yaml
@@ -1147,6 +1264,18 @@ negrita_os:
 
       pull_request_review:
         use_agent: pull_request_reviewer_agent
+
+      tepuflow_deployment:
+        use_agent: pablo_deployment_operator_agent
+
+      tepuflow_functional_qa:
+        use_agent: casilda_functional_qa_agent
+
+      tepuflow_lifecycle_qa:
+        use_agent: casilda_lifecycle_qa_agent
+
+      adversarial_lifecycle_qa:
+        use_agent: casilda_lifecycle_qa_agent
 
       pr_risk_review:
         use_agent: pull_request_reviewer_agent

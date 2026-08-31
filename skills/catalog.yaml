@@ -14,8 +14,13 @@ catalog:
 defaults:
   profiles:
     - document-delivery
+    - governed-browser-access
 
 profiles:
+  governed-browser-access:
+    description: Mandatory project-aware routing for authenticated Brave sessions.
+    skills:
+      - governed-browser-routing
   document-delivery:
     description: Baseline governed documentation and deliverable routing for every project.
     skills:
@@ -23,6 +28,7 @@ profiles:
       - document-control
       - local-memory-protocol
       - plain-language-rewrite
+      - cqi-analytical-documentation
   plain-language-writing:
     description: On-demand clear-language rewrite and jargon reduction without weakening technical precision.
     skills:
@@ -68,6 +74,25 @@ profiles:
       - pull-request-risk-review
       - pr-review-deep
       - quality-bar-gauntlet
+  tepuflow-release-operations:
+    description: Exact-commit environment deployment and independent functional QA for TepuFlow.
+    extends: pull-request-risk-review
+    required_agents:
+      - pablo_deployment_operator_agent
+      - casilda_functional_qa_agent
+    skills:
+      - environment-release-governance
+      - playwright
+      - testing-coverage
+      - branch-pr
+      - commit-hygiene
+  tepuflow-lifecycle-qa:
+    description: Adversarial UF-00 to UF-13 lifecycle, state, visual, accessibility, and controlled-stress QA for TepuFlow.
+    extends: tepuflow-release-operations
+    required_agents:
+      - casilda_lifecycle_qa_agent
+    skills:
+      - tepuflow-lifecycle-adversarial-qa
   quality-bar-gauntlet:
     description: Benchmark-driven quality loop with separate builder/critic review against a named, fetchable, comparable reference.
     extends: document-delivery
@@ -167,6 +192,24 @@ profiles:
       - elal-eda-governance
 
 skills:
+  - id: governed-browser-routing
+    path: .codex/skills/governed-browser-routing/SKILL.md
+    native_path: null
+    source: NegritaOS-native
+    profiles: [governed-browser-access]
+    scopes: [root, external_access, browser]
+    status: canonical
+    dependencies: [python3, brave]
+    side_effects: read_only_resolution_and_user_requested_browser_launch
+  - id: cqi-analytical-documentation
+    path: .codex/skills/cqi-analytical-documentation/SKILL.md
+    native_path: null
+    source: NegritaOS-native
+    profiles: [document-delivery]
+    scopes: [root, documentation, analytics, plots, presentation, model-review]
+    status: canonical
+    dependencies: []
+    side_effects: none
   - id: cqi-analytical-pptx
     path: .codex/skills/cqi-analytical-pptx/SKILL.md
     native_path: skills/executive/cqi_analytical_pptx.md
@@ -230,6 +273,24 @@ skills:
     status: canonical
     dependencies: [python3, flake8, pylint, mypy, vulture, pytest]
     side_effects: read_only_review
+  - id: environment-release-governance
+    path: .codex/skills/environment-release-governance/SKILL.md
+    native_path: skills/engineering/environment_release_governance.md
+    source: NegritaOS-native
+    profiles: [tepuflow-release-operations]
+    scopes: [root, backend, frontend]
+    status: canonical
+    dependencies: [git, deployment_provider, browser_runtime]
+    side_effects: governed_external_deployment_and_browser_automation
+  - id: tepuflow-lifecycle-adversarial-qa
+    path: .codex/skills/tepuflow-lifecycle-adversarial-qa/SKILL.md
+    native_path: skills/engineering/tepuflow_lifecycle_adversarial_qa.md
+    source: NegritaOS-native
+    profiles: [tepuflow-lifecycle-qa]
+    scopes: [root, frontend]
+    status: canonical
+    dependencies: [Playwright, browser_runtime, synthetic_test_identity, synthetic_test_data]
+    side_effects: governed_dev_uat_browser_automation_and_read_only_production_review
   - id: quality-bar-gauntlet
     path: .codex/skills/quality-bar-gauntlet/SKILL.md
     native_path: skills/engineering/quality_bar_gauntlet.md
@@ -390,7 +451,7 @@ skills:
   - id: commit-hygiene
     path: .codex/skills/commit-hygiene/SKILL.md
     source: skills/skills_engram/commit-hygiene/SKILL.md
-    profiles: [analytical-dashboard]
+    profiles: [analytical-dashboard, tepuflow-release-operations]
     scopes: [root]
     status: canonical
     dependencies: []
@@ -414,7 +475,7 @@ skills:
   - id: branch-pr
     path: .codex/skills/branch-pr/SKILL.md
     source: skills/skills_engram/branch-pr/SKILL.md
-    profiles: [analytical-dashboard]
+    profiles: [analytical-dashboard, tepuflow-release-operations]
     scopes: [root]
     status: adapted
     dependencies: []
@@ -422,7 +483,7 @@ skills:
   - id: testing-coverage
     path: .codex/skills/testing-coverage/SKILL.md
     source: skills/skills_engram/testing-coverage/SKILL.md
-    profiles: [analytical-dashboard, analytical-eda]
+    profiles: [analytical-dashboard, analytical-eda, tepuflow-release-operations]
     scopes: [root, backend, frontend, data_analytics]
     status: adapted
     dependencies: []
@@ -430,7 +491,7 @@ skills:
   - id: playwright
     path: .codex/skills/playwright/SKILL.md
     source: NegritaOS-native
-    profiles: [analytical-dashboard, fastapi-nextjs]
+    profiles: [analytical-dashboard, fastapi-nextjs, tepuflow-release-operations]
     scopes: [root, frontend]
     status: canonical
     dependencies: [Playwright]

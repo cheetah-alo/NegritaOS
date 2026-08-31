@@ -68,6 +68,12 @@ class TestRuntimeContract(RuntimeFixture):
             )
         )
         self.assertIn("pptx", contract["artifact_route"]["require_explicit_path_for"])
+        self.assertEqual(contract["browser_context"]["routing_policy"], "governed")
+        self.assertEqual(
+            contract["browser_context"]["default_profile"],
+            "personal_cheetah_alo",
+        )
+        self.assertIn("governed-browser-routing", contract["skills"])
         self.assertTrue(contract_path.is_file())
 
     def test_resolve_that_maps_global_mode_to_project_agent(self) -> None:
@@ -146,6 +152,27 @@ class TestRuntimeContract(RuntimeFixture):
             negritaos_root=ROOT,
             memory_base=self.memory,
         )
+        external_unversioned = gate_action(
+            self.repo,
+            "write",
+            Path("/tmp/report.pdf"),
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+        )
+        internal_skill_source = gate_action(
+            self.repo,
+            "write",
+            Path(".codex/skills/example/SKILL.md"),
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+        )
+        internal_writing_source = gate_action(
+            self.repo,
+            "write",
+            Path("skills/writing/example.md"),
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+        )
         missing_destination = gate_action(
             self.repo,
             "deliverable",
@@ -156,6 +183,9 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertEqual(allowed["decision"], "ALLOW")
         self.assertEqual(selected_repo_path["decision"], "ALLOW")
         self.assertEqual(external["decision"], "ALLOW")
+        self.assertEqual(external_unversioned["decision"], "BLOCK")
+        self.assertEqual(internal_skill_source["decision"], "ALLOW")
+        self.assertEqual(internal_writing_source["decision"], "ALLOW")
         self.assertEqual(missing_destination["decision"], "BLOCK")
         self.assertIn("not tracked by default", external["reasons"][-1])
 

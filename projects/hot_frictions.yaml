@@ -3,6 +3,10 @@ project_registry:
   project_name: "HOT Frictions Analysis"
   version: "1.0.0"
   status: active
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   
   description: >
     Análisis de fricción de clientes, NPS, experiencia de usuario y churn para Hot Telecom.

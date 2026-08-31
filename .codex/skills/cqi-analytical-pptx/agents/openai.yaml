@@ -4,6 +4,7 @@ agent:
   mode: presentation_delivery
   activation:
     - "Load analytics-storytelling-deck first for narrative and evidence order."
+    - "Load cqi-analytical-documentation for analytical prose and plot-backed speaker talk tracks."
     - "Load cqi-analytical-pptx for CQI template, visual, notes, QA, release, and podcast contracts."
     - "Load elal-analytical-profile only when the project or user explicitly identifies an ELAL passenger-journey analytical deck."
   boundaries:

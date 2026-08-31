@@ -1,7 +1,7 @@
 schema_version: 1
 ledger_id: ELAL-RULE-TRACEABILITY
 title: ELAL rule and implementation traceability ledger
-last_recorded_on: 2026-08-05
+last_recorded_on: 2026-08-28
 
 source_repository:
   project_id: proj_data_analytics
@@ -138,6 +138,18 @@ implementation_artifacts:
   - id: IMP-ELAL-RULES-REV-PDF-BUILDER
     path: analyses/poc_elal_passenger_journey/p_elal_rules_revision_bq/build_methodology_pdf.py
     artifact_type: PYTHON
+  - id: IMP-ELAL-WCALLS-V2-CQI-POLICY
+    path: analyses/poc_elal_passenger_journey/reglas_wcalls_via_pro_v3/config/elal_attention_policy_v2_cqi_v1.json
+    artifact_type: JSON
+    scope_note: Candidate-shadow CQI taxonomy policy; no productive scoring policy is changed.
+  - id: IMP-ELAL-WCALLS-V2-CQI-SQL
+    path: analyses/poc_elal_passenger_journey/reglas_wcalls_via_pro_v3/sql_v2/core/03_build_call_context_evidence.sql
+    artifact_type: SQL
+    scope_note: Exact direct-call rule evidence with identity, incident, and call-level deduplication.
+  - id: IMP-ELAL-WCALLS-V2-CQI-HARNESS
+    path: analyses/poc_elal_passenger_journey/reglas_wcalls_via_pro_v3/v2_harness/run_weekly_rules_methodology_v2.py
+    artifact_type: PYTHON
+    scope_note: Deterministic fixture validation; BigQuery execution is recorded separately.
 
 rule_registry:
   - id: RUL-V8-OPERATIONAL-ONLY-REV
@@ -245,6 +257,16 @@ rule_registry:
     contract_ids: [CTR-CALL-DIRECT-V3]
     implementation_artifact_ids: []
     decision_boundary: Flight360 TMP.cqi_events_passenger_p is an affected member-event map, not a complete aircraft manifest. Its nearest_segment_id retains zero or one nearest call candidate per member-flight-date, so it can support aggregate candidate association only and cannot measure, prove, or disprove repeated passenger calls.
+  - id: RUL-CALL-AIRLINE-ROUTE-CHANGE-CQI-V1
+    title: Airline route-change direct-call candidate under CQI taxonomy v1.1
+    state: SHADOW_CANDIDATE
+    source_artifact_ids: [SRC-RULE-PRODUCTION-EVALUATION-20260804, SRC-FRICTION-V7]
+    contract_ids: [CTR-CALL-DIRECT-V3, CTR-ATTENTION-LAYERS-V1, CTR-OUTCOMES-V1]
+    implementation_artifact_ids:
+      - IMP-ELAL-WCALLS-V2-CQI-POLICY
+      - IMP-ELAL-WCALLS-V2-CQI-SQL
+      - IMP-ELAL-WCALLS-V2-CQI-HARNESS
+    decision_boundary: Only the exact Flight Route Change and Route Change By Airline signature on the direct FR/PR rail can contribute; identity must be unique, call evidence is deduplicated, journey-position scaling is auditable, and the rule cannot trigger a critical override or prove an operational outcome.
 
 documented_scope_changes:
   - id: SCOPE-2026-08-03-CALL-RAIL
@@ -510,3 +532,39 @@ change_log:
       approval_ref: User-approved implementation plan on 2026-08-06; historical shadow validation only and no productive promotion.
     policy_effect: SHADOW_ONLY_NO_PRODUCTION_CHANGE
     deck_product_impact: Any review artifact must cite this proposal and state that friction deltas are contrafactual; V10 recovery and operational outcomes are not concluded from one snapshot.
+
+  - id: TRC-2026-08-28-ELAL-ROUTE-CHANGE-CQI-V1-PROPOSAL
+    recorded_on: 2026-08-28
+    kind: airline_route_change_call_rule_candidate_proposal
+    record_status: PROPOSED
+    previous_change_id: TRC-2026-08-06-ELAL-WCALLS-V3-PROPOSAL
+    supersedes: null
+    rule_ids:
+      - RUL-CALL-AIRLINE-ROUTE-CHANGE-CQI-V1
+      - RUL-CALL-REASON-SUBREASON-REV
+      - RUL-CALL-RAIL-FRPR
+      - RUL-ATTENTION-LAYERS
+      - RUL-OUTCOME-ELIGIBILITY
+    source_artifact_ids:
+      - SRC-RULE-PRODUCTION-EVALUATION-20260804
+      - SRC-FRICTION-V7
+    contract_ids:
+      - CTR-CALL-DIRECT-V3
+      - CTR-ATTENTION-LAYERS-V1
+      - CTR-OUTCOMES-V1
+    implementation_artifact_ids:
+      - IMP-ELAL-WCALLS-V2-CQI-POLICY
+      - IMP-ELAL-WCALLS-V2-CQI-SQL
+      - IMP-ELAL-WCALLS-V2-CQI-HARNESS
+    validation:
+      - Local deterministic fixture covers 624 taxonomy, handling, journey-position, and operational-context scenarios; 148 change band under at least one candidate configuration.
+      - CQI v1.1 includes R14 with 5, 4, 3, and 2 base points by handling and applies PRE_CLOSE, PRE, POST, and UNRESOLVED position scaling.
+      - Weekly fixture includes 14 unique positive rules, 364 isolated rows, and 26 integrated cuts; V10 leaves the V9 numeric score immutable and never moves Critical directly to Low.
+      - BigQuery dry-run and append-only materialization remain NOT_EXECUTED because the active Google Cloud account requires interactive reauthentication.
+      - Any workbook member counts or flight-level critical-mover rankings remain source observations only until reproduced from governed append-only tables.
+    decision:
+      owner: Jacky and ELAL Product Owner
+      status: PROPOSED
+      approval_ref: User direction on 2026-08-27 to evaluate attention-point rules and validate the V3 and CQI V2 score methods; no productive-policy approval.
+    policy_effect: SHADOW_ONLY_NO_PRODUCTION_CHANGE
+    deck_product_impact: The methodology deck may explain and compare R14 as candidate-shadow evidence only, must cite this change ID in speaker notes, and must label BigQuery-derived cases and critical-flight statistics NOT_MATERIALIZED until a successful governed run exists.

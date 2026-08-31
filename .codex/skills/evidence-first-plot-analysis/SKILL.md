@@ -21,6 +21,10 @@ metadata:
 Apply the canonical NegritaOS skill at
 `skills/ml/evidence_first_plot_analysis.md`.
 
+When the interpretation will be published in a report, document, stakeholder
+answer, or presentation, also apply `cqi-analytical-documentation` for the
+question-to-decision narrative and speaker talk-track contract.
+
 ## Required Reading Sequence
 
 For every plot-backed claim, answer these in order:

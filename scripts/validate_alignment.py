@@ -14,7 +14,8 @@ Meta-repo checks (NegritaOS itself):
    referencing `frontend/src/` (a heuristic from the Jun-1 cleanup).
 9. `.codex/agents/<mode>.md` contains Claude-native aliases for every
    NegritaOS router mode.
-10. The active project's canonical memory home exists under
+10. Project-declared `.codex/agents/*.toml` custom agents resolve canonically.
+11. The active project's canonical memory home exists under
    `~/.negritaos/memory/projects/<project_id>/`.
 
 Sibling-repo checks (when --siblings is on, the default):
@@ -34,6 +35,7 @@ S8. `.codex/commands/` reachable (file or symlink dir).
 S9. Registry `project.memory_home` exists; an adapter value is only a matching mirror.
 S10. The canonical project -> registry -> agent/profile asset resolution passes.
 S11. `.codex/agents/<mode>.md` exposes NegritaOS modes as Claude-native aliases.
+S12. Project-declared Codex custom agent TOMLs resolve to canonical files.
 
 Exit codes:
     0 — all checks pass.
@@ -58,9 +60,19 @@ from typing import Callable, Iterable
 try:
     from .validate_config_resolution import validate_resolution
     from .validate_claude_agent_aliases import validate_repo as validate_claude_aliases
+    from .validate_codex_custom_agents import (
+        validate_registry_declarations as validate_codex_agent_registry,
+        validate_repo as validate_codex_agents,
+    )
+    from .validate_browser_profile_routing import validate_all as validate_browser_routing
 except ImportError:
     from validate_config_resolution import validate_resolution
     from validate_claude_agent_aliases import validate_repo as validate_claude_aliases
+    from validate_codex_custom_agents import (
+        validate_registry_declarations as validate_codex_agent_registry,
+        validate_repo as validate_codex_agents,
+    )
+    from validate_browser_profile_routing import validate_all as validate_browser_routing
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -171,6 +183,72 @@ def check_canonical_router_rule() -> tuple[bool, str]:
     return _fail("rules/global/negritaos_router_rule.md missing")
 
 
+def check_external_app_financial_control() -> tuple[bool, str]:
+    """Ensure the mandatory no-spend-without-approval rule is globally loaded."""
+    required_markers = {
+        REPO_ROOT / "rules" / "global" / "global_rules.yaml": (
+            "external_app_financial_control:",
+            "BLOCKED_FINANCIAL_AUTHORIZATION",
+            "explicit_user_authorization_required: true",
+        ),
+        REPO_ROOT / "core" / "orchestration" / "negrita_brain_policy.yaml": (
+            "external_app_financial_control:",
+            "default_decision: BLOCK",
+            "authorization_scope: one_specific_operation",
+        ),
+        REPO_ROOT / "rules" / "global" / "negritaos_router_rule.md": (
+            "External App Financial Authority",
+            "BLOCKED_FINANCIAL_AUTHORIZATION",
+            "Authorization is never inferred",
+        ),
+        REPO_ROOT / ".codex" / "skills" / "negritaos-mode-router" / "SKILL.md": (
+            "External app financial gate",
+            "BLOCKED_FINANCIAL_AUTHORIZATION",
+            "Previous approval does not carry forward",
+        ),
+        REPO_ROOT / "rules" / "writing" / "writing_rules.yaml": (
+            "preserve_governance_states:",
+            "BLOCKED_FINANCIAL_AUTHORIZATION",
+        ),
+    }
+    for path, markers in required_markers.items():
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError as exc:
+            return _fail(f"external app financial control unreadable: {path}: {exc}")
+        missing = [marker for marker in markers if marker not in text]
+        if missing:
+            return _fail(
+                f"external app financial control incomplete in {path}: {missing[0]}"
+            )
+    return _ok("external app financial control is globally enforced")
+
+
+def check_browser_profile_routing() -> tuple[bool, str]:
+    """Ensure every project has a deterministic, fail-closed browser context."""
+    try:
+        errors, checked = validate_browser_routing(REPO_ROOT)
+    except Exception as exc:
+        return _fail(f"browser profile routing could not be validated: {exc}")
+    if errors:
+        return _fail(f"browser profile routing: {errors[0]}")
+    return _ok(f"browser profile routing covers {checked} projects")
+
+
+def check_browser_rule_registration() -> tuple[bool, str]:
+    """Ensure the browser rule is registered and exposed by the meta adapter."""
+    manifest = REPO_ROOT / ".codex" / "instruction-manifest.yaml"
+    stub = REPO_ROOT / ".codex" / "rules" / "browser-profile-routing.md"
+    canonical = REPO_ROOT / "rules" / "global" / "browser_profile_routing_rule.md"
+    if not manifest.is_file() or "browser-profile-routing" not in manifest.read_text(
+        encoding="utf-8", errors="ignore"
+    ):
+        return _fail("browser-profile-routing is absent from instruction-manifest.yaml")
+    if not stub.is_file() or not canonical.is_file():
+        return _fail("browser profile routing rule or adapter stub is missing")
+    return _ok("browser profile routing rule is registered and reachable")
+
+
 def check_adapter_router_stub() -> tuple[bool, str]:
     target = REPO_ROOT / ".codex" / "rules" / "negritaos-router.md"
     if target.exists():
@@ -191,6 +269,14 @@ def check_claude_agent_aliases() -> tuple[bool, str]:
     if errors:
         return _fail(f"Claude agent aliases invalid: {errors[0]}")
     return _ok(".codex/agents exposes every router mode as a Claude alias")
+
+
+def check_codex_custom_agents() -> tuple[bool, str]:
+    """Ensure project-scoped Codex TOML agents resolve canonically."""
+    errors = validate_codex_agent_registry(REPO_ROOT)
+    if errors:
+        return _fail(f"Codex custom agents invalid: {errors[0]}")
+    return _ok("project-declared Codex custom agents resolve canonically")
 
 
 def check_no_orphan_sessions() -> tuple[bool, str]:
@@ -272,9 +358,13 @@ CHECKS = (
     check_local_overrides,
     check_manifest_router,
     check_canonical_router_rule,
+    check_external_app_financial_control,
+    check_browser_profile_routing,
+    check_browser_rule_registration,
     check_adapter_router_stub,
     check_router_skill,
     check_claude_agent_aliases,
+    check_codex_custom_agents,
     check_no_orphan_sessions,
     check_memory_home,
     check_memory_policy,
@@ -359,7 +449,13 @@ def check_sibling(
     if not project_yaml.exists():
         results.append(_fail_s(project_id, ".codex/project.yaml missing"))
         return results
-    py_text = project_yaml.read_text(encoding="utf-8")
+    try:
+        py_text = project_yaml.read_text(encoding="utf-8")
+    except OSError as exc:
+        results.append(
+            _fail_s(project_id, f".codex/project.yaml unreadable: {exc}")
+        )
+        return results
     declared = _scalar(py_text, "project_id")
     if declared != project_id:
         results.append(
@@ -394,11 +490,19 @@ def check_sibling(
     manifest = codex / "instruction-manifest.yaml"
     if not manifest.exists():
         results.append(_fail_s(project_id, ".codex/instruction-manifest.yaml missing"))
-    elif "negritaos-router" in manifest.read_text(encoding="utf-8"):
-        results.append(_ok_s(project_id, "manifest registers negritaos-router"))
+    elif all(
+        marker in manifest.read_text(encoding="utf-8", errors="ignore")
+        for marker in ("negritaos-router", "browser-profile-routing")
+    ):
+        results.append(
+            _ok_s(project_id, "manifest registers router and browser profile rule")
+        )
     else:
         results.append(
-            _fail_s(project_id, "manifest does not mention negritaos-router")
+            _fail_s(
+                project_id,
+                "manifest does not register router and browser profile rule",
+            )
         )
 
     # S6 — router stub reachable + symlinks (if any) point into canonical rules
@@ -467,7 +571,16 @@ def check_sibling(
             _ok_s(project_id, "Claude agent aliases expose every router mode")
         )
 
-    # S12-S16 — executable Negrita Brain enforcement surfaces.
+    # S12 — project-scoped Codex custom agent TOMLs.
+    codex_agent_errors = validate_codex_agents(repo, REPO_ROOT)
+    if codex_agent_errors:
+        results.append(
+            _fail_s(project_id, f"Codex custom agents invalid: {codex_agent_errors[0]}")
+        )
+    else:
+        results.append(_ok_s(project_id, "Codex custom agents resolve canonically"))
+
+    # S13-S17 — executable Negrita Brain enforcement surfaces.
     results.extend(_check_brain_runtime(project_id, repo))
 
     return results
@@ -675,11 +788,12 @@ def _check_sibling_rules(project_id: str, codex: Path) -> list[tuple[bool, str]]
         out.append(_fail_s(project_id, ".codex/rules/ missing"))
         return out
 
-    stub = rules_dir / "negritaos-router.md"
-    if stub.exists():
-        out.append(_ok_s(project_id, "rules/negritaos-router.md reachable"))
-    else:
-        out.append(_fail_s(project_id, "rules/negritaos-router.md missing"))
+    for required_stub in ("negritaos-router.md", "browser-profile-routing.md"):
+        stub = rules_dir / required_stub
+        if stub.exists():
+            out.append(_ok_s(project_id, f"rules/{required_stub} reachable"))
+        else:
+            out.append(_fail_s(project_id, f"rules/{required_stub} missing"))
 
     # Any rule file that is a symlink must resolve into NegritaOS canonical
     # .codex/rules/ — otherwise it is drift.

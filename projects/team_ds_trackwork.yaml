@@ -17,6 +17,10 @@ project:
     planning: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist/PlanningTeamEnvisioning"
     onboarding: "/Users/jackyb-cqi/Library/CloudStorage/OneDrive-Personal/CQI Documents/Projects/00_TeamDataScientist/OnboardingDoc"
   memory_home: "~/.negritaos/memory/projects/team_ds_trackwork"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
   archetypes:
     - leadership_planning
     - executive_delivery

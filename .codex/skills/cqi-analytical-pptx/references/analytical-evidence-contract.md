@@ -6,7 +6,26 @@ Define the analytical evidence that every CQI analytical slide must expose in
 speaker notes so deck claims remain traceable after the deck is copied,
 reviewed, exported, or converted to a podcast.
 
-## Required Notes Block
+## Required Notes Blocks
+
+Every new or materially changed slide must include the discourse
+guide required by `cqi-analytical-documentation`:
+
+```text
+[Talk track]
+Question:
+Executive answer:
+How to read:
+What stands out:
+Interpretation:
+Evidence boundary:
+Operational implication:
+Transition:
+[/Talk track]
+```
+
+Use `How to read: N/A - no visual` when a slide contains no plot, table,
+diagram, or other visual evidence.
 
 Every analytical slide must include exactly one structured evidence block:
 
@@ -27,6 +46,10 @@ Allowed conclusion:
 
 If a slide uses external sources, keep a separate `[Sources]` block required by
 the Presentation artifact workflow.
+
+The talk track and evidence block have different ownership. The talk track is
+the presenter's narrative. The evidence block is the auditable support and
+maximum allowed conclusion. Do not merge them.
 
 ## Field Meaning
 

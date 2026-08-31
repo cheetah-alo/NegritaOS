@@ -18,6 +18,7 @@ the active project registry or cannot load one of its declared assets.
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -36,6 +37,11 @@ except ImportError:
 sys.path.insert(0, str(ROOT / "src"))
 
 from negrita_brain.errors import ProfileResolutionError  # noqa: E402
+from negrita_brain.browser_routing import (  # noqa: E402
+    load_browser_routing_config,
+    validate_browser_routing_config,
+    validate_project_browser_context,
+)
 from negrita_brain.profiles import resolve_project_profiles  # noqa: E402
 
 
@@ -160,6 +166,20 @@ def validate_resolution(
             f".codex/project.yaml project_id={project_id!r}"
         )
 
+    try:
+        browser_config = load_browser_routing_config(root)
+    except Exception as exc:
+        errors.append(f"browser routing configuration failed to load: {exc}")
+    else:
+        errors.extend(
+            f"browser routing: {error}"
+            for error in validate_browser_routing_config(browser_config)
+        )
+        errors.extend(
+            f"browser routing: {error}"
+            for error in validate_project_browser_context(project, browser_config)
+        )
+
     catalog_errors = validate_catalog(catalog)
     errors.extend(f"catalog: {error}" for error in catalog_errors)
     errors.extend(
@@ -251,6 +271,25 @@ def validate_resolution(
                     "does not resolve to a router mode"
                 )
                 continue
+            project_scope = mode.get("project_scope", [])
+            if isinstance(project_scope, str):
+                project_scope = [project_scope]
+            if not isinstance(project_scope, list) or not all(
+                isinstance(item, str) and item.strip() for item in project_scope
+            ):
+                errors.append(
+                    f"router mode {mode_id!r}: project_scope must be a string list"
+                )
+                continue
+            if (
+                project_scope
+                and project_id not in project_scope
+            ):
+                errors.append(
+                    f"project {project_id}: mode_map.{intent}={mode_id!r} "
+                    f"is limited to projects {project_scope}"
+                )
+                continue
             resolved_agent = mode.get("agent")
             if isinstance(resolved_agent, str) and resolved_agent not in project_agents:
                 errors.append(
@@ -264,6 +303,26 @@ def validate_resolution(
             errors.append(
                 f"agent {agent_id}: no standalone agent.yaml manifest was found"
             )
+
+    custom_agents = project.get("codex_custom_agents", [])
+    if custom_agents is None:
+        custom_agents = []
+    if not isinstance(custom_agents, list) or not all(
+        isinstance(item, str) for item in custom_agents
+    ):
+        errors.append(f"project {project_id}: codex_custom_agents must be a string list")
+    else:
+        for name in custom_agents:
+            if re.fullmatch(r"[a-z0-9][a-z0-9-]*", name) is None:
+                errors.append(
+                    f"project {project_id}: invalid Codex custom agent name {name!r}"
+                )
+                continue
+            custom_agent = root / ".codex" / "agents" / f"{name}.toml"
+            if not custom_agent.is_file():
+                errors.append(
+                    f"project {project_id}: missing Codex custom agent {custom_agent}"
+                )
 
     if "academic-tfm-research" in declared_profiles:
         local_paths = project.get("local_paths", {})

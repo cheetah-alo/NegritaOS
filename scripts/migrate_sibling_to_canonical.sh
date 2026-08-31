@@ -11,7 +11,7 @@
 #   - NegritaOS canonical lives at /Users/jackyb-cqi/repos/NegritaOS.
 #
 # Post-conditions:
-#   - <repo>/.codex/rules/*.md          -> symlinks into NegritaOS canonical (22 files)
+#   - <repo>/.codex/rules/*.md          -> symlinks into all NegritaOS canonical rules
 #   - <repo>/.codex/commands            -> symlink to NegritaOS canonical dir
 #   - <repo>/.codex/instruction-manifest.yaml -> symlink to canonical
 #   - <repo>/.codex/skills/AGENTS.md    -> symlink to canonical
@@ -72,9 +72,11 @@ fi
 
 # Step 3 — Replace .codex/rules/*.md with per-file symlinks into canonical.
 mkdir -p .codex/rules
+rule_count=0
 for src in "${CANONICAL_CODEX}/rules"/*.md; do
   name="$(basename "${src}")"
   dst=".codex/rules/${name}"
+  rule_count=$((rule_count + 1))
   if [[ -L "${dst}" ]]; then
     if [[ "$(readlink "${dst}")" == "${src}" ]]; then
       continue   # already canonical
@@ -85,7 +87,7 @@ for src in "${CANONICAL_CODEX}/rules"/*.md; do
   fi
   ln -s "${src}" "${dst}"
 done
-echo "  [link] .codex/rules/*.md -> canonical (22 files)"
+echo "  [link] .codex/rules/*.md -> canonical (${rule_count} files checked)"
 
 # Step 4 — Symlink .codex/commands -> canonical dir.
 if [[ -L .codex/commands ]]; then

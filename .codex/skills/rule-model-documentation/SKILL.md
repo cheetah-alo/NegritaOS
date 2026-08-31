@@ -32,6 +32,11 @@ Pair this skill with `document-control` when producing a deliverable file and
 with `data-contracts`/`bigquery-analysis-governance` when source quality, grain,
 or BigQuery evidence is part of the document.
 
+Apply `cqi-analytical-documentation` for the question-to-decision narrative,
+plot discussion, stakeholder answers, and evidence-boundary language. This
+skill owns rule-system content; `cqi-analytical-documentation` owns how that
+content is explained.
+
 ## Critical Patterns
 
 Apply the native NegritaOS guide at

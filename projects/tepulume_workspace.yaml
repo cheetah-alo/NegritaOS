@@ -12,6 +12,10 @@ project:
     landing: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-landing"
     social: "/Users/jackyb-cqi/repos/backup_repos/tepulume/tepulume-social"
   memory_home: "~/.negritaos/memory/projects/tepulume_workspace"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
   archetypes:
     - brand_workspace
     - product_marketing

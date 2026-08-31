@@ -1,0 +1,123 @@
+browser_profile_routing:
+  schema_version: 1
+  blocked_state: BLOCKED_BROWSER_PROFILE_RESOLUTION
+  browser:
+    family: brave
+    application_name: Brave Browser
+    executable: "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+    profile_state_file: "~/Library/Application Support/BraveSoftware/Brave-Browser/Local State"
+    launch_arguments:
+      - --new-window
+
+  profiles:
+    cqi_technical:
+      display_name: Tech Work
+      profile_directory: "Profile 2"
+      account_scope: cqi_work
+      intended_use: BigQuery, Google Cloud, and CQISense engineering repositories.
+    cqi_documentation:
+      display_name: CQI Sense
+      profile_directory: "Profile 1"
+      account_scope: cqi_work
+      intended_use: CQISense documentation, Jira, Notion, GitBook, and Confluence.
+    personal_cheetah_alo:
+      display_name: Tokio tools
+      profile_directory: Default
+      account_scope: personal_cheetah_alo
+      intended_use: Personal work and repositories owned by cheetah-alo.
+    azure:
+      display_name: Azure
+      profile_directory: "Profile 3"
+      account_scope: unassigned
+      intended_use: Explicit-only until an Azure project scope is approved.
+      explicit_only: true
+
+  account_scopes:
+    cqi_work:
+      default_profile: cqi_technical
+      purpose_profiles:
+        bigquery: cqi_technical
+        google_cloud: cqi_technical
+        github: cqi_technical
+        documentation: cqi_documentation
+        jira: cqi_documentation
+        notion: cqi_documentation
+        gitbook: cqi_documentation
+        confluence: cqi_documentation
+        office: cqi_documentation
+        onedrive: cqi_documentation
+    personal_cheetah_alo:
+      default_profile: personal_cheetah_alo
+      purpose_profiles:
+        bigquery: cqi_technical
+        google_cloud: cqi_technical
+        github: personal_cheetah_alo
+        documentation: personal_cheetah_alo
+        jira: personal_cheetah_alo
+        notion: personal_cheetah_alo
+        gitbook: personal_cheetah_alo
+        confluence: personal_cheetah_alo
+        office: personal_cheetah_alo
+        onedrive: personal_cheetah_alo
+
+  purpose_aliases:
+    bq: bigquery
+    gcp: google_cloud
+    docs: documentation
+    document: documentation
+    github_cqisense: github
+    github_cheetah_alo: github
+
+  domain_purpose_rules:
+    - purpose: bigquery
+      host_suffixes:
+        - bigquery.cloud.google.com
+    - purpose: google_cloud
+      host_suffixes:
+        - console.cloud.google.com
+    - purpose: jira
+      host_suffixes:
+        - atlassian.net
+    - purpose: notion
+      host_suffixes:
+        - notion.com
+        - notion.so
+    - purpose: gitbook
+      host_suffixes:
+        - gitbook.com
+        - gitbook.io
+    - purpose: confluence
+      host_suffixes:
+        - confluence.com
+    - purpose: office
+      host_suffixes:
+        - office.com
+        - microsoft365.com
+    - purpose: onedrive
+      host_suffixes:
+        - onedrive.com
+        - sharepoint.com
+
+  github_organizations:
+    cqisense: cqi_technical
+    cheetah-alo: personal_cheetah_alo
+    jackyb-alo: personal_cheetah_alo
+
+  safety:
+    no_cross_profile_fallback: true
+    reject_url_userinfo: true
+    allowed_schemes:
+      - https
+    local_http_hosts:
+      - localhost
+      - 127.0.0.1
+      - "::1"
+    in_app_browser_policy: anonymous_or_non_profile_work_only
+    authenticated_browser_policy: governed_brave_launcher_required
+    never_inspect:
+      - cookies
+      - passwords
+      - local_storage
+      - session_tokens
+    url_output_policy: host_only_no_query_or_fragment
+    financial_authority: never_inferred_from_authenticated_session

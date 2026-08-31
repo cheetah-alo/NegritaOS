@@ -5,6 +5,10 @@ project:
   local_paths:
     primary: "/Users/jackyb-cqi/repos/NegritaOS"
   memory_home: "~/.negritaos/memory/projects/negritaos"
+  browser_context:
+    routing_policy: governed
+    account_scope: personal_cheetah_alo
+    default_profile: personal_cheetah_alo
   archetypes:
     - data_platform
   capabilities:

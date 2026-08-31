@@ -1,0 +1,4 @@
+interface:
+  display_name: Governed Browser Routing
+  short_description: Open authenticated work in the correct Brave profile.
+  default_prompt: Resolve the active project, purpose, and URL before opening Brave. Block on ambiguity and never fall back across accounts.

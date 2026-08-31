@@ -15,7 +15,7 @@ except ImportError:
     from validate_skill_catalog import ROOT, _load_yaml
 
 
-def _expected_aliases(root: Path) -> list[dict[str, str]]:
+def _expected_aliases(root: Path, project_id: str | None = None) -> list[dict[str, str]]:
     """Return expected alias metadata from the router."""
     router = _load_yaml(root / "core/orchestration/metaagent_router.yaml")
     modes = router.get("metaagent_router", {}).get("modes", {})
@@ -26,13 +26,31 @@ def _expected_aliases(root: Path) -> list[dict[str, str]]:
         mode_id = mode.get("id")
         agent_id = mode.get("agent")
         if isinstance(mode_id, str) and isinstance(agent_id, str):
+            project_scope = mode.get("project_scope", [])
+            if isinstance(project_scope, str):
+                project_scope = [project_scope]
+            if not isinstance(project_scope, list) or not all(
+                isinstance(item, str) and item.strip() for item in project_scope
+            ):
+                raise ValueError(
+                    f"router mode {mode_id}: project_scope must be a string list"
+                )
+            if project_id is not None and project_scope and project_id not in project_scope:
+                continue
+            native_alias = mode.get("native_alias", mode_id.lower())
+            if not isinstance(native_alias, str) or not native_alias.strip():
+                errors = f"router mode {mode_id}: native_alias must be a string"
+                raise ValueError(errors)
             aliases.append(
                 {
-                    "alias": mode_id.lower(),
+                    "alias": native_alias.strip(),
                     "mode_id": mode_id,
                     "agent_id": agent_id,
                 }
             )
+    names = [row["alias"] for row in aliases]
+    if len(names) != len(set(names)):
+        raise ValueError("router modes define duplicate native_alias values")
     return sorted(aliases, key=lambda row: row["alias"])
 
 
@@ -50,7 +68,18 @@ def validate_repo(repo: Path, root: Path) -> list[str]:
     agents_root = repo / ".codex" / "agents"
     if not agents_root.is_dir():
         return [f"{repo}: missing .codex/agents directory"]
-    for expected in _expected_aliases(root):
+    project_id: str | None = None
+    project_yaml = repo / ".codex" / "project.yaml"
+    if project_yaml.is_file():
+        adapter = _load_yaml(project_yaml)
+        raw_project_id = adapter.get("project_id")
+        if isinstance(raw_project_id, str) and raw_project_id.strip():
+            project_id = raw_project_id.strip()
+    try:
+        expected_aliases = _expected_aliases(root, project_id)
+    except ValueError as exc:
+        return [str(exc)]
+    for expected in expected_aliases:
         path = agents_root / f"{expected['alias']}.md"
         if not path.exists():
             errors.append(f"{repo}: missing Claude alias {path.relative_to(repo)}")
