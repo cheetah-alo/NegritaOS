@@ -19,7 +19,36 @@ except ImportError:
 
 
 AGENT_NAME = re.compile(r"^[a-z0-9][a-z0-9-]*$")
-REQUIRED_FIELDS = ("name", "description", "developer_instructions")
+REQUIRED_FIELDS = (
+    "name",
+    "description",
+    "model",
+    "model_reasoning_effort",
+    "developer_instructions",
+)
+
+
+def global_custom_agents(root: Path = ROOT) -> list[str]:
+    """Return the canonical custom agents materialized for every project."""
+    policy_path = root / "core" / "orchestration" / "model_escalation_policy.yaml"
+    policy = _load_yaml(policy_path).get("model_escalation_policy", {})
+    configured = (
+        policy.get("global_codex_custom_agents", [])
+        if isinstance(policy, dict)
+        else []
+    )
+    if not isinstance(configured, list) or not all(
+        isinstance(item, str) for item in configured
+    ):
+        raise ValueError("global_codex_custom_agents must be a string list")
+    names: list[str] = []
+    for raw_name in configured:
+        name = raw_name.strip()
+        if not AGENT_NAME.fullmatch(name):
+            raise ValueError(f"invalid global custom agent name {raw_name!r}")
+        if name not in names:
+            names.append(name)
+    return names
 
 
 def _assert_valid_agent_toml(path: Path, expected_name: str) -> None:
@@ -59,7 +88,7 @@ def configured_agents(repo: Path, root: Path = ROOT) -> list[str]:
         return []
     if not isinstance(configured, list) or not all(isinstance(item, str) for item in configured):
         raise ValueError(f"project {project_id}: codex_custom_agents must be a string list")
-    names: list[str] = []
+    names: list[str] = global_custom_agents(root)
     for raw_name in configured:
         name = raw_name.strip()
         if not AGENT_NAME.fullmatch(name):
@@ -121,6 +150,7 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    """Synchronize selected project adapters and return a process exit code."""
     args = _parse_args()
     repos = list(args.repo)
     if args.all_projects:

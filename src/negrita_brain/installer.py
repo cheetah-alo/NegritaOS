@@ -3,18 +3,20 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
 from typing import Any
 
 from .config import NEGRITAOS_ROOT, load_project, load_yaml, project_memory_home
-from .errors import BrainError
+from .errors import BrainError, ConfigurationError
 from .models import now_madrid
 from .profiles import resolve_project_profiles
 
 
 START = "<!-- NEGRITA_BRAIN:START -->"
 END = "<!-- NEGRITA_BRAIN:END -->"
+CUSTOM_AGENT_NAME = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
 def managed_agents_block(negritaos_root: Path) -> str:
@@ -27,7 +29,7 @@ def managed_agents_block(negritaos_root: Path) -> str:
         "1. Read `.codex/project.yaml` and its `negrita_registry`.\n"
         f"2. Run `python3 {cli} resolve --root \"$PWD\" --provider codex --action <action>`.\n"
         "3. Use the resolved modes, agents, profile closure, rules, skills, "
-        "artifact route, browser context, and gates.\n"
+        "artifact route, browser context, model route, and gates.\n"
         f"4. Before writes or commits, run `python3 {cli} gate --root \"$PWD\" "
         "--provider codex --action write|commit [--path PATH]`.\n"
         "5. New deliverables use a user-selected output path. Keep the "
@@ -43,6 +45,12 @@ def managed_agents_block(negritaos_root: Path) -> str:
         "Authenticated browser work must use the resolved `browser_context` and "
         "`scripts/open_governed_browser.py`; on ambiguity return "
         "`BLOCKED_BROWSER_PROFILE_RESOLUTION` instead of opening another profile. "
+        "For delegated work, use the resolved `model_route`: default to Luna medium, "
+        "escalate only for declared Terra/Sol signals, and require a separate "
+        "falsification-oriented reviewer task for high-impact work. Independent PASS "
+        "must include SHA-256-bound evidence receipts and match the current worktree "
+        "fingerprint at commit time. A larger model never replaces missing evidence or "
+        "authorization. "
         "External account access never grants financial authority: do not change a plan, "
         "subscription, billing method, paid entitlement, or perform an operation that may "
         "incur an incremental charge without the user's explicit authorization for that exact "
@@ -195,6 +203,33 @@ class Installer:
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.symlink_to(source, target_is_directory=source.is_dir())
 
+    def _configured_codex_agents(self, project: dict[str, Any]) -> list[str]:
+        """Resolve global and project-specific custom agents for one adapter."""
+        policy_path = (
+            self.negritaos_root
+            / "core"
+            / "orchestration"
+            / "model_escalation_policy.yaml"
+        )
+        policy = load_yaml(policy_path).get("model_escalation_policy")
+        if not isinstance(policy, dict):
+            raise ConfigurationError(f"Missing model escalation policy: {policy_path}")
+        global_agents = policy.get("global_codex_custom_agents", [])
+        project_agents = project.get("codex_custom_agents", [])
+        for label, configured in (
+            ("global_codex_custom_agents", global_agents),
+            ("codex_custom_agents", project_agents),
+        ):
+            if not isinstance(configured, list) or not all(
+                isinstance(item, str) and item.strip() for item in configured
+            ):
+                raise ConfigurationError(f"{label} must be a string list")
+        names = list(dict.fromkeys([*global_agents, *project_agents]))
+        for name in names:
+            if not CUSTOM_AGENT_NAME.fullmatch(name):
+                raise ConfigurationError(f"Invalid Codex custom agent name: {name!r}")
+        return names
+
     def install(
         self,
         work_root: Path,
@@ -259,6 +294,58 @@ class Installer:
                     dry_run,
                     actions,
                 )
+        manifest_source = self.negritaos_root / ".codex" / "instruction-manifest.yaml"
+        if not manifest_source.is_file():
+            raise ConfigurationError(
+                f"Missing canonical instruction manifest: {manifest_source}"
+            )
+        self._link_path(
+            root,
+            manifest_source,
+            root / ".codex" / "instruction-manifest.yaml",
+            context.project_id,
+            dry_run,
+            actions,
+        )
+        model_rule = self.negritaos_root / ".codex" / "rules" / "model-escalation.md"
+        if not model_rule.is_file():
+            raise ConfigurationError(f"Missing canonical model rule: {model_rule}")
+        self._link_path(
+            root,
+            model_rule,
+            root / ".codex" / "rules" / model_rule.name,
+            context.project_id,
+            dry_run,
+            actions,
+        )
+        for source in sorted((self.negritaos_root / ".codex" / "rules").glob("*.md")):
+            if source == model_rule:
+                continue
+            destination = root / ".codex" / "rules" / source.name
+            if destination.exists():
+                continue
+            self._link_path(
+                root,
+                source,
+                destination,
+                context.project_id,
+                dry_run,
+                actions,
+            )
+        for agent_name in self._configured_codex_agents(context.project):
+            source = self.negritaos_root / ".codex" / "agents" / f"{agent_name}.toml"
+            if not source.is_file():
+                raise ConfigurationError(
+                    f"Missing canonical Codex custom agent: {source}"
+                )
+            self._link_path(
+                root,
+                source,
+                root / ".codex" / "agents" / source.name,
+                context.project_id,
+                dry_run,
+                actions,
+            )
         skill_root = root / ".codex" / "skills"
         for skill_id in closure.skills:
             source = self.negritaos_root / ".codex" / "skills" / skill_id

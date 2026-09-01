@@ -66,6 +66,24 @@ python3 scripts/validate_claude_agent_aliases.py --all-projects
 The generated files are wrappers only; the source of truth remains the router,
 integrator, rules, skills, and project registry.
 
+## Codex Subagent Model Tiers
+
+Negrita Brain returns a `model_route` for delegated work. Use the minimum
+justified tier and invoke the corresponding global custom agent:
+
+| Agent | Tier | Invocation |
+|---|---|---|
+| `luna-worker` | Luna medium | `Spawn luna-worker to inventory ...` |
+| `luna-reviewer` | Luna high | `Spawn luna-reviewer to review ...` |
+| `terra-reviewer` | Terra high | `Spawn terra-reviewer as an independent reviewer ...` |
+| `sol-integrator` | Sol high | `Spawn sol-integrator for final integration ...` |
+
+High-impact independent review must use a separate provider-native Brain task,
+close as PASS with the required evidence categories, and match the current
+worktree fingerprint at commit time. A larger model cannot replace missing
+evidence, failed gates, or user authorization. See
+`docs/subagent-model-escalation.md`.
+
 ## External App Financial Authority
 
 All agents operate with zero implied spending authority. Authentication through

@@ -10,15 +10,29 @@ from pathlib import Path
 
 try:
     from .sync_claude_agent_aliases import discover_project_repos
-    from .sync_codex_custom_agents import AGENT_NAME, configured_agents
+    from .sync_codex_custom_agents import (
+        AGENT_NAME,
+        configured_agents,
+        global_custom_agents,
+    )
     from .validate_skill_catalog import ROOT, _load_yaml
 except ImportError:
     from sync_claude_agent_aliases import discover_project_repos
-    from sync_codex_custom_agents import AGENT_NAME, configured_agents
+    from sync_codex_custom_agents import (
+        AGENT_NAME,
+        configured_agents,
+        global_custom_agents,
+    )
     from validate_skill_catalog import ROOT, _load_yaml
 
 
-REQUIRED_FIELDS = ("name", "description", "developer_instructions")
+REQUIRED_FIELDS = (
+    "name",
+    "description",
+    "model",
+    "model_reasoning_effort",
+    "developer_instructions",
+)
 ALLOWED_SANDBOX_MODES = ("read-only", "workspace-write", "danger-full-access")
 FINANCIAL_CONTROL_MARKERS = (
     "explicit authorization for that exact operation",
@@ -26,7 +40,18 @@ FINANCIAL_CONTROL_MARKERS = (
 )
 
 
-def validate_toml(path: Path, expected_name: str) -> list[str]:
+def _model_policy(root: Path) -> dict:
+    """Load the model policy mapping; structural validation runs separately."""
+    path = root / "core" / "orchestration" / "model_escalation_policy.yaml"
+    value = _load_yaml(path).get("model_escalation_policy", {})
+    return value if isinstance(value, dict) else {}
+
+
+def validate_toml(
+    path: Path,
+    expected_name: str,
+    root: Path = ROOT,
+) -> list[str]:
     """Validate the supported custom-agent contract."""
     errors: list[str] = []
     try:
@@ -39,6 +64,21 @@ def validate_toml(path: Path, expected_name: str) -> list[str]:
             errors.append(f"{path}: {field} must be a non-empty string")
     if data.get("name") != expected_name:
         errors.append(f"{path}: name must match filename {expected_name!r}")
+    policy = _model_policy(root)
+    expected_tier = policy.get("custom_agent_tiers", {}).get(expected_name)
+    tier = policy.get("tiers", {}).get(expected_tier, {})
+    if not isinstance(expected_tier, str) or not isinstance(tier, dict):
+        errors.append(f"{path}: no canonical model tier for agent {expected_name!r}")
+    else:
+        if data.get("model") != tier.get("model"):
+            errors.append(
+                f"{path}: model must be {tier.get('model')!r} for tier {expected_tier}"
+            )
+        if data.get("model_reasoning_effort") != tier.get("reasoning_effort"):
+            errors.append(
+                f"{path}: model_reasoning_effort must be "
+                f"{tier.get('reasoning_effort')!r} for tier {expected_tier}"
+            )
     sandbox_mode = data.get("sandbox_mode")
     if sandbox_mode is not None and sandbox_mode not in ALLOWED_SANDBOX_MODES:
         errors.append(f"{path}: unsupported sandbox_mode {sandbox_mode!r}")
@@ -67,7 +107,7 @@ def validate_repo(repo: Path, root: Path = ROOT) -> list[str]:
         if not source.is_file():
             errors.append(f"missing canonical Codex custom agent: {source}")
             continue
-        errors.extend(validate_toml(source, name))
+        errors.extend(validate_toml(source, name, root))
         if repo == root.resolve():
             continue
         destination = repo / ".codex" / "agents" / source.name
@@ -105,7 +145,14 @@ def validate_registry_declarations(root: Path = ROOT) -> list[str]:
         ):
             errors.append(f"{registry}: codex_custom_agents must be a string list")
             continue
-        names = list(dict.fromkeys(item.strip() for item in configured))
+        try:
+            global_names = global_custom_agents(root)
+        except (OSError, ValueError) as exc:
+            errors.append(f"cannot resolve global custom agents: {exc}")
+            global_names = []
+        names = list(
+            dict.fromkeys([*global_names, *(item.strip() for item in configured)])
+        )
         for name in names:
             if not AGENT_NAME.fullmatch(name):
                 errors.append(f"{registry}: invalid custom agent name {name!r}")
@@ -114,7 +161,7 @@ def validate_registry_declarations(root: Path = ROOT) -> list[str]:
             if not source.is_file():
                 errors.append(f"missing canonical Codex custom agent: {source}")
             else:
-                errors.extend(validate_toml(source, name))
+                errors.extend(validate_toml(source, name, root))
     return errors
 
 
@@ -127,6 +174,7 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    """Validate registry declarations and selected materialized adapters."""
     args = _parse_args()
     errors = validate_registry_declarations(ROOT)
     repos = [] if args.registry_only else list(args.repo)

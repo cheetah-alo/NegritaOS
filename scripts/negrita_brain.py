@@ -77,6 +77,30 @@ def build_parser() -> argparse.ArgumentParser:
     _common(resolve)
     _session(resolve, provider_required=True)
     resolve.add_argument("--action", action="append", dest="actions")
+    resolve.add_argument(
+        "--delegation-class",
+        help="Canonical bounded task class from the model escalation policy",
+    )
+    resolve.add_argument(
+        "--risk-signal",
+        action="append",
+        dest="risk_signals",
+        help="Material escalation signal; repeat for multiple signals",
+    )
+    resolve.add_argument(
+        "--change-impact",
+        choices=["standard", "high", "production_candidate"],
+        default="standard",
+    )
+    resolve.add_argument(
+        "--review-role",
+        choices=["builder", "independent_reviewer"],
+        default="builder",
+    )
+    resolve.add_argument(
+        "--review-of-session",
+        help="Builder Brain session id required for an independent review",
+    )
 
     gate = commands.add_parser("gate", help="Authorize, warn, or block an action")
     _common(gate)
@@ -138,6 +162,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     close.add_argument("--status", default="COMPLETE")
     close.add_argument("--durable-ref", action="append", dest="durable_refs")
+    close.add_argument(
+        "--evidence-ref",
+        action="append",
+        dest="evidence_refs",
+        help="Independent review evidence as category=bounded_reference",
+    )
     close.add_argument(
         "--legacy-session-id",
         help="Select one exact Memory v1 session for an authorized closure",
@@ -265,6 +295,11 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             args.provider,
             args.actions,
             session_key=args.session_key,
+            delegation_class=args.delegation_class,
+            risk_signals=args.risk_signals,
+            change_impact=args.change_impact,
+            review_role=args.review_role,
+            review_of_session=args.review_of_session,
             **common,
         ), 0
     if args.command == "gate":
@@ -337,6 +372,7 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             authorized_by=args.authorized_by,
             authorization_reason=args.authorization_reason,
             durable_refs=args.durable_refs,
+            evidence_refs=args.evidence_refs,
             **common,
         ), 0
     if args.command == "memory":

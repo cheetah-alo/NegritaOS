@@ -152,6 +152,31 @@ Before browser work that depends on an authenticated account, read the
 - Return `BLOCKED_BROWSER_PROFILE_RESOLUTION` on ambiguity or conflict.
 - Never inspect cookies, passwords, local storage, or session tokens.
 
+## Step 6c — Delegated model gate
+
+For every Codex subagent, use the `model_route` returned by Negrita Brain and
+load `core/orchestration/model_escalation_policy.yaml`.
+
+- Default bounded work to `luna_medium`.
+- Use `luna_high` for focused review and approved-contract validation.
+- Pass explicit `--risk-signal` values when Terra or Sol criteria are present.
+- Material signals automatically raise `change_impact`; pass an explicit higher
+  value when the impact is known before the signal is selected.
+- An independent reviewer must use `--review-role independent_reviewer` and the
+  builder's `--review-of-session`; another alias in the same provider task is
+  rejected.
+- Close reviewer PASS with every required
+  `--evidence-ref category=(repo|memory):receipt.json@sha256:<64_hex>`.
+  The commit gate verifies reviewer tier, native task identity, receipt hash,
+  receipt contents, and the current SHA-256 worktree fingerprint.
+- Re-run `resolve` before commit when Brain reports that the session predates
+  model routing; legacy contracts never inherit review authorization.
+- Missing evidence stays `HOLD` regardless of model tier.
+
+Claude applies the same escalation semantics but must not claim to execute a
+GPT-5.6 model. Use the canonical Codex agents when the exact Luna/Terra/Sol
+model is required.
+
 ## Step 7 — Memory hooks
 
 After meaningful durable work, follow `local-memory-protocol` and use the

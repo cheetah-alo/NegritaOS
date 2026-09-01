@@ -5,7 +5,11 @@ from unittest.mock import patch
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from scripts.sync_codex_custom_agents import configured_agents, sync_repo
+from scripts.sync_codex_custom_agents import (
+    configured_agents,
+    global_custom_agents,
+    sync_repo,
+)
 from scripts.validate_codex_custom_agents import (
     validate_registry_declarations,
     validate_repo,
@@ -21,6 +25,7 @@ class TestCodexCustomAgents(unittest.TestCase):
         repo = base / "moneyflowlist"
         (root / "projects").mkdir(parents=True)
         (root / ".codex" / "agents").mkdir(parents=True)
+        (root / "core" / "orchestration").mkdir(parents=True)
         (repo / ".codex").mkdir(parents=True)
         (repo / ".codex" / "project.yaml").write_text(
             "project_id: moneyflowlist\n", encoding="utf-8"
@@ -31,9 +36,22 @@ class TestCodexCustomAgents(unittest.TestCase):
             "  codex_custom_agents: [pablo]\n",
             encoding="utf-8",
         )
+        (root / "core" / "orchestration" / "model_escalation_policy.yaml").write_text(
+            "model_escalation_policy:\n"
+            "  global_codex_custom_agents: []\n"
+            "  tiers:\n"
+            "    luna_high:\n"
+            "      model: gpt-5.6-luna\n"
+            "      reasoning_effort: high\n"
+            "  custom_agent_tiers:\n"
+            "    pablo: luna_high\n",
+            encoding="utf-8",
+        )
         (root / ".codex" / "agents" / "pablo.toml").write_text(
             'name = "pablo"\n'
             'description = "Deployment operator"\n'
+            'model = "gpt-5.6-luna"\n'
+            'model_reasoning_effort = "high"\n'
             'developer_instructions = "Deploy exact commits only with explicit '
             'authorization for that exact operation; otherwise return '
             'BLOCKED_FINANCIAL_AUTHORIZATION"\n'
@@ -61,6 +79,8 @@ class TestCodexCustomAgents(unittest.TestCase):
             path.write_text(
                 'name = "other"\n'
                 'description = "Deployment operator"\n'
+                'model = "gpt-5.6-luna"\n'
+                'model_reasoning_effort = "high"\n'
                 'developer_instructions = "Deploy exact commits only with explicit '
                 'authorization for that exact operation; otherwise return '
                 'BLOCKED_FINANCIAL_AUTHORIZATION"\n'
@@ -77,6 +97,8 @@ class TestCodexCustomAgents(unittest.TestCase):
             path.write_text(
                 'name = "pablo"\n'
                 'description = "Deployment operator"\n'
+                'model = "gpt-5.6-luna"\n'
+                'model_reasoning_effort = "high"\n'
                 'developer_instructions = "Deploy exact commits"\n'
                 'sandbox_mode = "read-only"\n',
                 encoding="utf-8",
@@ -85,6 +107,21 @@ class TestCodexCustomAgents(unittest.TestCase):
             self.assertTrue(
                 any("missing financial control marker" in error for error in errors)
             )
+
+    def test_model_tier_drift_is_rejected(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "pablo.toml"
+            path.write_text(
+                'name = "pablo"\n'
+                'description = "Deployment operator"\n'
+                'model = "gpt-5.6-sol"\n'
+                'model_reasoning_effort = "high"\n'
+                'developer_instructions = "Use explicit authorization for that exact '
+                'operation or return BLOCKED_FINANCIAL_AUTHORIZATION"\n',
+                encoding="utf-8",
+            )
+            errors = validate_toml(path, "pablo")
+            self.assertTrue(any("model must be 'gpt-5.6-luna'" in error for error in errors))
 
     def test_registry_validation_does_not_read_external_adapter(self) -> None:
         with TemporaryDirectory() as temporary_directory:
@@ -112,6 +149,19 @@ class TestCodexCustomAgents(unittest.TestCase):
             self.assertEqual(len(errors), 1)
             self.assertIn("cannot resolve custom agents", errors[0])
             self.assertIn("adapter denied", errors[0])
+
+    def test_global_agent_name_cannot_escape_canonical_directory(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            root, _ = self._fixture(Path(temporary_directory))
+            policy = root / "core" / "orchestration" / "model_escalation_policy.yaml"
+            policy.write_text(
+                "model_escalation_policy:\n"
+                "  global_codex_custom_agents: [../../escape]\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "invalid global custom agent name"):
+                global_custom_agents(root)
 
 
 if __name__ == "__main__":

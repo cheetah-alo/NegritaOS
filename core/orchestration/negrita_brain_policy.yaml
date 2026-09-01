@@ -110,6 +110,13 @@ negrita_brain:
     blocked_state: BLOCKED_BROWSER_PROFILE_RESOLUTION
     no_cross_profile_fallback: true
     in_app_browser_policy: anonymous_or_non_profile_work_only
+  model_escalation:
+    enforcement: strict
+    config: core/orchestration/model_escalation_policy.yaml
+    rule: rules/global/model_escalation_rule.md
+    default_tier: luna_medium
+    blocked_state: BLOCKED_MODEL_ROUTING
+    independent_review_fail_closed: true
   enforcement:
     code:
       read: allow

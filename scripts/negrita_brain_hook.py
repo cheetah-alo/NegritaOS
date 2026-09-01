@@ -18,7 +18,6 @@ from negrita_brain.errors import BrainError, SessionError  # noqa: E402
 from negrita_brain.runtime import (  # noqa: E402
     close_session,
     gate_action,
-    load_active_session,
     record_event,
     resolve_session,
 )
@@ -35,6 +34,10 @@ READ_ONLY_SHELL = re.compile(
     r"wc\s+.*|git\s+(status|diff|log|show|rev-parse)(?:\s+.*)?|"
     r"python3?\s+.*negrita_brain\.py\s+(gate|doctor)(?:\s+.*)?)",
     re.IGNORECASE,
+)
+GIT_COMMIT_COMMAND = re.compile(
+    r"(?<![A-Za-z0-9_-])git(?:\s|$).*?(?<![A-Za-z0-9_-])commit(?![A-Za-z0-9_-])",
+    re.IGNORECASE | re.DOTALL,
 )
 
 
@@ -66,6 +69,74 @@ def _tool(payload: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     return str(name or "unknown"), tool_input if isinstance(tool_input, dict) else {}
 
 
+def _is_git_commit_command(command: str, tokens: list[str]) -> bool:
+    """Recognize direct and wrapped Git commit forms conservatively."""
+    if "commit" in tokens:
+        return True
+    for index, token in enumerate(tokens):
+        if Path(token).name == "git" and "commit" in tokens[index + 1:]:
+            return True
+    return GIT_COMMIT_COMMAND.search(command) is not None
+
+
+def _prompt_action(prompt: str) -> str:
+    """Return one safe action label for prompt-local routing."""
+    if re.search(r"\b(architecture|architectural|arquitectura)\b", prompt):
+        return "architecture"
+    if re.search(r"\b(pr|pull request|code review|review pr|revisar pr)\b", prompt):
+        return "pull_request_review"
+    if re.search(r"\b(eda|reconcil|data quality|calidad de datos)\b", prompt):
+        return "eda"
+    if re.search(r"\b(test|qa|playwright|e2e|bug reproduction)\b", prompt):
+        return "functional_qa"
+    if re.search(r"\b(pptx|powerpoint|docx|pdf|documentation|documentaci[oó]n)\b", prompt):
+        return "documentation"
+    if re.search(r"\b(research|investig|search|inventory|inventario)\b", prompt):
+        return "research"
+    return "planning"
+
+
+def _prompt_signals(prompt: str) -> list[str]:
+    """Return material risk labels without retaining prompt content."""
+    signals: list[str] = []
+    semantic_terms = (
+        r"\b(score|segmentation|segmentaci[oó]n|threshold|umbral|severity|severidad|"
+        r"eligibility|elegibilidad|precedence|evidence semantics|rule contract)\b"
+    )
+    if re.search(semantic_terms, prompt):
+        signals.append("score_or_segmentation_contract_decision")
+    if re.search(
+        r"\b(create table|merge into|insert into|update table|delete from|materiali[sz])\b",
+        prompt,
+    ):
+        signals.append("materializing_sql_impact")
+    if re.search(r"\b(production candidate|production release|release to production)\b", prompt):
+        signals.append("production_candidate_final_review")
+    if re.search(r"\b(disagree|disagreement|desacuerdo)\b", prompt):
+        signals.append("reviewer_disagreement")
+    if re.search(r"\b(ambiguous|ambiguity|ambiguo|ambigüedad)\b", prompt):
+        signals.append("luna_unresolved_ambiguity")
+    return list(dict.fromkeys(signals))
+
+
+def _prompt_routing(payload: dict[str, Any]) -> tuple[list[str], list[str], str]:
+    """Classify one prompt in memory and return only safe routing labels."""
+    raw = payload.get("prompt")
+    prompt = raw.lower() if isinstance(raw, str) else ""
+    action = _prompt_action(prompt)
+    signals = _prompt_signals(prompt)
+    if action == "architecture" and "architecture_decision" not in signals:
+        signals.append("architecture_decision")
+    if "score_or_segmentation_contract_decision" in signals:
+        action = "model_review"
+    impact = (
+        "production_candidate"
+        if "production_candidate_final_review" in signals
+        else "standard"
+    )
+    return [action], signals, impact
+
+
 def _action_and_path(tool: str, tool_input: dict[str, Any]) -> tuple[str, Path | None]:
     """Classify a tool invocation for the gate."""
     raw_path = tool_input.get("file_path") or tool_input.get("path")
@@ -83,6 +154,8 @@ def _action_and_path(tool: str, tool_input: dict[str, Any]) -> tuple[str, Path |
             if Path(candidate).suffix.lower() in DELIVERABLE_EXTENSIONS:
                 path = Path(candidate)
                 break
+        if _is_git_commit_command(command, tokens):
+            return "commit", path
         if MUTATING_SHELL.search(command) or READ_ONLY_SHELL.fullmatch(command) is None:
             return "write", path
     return "read", path
@@ -99,6 +172,21 @@ def _hook_output(event: str, context: str | None = None, deny: str | None = None
     print(json.dumps({"hookSpecificOutput": specific}, sort_keys=True))
 
 
+def _brain_context(contract: dict[str, Any]) -> str:
+    """Render safe routing metadata without prompts, outputs, or file content."""
+    route = contract.get("model_route", {})
+    review = route.get("independent_review", {}) if isinstance(route, dict) else {}
+    return (
+        f"Negrita Brain {contract['state']}: {contract['session_id']} | profiles="
+        + ",".join(contract["profiles"])
+        + f" | model_tier={route.get('tier')}"
+        + f" | codex_delegate={route.get('recommended_codex_model')}"
+        + f" | change_impact={route.get('change_impact')}"
+        + f" | independent_review_required={review.get('required')}"
+        + " | re-resolve with explicit action/risk signals before delegation"
+    )
+
+
 def handle(event: str, payload: dict[str, Any]) -> int:
     """Handle one hook event without persisting prompts, responses, or outputs."""
     root = _root(payload)
@@ -109,25 +197,31 @@ def handle(event: str, payload: dict[str, Any]) -> int:
         )
         _hook_output(
             event,
-            f"Negrita Brain {contract['state']}: {contract['session_id']} | profiles="
-            + ",".join(contract["profiles"]),
+            _brain_context(contract),
         )
         return 0
     if event == "UserPromptSubmit":
+        actions, risk_signals, change_impact = _prompt_routing(payload)
         try:
-            _, contract, _ = load_active_session(
-                root, provider="claude", session_key=session_key
+            close_session(
+                root,
+                status="INCOMPLETE",
+                provider="claude",
+                session_key=session_key,
             )
-            if contract.get("state") != "READY":
-                raise SessionError("Active contract is closed")
         except BrainError:
-            contract = resolve_session(
-                root, "claude", ["planning"], session_key=session_key
-            )
+            pass
+        contract = resolve_session(
+            root,
+            "claude",
+            actions,
+            session_key=session_key,
+            risk_signals=risk_signals,
+            change_impact=change_impact,
+        )
         _hook_output(
             event,
-            f"Negrita Brain {contract['state']}: {contract['session_id']} | profiles="
-            + ",".join(contract["profiles"]),
+            _brain_context(contract),
         )
         return 0
     if event == "PreToolUse":

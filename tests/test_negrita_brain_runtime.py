@@ -1,6 +1,8 @@
 """Unit tests for immutable sessions, gates, safe events, and closure."""
 
 import json
+import hashlib
+import subprocess
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -33,13 +35,33 @@ class RuntimeFixture(unittest.TestCase):
         self.repo = base / "repo"
         self.memory = base / "memory"
         (self.repo / ".codex").mkdir(parents=True)
-        (self.repo / ".git").mkdir()
+        subprocess.run(
+            ["git", "init", "-q", str(self.repo)], check=True, capture_output=True
+        )
         (self.repo / ".codex" / "project.yaml").write_text(
             "project_id: negritaos\n"
             f"negrita_registry: {ROOT / 'projects' / 'negritaos.yaml'}\n",
             encoding="utf-8",
         )
         Installer(ROOT, base / "backups", self.memory).install(self.repo)
+        subprocess.run(
+            ["git", "add", "."], cwd=self.repo, check=True, capture_output=True
+        )
+        subprocess.run(
+            [
+                "git",
+                "-c",
+                "user.name=NegritaOS Tests",
+                "-c",
+                "user.email=tests@invalid.local",
+                "commit",
+                "-qm",
+                "test fixture",
+            ],
+            cwd=self.repo,
+            check=True,
+            capture_output=True,
+        )
 
     def tearDown(self) -> None:
         self.temporary.cleanup()
@@ -49,6 +71,42 @@ class RuntimeFixture(unittest.TestCase):
         return resolve_session(
             self.repo, "codex", ["planning"], ROOT, self.memory
         )
+
+    def evidence_ref(
+        self,
+        reviewer: dict,
+        category: str,
+        *,
+        status: str = "PASS",
+    ) -> str:
+        """Create one hashed evidence receipt in canonical test memory."""
+        relative = (
+            Path("runtime")
+            / "sessions"
+            / reviewer["session_id"]
+            / "evidence"
+            / f"{category}.json"
+        )
+        receipt = {
+            "schema_version": 1,
+            "category": category,
+            "status": status,
+            "subject_worktree_sha256": reviewer["git"]["worktree_sha256"],
+            "completed_at": "2026-09-01T12:00:00+02:00",
+        }
+        if status == "PASS":
+            receipt.update({"command": "python3 -m unittest", "exit_code": 0})
+        else:
+            receipt.update(
+                {
+                    "reason": "No SQL change in the reviewed worktree",
+                    "authorized_by": "human",
+                }
+            )
+        path = self.memory / "negritaos" / relative
+        write_json(path, receipt)
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        return f"{category}=memory:{relative}@sha256:{digest}"
 
 
 class TestRuntimeContract(RuntimeFixture):
@@ -74,6 +132,12 @@ class TestRuntimeContract(RuntimeFixture):
             "personal_cheetah_alo",
         )
         self.assertIn("governed-browser-routing", contract["skills"])
+        self.assertEqual(contract["model_route"]["tier"], "luna_high")
+        self.assertEqual(contract["model_route"]["model"], "gpt-5.6-luna")
+        self.assertEqual(
+            contract["model_route"]["reasoning_effort"],
+            "high",
+        )
         self.assertTrue(contract_path.is_file())
 
     def test_resolve_that_maps_global_mode_to_project_agent(self) -> None:
@@ -92,6 +156,271 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertEqual(contract["agents"], ["plot_analysis_agent"])
         self.assertIn("evidence-first-plot-analysis", contract["agent_skills"])
         self.assertIn("evidence-first-plot-analysis", contract["skills"])
+
+    def test_resolve_that_escalates_material_semantics_to_terra(self) -> None:
+        contract = resolve_session(
+            self.repo,
+            "codex",
+            ["code_review"],
+            ROOT,
+            self.memory,
+            risk_signals=["semantic_contract_change"],
+        )
+        self.assertEqual(contract["model_route"]["tier"], "terra_high")
+        self.assertEqual(contract["model_route"]["change_impact"], "high")
+        self.assertTrue(contract["model_route"]["independent_review"]["required"])
+
+    def test_independent_review_rejects_builder_session_reuse(self) -> None:
+        builder = resolve_session(
+            self.repo,
+            "codex",
+            ["implementation"],
+            ROOT,
+            self.memory,
+            session_key="builder-alias-a",
+            environ={"CODEX_THREAD_ID": "builder-native-task"},
+        )
+        with self.assertRaises(ValueError):
+            resolve_session(
+                self.repo,
+                "codex",
+                ["code_review"],
+                ROOT,
+                self.memory,
+                session_key="builder-alias-b",
+                environ={"CODEX_THREAD_ID": "builder-native-task"},
+                change_impact="high",
+                review_role="independent_reviewer",
+                review_of_session=builder["session_id"],
+            )
+
+    def test_independent_review_accepts_separate_session_and_records_target(self) -> None:
+        builder = resolve_session(
+            self.repo,
+            "codex",
+            ["implementation"],
+            ROOT,
+            self.memory,
+            session_key="builder-task",
+            environ={"CODEX_THREAD_ID": "builder-native-task"},
+        )
+        reviewer = resolve_session(
+            self.repo,
+            "codex",
+            ["code_review"],
+            ROOT,
+            self.memory,
+            session_key="reviewer-task",
+            environ={"CODEX_THREAD_ID": "reviewer-native-task"},
+            change_impact="high",
+            review_role="independent_reviewer",
+            review_of_session=builder["session_id"],
+        )
+        review = reviewer["model_route"]["independent_review"]
+        self.assertEqual(reviewer["model_route"]["tier"], "terra_high")
+        self.assertEqual(review["target"]["session_id"], builder["session_id"])
+        self.assertEqual(
+            review["target"]["reviewed_worktree_sha256"],
+            reviewer["git"]["worktree_sha256"],
+        )
+
+    def test_high_impact_commit_requires_current_independent_pass(self) -> None:
+        builder_environment = {"CODEX_THREAD_ID": "builder-native-task"}
+        reviewer_environment = {"CODEX_THREAD_ID": "reviewer-native-task"}
+        builder = resolve_session(
+            self.repo,
+            "codex",
+            ["implementation"],
+            ROOT,
+            self.memory,
+            session_key="builder-task",
+            environ=builder_environment,
+            risk_signals=["semantic_contract_change"],
+        )
+        blocked = gate_action(
+            self.repo,
+            "commit",
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+            provider="codex",
+            session_key="builder-task",
+            environ=builder_environment,
+        )
+        self.assertEqual(blocked["decision"], "BLOCK")
+
+        reviewer = resolve_session(
+            self.repo,
+            "codex",
+            ["code_review"],
+            ROOT,
+            self.memory,
+            session_key="reviewer-task",
+            environ=reviewer_environment,
+            change_impact="high",
+            review_role="independent_reviewer",
+            review_of_session=builder["session_id"],
+        )
+        closed = close_session(
+            self.repo,
+            status="PASS",
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+            provider="codex",
+            session_key="reviewer-task",
+            evidence_refs=[self.evidence_ref(reviewer, "applicable_tests")],
+            environ=reviewer_environment,
+        )
+        self.assertEqual(
+            closed["review"]["evidence"]["applicable_tests"]["status"],
+            "PASS",
+        )
+
+        allowed = gate_action(
+            self.repo,
+            "commit",
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+            provider="codex",
+            session_key="builder-task",
+            environ=builder_environment,
+        )
+        self.assertEqual(allowed["decision"], "ALLOW")
+        self.assertEqual(
+            allowed["independent_review"]["review_session_id"],
+            reviewer["session_id"],
+        )
+
+        (self.repo / "changed_after_review.py").write_text("VALUE = 1\n", encoding="utf-8")
+        stale = gate_action(
+            self.repo,
+            "commit",
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+            provider="codex",
+            session_key="builder-task",
+            environ=builder_environment,
+        )
+        self.assertEqual(stale["decision"], "BLOCK")
+
+    def test_independent_pass_requires_declared_evidence(self) -> None:
+        builder = resolve_session(
+            self.repo,
+            "codex",
+            ["implementation"],
+            ROOT,
+            self.memory,
+            session_key="builder-task",
+            environ={"CODEX_THREAD_ID": "builder-native-task"},
+            change_impact="high",
+        )
+        resolve_session(
+            self.repo,
+            "codex",
+            ["code_review"],
+            ROOT,
+            self.memory,
+            session_key="reviewer-task",
+            environ={"CODEX_THREAD_ID": "reviewer-native-task"},
+            change_impact="high",
+            review_role="independent_reviewer",
+            review_of_session=builder["session_id"],
+        )
+        with self.assertRaisesRegex(SessionError, "missing evidence"):
+            close_session(
+                self.repo,
+                status="PASS",
+                negritaos_root=ROOT,
+                memory_base=self.memory,
+                provider="codex",
+                session_key="reviewer-task",
+                environ={"CODEX_THREAD_ID": "reviewer-native-task"},
+            )
+
+    def test_independent_pass_rejects_unresolvable_or_inapplicable_test_evidence(self) -> None:
+        builder = resolve_session(
+            self.repo,
+            "codex",
+            ["implementation"],
+            ROOT,
+            self.memory,
+            session_key="builder-task",
+            environ={"CODEX_THREAD_ID": "builder-native-task"},
+            change_impact="high",
+        )
+        reviewer = resolve_session(
+            self.repo,
+            "codex",
+            ["code_review"],
+            ROOT,
+            self.memory,
+            session_key="reviewer-task",
+            environ={"CODEX_THREAD_ID": "reviewer-native-task"},
+            change_impact="high",
+            review_role="independent_reviewer",
+            review_of_session=builder["session_id"],
+        )
+        with self.assertRaisesRegex(SessionError, "Evidence refs must use"):
+            close_session(
+                self.repo,
+                status="PASS",
+                negritaos_root=ROOT,
+                memory_base=self.memory,
+                provider="codex",
+                session_key="reviewer-task",
+                evidence_refs=["applicable_tests=MODEL_SAYS_PASS"],
+                environ={"CODEX_THREAD_ID": "reviewer-native-task"},
+            )
+        with self.assertRaisesRegex(SessionError, "cannot be NOT_APPLICABLE"):
+            close_session(
+                self.repo,
+                status="PASS",
+                negritaos_root=ROOT,
+                memory_base=self.memory,
+                provider="codex",
+                session_key="reviewer-task",
+                evidence_refs=[
+                    self.evidence_ref(
+                        reviewer,
+                        "applicable_tests",
+                        status="NOT_APPLICABLE",
+                    )
+                ],
+                environ={"CODEX_THREAD_ID": "reviewer-native-task"},
+            )
+
+    def test_commit_gate_blocks_contract_that_predates_model_routing(self) -> None:
+        contract = self.resolve()
+        contract_path = self.memory / "negritaos" / "runtime" / "sessions"
+        contract_path = contract_path / contract["session_id"] / "contract.json"
+        legacy = json.loads(contract_path.read_text(encoding="utf-8"))
+        legacy["model_route"] = None
+        legacy.pop("contract_sha256")
+        legacy["contract_sha256"] = sha256_json(legacy)
+        write_json(contract_path, legacy)
+
+        result = gate_action(
+            self.repo,
+            "commit",
+            negritaos_root=ROOT,
+            memory_base=self.memory,
+        )
+
+        self.assertEqual(result["decision"], "BLOCK")
+        self.assertIn("re-run resolve", result["reasons"][-1])
+
+        with self.assertRaisesRegex(ValueError, "predates model routing"):
+            resolve_session(
+                self.repo,
+                "codex",
+                ["code_review"],
+                ROOT,
+                self.memory,
+                session_key="reviewer-task",
+                environ={"CODEX_THREAD_ID": "reviewer-native-task"},
+                change_impact="high",
+                review_role="independent_reviewer",
+                review_of_session=contract["session_id"],
+            )
 
     def test_gate_that_blocks_code_mutation_without_contract(self) -> None:
         result = gate_action(self.repo, "write", negritaos_root=ROOT, memory_base=self.memory)

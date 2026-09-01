@@ -1,0 +1,206 @@
+model_escalation_policy:
+  schema_version: 1
+  scope: all_registered_projects
+  enforcement: strict
+  default_tier: luna_medium
+  blocked_state: BLOCKED_MODEL_ROUTING
+
+  tiers:
+    luna_medium:
+      rank: 10
+      family_rank: 1
+      model: gpt-5.6-luna
+      reasoning_effort: medium
+    luna_high:
+      rank: 20
+      family_rank: 1
+      model: gpt-5.6-luna
+      reasoning_effort: high
+    terra_high:
+      rank: 30
+      family_rank: 2
+      model: gpt-5.6-terra
+      reasoning_effort: high
+    sol_high:
+      rank: 40
+      family_rank: 3
+      model: gpt-5.6-sol
+      reasoning_effort: high
+
+  task_classes:
+    repository_exploration: luna_medium
+    search_inventory: luna_medium
+    deterministic_extraction: luna_medium
+    straightforward_tests: luna_medium
+    log_manifest_metadata_inspection: luna_medium
+    mechanical_validation: luna_medium
+    document_artifact_qa: luna_medium
+    bounded_comparison: luna_medium
+    focused_code_review: luna_high
+    read_only_sql_review: luna_high
+    bounded_bug_reproduction: luna_high
+    data_reconciliation: luna_high
+    limited_scope_reasoning: luna_high
+    requirement_compliance: luna_high
+    approved_contract_validation: luna_high
+    discrepancy_identification: luna_high
+    material_semantic_review: terra_high
+    architecture_decision: sol_high
+    production_integration: sol_high
+
+  action_defaults:
+    system_audit: focused_code_review
+    code_review: focused_code_review
+    pull_request_review: focused_code_review
+    pr_risk_review: focused_code_review
+    review: focused_code_review
+    eda: data_reconciliation
+    model_review: approved_contract_validation
+    data_quality_audit: data_reconciliation
+    plot_analysis: bounded_comparison
+    chart_interpretation: bounded_comparison
+    documentation: document_artifact_qa
+    writeup: document_artifact_qa
+    deck: document_artifact_qa
+    presentation: document_artifact_qa
+    planning: limited_scope_reasoning
+    implementation: limited_scope_reasoning
+    write: limited_scope_reasoning
+    research: search_inventory
+    academic_review: requirement_compliance
+    architecture: architecture_decision
+    deployment: requirement_compliance
+    functional_qa: bounded_bug_reproduction
+    lifecycle_qa: bounded_bug_reproduction
+    adversarial_lifecycle_qa: bounded_bug_reproduction
+
+  task_class_impacts:
+    material_semantic_review: high
+    architecture_decision: high
+    production_integration: production_candidate
+
+  escalation_signals:
+    semantic_contract_change: terra_high
+    materializing_sql_impact: terra_high
+    v10_stateful_behavior: terra_high
+    cross_pipeline_or_repository_reasoning: terra_high
+    luna_unresolved_ambiguity: terra_high
+    multiple_plausible_explanations: terra_high
+    approved_contract_divergence: terra_high
+    live_local_evidence_conflict: terra_high
+    new_unapproved_assumption: terra_high
+    architecture_decision: sol_high
+    score_or_segmentation_contract_decision: sol_high
+    conflicting_business_technical_evidence: sol_high
+    terra_unresolved_debugging: sol_high
+    high_impact_or_irreversible_change: sol_high
+    production_candidate_final_review: sol_high
+    disputed_material_pass_hold_fail: sol_high
+    reviewer_disagreement:
+      escalate_family: 1
+
+  signal_impacts:
+    semantic_contract_change: high
+    materializing_sql_impact: high
+    v10_stateful_behavior: high
+    cross_pipeline_or_repository_reasoning: high
+    luna_unresolved_ambiguity: high
+    multiple_plausible_explanations: high
+    approved_contract_divergence: high
+    live_local_evidence_conflict: high
+    new_unapproved_assumption: high
+    architecture_decision: high
+    score_or_segmentation_contract_decision: high
+    conflicting_business_technical_evidence: high
+    terra_unresolved_debugging: high
+    high_impact_or_irreversible_change: high
+    production_candidate_final_review: production_candidate
+    disputed_material_pass_hold_fail: high
+    reviewer_disagreement: high
+
+  impact_levels:
+    standard:
+      rank: 10
+      independent_review_required: false
+      minimum_reviewer_tier: luna_high
+      required_evidence: []
+    high:
+      rank: 20
+      independent_review_required: true
+      minimum_reviewer_tier: terra_high
+      required_evidence:
+        - applicable_tests
+    production_candidate:
+      rank: 30
+      independent_review_required: true
+      minimum_reviewer_tier: sol_high
+      required_evidence:
+        - applicable_tests
+        - manifests
+        - rendered_sql_when_applicable
+        - lineage_checks_when_applicable
+        - live_validation_when_required
+
+  independent_review:
+    separate_session_required: true
+    self_review_forbidden: true
+    reviewer_must_attempt_falsification: true
+    disagreement_escalates_one_family: true
+    pass_status: PASS
+    evidence_reference_format: category=(repo|memory):relative_receipt.json@sha256:<64_hex>
+    evidence_receipt_schema_version: 1
+    evidence_required_for_production_candidate:
+      - applicable_tests
+      - manifests
+      - rendered_sql_when_applicable
+      - lineage_checks_when_applicable
+      - live_validation_when_required
+
+  evidence_categories:
+    applicable_tests:
+      not_applicable_allowed: false
+    manifests:
+      not_applicable_allowed: true
+    rendered_sql_when_applicable:
+      not_applicable_allowed: true
+    lineage_checks_when_applicable:
+      not_applicable_allowed: true
+    live_validation_when_required:
+      not_applicable_allowed: true
+
+  global_codex_custom_agents:
+    - luna-worker
+    - luna-reviewer
+    - terra-reviewer
+    - sol-integrator
+
+  custom_agent_tiers:
+    luna-worker: luna_medium
+    luna-reviewer: luna_high
+    terra-reviewer: terra_high
+    sol-integrator: sol_high
+    pablo: luna_high
+    casilda: terra_high
+    casilda-flows: terra_high
+    pablo_deployment_operator_agent: luna_high
+    casilda_functional_qa_agent: terra_high
+    casilda_lifecycle_qa_agent: terra_high
+
+  provider_application:
+    codex: direct_model_selection
+    claude: tier_semantics_only
+    ci: tier_semantics_only
+    human: tier_semantics_only
+
+  governance:
+    missing_required_evidence: HOLD
+    skipped_gate: HOLD
+    unverified_lineage: HOLD
+    failed_validation: HOLD
+    unresolved_material_ambiguity: HOLD
+    larger_model_does_not_replace_evidence: true
+    larger_model_does_not_replace_user_authorization: true
+    approved_contracts_remain_authoritative: true
+    bounded_work_may_return_to_luna_after_decision: true
+    distinguish_observation_inference_recommendation: true
+    prohibit_opportunistic_upscaling: true

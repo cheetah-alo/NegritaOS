@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from src.negrita_brain.doctor import doctor_project
+from src.negrita_brain.errors import ConfigurationError
 from src.negrita_brain.installer import Installer, merge_hook_settings
 
 
@@ -68,6 +69,48 @@ class TestInstaller(unittest.TestCase):
         )
         self.assertTrue((self.repo / ".codex" / "commands" / "brain.md").is_file())
 
+    def test_install_that_materializes_model_policy_assets(self) -> None:
+        self.installer.install(self.repo)
+
+        manifest = self.repo / ".codex" / "instruction-manifest.yaml"
+        model_rule = self.repo / ".codex" / "rules" / "model-escalation.md"
+        self.assertTrue(manifest.is_symlink())
+        self.assertEqual(
+            manifest.resolve(),
+            (ROOT / ".codex" / "instruction-manifest.yaml").resolve(),
+        )
+        self.assertTrue(model_rule.is_symlink())
+        self.assertEqual(
+            model_rule.resolve(),
+            (ROOT / ".codex" / "rules" / "model-escalation.md").resolve(),
+        )
+        router_rule = self.repo / ".codex" / "rules" / "negritaos-router.md"
+        self.assertTrue(router_rule.is_symlink())
+        self.assertEqual(
+            router_rule.resolve(),
+            (ROOT / ".codex" / "rules" / "negritaos-router.md").resolve(),
+        )
+        for agent_name in (
+            "luna-worker",
+            "luna-reviewer",
+            "terra-reviewer",
+            "sol-integrator",
+        ):
+            agent = self.repo / ".codex" / "agents" / f"{agent_name}.toml"
+            self.assertTrue(agent.is_symlink(), agent_name)
+            self.assertEqual(
+                agent.resolve(),
+                (ROOT / ".codex" / "agents" / f"{agent_name}.toml").resolve(),
+            )
+
+    def test_install_rejects_custom_agent_path_traversal(self) -> None:
+        with self.assertRaisesRegex(
+            ConfigurationError, "Invalid Codex custom agent name"
+        ):
+            self.installer._configured_codex_agents(  # noqa: SLF001
+                {"codex_custom_agents": ["../outside"]}
+            )
+
     def test_install_that_provisions_memory_v2_structure(self) -> None:
         self.installer.install(self.repo)
         home = self.memory / "negritaos"
@@ -108,6 +151,14 @@ class TestInstaller(unittest.TestCase):
         self.assertIn("open_governed_browser.py", agents)
         self.assertIn("BLOCKED_BROWSER_PROFILE_RESOLUTION", agents)
 
+    def test_managed_agents_that_requires_governed_model_routing(self) -> None:
+        self.installer.install(self.repo)
+        agents = (self.repo / "AGENTS.md").read_text(encoding="utf-8")
+
+        self.assertIn("resolved `model_route`", agents)
+        self.assertIn("default to Luna medium", agents)
+        self.assertIn("separate falsification-oriented reviewer", agents)
+
     def test_doctor_that_passes_installed_workspace(self) -> None:
         self.installer.install(self.repo)
         report = doctor_project(self.repo, ROOT, self.memory)
@@ -135,6 +186,13 @@ class TestInstaller(unittest.TestCase):
         (canonical / "core" / "orchestration").mkdir(parents=True)
         for skill in ("docs-alignment", "document-control"):
             (canonical / ".codex" / "skills" / skill).mkdir(parents=True)
+        (canonical / ".codex" / "instruction-manifest.yaml").write_text(
+            "rules: []\n", encoding="utf-8"
+        )
+        (canonical / ".codex" / "rules").mkdir()
+        (canonical / ".codex" / "rules" / "model-escalation.md").write_text(
+            "# Model escalation\n", encoding="utf-8"
+        )
         (canonical / "projects" / "alpha.yaml").write_text(
             "project:\n"
             "  id: alpha\n"
@@ -156,6 +214,12 @@ class TestInstaller(unittest.TestCase):
         )
         (canonical / "core" / "orchestration" / "negrita_brain_policy.yaml").write_text(
             "negrita_brain:\n  schema_version: 1\n", encoding="utf-8"
+        )
+        (
+            canonical / "core" / "orchestration" / "model_escalation_policy.yaml"
+        ).write_text(
+            "model_escalation_policy:\n  global_codex_custom_agents: []\n",
+            encoding="utf-8",
         )
         (self.repo / ".codex" / "project.yaml").write_text(
             "project_id: alpha\n"

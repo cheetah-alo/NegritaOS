@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
 import shutil
 import subprocess
 import uuid
@@ -32,6 +33,11 @@ from .models import (
     sha256_json,
     write_json,
 )
+from .model_routing import (
+    ModelRoutingError,
+    load_model_escalation_policy,
+    resolve_model_route,
+)
 from .profiles import resolve_project_profiles
 
 
@@ -47,6 +53,10 @@ SAFE_EVENT_KEYS = {
 VALID_PROVIDERS = {"codex", "claude", "ci", "human"}
 LEGACY_RECOVERY_SCOPE = "legacy-memory-v1"
 RECOVERY_BRANCH_PREFIXES = ("fix/", "chore/brain-")
+EVIDENCE_CATEGORY = re.compile(r"^[a-z][a-z0-9_]*$")
+EVIDENCE_REFERENCE = re.compile(
+    r"^(?P<scope>repo|memory):(?P<path>[^@]{1,220})@sha256:(?P<digest>[0-9a-f]{64})$"
+)
 
 
 @dataclass(frozen=True)
@@ -56,11 +66,20 @@ class SessionIdentity:
     provider: str
     key: str
     source: str
+    native_key: str | None = None
 
     @property
     def key_hash(self) -> str:
         """Return a non-reversible path-safe key for the native session id."""
         value = f"{self.provider}:{self.key}".encode("utf-8")
+        return hashlib.sha256(value).hexdigest()
+
+    @property
+    def task_hash(self) -> str | None:
+        """Return a stable native task hash that explicit aliases cannot change."""
+        if not self.native_key:
+            return None
+        value = f"{self.provider}:native:{self.native_key}".encode("utf-8")
         return hashlib.sha256(value).hexdigest()
 
 
@@ -88,13 +107,25 @@ def resolve_session_identity(
         normalized_provider = "codex"
     if normalized_provider not in VALID_PROVIDERS:
         raise SessionError(f"Unsupported session provider: {normalized_provider}")
+    codex_native = environment.get("CODEX_THREAD_ID")
     if isinstance(session_key, str) and session_key.strip():
-        return SessionIdentity(normalized_provider, session_key.strip(), "explicit")
-    if normalized_provider == "codex" and environment.get("CODEX_THREAD_ID"):
+        native_key = (
+            str(codex_native)
+            if normalized_provider == "codex" and codex_native
+            else session_key.strip() if normalized_provider == "claude" else None
+        )
         return SessionIdentity(
             normalized_provider,
-            str(environment["CODEX_THREAD_ID"]),
+            session_key.strip(),
+            "explicit",
+            native_key,
+        )
+    if normalized_provider == "codex" and codex_native:
+        return SessionIdentity(
+            normalized_provider,
+            str(codex_native),
             "CODEX_THREAD_ID",
+            str(codex_native),
         )
     return SessionIdentity(
         normalized_provider,
@@ -104,20 +135,82 @@ def resolve_session_identity(
 
 
 def _git_state(root: Path) -> dict[str, Any]:
-    """Return branch and HEAD without changing repository state."""
+    """Return Git identity plus a content hash for tracked and untracked changes."""
     if not (root / ".git").exists():
         return {"is_git": False, "branch": None, "head": None}
 
-    def run(*args: str) -> str | None:
+    def run_text(*args: str) -> str | None:
         result = subprocess.run(
             ["git", *args], cwd=root, capture_output=True, text=True, check=False
         )
         return result.stdout.strip() if result.returncode == 0 else None
 
+    if run_text("rev-parse", "--is-inside-work-tree") != "true":
+        return {"is_git": False, "branch": None, "head": None}
+    head = run_text("rev-parse", "HEAD")
+    branch = run_text("branch", "--show-current")
+    fingerprint = _git_worktree_fingerprint(root, head)
     return {
         "is_git": True,
-        "branch": run("branch", "--show-current"),
-        "head": run("rev-parse", "HEAD"),
+        "branch": branch,
+        "head": head,
+        **fingerprint,
+    }
+
+
+def _git_worktree_fingerprint(root: Path, head: str | None) -> dict[str, Any]:
+    """Hash the HEAD-relative binary diff and untracked file content without logging it."""
+    diff = subprocess.run(
+        ["git", "diff", "--binary", "--no-ext-diff", "HEAD", "--"],
+        cwd=root,
+        capture_output=True,
+        check=False,
+    )
+    untracked = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z"],
+        cwd=root,
+        capture_output=True,
+        check=False,
+    )
+    changed = subprocess.run(
+        ["git", "diff", "--name-only", "-z", "HEAD", "--"],
+        cwd=root,
+        capture_output=True,
+        check=False,
+    )
+    if any(result.returncode != 0 for result in (diff, untracked, changed)):
+        return {
+            "dirty": None,
+            "changed_paths_count": None,
+            "worktree_sha256": None,
+        }
+    untracked_paths = sorted(
+        path for path in untracked.stdout.split(b"\0") if path
+    )
+    changed_paths = {
+        path for path in changed.stdout.split(b"\0") if path
+    } | set(untracked_paths)
+    digest = hashlib.sha256()
+    digest.update((head or "NO_HEAD").encode("utf-8"))
+    digest.update(b"\0DIFF\0")
+    digest.update(diff.stdout)
+    for raw_path in untracked_paths:
+        relative = raw_path.decode("utf-8", errors="surrogateescape")
+        candidate = root / relative
+        digest.update(b"\0UNTRACKED\0")
+        digest.update(raw_path)
+        if candidate.is_symlink():
+            digest.update(os.readlink(candidate).encode("utf-8", errors="surrogateescape"))
+        elif candidate.is_file():
+            with candidate.open("rb") as handle:
+                for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                    digest.update(chunk)
+        else:
+            digest.update(b"MISSING")
+    return {
+        "dirty": bool(diff.stdout or untracked_paths),
+        "changed_paths_count": len(changed_paths),
+        "worktree_sha256": digest.hexdigest(),
     }
 
 
@@ -208,6 +301,67 @@ def _verified_contract(session_dir: Path) -> dict[str, Any]:
     if expected != actual:
         raise SessionError(f"Session contract hash mismatch: {contract_path}")
     return contract
+
+
+def _independent_review_target(
+    context: ProjectContext,
+    identity: SessionIdentity,
+    review_role: str,
+    review_of_session: str | None,
+    memory_base: Path | None,
+) -> dict[str, Any] | None:
+    """Verify that an independent reviewer is not the builder session."""
+    if review_role != "independent_reviewer":
+        return None
+    if not review_of_session or Path(review_of_session).name != review_of_session:
+        raise ModelRoutingError(
+            "independent review requires one valid builder session id"
+        )
+    target = _verified_contract(
+        _session_dir(context, review_of_session, memory_base)
+    )
+    target_project = target.get("project", {}).get("id")
+    if target_project != context.project_id:
+        raise ModelRoutingError(
+            f"review target belongs to project {target_project!r}, not {context.project_id!r}"
+        )
+    target_model_route = target.get("model_route")
+    if not isinstance(target_model_route, dict):
+        raise ModelRoutingError(
+            "review target predates model routing; re-run resolve in the builder task"
+        )
+    target_route = target_model_route.get("independent_review", {})
+    if not isinstance(target_route, dict) or target_route.get("role") != "builder":
+        raise ModelRoutingError("independent review target must be a builder contract")
+    target_identity = target.get("session_identity", {})
+    target_key_hash = target_identity.get("key_hash")
+    target_task_hash = target_identity.get("task_hash")
+    if target_key_hash == identity.key_hash:
+        raise ModelRoutingError(
+            "independent review must use a separate provider session from the builder"
+        )
+    if not target_task_hash or not identity.task_hash:
+        raise ModelRoutingError(
+            "independent review requires provider-native task identities"
+        )
+    if target_task_hash == identity.task_hash:
+        raise ModelRoutingError(
+            "independent review cannot use an alias from the builder task"
+        )
+    current_git = _git_state(context.work_root)
+    reviewed_worktree = current_git.get("worktree_sha256")
+    if not isinstance(reviewed_worktree, str):
+        raise ModelRoutingError(
+            "independent review requires a resolvable Git worktree fingerprint"
+        )
+    return {
+        "session_id": review_of_session,
+        "contract_sha256": target.get("contract_sha256"),
+        "builder_task_hash": target_task_hash,
+        "git_head": current_git.get("head"),
+        "reviewed_worktree_sha256": reviewed_worktree,
+        "changed_paths_count": current_git.get("changed_paths_count"),
+    }
 
 
 def _load_legacy_handle(
@@ -417,6 +571,11 @@ def resolve_session(
     now: datetime | None = None,
     session_key: str | None = None,
     environ: Mapping[str, str] | None = None,
+    delegation_class: str | None = None,
+    risk_signals: list[str] | None = None,
+    change_impact: str = "standard",
+    review_role: str = "builder",
+    review_of_session: str | None = None,
 ) -> dict[str, Any]:
     """Resolve and persist an immutable Memory v2 session contract."""
     context = load_project(work_root, negritaos_root)
@@ -482,6 +641,26 @@ def resolve_session(
             selected_agents.append(agent)
     memory_home = project_memory_home(context, memory_base)
     memory_policy = _memory_policy(context)
+    review_target = _independent_review_target(
+        context,
+        identity,
+        review_role,
+        review_of_session,
+        memory_base,
+    )
+    model_route = resolve_model_route(
+        load_model_escalation_policy(context.negritaos_root),
+        provider=identity.provider,
+        actions=requested_actions,
+        selected_agents=selected_agents,
+        delegation_class=delegation_class,
+        risk_signals=risk_signals or [],
+        change_impact=change_impact,
+        review_role=review_role,
+        review_of_session=review_of_session,
+    )
+    if review_target is not None:
+        model_route["independent_review"]["target"] = review_target
     agent_skill_ids = _agent_codex_skill_ids(context, selected_agents)
     resolved_skill_ids = list(closure.skills)
     for skill_id in agent_skill_ids:
@@ -502,6 +681,7 @@ def resolve_session(
         "session_identity": {
             "key_hash": identity.key_hash,
             "source": identity.source,
+            "task_hash": identity.task_hash,
         },
         "git": _git_state(context.work_root),
         "actions": requested_actions,
@@ -512,6 +692,7 @@ def resolve_session(
         "rules": [
             "rules/global/negritaos_router_rule.md",
             "rules/global/browser_profile_routing_rule.md",
+            "rules/global/model_escalation_rule.md",
             "core/orchestration/negrita_brain_policy.yaml",
         ],
         "skills": resolved_skill_ids,
@@ -532,6 +713,7 @@ def resolve_session(
             "timezone": route.get("timezone", "Europe/Madrid"),
         },
         "browser_context": browser_context,
+        "model_route": model_route,
         "memory": {
             "home": str(memory_home),
             "owner": memory_policy.get("owner", "negrita_brain"),
@@ -627,6 +809,258 @@ def load_active_session(
     return handle.context, handle.contract, handle.session_dir
 
 
+def _parse_evidence_refs(values: list[str] | None) -> dict[str, str]:
+    """Parse category-to-receipt references without storing narratives."""
+    evidence: dict[str, str] = {}
+    for raw in values or []:
+        category, separator, reference = raw.partition("=")
+        if (
+            separator != "="
+            or not EVIDENCE_CATEGORY.fullmatch(category)
+            or not EVIDENCE_REFERENCE.fullmatch(reference)
+        ):
+            raise SessionError(
+                "Evidence refs must use category=(repo|memory):path@sha256:<64_hex>"
+            )
+        if category in evidence:
+            raise SessionError(f"Duplicate evidence category: {category}")
+        evidence[category] = reference
+    return evidence
+
+
+def _evidence_receipt_path(
+    context: ProjectContext,
+    reference: str,
+    memory_base: Path | None,
+) -> tuple[Path, str]:
+    """Resolve one bounded receipt reference and reject traversal or tracked files."""
+    match = EVIDENCE_REFERENCE.fullmatch(reference)
+    if match is None:
+        raise SessionError("Invalid evidence receipt reference")
+    relative = Path(match.group("path"))
+    if relative.is_absolute() or ".." in relative.parts:
+        raise SessionError("Evidence receipt path must be relative and cannot traverse")
+    scope = match.group("scope")
+    base = (
+        context.work_root
+        if scope == "repo"
+        else project_memory_home(context, memory_base)
+    )
+    candidate = (base / relative).resolve()
+    if not candidate.is_relative_to(base.resolve()) or not candidate.is_file():
+        raise SessionError(f"Evidence receipt does not resolve: {reference}")
+    if scope == "repo":
+        ignored = subprocess.run(
+            ["git", "check-ignore", "-q", "--", str(relative)],
+            cwd=context.work_root,
+            capture_output=True,
+            check=False,
+        )
+        if ignored.returncode != 0:
+            raise SessionError(
+                "Repository evidence receipts must be Git-ignored or use memory:"
+            )
+    digest = hashlib.sha256(candidate.read_bytes()).hexdigest()
+    if digest != match.group("digest"):
+        raise SessionError(f"Evidence receipt hash mismatch: {reference}")
+    return candidate, digest
+
+
+def _verified_evidence_receipt(
+    context: ProjectContext,
+    review_route: dict[str, Any],
+    category: str,
+    reference: str,
+    memory_base: Path | None,
+) -> dict[str, Any]:
+    """Validate one machine-readable receipt against the reviewed worktree."""
+    candidate, digest = _evidence_receipt_path(context, reference, memory_base)
+    receipt = read_json(candidate)
+    target = review_route.get("target", {})
+    reviewed_fingerprint = target.get("reviewed_worktree_sha256")
+    if receipt.get("schema_version") != 1:
+        raise SessionError(f"Evidence receipt {category} has unsupported schema")
+    if receipt.get("category") != category:
+        raise SessionError(f"Evidence receipt category mismatch: {category}")
+    if receipt.get("subject_worktree_sha256") != reviewed_fingerprint:
+        raise SessionError(f"Evidence receipt {category} targets another worktree")
+    if not isinstance(receipt.get("completed_at"), str) or not receipt["completed_at"]:
+        raise SessionError(f"Evidence receipt {category} is missing completed_at")
+    policy = load_model_escalation_policy(context.negritaos_root)
+    category_policy = policy.get("evidence_categories", {}).get(category, {})
+    status = _validated_receipt_status(receipt, category, category_policy)
+    return {
+        "reference": reference,
+        "receipt_sha256": digest,
+        "status": status,
+    }
+
+
+def _validated_receipt_status(
+    receipt: dict[str, Any],
+    category: str,
+    category_policy: dict[str, Any],
+) -> str:
+    """Validate PASS or explicitly governed NOT_APPLICABLE receipt fields."""
+    status = receipt.get("status")
+    if status == "PASS":
+        if receipt.get("exit_code") != 0:
+            raise SessionError(f"Evidence receipt {category} did not pass")
+        if not isinstance(receipt.get("command"), str) or not receipt["command"].strip():
+            raise SessionError(f"Evidence receipt {category} is missing command")
+    elif status == "NOT_APPLICABLE":
+        if category_policy.get("not_applicable_allowed") is not True:
+            raise SessionError(f"Evidence category {category} cannot be NOT_APPLICABLE")
+        for field in ("reason", "authorized_by"):
+            if not isinstance(receipt.get(field), str) or not receipt[field].strip():
+                raise SessionError(
+                    f"Evidence receipt {category} requires {field} for NOT_APPLICABLE"
+                )
+    else:
+        raise SessionError(f"Evidence receipt {category} must be PASS or NOT_APPLICABLE")
+    return status
+
+
+def _verified_evidence_refs(
+    context: ProjectContext,
+    review_route: dict[str, Any],
+    evidence: dict[str, str],
+    memory_base: Path | None,
+) -> dict[str, dict[str, Any]]:
+    """Resolve and validate all supplied evidence receipts."""
+    return {
+        category: _verified_evidence_receipt(
+            context, review_route, category, reference, memory_base
+        )
+        for category, reference in evidence.items()
+    }
+
+
+def _review_evidence_is_valid(
+    context: ProjectContext,
+    review_route: dict[str, Any],
+    evidence: dict[str, Any],
+    required_evidence: set[str],
+    memory_base: Path | None,
+) -> bool:
+    """Revalidate every required receipt referenced by a closed review."""
+    if not required_evidence.issubset(evidence):
+        return False
+    try:
+        for category in required_evidence:
+            evidence_state = evidence.get(category, {})
+            reference = (
+                evidence_state.get("reference")
+                if isinstance(evidence_state, dict)
+                else None
+            )
+            if not isinstance(reference, str):
+                return False
+            _verified_evidence_receipt(
+                context, review_route, category, reference, memory_base
+            )
+    except (OSError, SessionError, ValueError):
+        return False
+    return True
+
+
+def _review_attestation_candidate(
+    context: ProjectContext,
+    builder: dict[str, Any],
+    session_dir: Path,
+    current_fingerprint: str,
+    required_evidence: set[str],
+    tiers: dict[str, Any],
+    minimum_rank: int,
+    builder_task_hash: str | None,
+    memory_base: Path | None,
+) -> dict[str, Any] | None:
+    """Return one valid closed review candidate, otherwise no attestation."""
+    state_path = session_dir / "state.json"
+    if not state_path.is_file():
+        return None
+    try:
+        reviewer = _verified_contract(session_dir)
+        state = read_json(state_path)
+    except (OSError, SessionError, ValueError):
+        return None
+    reviewer_model_route = reviewer.get("model_route")
+    if not isinstance(reviewer_model_route, dict):
+        return None
+    review_route = reviewer_model_route.get("independent_review", {})
+    target = review_route.get("target", {}) if isinstance(review_route, dict) else {}
+    reviewer_tier = reviewer_model_route.get("tier")
+    reviewer_task_hash = reviewer.get("session_identity", {}).get("task_hash")
+    evidence = state.get("review", {}).get("evidence", {})
+    invalid = (
+        state.get("status") != "PASS"
+        or not isinstance(review_route, dict)
+        or reviewer.get("provider") != "codex"
+        or target.get("session_id") != builder.get("session_id")
+        or target.get("reviewed_worktree_sha256") != current_fingerprint
+        or reviewer.get("git", {}).get("worktree_sha256") != current_fingerprint
+        or reviewer_task_hash in (None, builder_task_hash)
+        or reviewer_tier not in tiers
+        or int(tiers.get(reviewer_tier, {}).get("rank", 0)) < minimum_rank
+        or not isinstance(evidence, dict)
+    )
+    if invalid or not _review_evidence_is_valid(
+        context, review_route, evidence, required_evidence, memory_base
+    ):
+        return None
+    return {
+        "review_session_id": reviewer.get("session_id"),
+        "reviewer_tier": reviewer_tier,
+        "reviewed_worktree_sha256": current_fingerprint,
+        "evidence_categories": sorted(evidence),
+    }
+
+
+def _review_pass_attestation(
+    context: ProjectContext,
+    builder: dict[str, Any],
+    memory_base: Path | None,
+) -> dict[str, Any] | None:
+    """Find a closed independent PASS over the builder's current worktree."""
+    builder_model_route = builder.get("model_route")
+    if not isinstance(builder_model_route, dict):
+        return None
+    route = builder_model_route.get("independent_review", {})
+    if not isinstance(route, dict) or not route.get("required"):
+        return None
+    if route.get("role") != "builder":
+        return None
+    current_git = _git_state(context.work_root)
+    current_fingerprint = current_git.get("worktree_sha256")
+    if not isinstance(current_fingerprint, str):
+        return None
+    required_evidence = set(route.get("required_evidence", []))
+    minimum_tier = route.get("minimum_reviewer_tier")
+    model_policy = load_model_escalation_policy(context.negritaos_root)
+    tiers = model_policy["tiers"]
+    if minimum_tier not in tiers:
+        return None
+    minimum_rank = int(tiers[minimum_tier]["rank"])
+    builder_identity = builder.get("session_identity", {})
+    builder_task_hash = builder_identity.get("task_hash")
+    sessions = project_memory_home(context, memory_base) / "runtime" / "sessions"
+    for session_dir in sorted(sessions.glob("*"), reverse=True):
+        attestation = _review_attestation_candidate(
+            context,
+            builder,
+            session_dir,
+            current_fingerprint,
+            required_evidence,
+            tiers,
+            minimum_rank,
+            builder_task_hash,
+            memory_base,
+        )
+        if attestation is not None:
+            return attestation
+    return None
+
+
 def gate_action(
     work_root: Path,
     action: str,
@@ -664,6 +1098,7 @@ def gate_action(
     reasons: list[str] = []
     decision = "ALLOW"
     authorization: dict[str, str] | None = None
+    independent_review: dict[str, Any] | None = None
     if normalized != "read" and not ready:
         if authorize_legacy_recovery:
             branch = _git_state(context.work_root).get("branch")
@@ -698,6 +1133,30 @@ def gate_action(
             )
             decision = str(rules.get(policy_key, "warn")).upper()
             reasons.append("Mutation requires an active READY session contract")
+    if normalized == "commit" and ready and contract is not None:
+        contract_model_route = contract.get("model_route")
+        review_route = (
+            contract_model_route.get("independent_review", {})
+            if isinstance(contract_model_route, dict)
+            else None
+        )
+        if not isinstance(review_route, dict):
+            decision = "BLOCK"
+            reasons.append(
+                "Session predates model routing; re-run resolve before committing"
+            )
+        elif review_route.get("role") != "builder":
+            decision = "BLOCK"
+            reasons.append("An independent reviewer session cannot commit reviewed changes")
+        elif review_route.get("required"):
+            independent_review = _review_pass_attestation(
+                context, contract, memory_base
+            )
+            if independent_review is None:
+                decision = "BLOCK"
+                reasons.append(
+                    "Commit requires a closed independent PASS over the current worktree fingerprint"
+                )
     route = policy.get("artifact_route", {})
     user_selected_route = route.get("selection") == "user_selected"
     required_extensions = {
@@ -774,6 +1233,7 @@ def gate_action(
         "session_id": contract.get("session_id") if contract else None,
         "workspace_kind": kind,
         "authorization": authorization,
+        "independent_review": independent_review,
     }
 
 
@@ -830,6 +1290,7 @@ def close_session(
     authorized_by: str | None = None,
     authorization_reason: str | None = None,
     durable_refs: list[str] | None = None,
+    evidence_refs: list[str] | None = None,
     environ: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     """Close one selected session without rewriting durable project memory."""
@@ -857,6 +1318,63 @@ def close_session(
     contract = handle.contract
     if not legacy_session_id and contract.get("state") != "READY":
         raise SessionError(f"Session is already closed: {contract['session_id']}")
+    normalized_status = status.upper()
+    evidence_refs_by_category = _parse_evidence_refs(evidence_refs)
+    contract_model_route = contract.get("model_route")
+    review_route = (
+        contract_model_route.get("independent_review", {})
+        if isinstance(contract_model_route, dict)
+        else {}
+    )
+    evidence: dict[str, dict[str, Any]] = {}
+    review_state: dict[str, Any] | None = None
+    if isinstance(review_route, dict) and review_route.get("role") == "independent_reviewer":
+        if normalized_status not in {"PASS", "HOLD", "FAIL"}:
+            raise SessionError(
+                "Independent reviewer sessions must close as PASS, HOLD, or FAIL"
+            )
+        target = review_route.get("target", {})
+        reviewed_fingerprint = target.get("reviewed_worktree_sha256")
+        current_fingerprint = _git_state(context.work_root).get("worktree_sha256")
+        evidence = _verified_evidence_refs(
+            context,
+            review_route,
+            evidence_refs_by_category,
+            memory_base,
+        )
+        if normalized_status == "PASS":
+            if not isinstance(reviewed_fingerprint, str) or (
+                current_fingerprint != reviewed_fingerprint
+                or contract.get("git", {}).get("worktree_sha256")
+                != reviewed_fingerprint
+            ):
+                raise SessionError(
+                    "Reviewed worktree changed; start a new independent review"
+                )
+            required_evidence = set(review_route.get("required_evidence", []))
+            missing_evidence = sorted(required_evidence - set(evidence))
+            if missing_evidence:
+                raise SessionError(
+                    "Independent PASS is missing evidence: "
+                    + ", ".join(missing_evidence)
+                )
+        review_state = {
+            "target_session_id": target.get("session_id"),
+            "reviewed_worktree_sha256": reviewed_fingerprint,
+            "evidence": evidence,
+        }
+    elif evidence_refs_by_category:
+        raise SessionError("Evidence refs are only valid for independent reviewers")
+    elif (
+        isinstance(review_route, dict)
+        and review_route.get("role") == "builder"
+        and review_route.get("required")
+        and normalized_status == "COMPLETE"
+        and _review_pass_attestation(context, contract, memory_base) is None
+    ):
+        raise SessionError(
+            "High-impact builder cannot close COMPLETE without independent PASS"
+        )
     closed_at = iso_timestamp()
     refs = list(dict.fromkeys(durable_refs or []))
     closed: dict[str, Any] = {
@@ -866,8 +1384,10 @@ def close_session(
         "project_id": context.project_id,
         "schema_version": 1 if handle.legacy else 2,
         "session_id": contract["session_id"],
-        "status": status.upper(),
+        "status": normalized_status,
     }
+    if review_state is not None:
+        closed["review"] = review_state
     backup_path: Path | None = None
     if legacy_session_id:
         memory_home = project_memory_home(context, memory_base)

@@ -65,6 +65,7 @@ try:
         validate_repo as validate_codex_agents,
     )
     from .validate_browser_profile_routing import validate_all as validate_browser_routing
+    from .validate_model_escalation_policy import validate_all as validate_model_policy
 except ImportError:
     from validate_config_resolution import validate_resolution
     from validate_claude_agent_aliases import validate_repo as validate_claude_aliases
@@ -73,6 +74,7 @@ except ImportError:
         validate_repo as validate_codex_agents,
     )
     from validate_browser_profile_routing import validate_all as validate_browser_routing
+    from validate_model_escalation_policy import validate_all as validate_model_policy
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -249,6 +251,26 @@ def check_browser_rule_registration() -> tuple[bool, str]:
     return _ok("browser profile routing rule is registered and reachable")
 
 
+def check_model_escalation_policy() -> tuple[bool, str]:
+    """Ensure model routing is global, valid, and backed by canonical agents."""
+    try:
+        errors, count = validate_model_policy(REPO_ROOT)
+    except Exception as exc:
+        return _fail(f"model escalation policy could not be validated: {exc}")
+    if errors:
+        return _fail(f"model escalation policy: {errors[0]}")
+    manifest = REPO_ROOT / ".codex" / "instruction-manifest.yaml"
+    stub = REPO_ROOT / ".codex" / "rules" / "model-escalation.md"
+    canonical = REPO_ROOT / "rules" / "global" / "model_escalation_rule.md"
+    if not manifest.is_file() or "model-escalation" not in manifest.read_text(
+        encoding="utf-8", errors="ignore"
+    ):
+        return _fail("model-escalation is absent from instruction-manifest.yaml")
+    if not stub.is_file() or not canonical.is_file():
+        return _fail("model escalation rule or adapter stub is missing")
+    return _ok(f"model escalation routes {count} global Codex agents")
+
+
 def check_adapter_router_stub() -> tuple[bool, str]:
     target = REPO_ROOT / ".codex" / "rules" / "negritaos-router.md"
     if target.exists():
@@ -361,6 +383,7 @@ CHECKS = (
     check_external_app_financial_control,
     check_browser_profile_routing,
     check_browser_rule_registration,
+    check_model_escalation_policy,
     check_adapter_router_stub,
     check_router_skill,
     check_claude_agent_aliases,
@@ -492,7 +515,7 @@ def check_sibling(
         results.append(_fail_s(project_id, ".codex/instruction-manifest.yaml missing"))
     elif all(
         marker in manifest.read_text(encoding="utf-8", errors="ignore")
-        for marker in ("negritaos-router", "browser-profile-routing")
+        for marker in ("negritaos-router", "browser-profile-routing", "model-escalation")
     ):
         results.append(
             _ok_s(project_id, "manifest registers router and browser profile rule")
@@ -788,7 +811,11 @@ def _check_sibling_rules(project_id: str, codex: Path) -> list[tuple[bool, str]]
         out.append(_fail_s(project_id, ".codex/rules/ missing"))
         return out
 
-    for required_stub in ("negritaos-router.md", "browser-profile-routing.md"):
+    for required_stub in (
+        "negritaos-router.md",
+        "browser-profile-routing.md",
+        "model-escalation.md",
+    ):
         stub = rules_dir / required_stub
         if stub.exists():
             out.append(_ok_s(project_id, f"rules/{required_stub} reachable"))

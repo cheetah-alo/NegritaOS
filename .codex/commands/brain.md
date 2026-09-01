@@ -27,6 +27,14 @@ Codex and `claude` in Claude.
   reading narrative content.
 - `/brain authorize-legacy-close`: require the user to name the exact v1
   session, authorized-by value, and reason; create a backup before closing it.
+- `/brain model-route`: resolve the task with `--delegation-class`, repeated
+  `--risk-signal`, `--change-impact`, and `--review-role` as applicable; report
+  tier, model, reasoning effort, reasons, and independent-review requirements.
+  An independent PASS must close with `--status PASS` and one SHA-256-bound JSON
+  receipt using
+  `--evidence-ref category=(repo|memory):path@sha256:<64_hex>` per required
+  category. Before commit, `gate --action commit` must revalidate every receipt
+  and return the matching review session and current worktree fingerprint.
 
 Never write canonical memory directly. A permission failure requires elevation
 or `configure codex --apply`, followed by a new Codex task.

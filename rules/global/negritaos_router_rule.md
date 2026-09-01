@@ -183,7 +183,20 @@ Read-only inspection of existing plan, usage, or billing status is permitted
 only when the inspection itself has no known incremental charge. Never expose
 secrets or full payment details.
 
-## 10. Anti-patterns
+## 10. Delegated Model Routing
+
+Every delegated Codex task must follow
+`core/orchestration/model_escalation_policy.yaml` and the `model_route` returned
+by Negrita Brain. Luna medium is the default. Escalation to Luna high, Terra,
+or Sol requires an explicit task class, policy signal, impact level, agent
+override, or independent-review minimum. Do not upscale opportunistically.
+
+An independent review must use a separate provider session and attempt to
+falsify the implementation. High-impact work requires Terra or higher;
+production-candidate final integration requires Sol. Missing evidence remains
+`HOLD` and cannot be repaired through model selection.
+
+## 11. Anti-patterns
 
 - Loading `.codex/rules/dev-*.md` for AE/RT/EP/LP/TD modes.
 - Writing memory to `.codex/memory/` when a canonical project home exists.
@@ -196,6 +209,8 @@ secrets or full payment details.
   change its plan.
 - Opening authenticated work in a default or in-app browser without resolving
   the project's governed Brave profile first.
+- Selecting Terra or Sol without a declared escalation signal or impact.
+- Allowing a builder session to certify its own work as independently reviewed.
 
 ## Learnings
 

@@ -13,6 +13,10 @@ from .browser_routing import (
     validate_browser_routing_config,
     validate_project_browser_context,
 )
+from .model_routing import (
+    load_model_escalation_policy,
+    validate_model_escalation_policy,
+)
 from .config import (
     NEGRITAOS_ROOT,
     adapter_memory_home,
@@ -194,6 +198,13 @@ def doctor_project(
         browser_errors = [str(exc)]
     for error in browser_errors:
         issues.append(_issue("BROWSER_PROFILE_ROUTING", "ERROR", error))
+    try:
+        model_policy = load_model_escalation_policy(context.negritaos_root)
+        model_errors = validate_model_escalation_policy(model_policy)
+    except Exception as exc:
+        model_errors = [str(exc)]
+    for error in model_errors:
+        issues.append(_issue("MODEL_ESCALATION_POLICY", "ERROR", error))
     if "document-control" not in closure.skills:
         issues.append(
             _issue(
