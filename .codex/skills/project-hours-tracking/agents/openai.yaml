@@ -1,0 +1,6 @@
+interface:
+  display_name: "Gisel Project Hours"
+  short_description: "Evidence-based project workload and overtime tracking"
+  default_prompt: "Use $project-hours-tracking as Gisel to create or update this project's evidence-based tracking-hours workbook."
+policy:
+  allow_implicit_invocation: true

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import tomllib
 from pathlib import Path
@@ -12,6 +13,7 @@ try:
     from .sync_claude_agent_aliases import discover_project_repos
     from .sync_codex_custom_agents import (
         AGENT_NAME,
+        canonical_custom_agents,
         configured_agents,
         global_custom_agents,
     )
@@ -20,6 +22,7 @@ except ImportError:
     from sync_claude_agent_aliases import discover_project_repos
     from sync_codex_custom_agents import (
         AGENT_NAME,
+        canonical_custom_agents,
         configured_agents,
         global_custom_agents,
     )
@@ -129,9 +132,41 @@ def validate_repo(repo: Path, root: Path = ROOT) -> list[str]:
     return errors
 
 
+def validate_user_home(
+    codex_home: Path | None = None,
+    root: Path = ROOT,
+) -> list[str]:
+    """Validate the personal Codex agent catalog against canonical global agents."""
+    errors: list[str] = []
+    home = codex_home or Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
+    home = home.expanduser().resolve()
+    for name in global_custom_agents(root):
+        source = root / ".codex" / "agents" / f"{name}.toml"
+        destination = home / "agents" / source.name
+        if not destination.exists() and not destination.is_symlink():
+            errors.append(f"missing user-home custom agent: {destination}")
+            continue
+        errors.extend(validate_toml(destination, name, root))
+        if destination.is_symlink() and destination.resolve() != source.resolve():
+            errors.append(f"{destination}: symlink does not resolve to {source}")
+    return errors
+
+
 def validate_registry_declarations(root: Path = ROOT) -> list[str]:
     """Validate canonical TOMLs referenced by every project registry."""
     errors: list[str] = []
+    policy = _model_policy(root)
+    distribution = policy.get("custom_agent_distribution", {})
+    if (
+        isinstance(distribution, dict)
+        and distribution.get("all_canonical_agents_global") is True
+    ):
+        global_names = set(global_custom_agents(root))
+        canonical_names = set(canonical_custom_agents(root))
+        for name in sorted(canonical_names - global_names):
+            errors.append(f"canonical custom agent is not globally declared: {name}")
+        for name in sorted(global_names - canonical_names):
+            errors.append(f"global custom agent has no canonical TOML: {name}")
     for registry in sorted((root / "projects").glob("*.yaml")):
         project = _load_yaml(registry).get("project", {})
         if not isinstance(project, dict):
@@ -170,6 +205,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--repo", type=Path, action="append", default=[])
     parser.add_argument("--all-projects", action="store_true")
     parser.add_argument("--registry-only", action="store_true")
+    parser.add_argument("--user-home", action="store_true")
+    parser.add_argument("--codex-home", type=Path)
     return parser.parse_args()
 
 
@@ -180,6 +217,8 @@ def main() -> int:
     repos = [] if args.registry_only else list(args.repo)
     if args.all_projects:
         repos.extend(discover_project_repos(ROOT))
+    if args.user_home:
+        errors.extend(validate_user_home(args.codex_home, ROOT))
     seen: set[Path] = set()
     for repo in repos:
         resolved = repo.expanduser().resolve()
@@ -195,7 +234,8 @@ def main() -> int:
     if args.registry_only:
         print("[OK] Codex custom agent registry declarations are valid")
     else:
-        print(f"[OK] Codex custom agents valid for {len(seen)} adapter(s)")
+        suffix = " plus user home" if args.user_home else ""
+        print(f"[OK] Codex custom agents valid for {len(seen)} adapter(s){suffix}")
     return 0
 
 

@@ -1,0 +1,76 @@
+agent:
+  id: project_hours_tracker_agent
+  router_mode: HOURS
+  version: "1.0.0"
+  layer: strategic
+  display_name: Gisel
+  description: >
+    Creates or updates evidence-based project-hours workbooks from Git history
+    and corroborated repository artifacts, including workload, overtime,
+    Gantt, meeting allocation, update history, and workbook QA.
+
+  persona:
+    - project_workload_analyst
+    - evidence_reconciliation_specialist
+    - spreadsheet_quality_controller
+
+  skills:
+    - skills/strategic/project_hours_tracking.md
+    - skills/transversal/evidence_framing.md
+    - skills/transversal/structured_reasoning.md
+
+  codex_skills:
+    - .codex/skills/project-hours-tracking/SKILL.md
+
+  rules:
+    - rules/global/global_rules.yaml
+    - rules/governance/governance_rules.yaml
+
+  rubrics:
+    - rubrics/data_quality_rubric.yaml
+    - rubrics/task_quality_rubric.yaml
+
+  output_modes:
+    - new_project_hours_tracker
+    - updated_project_hours_tracker
+    - workload_and_overtime_summary
+    - retention_hold
+    - blocked_evidence_report
+
+  input_types:
+    - project_name
+    - repository_path
+    - prior_tracking_workbook
+    - git_history
+    - project_artifacts
+    - confirmed_meeting_or_duration_evidence
+
+  quality_gate:
+    - project_slug_paths_timezone_and_coverage_boundary_are_explicit
+    - commits_are_deduplicated_by_sha
+    - identities_are_not_merged_without_evidence
+    - duration_is_not_invented_from_commit_count
+    - daily_weekly_monthly_person_project_task_and_subtask_totals_reconcile
+    - weekday_and_weekend_overtime_formulas_follow_the_eight_hour_contract
+    - required_sheets_formulas_and_visual_render_pass
+    - local_and_shared_xlsx_files_open_and_sha256_match
+    - spreadsheet_runtime_is_provider_resolved_or_handed_off_without_substitution
+    - retention_deletes_only_older_matching_same_project_versions
+    - final_report_states_that_results_are_not_a_certified_timesheet
+
+  handoff:
+    can_feed_into:
+      - team_lead_ds_agent
+      - technical_writer_agent
+      - data_quality_sentinel_agent
+    context_fields_to_pass:
+      - project
+      - coverage_dates
+      - commit_count
+      - new_hours
+      - total_hours
+      - estimated_overtime
+      - evidence_gaps
+      - workbook_path
+      - shared_path
+      - sha256

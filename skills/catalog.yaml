@@ -15,6 +15,7 @@ defaults:
   profiles:
     - document-delivery
     - governed-browser-access
+    - project-hours-tracking
 
 profiles:
   governed-browser-access:
@@ -29,6 +30,12 @@ profiles:
       - local-memory-protocol
       - plain-language-rewrite
       - cqi-analytical-documentation
+  project-hours-tracking:
+    description: Evidence-based XLSX workload and overtime tracking available in every registered project through Gisel.
+    required_agents:
+      - project_hours_tracker_agent
+    skills:
+      - project-hours-tracking
   plain-language-writing:
     description: On-demand clear-language rewrite and jargon reduction without weakening technical precision.
     skills:
@@ -192,6 +199,15 @@ profiles:
       - elal-eda-governance
 
 skills:
+  - id: project-hours-tracking
+    path: .codex/skills/project-hours-tracking/SKILL.md
+    native_path: skills/strategic/project_hours_tracking.md
+    source: NegritaOS-native
+    profiles: [project-hours-tracking]
+    scopes: [root, operations, spreadsheet, project-tracking]
+    status: canonical
+    dependencies: [git, spreadsheet_runtime, unzip, sha256]
+    side_effects: governed_workbook_creation_copy_and_same_project_version_retention
   - id: governed-browser-routing
     path: .codex/skills/governed-browser-routing/SKILL.md
     native_path: null

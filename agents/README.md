@@ -14,6 +14,7 @@ For Claude-native aliases, see: `docs/claude-agent-aliases.md`
 | ID | Agent | Layer | Router Mode | Description |
 |----|-------|-------|-------------|-------------|
 | LP | team_lead_ds_agent | strategic | Leadership Planning | Converts ambiguity into structured tasks, roadmaps, and escalations |
+| HOURS | project_hours_tracker_agent | strategic | Project Hours Tracking | Gisel creates evidence-based XLSX workload and overtime trackers from project history |
 | LP | jira_import_agent | strategic | Leadership Planning | Prepares Jira bulk-import CSV hierarchies, rescue imports, and audit evidence |
 | AE | tfm_evaluator_agent | academic | Academic Evaluation | Evaluates TFM proposals, milestones, and final defense documents |
 | AE | paper_review_agent | academic | Academic Evaluation | Synthesizes and operationalizes academic and industry papers |
@@ -54,6 +55,12 @@ lowercase markdown aliases generated under `.codex/agents/`.
 | TepuFlow deployment operator | select `pablo` or write `@agent:DEP` |
 | TepuFlow functional QA | select `casilda` or write `@agent:FQA` |
 | TepuFlow lifecycle adversarial QA | select `casilda-flows` or write `@agent:LQA` |
+| Project hours tracker | select `gisel`, write `@agent:Gisel`, or spawn `gisel` in Codex |
+
+Gisel authors and renders XLSX files in Codex Desktop through the Codex app MCP
+workspace dependency loader. In Claude, missing spreadsheet tooling produces a
+`BLOCKED_SPREADSHEET_RUNTIME` handoff to Codex, never an unverified XLSX or an
+automatic `openpyxl`/`xlsxwriter` substitution.
 
 Do not create one-off local agents for canonical modes. Update
 `core/orchestration/metaagent_router.yaml` and `integrator.yaml`, then run:
@@ -77,12 +84,20 @@ justified tier and invoke the corresponding global custom agent:
 | `luna-reviewer` | Luna high | `Spawn luna-reviewer to review ...` |
 | `terra-reviewer` | Terra high | `Spawn terra-reviewer as an independent reviewer ...` |
 | `sol-integrator` | Sol high | `Spawn sol-integrator for final integration ...` |
+| `gisel` | Luna high | `Spawn gisel to update the project-hours tracker ...` |
+| `pablo` | Luna high | `Spawn pablo for TepuFlow deployment preflight ...` |
+| `casilda` | Terra high | `Spawn casilda for TepuFlow functional QA ...` |
+| `casilda-flows` | Terra high | `Spawn casilda-flows for TepuFlow lifecycle QA ...` |
 
 High-impact independent review must use a separate provider-native Brain task,
 close as PASS with the required evidence categories, and match the current
 worktree fingerprint at commit time. A larger model cannot replace missing
 evidence, failed gates, or user authorization. See
 `docs/subagent-model-escalation.md`.
+
+All canonical TOML profiles are materialized in every registered adapter and
+in `~/.codex/agents`. Pablo and both Casilda profiles remain operationally
+scoped to `moneyflowlist`; visibility does not grant cross-project authority.
 
 ## External App Financial Authority
 
@@ -118,6 +133,7 @@ NEGRITAOS/
 │   ├── decision-support/       → decision_support_agent
 │   ├── executive-presenter/    → presentation_agent
 │   ├── jira-import/            → jira_import_agent
+│   ├── project-hours-tracker/  → project_hours_tracker_agent (Gisel)
 │   ├── quality-gauntlet/       → quality_gauntlet_agent
 │   ├── team-lead-ds/           → team_lead_ds_agent
 │   └── technical-writer/       → technical_writer_agent
@@ -147,7 +163,7 @@ Every `agent.yaml` contains:
 ```yaml
 agent:
   id:               # Unique agent identifier
-  router_mode:      # Router mode ID (LP / AE / TD / MR / CR / PRR / DEP / FQA / LQA / QG / PA / EP / DQ / RT)
+  router_mode:      # Router mode ID (LP / HOURS / AE / TD / MR / CR / PRR / DEP / FQA / LQA / QG / PA / EP / DQ / RT)
   version:          # Semantic version
   layer:            # academic / intelligence / strategic / technical
   description:      # What this agent does and what it does NOT do

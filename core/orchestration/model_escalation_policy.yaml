@@ -63,6 +63,10 @@ model_escalation_policy:
     writeup: document_artifact_qa
     deck: document_artifact_qa
     presentation: document_artifact_qa
+    tracking_hours: data_reconciliation
+    hours_tracking: data_reconciliation
+    workload_estimate: data_reconciliation
+    overtime_estimate: data_reconciliation
     planning: limited_scope_reasoning
     implementation: limited_scope_reasoning
     write: limited_scope_reasoning
@@ -173,12 +177,22 @@ model_escalation_policy:
     - luna-reviewer
     - terra-reviewer
     - sol-integrator
+    - gisel
+    - pablo
+    - casilda
+    - casilda-flows
+
+  custom_agent_distribution:
+    all_canonical_agents_global: true
+    user_home: ~/.codex/agents
 
   custom_agent_tiers:
     luna-worker: luna_medium
     luna-reviewer: luna_high
     terra-reviewer: terra_high
     sol-integrator: sol_high
+    gisel: luna_high
+    project_hours_tracker_agent: luna_high
     pablo: luna_high
     casilda: terra_high
     casilda-flows: terra_high

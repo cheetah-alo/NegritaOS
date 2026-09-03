@@ -115,6 +115,7 @@ Every request is classified into exactly one mode (mixed requests run a pipeline
 | Mode | Label | Agent | When to use it |
 |---|---|---|---|
 | **LP** | Leadership Planning | `team_lead_ds_agent` | Roadmaps, Jira epics, sprint plans, escalations, OKRs |
+| **HOURS** | Project Hours Tracking | `project_hours_tracker_agent` | Gisel builds evidence-based workload and overtime XLSX trackers |
 | **AE** | Academic Evaluation | `tfm_evaluator_agent` | Thesis / TFM tribunal reviews, methodology critique |
 | **TD** | Technical Documentation | `technical_writer_agent` | Notion / Confluence pages, technical memos, postmortems |
 | **MR** | ML / EDA / Model Review | `model_review_agent` | Model review, EDA, SHAP, leakage, XGBoost / AutoGluon / EBM |
@@ -135,6 +136,10 @@ You can force a mode in any prompt: `@agent:MR review this churn model` or
 Claude Code native agent selection uses lowercase aliases: `--agent prr`,
 `--agent td`, `--agent mr`, etc. Uppercase IDs remain the NegritaOS router
 modes. See [docs/claude-agent-aliases.md](docs/claude-agent-aliases.md).
+
+Codex custom TOML profiles are synchronized to every registered adapter and
+`~/.codex/agents`. Start a new Codex session after adding or changing a profile;
+an already-open session keeps the role catalog loaded at startup.
 
 ---
 
@@ -165,6 +170,7 @@ All agents are defined in [integrator.yaml](integrator.yaml) with the same shape
 | `quality_gauntlet_agent` | Benchmarked quality loop with separate builder and critic against a real reference. |
 | `technical_writer_agent` | Notion / Confluence docs with explicit assumptions & next actions. |
 | `team_lead_ds_agent` | Ambiguity → requirements → tasks → roadmap → escalation. |
+| `project_hours_tracker_agent` | Gisel reconciles Git and project evidence into versioned workload, overtime, Gantt, and audit-ready XLSX trackers. |
 | `ai_trend_radar_agent` | AI / blockchain trend & paper radar with hype-vs-reality classification. |
 | `data_quality_sentinel_agent` | DQ incidents, RCAs, escalation logs. |
 
@@ -419,6 +425,7 @@ A shorter version works too — the router will still pick the right agent from 
 - `@agent:CR …` for code review
 - `@agent:PRR …` for pull-request risk review
 - `@agent:QG …` for benchmarked quality-bar gauntlets
+- `@agent:Gisel …` for project-hours tracking and overtime estimates
 - `@agent:DQ …` for data-quality incidents
 - `@agent:EP …` for presentations
 - … see [§3](#3-the-operational-modes)
@@ -587,7 +594,7 @@ python3 scripts/validate_alignment.py --sibling /abs/path
 ```
 
 Modes (quick recall):
-**LP** lead · **AE** academic · **TD** docs · **MR** model · **CR** code · **PRR** PR risk · **QG** gauntlet · **PA** plots · **EP** present · **DQ** data-quality · **RT** research
+**LP** lead · **Gisel/HOURS** project hours · **AE** academic · **TD** docs · **MR** model · **CR** code · **PRR** PR risk · **QG** gauntlet · **PA** plots · **EP** present · **DQ** data-quality · **RT** research
 
 ---
 

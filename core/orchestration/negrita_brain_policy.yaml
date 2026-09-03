@@ -24,6 +24,10 @@ negrita_brain:
       claude: hook.session_id
   default_mode_map:
     planning: LP
+    tracking_hours: HOURS
+    hours_tracking: HOURS
+    workload_estimate: HOURS
+    overtime_estimate: HOURS
     architecture: LP
     documentation: TD
     writeup: TD

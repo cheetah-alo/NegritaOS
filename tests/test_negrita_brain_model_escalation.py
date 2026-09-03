@@ -128,6 +128,25 @@ class TestModelEscalationPolicy(unittest.TestCase):
         self.assertEqual(route["tier"], "terra_high")
         self.assertIn("agent:casilda_lifecycle_qa_agent", route["selection_reasons"])
 
+    def test_gisel_uses_luna_high_for_reconciliation(self) -> None:
+        route = resolve_model_route(
+            self.policy,
+            provider="codex",
+            actions=["tracking_hours"],
+            selected_agents=["project_hours_tracker_agent"],
+        )
+
+        self.assertEqual(route["tier"], "luna_high")
+        self.assertEqual(route["model"], "gpt-5.6-luna")
+        self.assertEqual(
+            self.policy["custom_agent_tiers"]["project_hours_tracker_agent"],
+            "luna_high",
+        )
+        self.assertIn(
+            "action:tracking_hours->data_reconciliation",
+            route["selection_reasons"],
+        )
+
     def test_production_candidate_reviewer_uses_sol(self) -> None:
         route = resolve_model_route(
             self.policy,

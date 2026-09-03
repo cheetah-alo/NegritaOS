@@ -24,6 +24,7 @@ Use uppercase mode IDs in NegritaOS prompts:
 @agent:PRR review PR #25 as a risk gate
 @agent:TD publish this documentation plan
 @agent:QG gauntlet this deck against the reference
+@agent:Gisel update this project's tracking-hours workbook
 ```
 
 Use lowercase aliases in Claude native agent selection:
@@ -32,6 +33,7 @@ Use lowercase aliases in Claude native agent selection:
 --agent prr
 --agent td
 --agent qg
+--agent gisel
 ```
 
 Claude may still receive a prompt that says `PRR: ...`. The selected alias must
@@ -43,6 +45,7 @@ before running config resolution.
 | NegritaOS Mode | Claude Alias | Canonical Agent |
 |---|---|---|
 | `LP` | `lp` | `team_lead_ds_agent` |
+| `HOURS` | `gisel` | `project_hours_tracker_agent` |
 | `AE` | `ae` | `tfm_evaluator_agent` |
 | `TD` | `td` | `technical_writer_agent` |
 | `MR` | `mr` | `model_review_agent` |
@@ -63,8 +66,9 @@ python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve --roo
 ```
 
 If the result is `BLOCK`, the alias responds `BLOCKED_CONFIG_RESOLUTION` and
-reports the reason. If the active project registry does not declare the
-canonical agent, the alias responds `ROUTING_UNAVAILABLE`.
+reports the reason. If the canonical agent is neither declared by the active
+project registry nor marked `global_agent: true`, the alias responds
+`ROUTING_UNAVAILABLE`.
 
 ## Synchronize
 

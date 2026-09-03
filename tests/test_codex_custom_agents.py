@@ -8,12 +8,14 @@ from tempfile import TemporaryDirectory
 from scripts.sync_codex_custom_agents import (
     configured_agents,
     global_custom_agents,
+    sync_user_home,
     sync_repo,
 )
 from scripts.validate_codex_custom_agents import (
     validate_registry_declarations,
     validate_repo,
     validate_toml,
+    validate_user_home,
 )
 
 
@@ -72,6 +74,44 @@ class TestCodexCustomAgents(unittest.TestCase):
             destination = repo / ".codex" / "agents" / "pablo.toml"
             self.assertTrue(destination.is_symlink())
             self.assertEqual(validate_repo(repo, root), [])
+
+    def test_sync_user_home_creates_global_agent_symlink(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            base = Path(temporary_directory)
+            root, _ = self._fixture(base)
+            policy = root / "core" / "orchestration" / "model_escalation_policy.yaml"
+            policy.write_text(
+                policy.read_text(encoding="utf-8").replace(
+                    "global_codex_custom_agents: []",
+                    "global_codex_custom_agents: [pablo]",
+                ),
+                encoding="utf-8",
+            )
+            codex_home = base / "codex-home"
+
+            self.assertEqual(
+                sync_user_home(root, codex_home, dry_run=False), ["pablo"]
+            )
+            destination = codex_home / "agents" / "pablo.toml"
+            self.assertTrue(destination.is_symlink())
+            self.assertEqual(validate_user_home(codex_home, root), [])
+
+    def test_global_distribution_requires_every_canonical_toml(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            root, _ = self._fixture(Path(temporary_directory))
+            policy = root / "core" / "orchestration" / "model_escalation_policy.yaml"
+            policy.write_text(
+                policy.read_text(encoding="utf-8")
+                + "  custom_agent_distribution:\n"
+                + "    all_canonical_agents_global: true\n",
+                encoding="utf-8",
+            )
+
+            errors = validate_registry_declarations(root)
+
+            self.assertTrue(
+                any("not globally declared: pablo" in error for error in errors)
+            )
 
     def test_invalid_name_or_sandbox_is_rejected(self) -> None:
         with TemporaryDirectory() as temporary_directory:

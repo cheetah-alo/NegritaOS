@@ -630,6 +630,13 @@ def resolve_session(
         else {}
     )
     available_agents = list(context.project.get("agents", []))
+    if isinstance(router_modes, dict):
+        for mode_config in router_modes.values():
+            if not isinstance(mode_config, dict) or mode_config.get("global_agent") is not True:
+                continue
+            agent = mode_config.get("agent")
+            if isinstance(agent, str) and agent not in available_agents:
+                available_agents.append(agent)
     selected_agents: list[str] = []
     for mode in modes:
         agent = agent_by_mode.get(mode)

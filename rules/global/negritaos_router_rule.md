@@ -12,7 +12,7 @@ provides:
 description: >
   Binds NegritaOS' master agent registry (integrator.yaml) and metaagent router
   to any agent client operating in this repository. Defines the operational
-  and specialist modes (LP/AE/TD/MR/CR/PRR/DEP/FQA/LQA/QG/PA/EP/DQ/RT), their routing keywords, and the contract
+  and specialist modes (LP/HOURS/AE/TD/MR/CR/PRR/DEP/FQA/LQA/QG/PA/EP/DQ/RT), their routing keywords, and the contract
   resolution order between NegritaOS-native rules and repo-local adapter rules.
 version: 1.0.0
 applyTo: [repo, agents, prompts, claude, codex, copilot]
@@ -47,6 +47,7 @@ Before producing output, an agent MUST:
 | Mode ID | Label | Agent in `integrator.yaml` | Primary triggers |
 |---|---|---|---|
 | **LP** | Leadership Planning | `team_lead_ds_agent` | roadmap, sprint, jira, escalation, OKR, blocker |
+| **HOURS** | Project Hours Tracking | `project_hours_tracker_agent` | Gisel, tracking hours, workload estimate, overtime, Gantt workbook |
 | **AE** | Academic Evaluation | `tfm_evaluator_agent` | thesis, TFM, tribunal, proposal, methodology review |
 | **TD** | Technical Documentation | `technical_writer_agent` | notion doc, confluence, technical memo, postmortem |
 | **MR** | ML / EDA / Model Review | `model_review_agent` | model review, EDA, SHAP, leakage, XGBoost, AutoGluon, EBM, churn |
@@ -76,7 +77,8 @@ MUST resolve the active mode in this order:
    "new analysis", "data incident"), use the mapped mode directly.
 2. Otherwise, fall back to the global trigger table in §2.
 3. Cross-check that the resolved mode's agent is listed in the project's
-   `agents:` block. If not, raise a routing warning and ask the user.
+   `agents:` block or declared `global_agent: true` by the canonical router. If
+   neither applies, raise a routing warning and ask the user.
 
 Example (`projects/proj_data_analytics.yaml`):
 
@@ -107,7 +109,7 @@ dependencies, risks, acceptance_criteria).
 
 Per `zsmash/revision_de_claude.md`:
 
-- NegritaOS-only modes (**AE, RT, EP, LP, TD**) execute against NegritaOS
+- NegritaOS-only modes (**AE, RT, EP, LP, HOURS, TD**) execute against NegritaOS
   `rules/` + `skills/` only. Adapter rules under `.codex/rules/dev-*.md` are
   not loaded for these modes.
 - Engineering modes (**MR, CR, PRR, DEP, FQA, LQA, DQ**) execute against NegritaOS rules **plus**
@@ -205,6 +207,8 @@ production-candidate final integration requires Sol. Missing evidence remains
 - Treating the duplicated `.claude/` tree as a separate source of truth.
 - Treating `LQA` or `casilda-flows` as an unregistered local persona instead of
   resolving `casilda_lifecycle_qa_agent` through the canonical project registry.
+- Treating `Gisel` as project-local or unavailable instead of resolving the
+  globally routed `project_hours_tracker_agent`.
 - Treating an authenticated external account as authorization to spend money or
   change its plan.
 - Opening authenticated work in a default or in-app browser without resolving

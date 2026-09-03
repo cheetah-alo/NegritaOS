@@ -977,6 +977,41 @@ negrita_os:
         - timeline_is_realistic
         - risks_are_actionable
 
+    project_hours_tracker_agent:
+      description: "Gisel creates and updates evidence-based project workload and overtime XLSX trackers."
+      persona:
+        - project_workload_analyst
+        - evidence_reconciliation_specialist
+        - spreadsheet_quality_controller
+      skills:
+        - skills/strategic/project_hours_tracking.md
+        - skills/transversal/evidence_framing.md
+        - skills/transversal/structured_reasoning.md
+      codex_skills:
+        - .codex/skills/project-hours-tracking/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/governance/governance_rules.yaml
+      rubrics:
+        - rubrics/data_quality_rubric.yaml
+        - rubrics/task_quality_rubric.yaml
+      output_modes:
+        - new_project_hours_tracker
+        - updated_project_hours_tracker
+        - workload_and_overtime_summary
+        - retention_hold
+        - blocked_evidence_report
+      quality_gate:
+        - commits_are_deduplicated_by_sha
+        - duration_is_not_invented_from_commit_count
+        - person_project_task_subtask_day_week_and_month_totals_reconcile
+        - overtime_uses_eight_hour_weekday_and_full_weekend_contract
+        - formulas_and_all_sheet_renders_pass
+        - spreadsheet_runtime_is_provider_resolved_or_handed_off_without_substitution
+        - local_and_shared_xlsx_sha256_match_before_retention
+        - retention_is_limited_to_older_versions_of_the_same_project_tracker
+        - final_output_is_labeled_as_an_estimate_not_a_certified_timesheet
+
     jira_import_agent:
       description: "Prepares Jira Cloud bulk-import CSV hierarchies, validation mapping, rescue imports, and audit evidence."
       persona:
@@ -1339,6 +1374,15 @@ negrita_os:
 
       roadmap:
         use_agent: team_lead_ds_agent
+
+      project_hours_tracker:
+        use_agent: project_hours_tracker_agent
+
+      tracking_hours:
+        use_agent: project_hours_tracker_agent
+
+      workload_or_overtime_estimate:
+        use_agent: project_hours_tracker_agent
 
       escalation:
         use_agent: team_lead_ds_agent

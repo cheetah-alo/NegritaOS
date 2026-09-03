@@ -13,9 +13,25 @@ duplicate the policy.
 | `luna-reviewer` | GPT-5.6 Luna, high | Focused code/SQL review, reproduction, reconciliation, approved-contract checks |
 | `terra-reviewer` | GPT-5.6 Terra, high | Material ambiguity, semantics, lineage, multi-stage discrepancies, high-impact review |
 | `sol-integrator` | GPT-5.6 Sol, high | Architecture, contract decisions, disputed results, production-candidate integration |
+| `gisel` | GPT-5.6 Luna, high | Evidence-based project-hours workbook creation and QA |
+| `pablo` | GPT-5.6 Luna, high | TepuFlow deployment operations; globally discoverable but scoped to `moneyflowlist` |
+| `casilda` | GPT-5.6 Terra, high | TepuFlow functional QA; globally discoverable but scoped to `moneyflowlist` |
+| `casilda-flows` | GPT-5.6 Terra, high | TepuFlow lifecycle adversarial QA; globally discoverable but scoped to `moneyflowlist` |
 
 These TOML agents are global defaults and are materialized into every
 NegritaOS adapter. Project-specific agents may have a canonical tier override.
+
+They are also linked into `~/.codex/agents/` so new Codex sessions can discover
+the same roles outside a particular adapter. Run:
+
+```bash
+python3 scripts/sync_codex_custom_agents.py --user-home --all-projects --write
+python3 scripts/validate_codex_custom_agents.py --user-home --all-projects
+```
+
+Agent discovery occurs when a Codex session starts. A session opened before a
+profile was added must be restarted; changing files cannot retrofit the role
+catalog already attached to an active session.
 
 ## Resolve Before Delegating
 

@@ -65,6 +65,9 @@ class TestInstaller(unittest.TestCase):
         self.assertTrue((self.repo / ".codex" / "skills" / "document-control").exists())
         self.assertTrue((self.repo / ".codex" / "skills" / "docs-alignment").exists())
         self.assertTrue(
+            (self.repo / ".codex" / "skills" / "project-hours-tracking").exists()
+        )
+        self.assertTrue(
             (self.repo / ".codex" / "skills" / "local-memory-protocol").exists()
         )
         self.assertTrue((self.repo / ".codex" / "commands" / "brain.md").is_file())
@@ -95,6 +98,10 @@ class TestInstaller(unittest.TestCase):
             "luna-reviewer",
             "terra-reviewer",
             "sol-integrator",
+            "gisel",
+            "pablo",
+            "casilda",
+            "casilda-flows",
         ):
             agent = self.repo / ".codex" / "agents" / f"{agent_name}.toml"
             self.assertTrue(agent.is_symlink(), agent_name)

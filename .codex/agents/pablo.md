@@ -12,6 +12,7 @@ memory: project
 canonical_mode: DEP
 canonical_agent: pablo_deployment_operator_agent
 canonical_label: TepuFlow Deployment Operations
+global_agent: false
 
 This file is a Claude-native wrapper. The source of truth is NegritaOS:
 
@@ -37,7 +38,10 @@ language triggers. Treat those as requests for this same NegritaOS mode.
 Before answering or editing, run canonical resolution:
 
 ```bash
-python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve   --root "$PWD"   --provider claude   --action deployment
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve \
+  --root "$PWD" \
+  --provider claude \
+  --action deployment
 ```
 
 Then load the resolved project registry, profile closure, skills, rules,
@@ -45,8 +49,8 @@ rubrics, templates, artifact route, and gates. If resolution returns `BLOCK`,
 answer `BLOCKED_CONFIG_RESOLUTION` and report the reason.
 
 If the active project registry does not declare `pablo_deployment_operator_agent`, answer
-`ROUTING_UNAVAILABLE` and name the missing project registry entry. Do not ask
-what `DEP` means; it is the canonical router mode above.
+`ROUTING_UNAVAILABLE` and name the missing project registry entry.
+Do not ask what `DEP` means; it is the canonical router mode above.
 
 ## Canonical Skills
 

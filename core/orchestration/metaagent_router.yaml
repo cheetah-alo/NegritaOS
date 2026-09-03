@@ -57,6 +57,38 @@ metaagent_router:
         - weekly_summary
         - four_month_roadmap
 
+    project_hours_tracking:
+      id: HOURS
+      native_alias: gisel
+      global_agent: true
+      label: "Project Hours Tracking"
+      agent: project_hours_tracker_agent
+      trigger_signals:
+        - Gisel
+        - project hours tracker
+        - tracking hours
+        - tracker de horas
+        - actualizar tracker
+        - carga laboral
+        - workload estimate
+        - overtime estimate
+        - horas extra
+        - commits to hours
+        - project Gantt workbook
+      input_types:
+        - project name
+        - repository path
+        - Git history
+        - prior tracking workbook
+        - corroborated repository evidence
+        - confirmed meeting or duration calibration
+      output_types:
+        - new_project_hours_tracker
+        - updated_project_hours_tracker
+        - workload_and_overtime_summary
+        - retention_hold
+        - blocked_evidence_report
+
     academic_evaluation:
       id: AE
       label: "Academic Evaluation"

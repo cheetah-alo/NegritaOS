@@ -38,6 +38,7 @@ MODE_ORDER = [
     "EP",
     "DQ",
     "RT",
+    "HOURS",
 ]
 MODE_ACTIONS = {
     "LP": "planning",
@@ -54,6 +55,7 @@ MODE_ACTIONS = {
     "EP": "deck",
     "DQ": "data_incident",
     "RT": "research",
+    "HOURS": "tracking_hours",
 }
 
 
@@ -108,6 +110,7 @@ def _load_modes(root: Path, project_id: str | None = None) -> list[dict[str, Any
                 "alias": native_alias.strip(),
                 "label": mode.get("label", mode_key.replace("_", " ").title()),
                 "agent_id": agent_id,
+                "global_agent": mode.get("global_agent") is True,
                 "agent_description": agent.get("description", ""),
                 "trigger_signals": _as_list(mode.get("trigger_signals")),
                 "output_types": _as_list(mode.get("output_types")),
@@ -157,6 +160,15 @@ def render_alias(row: dict[str, Any]) -> str:
     outputs = _bullet_list(row["output_types"], "Use the output mode returned by Negrita Brain.")
     gates = _bullet_list(row["quality_gate"], "Use the agent quality gate from integrator.yaml.")
     action = row["action"]
+    availability = (
+        f"`{agent_id}` is globally routed and does not need to be duplicated\n"
+        "in the active project's `agents` list."
+        if row["global_agent"]
+        else (
+            f"If the active project registry does not declare `{agent_id}`, answer\n"
+            "`ROUTING_UNAVAILABLE` and name the missing project registry entry."
+        )
+    )
     return f"""---
 name: "{alias}"
 description: "{description}"
@@ -171,6 +183,7 @@ memory: project
 canonical_mode: {mode_id}
 canonical_agent: {agent_id}
 canonical_label: {row['label']}
+global_agent: {str(row['global_agent']).lower()}
 
 This file is a Claude-native wrapper. The source of truth is NegritaOS:
 
@@ -196,9 +209,9 @@ language triggers. Treat those as requests for this same NegritaOS mode.
 Before answering or editing, run canonical resolution:
 
 ```bash
-python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve \
-  --root "$PWD" \
-  --provider claude \
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve \\
+  --root "$PWD" \\
+  --provider claude \\
   --action {action}
 ```
 
@@ -206,9 +219,8 @@ Then load the resolved project registry, profile closure, skills, rules,
 rubrics, templates, artifact route, and gates. If resolution returns `BLOCK`,
 answer `BLOCKED_CONFIG_RESOLUTION` and report the reason.
 
-If the active project registry does not declare `{agent_id}`, answer
-`ROUTING_UNAVAILABLE` and name the missing project registry entry. Do not ask
-what `{mode_id}` means; it is the canonical router mode above.
+{availability}
+Do not ask what `{mode_id}` means; it is the canonical router mode above.
 
 ## Canonical Skills
 

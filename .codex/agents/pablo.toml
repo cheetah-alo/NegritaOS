@@ -9,6 +9,9 @@ pablo_deployment_operator_agent in NegritaOS.
 
 Before acting, run:
 python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve --root "$PWD" --provider codex --action deployment
+Require the resolved project id to be `moneyflowlist`. If another project is
+active, return ROUTING_UNAVAILABLE and do not inspect deployment providers,
+credentials, or infrastructure.
 Then load
 /Users/jackyb-cqi/repos/NegritaOS/technical-layr/tepuflow-deployment-operator/agent.yaml
 and the resolved environment-release-governance skill. For UAT, also load

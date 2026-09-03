@@ -197,6 +197,28 @@ def validate_resolution(
     if not isinstance(agents, dict):
         errors.append("integrator.yaml: negrita_os.agents must be a mapping")
         return errors, warnings, project_id
+    modes = _router_modes(router_data)
+    global_router_agents: set[str] = set()
+    for mode_id, mode in modes.items():
+        global_agent = mode.get("global_agent", False)
+        if not isinstance(global_agent, bool):
+            errors.append(f"router mode {mode_id!r}: global_agent must be boolean")
+            continue
+        if not global_agent:
+            continue
+        resolved_agent = mode.get("agent")
+        if not isinstance(resolved_agent, str) or not resolved_agent.strip():
+            errors.append(f"router mode {mode_id!r}: global agent is missing")
+            continue
+        global_router_agents.add(resolved_agent)
+        agent = agents.get(resolved_agent)
+        if not isinstance(agent, dict):
+            errors.append(
+                f"router mode {mode_id!r}: global agent {resolved_agent!r} "
+                "is not registered in integrator.yaml"
+            )
+            continue
+        _check_asset_paths(root, resolved_agent, agent, errors)
     project_agents = set(_as_strings(project.get("agents")))
     declared_profiles = _as_strings(project.get("skill_profiles"))
     capabilities = set(_as_strings(project.get("capabilities")))
@@ -228,7 +250,16 @@ def validate_resolution(
             continue
         _check_asset_paths(root, agent_id, agent, errors)
 
-    for profile_id in declared_profiles:
+    try:
+        profile_closure = resolve_project_profiles(catalog, project)
+        active_profiles = profile_closure.profiles
+        resolved_skills = profile_closure.skills
+    except ProfileResolutionError as exc:
+        errors.append(f"project {project_id}: {exc}")
+        active_profiles = tuple(declared_profiles)
+        resolved_skills = ()
+
+    for profile_id in active_profiles:
         profile = profiles.get(profile_id)
         if not isinstance(profile, dict):
             errors.append(
@@ -236,17 +267,18 @@ def validate_resolution(
                 "from skills/catalog.yaml"
             )
             continue
-        for required_agent in PROFILE_AGENT_REQUIREMENTS.get(profile_id, set()):
-            if required_agent not in project_agents:
+        required_agents = set(PROFILE_AGENT_REQUIREMENTS.get(profile_id, set()))
+        required_agents.update(_as_strings(profile.get("required_agents")))
+        for required_agent in sorted(required_agents):
+            if (
+                required_agent not in project_agents
+                and required_agent not in global_router_agents
+            ):
                 errors.append(
                     f"project {project_id}: profile {profile_id} requires "
-                    f"agent {required_agent}, but it is not declared"
+                    f"agent {required_agent}, but it is neither project-declared "
+                    "nor globally routed"
                 )
-    try:
-        resolved_skills = resolve_project_profiles(catalog, project).skills
-    except ProfileResolutionError as exc:
-        errors.append(f"project {project_id}: {exc}")
-        resolved_skills = ()
     for skill_id in resolved_skills:
         entry = skills_by_id.get(skill_id)
         if not isinstance(entry, dict):
@@ -260,7 +292,6 @@ def validate_resolution(
             if isinstance(raw_path, str) and not _resolve(root, raw_path).exists():
                 errors.append(f"catalog skill {skill_id}: missing {key} {raw_path}")
 
-    modes = _router_modes(router_data)
     mode_map = project.get("mode_map", {})
     if isinstance(mode_map, dict):
         for intent, mode_id in mode_map.items():
@@ -291,14 +322,18 @@ def validate_resolution(
                 )
                 continue
             resolved_agent = mode.get("agent")
-            if isinstance(resolved_agent, str) and resolved_agent not in project_agents:
+            if (
+                isinstance(resolved_agent, str)
+                and resolved_agent not in project_agents
+                and resolved_agent not in global_router_agents
+            ):
                 errors.append(
                     f"project {project_id}: mode_map.{intent} resolves to "
                     f"{resolved_agent}, which is not in agents"
                 )
 
     manifests = _load_agent_manifests(root)
-    for agent_id in sorted(project_agents):
+    for agent_id in sorted(project_agents | global_router_agents):
         if agent_id not in manifests:
             errors.append(
                 f"agent {agent_id}: no standalone agent.yaml manifest was found"

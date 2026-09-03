@@ -12,6 +12,7 @@ memory: project
 canonical_mode: FQA
 canonical_agent: casilda_functional_qa_agent
 canonical_label: TepuFlow Functional Environment QA
+global_agent: false
 
 This file is a Claude-native wrapper. The source of truth is NegritaOS:
 
@@ -37,7 +38,10 @@ language triggers. Treat those as requests for this same NegritaOS mode.
 Before answering or editing, run canonical resolution:
 
 ```bash
-python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve   --root "$PWD"   --provider claude   --action functional_qa
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve \
+  --root "$PWD" \
+  --provider claude \
+  --action functional_qa
 ```
 
 Then load the resolved project registry, profile closure, skills, rules,
@@ -45,8 +49,8 @@ rubrics, templates, artifact route, and gates. If resolution returns `BLOCK`,
 answer `BLOCKED_CONFIG_RESOLUTION` and report the reason.
 
 If the active project registry does not declare `casilda_functional_qa_agent`, answer
-`ROUTING_UNAVAILABLE` and name the missing project registry entry. Do not ask
-what `FQA` means; it is the canonical router mode above.
+`ROUTING_UNAVAILABLE` and name the missing project registry entry.
+Do not ask what `FQA` means; it is the canonical router mode above.
 
 ## Canonical Skills
 

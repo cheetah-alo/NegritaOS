@@ -12,6 +12,7 @@ memory: project
 canonical_mode: DQ
 canonical_agent: data_quality_sentinel_agent
 canonical_label: Data Quality / Escalation
+global_agent: false
 
 This file is a Claude-native wrapper. The source of truth is NegritaOS:
 
@@ -37,7 +38,10 @@ language triggers. Treat those as requests for this same NegritaOS mode.
 Before answering or editing, run canonical resolution:
 
 ```bash
-python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve   --root "$PWD"   --provider claude   --action data_incident
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve \
+  --root "$PWD" \
+  --provider claude \
+  --action data_incident
 ```
 
 Then load the resolved project registry, profile closure, skills, rules,
@@ -45,8 +49,8 @@ rubrics, templates, artifact route, and gates. If resolution returns `BLOCK`,
 answer `BLOCKED_CONFIG_RESOLUTION` and report the reason.
 
 If the active project registry does not declare `data_quality_sentinel_agent`, answer
-`ROUTING_UNAVAILABLE` and name the missing project registry entry. Do not ask
-what `DQ` means; it is the canonical router mode above.
+`ROUTING_UNAVAILABLE` and name the missing project registry entry.
+Do not ask what `DQ` means; it is the canonical router mode above.
 
 ## Canonical Skills
 

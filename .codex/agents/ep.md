@@ -12,6 +12,7 @@ memory: project
 canonical_mode: EP
 canonical_agent: presentation_agent
 canonical_label: Executive Presentation
+global_agent: false
 
 This file is a Claude-native wrapper. The source of truth is NegritaOS:
 
@@ -37,7 +38,10 @@ language triggers. Treat those as requests for this same NegritaOS mode.
 Before answering or editing, run canonical resolution:
 
 ```bash
-python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve   --root "$PWD"   --provider claude   --action deck
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve \
+  --root "$PWD" \
+  --provider claude \
+  --action deck
 ```
 
 Then load the resolved project registry, profile closure, skills, rules,
@@ -45,13 +49,14 @@ rubrics, templates, artifact route, and gates. If resolution returns `BLOCK`,
 answer `BLOCKED_CONFIG_RESOLUTION` and report the reason.
 
 If the active project registry does not declare `presentation_agent`, answer
-`ROUTING_UNAVAILABLE` and name the missing project registry entry. Do not ask
-what `EP` means; it is the canonical router mode above.
+`ROUTING_UNAVAILABLE` and name the missing project registry entry.
+Do not ask what `EP` means; it is the canonical router mode above.
 
 ## Canonical Skills
 
 - `.codex/skills/analytics-storytelling-deck/SKILL.md`
 - `.codex/skills/evidence-first-plot-analysis/SKILL.md`
+- `.codex/skills/cqi-analytical-documentation/SKILL.md`
 - `.codex/skills/quality-bar-gauntlet/SKILL.md`
 
 ## Canonical Rules
@@ -72,6 +77,8 @@ what `EP` means; it is the canonical router mode above.
 ## Quality Gate
 
 - `each_slide_has_one_core_message`
+- `every_slide_has_a_discourse_ready_talk_track`
+- `talk_tracks_separate_interpretation_from_evidence_boundary`
 - `agenda_is_present_immediately_after_cover`
 - `analytical_deck_total_slide_count_is_between_10_and_80`
 - `each_chart_has_takeaway`

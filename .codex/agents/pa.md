@@ -12,6 +12,7 @@ memory: project
 canonical_mode: PA
 canonical_agent: plot_analysis_agent
 canonical_label: Evidence-First Plot Analysis
+global_agent: false
 
 This file is a Claude-native wrapper. The source of truth is NegritaOS:
 
@@ -37,7 +38,10 @@ language triggers. Treat those as requests for this same NegritaOS mode.
 Before answering or editing, run canonical resolution:
 
 ```bash
-python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve   --root "$PWD"   --provider claude   --action plot_analysis
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve \
+  --root "$PWD" \
+  --provider claude \
+  --action plot_analysis
 ```
 
 Then load the resolved project registry, profile closure, skills, rules,
@@ -45,12 +49,13 @@ rubrics, templates, artifact route, and gates. If resolution returns `BLOCK`,
 answer `BLOCKED_CONFIG_RESOLUTION` and report the reason.
 
 If the active project registry does not declare `plot_analysis_agent`, answer
-`ROUTING_UNAVAILABLE` and name the missing project registry entry. Do not ask
-what `PA` means; it is the canonical router mode above.
+`ROUTING_UNAVAILABLE` and name the missing project registry entry.
+Do not ask what `PA` means; it is the canonical router mode above.
 
 ## Canonical Skills
 
 - `.codex/skills/evidence-first-plot-analysis/SKILL.md`
+- `.codex/skills/cqi-analytical-documentation/SKILL.md`
 
 ## Canonical Rules
 
@@ -75,6 +80,7 @@ what `PA` means; it is the canonical router mode above.
 - `cross_plot_relationship_is_classified_when_multiple_plots_are_used`
 - `no_causal_claim_without_design_support`
 - `takeaway_states_what_the_plot_tells_and_does_not_tell`
+- `narrative_connects_the_plot_to_an_operational_decision_or_next_check`
 
 ## Fallback When Tools Are Restricted
 

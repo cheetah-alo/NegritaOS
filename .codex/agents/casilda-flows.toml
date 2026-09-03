@@ -9,6 +9,9 @@ registered as casilda_lifecycle_qa_agent in NegritaOS.
 
 Before acting, run:
 python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/negrita_brain.py resolve --root "$PWD" --provider codex --action lifecycle_qa
+Require the resolved project id to be `moneyflowlist`. If another project is
+active, return ROUTING_UNAVAILABLE and do not open a browser or run lifecycle
+tests.
 Then load:
 /Users/jackyb-cqi/repos/NegritaOS/technical-layr/tepuflow-lifecycle-qa/agent.yaml
 /Users/jackyb-cqi/repos/NegritaOS/.codex/skills/tepuflow-lifecycle-adversarial-qa/SKILL.md

@@ -79,11 +79,12 @@ Claude file as a thin adapter:
 - `DEP` → `.codex/agents/pablo.md` → `pablo_deployment_operator_agent`
 - `FQA` → `.codex/agents/casilda.md` → `casilda_functional_qa_agent`
 - `LQA` → `.codex/agents/casilda-flows.md` → `casilda_lifecycle_qa_agent`
+- `HOURS` → `.codex/agents/gisel.md` → `project_hours_tracker_agent`
 
 If a user writes `@agent:PRR` or `PRR: ...`, do not ask what `PRR` means. Run
-canonical resolution first. Only report `ROUTING_UNAVAILABLE` when
-`projects/<project_id>.yaml` does not declare the canonical agent returned by
-the router.
+canonical resolution first. Only report `ROUTING_UNAVAILABLE` when the
+canonical agent is neither declared by `projects/<project_id>.yaml` nor marked
+as a global agent by the router.
 
 ## Step 4 — Merge with adapter rules (engineering modes only)
 
@@ -99,7 +100,7 @@ If the active mode is **QG**, load the domain rules for the artifact under
 review: code/PR/data QG uses engineering rules; PPTX/DOCX/PDF QG uses document
 and presentation rules; plot/EDA QG uses plot and source-quality rules.
 
-If the active mode is **AE**, **RT**, **EP**, **LP**, **TD**, or **PA**:
+If the active mode is **AE**, **RT**, **EP**, **LP**, **HOURS**, **TD**, or **PA**:
 
 - Do NOT load `.codex/rules/dev-*.md`. Use NegritaOS skills only.
 
@@ -201,6 +202,8 @@ Use a structured context handoff between modes — pass `input_summary`,
   sync target of `.codex/`.
 - Treating `PRR` as missing because Claude native selection expects
   lowercase `--agent prr`.
+- Treating Gisel as missing because the project registry does not duplicate the
+  globally routed `project_hours_tracker_agent`.
 - Writing any project memory file directly instead of using the canonical
   `negrita_brain.py memory` API.
 
@@ -226,3 +229,5 @@ Use a structured context handoff between modes — pass `input_summary`,
   skill before judging against the reference.
 - *"analyze this heatmap"* → **PA**, `plot_analysis_agent`, output
   evidence-first plot interpretation.
+- *"Gisel, update the tracking-hours workbook for this repo"* → **HOURS**,
+  `project_hours_tracker_agent`, output `updated_project_hours_tracker`.

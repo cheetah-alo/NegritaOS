@@ -157,6 +157,18 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertIn("evidence-first-plot-analysis", contract["agent_skills"])
         self.assertIn("evidence-first-plot-analysis", contract["skills"])
 
+    def test_resolve_that_routes_global_project_hours_agent(self) -> None:
+        contract = resolve_session(
+            self.repo, "codex", ["tracking_hours"], ROOT, self.memory
+        )
+
+        self.assertEqual(contract["modes"], ["HOURS"])
+        self.assertEqual(contract["agents"], ["project_hours_tracker_agent"])
+        self.assertIn("project_hours_tracker_agent", contract["available_agents"])
+        self.assertIn("project-hours-tracking", contract["agent_skills"])
+        self.assertIn("project-hours-tracking", contract["skills"])
+        self.assertEqual(contract["model_route"]["tier"], "luna_high")
+
     def test_resolve_that_escalates_material_semantics_to_terra(self) -> None:
         contract = resolve_session(
             self.repo,

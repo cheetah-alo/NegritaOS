@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import os
 import re
 import shutil
 import tomllib
@@ -49,6 +50,11 @@ def global_custom_agents(root: Path = ROOT) -> list[str]:
         if name not in names:
             names.append(name)
     return names
+
+
+def canonical_custom_agents(root: Path = ROOT) -> list[str]:
+    """Return every canonical standalone custom-agent name."""
+    return sorted(path.stem for path in (root / ".codex" / "agents").glob("*.toml"))
 
 
 def _assert_valid_agent_toml(path: Path, expected_name: str) -> None:
@@ -141,10 +147,35 @@ def sync_repo(repo: Path, root: Path = ROOT, dry_run: bool = True) -> None:
         _link_agent(source, repo / ".codex" / "agents" / source.name, dry_run, timestamp)
 
 
+def sync_user_home(
+    root: Path = ROOT,
+    codex_home: Path | None = None,
+    dry_run: bool = True,
+) -> list[str]:
+    """Materialize globally declared agents in the personal Codex catalog."""
+    home = codex_home or Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
+    home = home.expanduser().resolve()
+    timestamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
+    names = global_custom_agents(root)
+    for name in names:
+        source = root / ".codex" / "agents" / f"{name}.toml"
+        if not source.is_file():
+            raise ValueError(f"missing canonical Codex custom agent: {source}")
+        _assert_valid_agent_toml(source, name)
+        _link_agent(source, home / "agents" / source.name, dry_run, timestamp)
+    return names
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", type=Path, action="append", default=[])
     parser.add_argument("--all-projects", action="store_true")
+    parser.add_argument(
+        "--user-home",
+        action="store_true",
+        help="Materialize globally declared agents under $CODEX_HOME/agents.",
+    )
+    parser.add_argument("--codex-home", type=Path)
     parser.add_argument("--write", action="store_true", help="Apply changes. Default is dry-run.")
     return parser.parse_args()
 
@@ -162,8 +193,14 @@ def main() -> int:
             continue
         seen.add(resolved)
         sync_repo(resolved, ROOT, dry_run=not args.write)
-    if not repos:
-        print("[OK] no project adapters selected; pass --repo or --all-projects")
+    if args.user_home:
+        names = sync_user_home(ROOT, args.codex_home, dry_run=not args.write)
+        action = "validated" if not args.write else "materialized"
+        print(f"[OK] {action} {len(names)} global agents in the user Codex home")
+    if not repos and not args.user_home:
+        print(
+            "[OK] no targets selected; pass --repo, --all-projects, or --user-home"
+        )
     return 0
 
 

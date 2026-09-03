@@ -89,7 +89,7 @@ Single structured report:
 - Project: <project_id>
 - Archetype: <archetype>
 - Profile: <profile_id> (<file>)
-- Mode (detected): <LP|AE|TD|MR|CR|PRR|QG|PA|EP|DQ|RT>
+- Mode (detected): <LP|HOURS|AE|TD|MR|CR|PRR|QG|PA|EP|DQ|RT>
 - Mode source: <mode_map override | global trigger | default>
 
 ## Rules auto-loaded for this mode

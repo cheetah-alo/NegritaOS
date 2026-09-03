@@ -46,6 +46,7 @@ def _expected_aliases(root: Path, project_id: str | None = None) -> list[dict[st
                     "alias": native_alias.strip(),
                     "mode_id": mode_id,
                     "agent_id": agent_id,
+                    "global_agent": str(mode.get("global_agent") is True).lower(),
                 }
             )
     names = [row["alias"] for row in aliases]
@@ -97,6 +98,8 @@ def validate_repo(repo: Path, root: Path) -> list[str]:
             errors.append(f"{repo}: {path.relative_to(repo)} has wrong canonical_mode")
         if f"canonical_agent: {expected['agent_id']}" not in text:
             errors.append(f"{repo}: {path.relative_to(repo)} has wrong canonical_agent")
+        if f"global_agent: {expected['global_agent']}" not in text:
+            errors.append(f"{repo}: {path.relative_to(repo)} has wrong global_agent flag")
     return errors
 
 
