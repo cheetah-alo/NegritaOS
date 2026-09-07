@@ -40,7 +40,7 @@ Use these skills for detailed patterns on-demand:
 | `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates, dynamic clauses, identifiers, and query variants | [SKILL.md](jinja-bigquery/SKILL.md) |
 | `branch-pr` | Provider-neutral branch and PR workflow using the project-declared base branch | [SKILL.md](branch-pr/SKILL.md) |
 | `testing-coverage` | Backend, frontend, contract, browser, and coverage gates without provider assumptions | [SKILL.md](testing-coverage/SKILL.md) |
-| `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and code-quality tooling | [SKILL.md](pull-request-risk-review/SKILL.md) |
+| `pull-request-risk-review` | Shadow-mode PR risk gate for CI, security, verification, code quality, and project-scoped commit identities | [SKILL.md](pull-request-risk-review/SKILL.md) |
 | `environment-release-governance` | Exact-commit deployment, environment promotion, independent functional QA, and production read-only gates | [SKILL.md](environment-release-governance/SKILL.md) |
 | `tepuflow-lifecycle-adversarial-qa` | Adversarial UF-00 to UF-13 lifecycle, route, state, persistence, responsive, accessibility, and visual QA for TepuFlow | [SKILL.md](tepuflow-lifecycle-adversarial-qa/SKILL.md) |
 | `quality-bar-gauntlet` | Benchmark-driven quality loop with separate builder and critic against a named, fetchable, comparable reference | [SKILL.md](quality-bar-gauntlet/SKILL.md) |

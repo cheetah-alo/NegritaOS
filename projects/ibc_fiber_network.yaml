@@ -11,6 +11,7 @@ project:
   local_paths:
     primary: "/Users/jackyb-cqi/repos/ibc_fiber_network"
   memory_home: "~/.negritaos/memory/projects/ibc_fiber_network"
+  commit_identity_policy: cqi_corporate_only_v1
   browser_context:
     routing_policy: governed
     account_scope: cqi_work

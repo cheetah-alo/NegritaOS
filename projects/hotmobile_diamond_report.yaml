@@ -18,6 +18,7 @@ project:
     docs: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/docs"
     evaluation_pdf: "/Users/jackyb-cqi/repos/hotmobile-diamond-report/docs/evaluacion_diamond_report_segmentacion_horaria.pdf"
   memory_home: "~/.negritaos/memory/projects/hotmobile_diamond_report"
+  commit_identity_policy: cqi_corporate_only_v1
   browser_context:
     routing_policy: governed
     account_scope: cqi_work

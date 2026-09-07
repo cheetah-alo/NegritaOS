@@ -25,6 +25,10 @@ Required evidence:
 - exact validation commands, counts, coverage, and E2E results;
 - confirmation that temporary, coverage, output, secret, and local files are
   excluded.
+- the resolved `commit_identity_policy`, exact `base..head` range, and masked
+  author/committer result when the project declares that gate.
 
 Keep one logical change per branch and do not publish, push, or create a PR
 unless the user or project workflow explicitly requests that action.
+Do not rewrite a published branch to repair identity metadata without explicit
+user authorization; use `--force-with-lease`, never plain force, when approved.

@@ -8,7 +8,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: NegritaOS
-  version: "1.0"
+  version: "1.1"
   scope: [root]
   auto_invoke: "Reviewing pull requests, PR risk, merge gates, or PR approvals"
 ---
@@ -59,6 +59,8 @@ Collect and cite the evidence actually inspected:
   secrets, data contracts, SQL, migrations, generated artifacts.
 - Required checks and status: complete, passed, failed, pending, skipped.
 - Test evidence and exact commands when available.
+- Author and committer identities for the exact `base..head` commit range when
+  the project registry declares `commit_identity_policy`.
 - Comments or review threads that change acceptance risk.
 - CODEOWNERS or project-declared ownership rules when present.
 
@@ -95,6 +97,31 @@ Default thresholds:
 
 Hard stops override numeric thresholds.
 
+## CQI Commit Identity Gate
+
+When the resolved project registry declares
+`commit_identity_policy: cqi_corporate_only_v1`, inspect every author and
+committer identity introduced by the PR:
+
+```bash
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/check_cqi_commit_identity.py \
+  --repo "$PWD" --base <base-ref> --head <head-ref>
+```
+
+- `cqisense.com` and its subdomains, including `ext.cqisense.com`, are allowed.
+- Any other domain, including `gmail.com`, is a hard stop.
+- Inspect only commits introduced by the PR. Historical commits reachable from
+  the base are outside this gate and must not block the PR.
+- Inspect both author and committer; one valid identity does not excuse the
+  other.
+- Report only masked identities such as `***@gmail.com`.
+- If the repository has its own `scripts/check_commit_identity.py`, preserve it
+  and require its CI result as deterministic repository-local enforcement. The
+  canonical checker does not replace a CI control that GitHub can run without
+  access to the NegritaOS checkout.
+- Never rewrite commit history automatically. Rewriting requires explicit user
+  authorization and, when publication is necessary, `--force-with-lease`.
+
 ## Hard Stops
 
 Return `blocked` or `insufficient_evidence` when any of these apply:
@@ -107,6 +134,8 @@ Return `blocked` or `insufficient_evidence` when any of these apply:
 - production data contracts, schemas, SQL, or source adapters change without
   contract tests or dry-run evidence;
 - generated coverage/tmp/output/local artifacts are committed;
+- a project-scoped commit identity check finds a non-corporate author or
+  committer in the introduced commit range;
 - the diff cannot be inspected fully.
 
 Test changes are a separate integrity review. Weakening assertions, deleting
@@ -186,6 +215,13 @@ quality_checks:
   mccabe: {command: <exact-command-or-null>, status: pass|fail|not_run, threshold: 10}
   coverage: {command: <exact-command-or-null>, status: pass|fail|not_run, summary: <summary>}
   vulture: {command: <exact-command-or-null>, status: pass|fail|not_run, summary: <summary>}
+commit_identity:
+  policy: <policy-id-or-null>
+  range: <base..head-or-null>
+  commits_checked: 0
+  author_status: pass|fail|not_applicable|not_run
+  committer_status: pass|fail|not_applicable|not_run
+  violations: []
 hard_escalation_reasons: []
 risk_total_60: 0
 risk_score_100: 0
@@ -194,7 +230,7 @@ recommended_action: approve_candidate|human_review|changes_required|blocked|insu
 auto_approve_allowed: false
 uncertainties: []
 audit:
-  policy_version: pull-request-risk-review@1.0
+  policy_version: pull-request-risk-review@1.1
   review_mode: shadow
 ```
 

@@ -199,7 +199,20 @@ falsify the implementation. High-impact work requires Terra or higher;
 production-candidate final integration requires Sol. Missing evidence remains
 `HOLD` and cannot be repaired through model selection.
 
-## 11. Anti-patterns
+## 11. Commit Identity Resolution
+
+Use the `commit_identity` block returned by Negrita Brain. A `required` status
+means PRR and commit review must inspect both author and committer on the exact
+introduced `base..head` range. A violation is a hard stop, but legacy history
+reachable from the base is excluded. Never infer a policy from a project name,
+folder, GitHub organization, or browser profile.
+
+Use `scripts/check_cqi_commit_identity.py` for canonical local review and retain
+repository-local deterministic CI guards. Report masked identities only. Never
+rewrite history without explicit user authorization; an approved published
+rewrite uses `--force-with-lease`, never plain force.
+
+## 12. Anti-patterns
 
 - Loading `.codex/rules/dev-*.md` for AE/RT/EP/LP/TD modes.
 - Writing memory to `.codex/memory/` when a canonical project home exists.
@@ -214,6 +227,8 @@ production-candidate final integration requires Sol. Missing evidence remains
   instead of updating the globally routed governance card.
 - Treating an authenticated external account as authorization to spend money or
   change its plan.
+- Ignoring a resolved required commit identity policy or scanning all legacy
+  history instead of the introduced PR range.
 - Opening authenticated work in a default or in-app browser without resolving
   the project's governed Brave profile first.
 - Selecting Terra or Sol without a declared escalation signal or impact.

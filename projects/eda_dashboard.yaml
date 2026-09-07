@@ -10,6 +10,7 @@ project:
   local_paths:
     primary: "/Users/jackyb-cqi/repos/eda_dashboard"
   memory_home: "~/.negritaos/memory/projects/eda_dashboard"
+  commit_identity_policy: cqi_corporate_only_v1
   browser_context:
     routing_policy: governed
     account_scope: personal_cheetah_alo

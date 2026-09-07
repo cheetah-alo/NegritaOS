@@ -132,6 +132,10 @@ class TestRuntimeContract(RuntimeFixture):
             "personal_cheetah_alo",
         )
         self.assertIn("governed-browser-routing", contract["skills"])
+        self.assertEqual(
+            contract["commit_identity"],
+            {"policy": None, "status": "not_applicable"},
+        )
         self.assertEqual(contract["model_route"]["tier"], "luna_high")
         self.assertEqual(contract["model_route"]["model"], "gpt-5.6-luna")
         self.assertEqual(

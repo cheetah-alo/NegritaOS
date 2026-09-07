@@ -27,6 +27,13 @@ Use this skill when:
 7. Report pending commits against the remote base, using `git log --oneline origin/main..HEAD` when applicable.
 8. State the branch decision explicitly: continue current branch, create a new branch, or open PR before continuing.
 9. If the branch has more than 5 unmerged commits, recommend opening a PR and continuing new work on a fresh branch.
+10. When the resolved project declares `commit_identity_policy`, verify both
+    author and committer identities before commit and run the canonical
+    introduced-range checker before PR approval. Do not infer this policy from
+    a folder name.
+11. A noncompliant published commit must be reported, not rewritten
+    automatically. Rewriting requires explicit user authorization and
+    `--force-with-lease`.
 
 ## Pre-Commit Checklist
 
@@ -38,3 +45,4 @@ Use this skill when:
 - [ ] No cache, coverage, build, or scratch artifacts
 - [ ] Relevant tests or checks for the change were run
 - [ ] Commit message is clear and scoped
+- [ ] Project-scoped author and committer identity policy passes, when declared

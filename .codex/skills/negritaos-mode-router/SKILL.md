@@ -179,6 +179,14 @@ Claude applies the same escalation semantics but must not claim to execute a
 GPT-5.6 model. Use the canonical Codex agents when the exact Luna/Terra/Sol
 model is required.
 
+## Step 6d — Commit identity gate
+
+Read the `commit_identity` block returned by Negrita Brain. When its status is
+`required`, PR review must run the canonical checker against the exact
+introduced `base..head` range and inspect both author and committer. Treat a
+violation as a hard stop, keep legacy history outside the range, mask email
+local parts, and never rewrite history without explicit user authorization.
+
 ## Step 7 — Memory hooks
 
 After meaningful durable work, follow `local-memory-protocol` and use the

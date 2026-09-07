@@ -87,6 +87,10 @@ from negrita_brain.config import (  # noqa: E402
 from negrita_brain.codex_config import codex_config_status  # noqa: E402
 from negrita_brain.memory import index_is_runtime_owned  # noqa: E402
 from negrita_brain.profiles import resolve_project_profiles  # noqa: E402
+from negrita_brain.commit_identity import (  # noqa: E402
+    load_commit_identity_policies,
+    validate_project_policy_references,
+)
 HOME = Path.home()
 PROJECTS_DIR = REPO_ROOT / "projects"
 META_PROJECT_ID = "negritaos"
@@ -271,6 +275,26 @@ def check_model_escalation_policy() -> tuple[bool, str]:
     return _ok(f"model escalation routes {count} global Codex agents")
 
 
+def check_commit_identity_policies() -> tuple[bool, str]:
+    """Ensure scoped corporate identity policies and project opt-ins agree."""
+    try:
+        document = load_commit_identity_policies(REPO_ROOT)
+        errors = validate_project_policy_references(REPO_ROOT, document)
+    except Exception as exc:
+        return _fail(f"commit identity policies could not be validated: {exc}")
+    if errors:
+        return _fail(f"commit identity policies: {errors[0]}")
+    policies = document.get("policies", {})
+    scoped = sum(
+        len(policy.get("project_scope", []))
+        for policy in policies.values()
+        if isinstance(policy, dict)
+    )
+    return _ok(
+        f"commit identity policies cover {scoped} scoped projects"
+    )
+
+
 def check_adapter_router_stub() -> tuple[bool, str]:
     target = REPO_ROOT / ".codex" / "rules" / "negritaos-router.md"
     if target.exists():
@@ -384,6 +408,7 @@ CHECKS = (
     check_browser_profile_routing,
     check_browser_rule_registration,
     check_model_escalation_policy,
+    check_commit_identity_policies,
     check_adapter_router_stub,
     check_router_skill,
     check_claude_agent_aliases,

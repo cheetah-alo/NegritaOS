@@ -25,6 +25,8 @@ The reviewer must inspect:
 - generated artifacts, coverage/tmp/output files, secrets, auth, config,
   deployment, CI/CD, schema, SQL, migration, and data-contract changes;
 - CODEOWNERS or project ownership rules when present.
+- author and committer identities for the exact introduced commit range when
+  the project registry selects a commit identity policy.
 
 If a required input is unavailable, return `insufficient_evidence` and list the
 missing item. Do not substitute assumptions for check results.
@@ -66,6 +68,22 @@ vulture <path_to_folder>
 Persisted outputs are evidence artifacts only. They must not be committed unless
 the repository explicitly declares a tracked report location.
 
+## CQI Commit Identity Gate
+
+For projects declaring `commit_identity_policy: cqi_corporate_only_v1`, run:
+
+```bash
+python3 /Users/jackyb-cqi/repos/NegritaOS/scripts/check_cqi_commit_identity.py \
+  --repo "$PWD" --base <base-ref> --head <head-ref>
+```
+
+The gate checks both author and committer on commits introduced by the PR.
+`cqisense.com` and its subdomains are allowed; Gmail and every other domain are
+a hard stop. Exclude legacy history reachable from the base, mask email local
+parts in reports, and retain any repository-local identity checker as the CI
+enforcement layer. History rewriting is never automatic and requires explicit
+user authorization plus `--force-with-lease` when a published branch changes.
+
 ## V1 Policy
 
 - Mode: `shadow/recommendation`.
@@ -73,6 +91,8 @@ the repository explicitly declares a tracked report location.
   explicit user request and available connector permissions.
 - `auto_approve_allowed` remains `false`.
 - Low risk returns `approve_candidate`, not a merge action.
+- A scoped commit identity violation returns `blocked` regardless of the
+  numeric risk score.
 
 ## Brain Degraded-State Strategy
 

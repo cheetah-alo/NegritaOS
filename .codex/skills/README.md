@@ -112,7 +112,7 @@ Reusable patterns for common domains:
 | `data-contracts` | Dataset schema contracts and validation |
 | `data-loading` | Data ingestion, source resolution, lineage |
 | `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates and dynamic query variants |
-| `pull-request-risk-review` | Shadow-mode PR risk gate for CI status, security, verification evidence, and Python quality checks |
+| `pull-request-risk-review` | Shadow-mode PR risk gate for CI, security, verification, Python quality, and project-scoped commit identities |
 | `environment-release-governance` | Exact-commit deployment and independent DEV/UAT/production functional acceptance |
 | `tepuflow-lifecycle-adversarial-qa` | Full UF-00 to UF-13 TepuFlow journey, route, state, persistence, controlled-stress, responsive, accessibility, and visual QA |
 | `quality-bar-gauntlet` | Benchmark-driven builder/critic loop against a named, fetchable, comparable reference for code, dashboards, plots, PPTX, DOCX/PDF, Markdown, and research |
@@ -160,7 +160,7 @@ Reusable patterns for common domains:
 | `governed-browser-routing` | Route authenticated BigQuery, GitHub, Jira, and documentation work to the correct Brave profile |
 | `commit-hygiene` | Commit message and scope discipline |
 | `pr-review-deep` | Deep technical review protocol |
-| `pull-request-risk-review` | PR risk scoring, merge-gate evidence, CI/check status, and quality-tooling review |
+| `pull-request-risk-review` | PR risk scoring, merge-gate evidence, CI/check status, quality tooling, and scoped author/committer identity review |
 | `environment-release-governance` | Deployment preflight, exact revision evidence, environment QA, and production read-only gates |
 | `tepuflow-lifecycle-adversarial-qa` | TepuFlow lifecycle coverage matrix, adversarial browser checks, reproducible bugs, and release-hold evidence |
 | `quality-bar-gauntlet` | Benchmarked quality comparison with separate builder/critic review |

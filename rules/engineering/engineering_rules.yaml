@@ -17,6 +17,19 @@ engineering_rules:
     - agent_ids: [code_review_agent, pull_request_reviewer_agent, quality_gauntlet_agent, software_architect_agent, model_review_agent, technical_writer_agent]
     - contexts: [code_generation, code_review, pull_request_review, pipeline_review, reproducibility_check, quality_gauntlet_for_code_or_pr]
 
+  commit_identity:
+    activation: "Only when the resolved project registry declares commit_identity_policy"
+    policy_source: core/orchestration/commit_identity_policies.yaml
+    inspection_scope: introduced_commits_only
+    inspect: [author, committer]
+    legacy_history: excluded
+    noncompliant_identity_action: "PRR hard stop; do not recommend approval or merge"
+    report_privacy: "Mask local parts and report domains only"
+    remediation:
+      automatic_history_rewrite: false
+      explicit_user_authorization_required: true
+      published_branch_force_mode: force_with_lease_only
+
   python_standards:
     description: "PEP8 + ML/DS production best practices"
     

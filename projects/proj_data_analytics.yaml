@@ -6,6 +6,7 @@ project:
     primary: "/Users/jackyb-cqi/repos/proj_data_analytics"
     backup: "/Users/jackyb-cqi/repos/backup_repos/data_analytics"
   memory_home: "~/.negritaos/memory/projects/proj_data_analytics"
+  commit_identity_policy: cqi_corporate_only_v1
   browser_context:
     routing_policy: governed
     account_scope: cqi_work

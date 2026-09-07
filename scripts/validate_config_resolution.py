@@ -43,6 +43,11 @@ from negrita_brain.browser_routing import (  # noqa: E402
     validate_project_browser_context,
 )
 from negrita_brain.profiles import resolve_project_profiles  # noqa: E402
+from negrita_brain.commit_identity import (  # noqa: E402
+    load_commit_identity_policies,
+    resolve_policy,
+    validate_project_policy_references,
+)
 
 
 ASSET_KEYS = ("skills", "rules", "rubrics", "templates", "codex_skills")
@@ -156,6 +161,13 @@ def validate_resolution(
     except Exception as exc:
         return [f"configuration load failed: {exc}"], warnings, project_id
 
+    try:
+        identity_policies = load_commit_identity_policies(root)
+        errors.extend(validate_project_policy_references(root, identity_policies))
+    except Exception as exc:
+        errors.append(f"commit identity policy resolution failed: {exc}")
+        identity_policies = None
+
     project = registry_data.get("project", {})
     if not isinstance(project, dict):
         errors.append(f"{registry_path}: project must be a mapping")
@@ -165,6 +177,11 @@ def validate_resolution(
             f"{registry_path}: project.id={project.get('id')!r} does not match "
             f".codex/project.yaml project_id={project_id!r}"
         )
+    if identity_policies is not None:
+        try:
+            resolve_policy(project, identity_policies)
+        except ValueError as exc:
+            errors.append(f"project {project_id}: {exc}")
 
     try:
         browser_config = load_browser_routing_config(root)

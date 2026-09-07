@@ -29,7 +29,7 @@ def managed_agents_block(negritaos_root: Path) -> str:
         "1. Read `.codex/project.yaml` and its `negrita_registry`.\n"
         f"2. Run `python3 {cli} resolve --root \"$PWD\" --provider codex --action <action>`.\n"
         "3. Use the resolved modes, agents, profile closure, rules, skills, "
-        "artifact route, browser context, model route, and gates.\n"
+        "artifact route, browser context, commit identity policy, model route, and gates.\n"
         f"4. Before writes or commits, run `python3 {cli} gate --root \"$PWD\" "
         "--provider codex --action write|commit [--path PATH]`.\n"
         "5. New deliverables use a user-selected output path. Keep the "

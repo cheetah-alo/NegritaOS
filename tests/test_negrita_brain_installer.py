@@ -167,6 +167,7 @@ class TestInstaller(unittest.TestCase):
         agents = (self.repo / "AGENTS.md").read_text(encoding="utf-8")
 
         self.assertIn("resolved `model_route`", agents)
+        self.assertIn("commit identity policy", agents)
         self.assertIn("default to Luna medium", agents)
         self.assertIn("separate falsification-oriented reviewer", agents)
 

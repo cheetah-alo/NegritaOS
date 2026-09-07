@@ -1,0 +1,31 @@
+commit_identity_policies:
+  schema_version: 1
+  policies:
+    cqi_corporate_only_v1:
+      enforcement: strict
+      project_scope:
+        - eda_dashboard
+        - elal_journey_dashboard
+        - fiber_hourly_analytics_sql
+        - fiber_network_trap_analytics
+        - hotmobile_diamond_report
+        - ibc_fiber_network
+        - ml_automl_autogluon
+        - proj_data_analytics
+      allowed_email_domains:
+        - cqisense.com
+      allow_subdomains: true
+      inspect:
+        - author
+        - committer
+      range: introduced_commits_only
+      legacy_history: excluded
+      hard_stop: true
+      prohibited_examples:
+        - gmail.com
+        - users.noreply.github.com
+        - github.com
+      remediation:
+        automatic_history_rewrite: false
+        require_explicit_user_authorization: true
+        force_mode: force_with_lease_only

@@ -22,6 +22,7 @@ from .config import (
     workspace_kind,
 )
 from .browser_routing import browser_context_summary, load_browser_routing_config
+from .commit_identity import load_commit_identity_policies, policy_contract
 from .documents import DELIVERABLE_EXTENSIONS, is_compliant_deliverable, is_deliverable
 from .errors import MemoryPermissionError, SessionError
 from .models import (
@@ -616,6 +617,10 @@ def resolve_session(
         context.project,
         load_browser_routing_config(context.negritaos_root),
     )
+    commit_identity = policy_contract(
+        context.project,
+        load_commit_identity_policies(context.negritaos_root),
+    )
     router = load_yaml(
         context.negritaos_root / "core" / "orchestration" / "metaagent_router.yaml"
     )
@@ -720,6 +725,7 @@ def resolve_session(
             "timezone": route.get("timezone", "Europe/Madrid"),
         },
         "browser_context": browser_context,
+        "commit_identity": commit_identity,
         "model_route": model_route,
         "memory": {
             "home": str(memory_home),

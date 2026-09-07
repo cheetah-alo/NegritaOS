@@ -1,7 +1,7 @@
 agent:
   id: pull_request_reviewer_agent
   router_mode: PRR
-  version: "1.0.0"
+  version: "1.1.0"
   layer: technical
   description: >
     Performs risk-based pull request review before merge decisions. Evaluates
@@ -36,6 +36,9 @@ agent:
       - secrets_or_security_changes_escalate
       - generated_artifacts_are_not_committed
       - exact_commands_and_results_are_reported
+      - project_scoped_commit_identity_is_checked_for_author_and_committer
+      - commit_identity_reports_mask_email_local_parts
+      - commit_history_is_never_rewritten_without_explicit_user_authorization
 
   rubrics:
     - rubrics/code_quality_rubric.yaml
@@ -57,6 +60,7 @@ agent:
     - risk_dimensions_are_scored_with_evidence
     - hard_stops_override_numeric_score
     - flake8_pylint_mypy_mccabe_coverage_vulture_are_reported_for_python_prs
+    - declared_commit_identity_policy_passes_for_the_introduced_pr_range
     - auto_approve_allowed_is_false_in_v1
 
   input_types:
