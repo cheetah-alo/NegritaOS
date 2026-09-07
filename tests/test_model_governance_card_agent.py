@@ -53,7 +53,7 @@ class TestModelGovernanceCardAgent(unittest.TestCase):
         self.assertIn("ml_predictive", skill)
         self.assertIn("analytical_rule", skill)
         self.assertIn("hybrid", skill)
-        self.assertIn("89f75bb394782ef3", calibration)
+        self.assertIn("89f75bb394782ef3", calibration)  # pragma: allowlist secret
         self.assertIn("11.7M versus 1.2M", calibration)
 
     def test_rubric_and_template_cover_model_lifecycle(self) -> None:
