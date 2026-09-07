@@ -147,6 +147,21 @@ class TestModelEscalationPolicy(unittest.TestCase):
             route["selection_reasons"],
         )
 
+    def test_vera_uses_terra_high_for_model_governance(self) -> None:
+        route = resolve_model_route(
+            self.policy,
+            provider="codex",
+            actions=["model_governance_card"],
+            selected_agents=["model_governance_card_agent"],
+        )
+
+        self.assertEqual(route["tier"], "terra_high")
+        self.assertEqual(route["model"], "gpt-5.6-terra")
+        self.assertEqual(
+            self.policy["custom_agent_tiers"]["model_governance_card_agent"],
+            "terra_high",
+        )
+
     def test_production_candidate_reviewer_uses_sol(self) -> None:
         route = resolve_model_route(
             self.policy,

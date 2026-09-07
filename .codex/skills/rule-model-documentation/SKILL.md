@@ -32,6 +32,11 @@ Pair this skill with `document-control` when producing a deliverable file and
 with `data-contracts`/`bigquery-analysis-governance` when source quality, grain,
 or BigQuery evidence is part of the document.
 
+Create or update `model-governance-card` whenever the rule model's catalog,
+eligibility, thresholds, precedence, overlap/conflict behavior, score/bands,
+missing-value semantics, state/persistence, validation, monitoring, or lifecycle
+status changes materially.
+
 Apply `cqi-analytical-documentation` for the question-to-decision narrative,
 plot discussion, stakeholder answers, and evidence-boundary language. This
 skill owns rule-system content; `cqi-analytical-documentation` owns how that

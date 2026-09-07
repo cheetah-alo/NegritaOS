@@ -12,7 +12,7 @@ provides:
 description: >
   Binds NegritaOS' master agent registry (integrator.yaml) and metaagent router
   to any agent client operating in this repository. Defines the operational
-  and specialist modes (LP/HOURS/AE/TD/MR/CR/PRR/DEP/FQA/LQA/QG/PA/EP/DQ/RT), their routing keywords, and the contract
+  and specialist modes (LP/HOURS/AE/TD/MR/MCARD/CR/PRR/DEP/FQA/LQA/QG/PA/EP/DQ/RT), their routing keywords, and the contract
   resolution order between NegritaOS-native rules and repo-local adapter rules.
 version: 1.0.0
 applyTo: [repo, agents, prompts, claude, codex, copilot]
@@ -51,6 +51,7 @@ Before producing output, an agent MUST:
 | **AE** | Academic Evaluation | `tfm_evaluator_agent` | thesis, TFM, tribunal, proposal, methodology review |
 | **TD** | Technical Documentation | `technical_writer_agent` | notion doc, confluence, technical memo, postmortem |
 | **MR** | ML / EDA / Model Review | `model_review_agent` | model review, EDA, SHAP, leakage, XGBoost, AutoGluon, EBM, churn |
+| **MCARD** | Model Governance Card | `model_governance_card_agent` | Vera, model card, rule-model card, validation, deployment, monitoring, lifecycle |
 | **CR** | Code / Repository Work | `code_review_agent` | code review, PR, refactor, SQL, pipeline, MLflow |
 | **PRR** | Pull Request Risk Review | `pull_request_reviewer_agent` | PR risk review, merge gate, CI status, auto approve request |
 | **DEP** | TepuFlow Deployment Operations | `pablo_deployment_operator_agent` | deploy TepuFlow, exact commit, DEV/UAT/production promotion |
@@ -112,7 +113,7 @@ Per `zsmash/revision_de_claude.md`:
 - NegritaOS-only modes (**AE, RT, EP, LP, HOURS, TD**) execute against NegritaOS
   `rules/` + `skills/` only. Adapter rules under `.codex/rules/dev-*.md` are
   not loaded for these modes.
-- Engineering modes (**MR, CR, PRR, DEP, FQA, LQA, DQ**) execute against NegritaOS rules **plus**
+- Engineering modes (**MR, MCARD, CR, PRR, DEP, FQA, LQA, DQ**) execute against NegritaOS rules **plus**
   the adapter rules required by the active codex profile.
 - Specialist quality mode **QG** loads the domain rules of the artifact under
   review: code/PR/data QG loads engineering rules; PPTX/DOCX/PDF QG loads
@@ -209,6 +210,8 @@ production-candidate final integration requires Sol. Missing evidence remains
   resolving `casilda_lifecycle_qa_agent` through the canonical project registry.
 - Treating `Gisel` as project-local or unavailable instead of resolving the
   globally routed `project_hours_tracker_agent`.
+- Treating `Vera` as optional after a material model or analytical-rule change
+  instead of updating the globally routed governance card.
 - Treating an authenticated external account as authorization to spend money or
   change its plan.
 - Opening authenticated work in a default or in-app browser without resolving

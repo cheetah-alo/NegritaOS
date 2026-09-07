@@ -16,6 +16,7 @@ defaults:
     - document-delivery
     - governed-browser-access
     - project-hours-tracking
+    - model-governance-card
 
 profiles:
   governed-browser-access:
@@ -36,6 +37,12 @@ profiles:
       - project_hours_tracker_agent
     skills:
       - project-hours-tracking
+  model-governance-card:
+    description: Evidence-bound lifecycle card for ML, analytical-rule, and hybrid models through Vera.
+    required_agents:
+      - model_governance_card_agent
+    skills:
+      - model-governance-card
   plain-language-writing:
     description: On-demand clear-language rewrite and jargon reduction without weakening technical precision.
     skills:
@@ -199,6 +206,15 @@ profiles:
       - elal-eda-governance
 
 skills:
+  - id: model-governance-card
+    path: .codex/skills/model-governance-card/SKILL.md
+    native_path: skills/ml/model_governance_card.md
+    source: NegritaOS-native
+    profiles: [model-governance-card]
+    scopes: [root, ml, rule-model, governance, documentation]
+    status: canonical
+    dependencies: [python3]
+    side_effects: governed_model_card_creation_and_lifecycle_tracking
   - id: project-hours-tracking
     path: .codex/skills/project-hours-tracking/SKILL.md
     native_path: skills/strategic/project_hours_tracking.md

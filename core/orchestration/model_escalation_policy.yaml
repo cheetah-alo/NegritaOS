@@ -67,6 +67,10 @@ model_escalation_policy:
     hours_tracking: data_reconciliation
     workload_estimate: data_reconciliation
     overtime_estimate: data_reconciliation
+    model_governance_card: approved_contract_validation
+    model_card: approved_contract_validation
+    model_tracking: approved_contract_validation
+    rule_model_card: approved_contract_validation
     planning: limited_scope_reasoning
     implementation: limited_scope_reasoning
     write: limited_scope_reasoning
@@ -181,6 +185,7 @@ model_escalation_policy:
     - pablo
     - casilda
     - casilda-flows
+    - vera
 
   custom_agent_distribution:
     all_canonical_agents_global: true
@@ -196,6 +201,8 @@ model_escalation_policy:
     pablo: luna_high
     casilda: terra_high
     casilda-flows: terra_high
+    vera: terra_high
+    model_governance_card_agent: terra_high
     pablo_deployment_operator_agent: luna_high
     casilda_functional_qa_agent: terra_high
     casilda_lifecycle_qa_agent: terra_high

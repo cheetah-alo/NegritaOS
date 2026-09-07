@@ -1,0 +1,54 @@
+rubric:
+  name: model_governance_card_rubric
+  version: "1.0.0"
+  applicable_agents: [model_governance_card_agent]
+  description: >
+    Quality gate for evidence-bound lifecycle tracking of ML, analytical-rule,
+    and hybrid models.
+
+  statuses: [PASS, CONDITIONAL, FAIL, NOT_APPLICABLE]
+
+  dimensions:
+    identification_and_ownership:
+      blocking: true
+      gates:
+        - model_id_kind_version_and_lifecycle_are_explicit
+        - business_technical_validation_deployment_and_monitoring_owners_are_named_or_pending
+    data_foundation:
+      blocking: true
+      gates:
+        - sources_grain_keys_time_window_eligibility_and_exclusions_are_declared
+        - population_counts_reconcile_or_have_a_named_gap
+    model_semantics:
+      blocking: true
+      gates:
+        - ml_target_prediction_time_and_split_are_complete_when_applicable
+        - rule_precedence_conflict_missing_value_and_state_semantics_are_complete_when_applicable
+        - hybrid_interface_is_explicit_when_applicable
+    validation:
+      blocking: true
+      gates:
+        - leakage_or_temporal_contamination_is_resolved
+        - metrics_name_dataset_threshold_support_baseline_and_evidence
+        - sensitivity_or_ablation_supports_variant_selection
+    interpretation_and_traceability:
+      blocking: false
+      gates:
+        - explainability_or_rule_traceability_is_interpreted_with_limits
+        - observation_inference_and_operational_recommendation_are_distinct
+    operations_and_monitoring:
+      blocking: true
+      gates:
+        - action_policy_runtime_and_human_review_are_declared
+        - monitoring_has_baseline_limit_cadence_owner_source_and_response
+    governance:
+      blocking: true
+      gates:
+        - deployment_approval_rollback_and_change_policy_are_evidenced
+        - lifecycle_status_does_not_exceed_verified_evidence
+        - no_placeholders_or_status_only_assertions_remain
+
+  overall_verdict:
+    PASS: "All blocking dimensions pass and lifecycle status is evidence-supported."
+    CONDITIONAL: "No blocking failure, but named conditions remain before the next lifecycle state."
+    FAIL: "One or more blocking dimensions fail; readiness or deployment claim is prohibited."

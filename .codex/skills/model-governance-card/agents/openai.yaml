@@ -1,0 +1,6 @@
+interface:
+  display_name: "Vera Model Governance"
+  short_description: "Evidence-bound model and analytical-rule tracking cards"
+  default_prompt: "Use $model-governance-card as Vera to create or update the governance card for this model from verified evidence."
+policy:
+  allow_implicit_invocation: true

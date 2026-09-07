@@ -1,0 +1,102 @@
+model_governance_card:
+  schema_version: 1
+  card_id: REQUIRED
+  card_version: REQUIRED
+  created_at: REQUIRED_ISO_TIMESTAMP
+  updated_at: REQUIRED_ISO_TIMESTAMP
+  evidence_cutoff: REQUIRED_ISO_TIMESTAMP
+  supersedes: null
+
+  model:
+    id: REQUIRED
+    name: REQUIRED
+    version: REQUIRED
+    kind: REQUIRED_ml_predictive_or_analytical_rule_or_hybrid
+    lifecycle_status: DRAFT
+    business_objective: REQUIRED
+    decision_supported: REQUIRED
+    scope: REQUIRED
+    parent_model: null
+
+  owners:
+    business_owner: REQUIRED
+    technical_owner: REQUIRED
+    validation_owner: REQUIRED
+    deployment_owner: REQUIRED
+    monitoring_owner: REQUIRED
+
+  evidence:
+    source_revision: REQUIRED
+    run_ids: []
+    config_hashes: []
+    query_hashes: []
+    artifact_refs: []
+    validation_refs: []
+
+  data:
+    sources: []
+    transformations: []
+    grain: REQUIRED
+    entity_keys: []
+    prediction_or_scoring_time: REQUIRED
+    target_or_outcome_time: REQUIRED
+    temporal_window:
+      start: REQUIRED
+      end: REQUIRED
+    eligibility: []
+    exclusions: []
+    population_counts:
+      source: null
+      eligible: null
+      train_or_backtest: null
+      validation: null
+      test: null
+      scored: null
+      reconciliation_status: BLOCKED
+    quality_checks: []
+
+  logic:
+    ml: null
+    rules: null
+    hybrid_interface: null
+
+  validation:
+    status: BLOCKED
+    design: REQUIRED
+    leakage_assessment:
+      status: BLOCKED
+      summary: REQUIRED
+      evidence_ref: REQUIRED
+      reason: null
+    baseline: REQUIRED
+    metrics: []
+    sensitivity_or_ablation: []
+    interpretation: REQUIRED
+    limitations: []
+
+  explainability:
+    status: BLOCKED
+    method: REQUIRED
+    findings: []
+    limitations: []
+
+  operational_evaluation:
+    status: BLOCKED
+    action_policy: REQUIRED
+    capacity_or_cost: REQUIRED
+    human_review: REQUIRED
+    limitations: []
+
+  monitoring:
+    status: BLOCKED
+    indicators: []
+
+  governance:
+    status: BLOCKED
+    deployment_revision: null
+    approval_ref: null
+    rollback_policy: REQUIRED
+    retraining_or_change_policy: REQUIRED
+    decision_history: []
+    allowed_claim: REQUIRED
+    prohibited_claim: REQUIRED

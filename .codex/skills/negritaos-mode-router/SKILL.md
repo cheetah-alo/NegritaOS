@@ -80,6 +80,7 @@ Claude file as a thin adapter:
 - `FQA` → `.codex/agents/casilda.md` → `casilda_functional_qa_agent`
 - `LQA` → `.codex/agents/casilda-flows.md` → `casilda_lifecycle_qa_agent`
 - `HOURS` → `.codex/agents/gisel.md` → `project_hours_tracker_agent`
+- `MCARD` → `.codex/agents/vera.md` → `model_governance_card_agent`
 
 If a user writes `@agent:PRR` or `PRR: ...`, do not ask what `PRR` means. Run
 canonical resolution first. Only report `ROUTING_UNAVAILABLE` when the
@@ -88,7 +89,7 @@ as a global agent by the router.
 
 ## Step 4 — Merge with adapter rules (engineering modes only)
 
-If the active mode is **MR**, **CR**, **PRR**, **DEP**, **FQA**, **LQA**, or
+If the active mode is **MR**, **MCARD**, **CR**, **PRR**, **DEP**, **FQA**, **LQA**, or
 **DQ**:
 
 1. Load the active codex profile from `.codex/profiles/`.
@@ -204,6 +205,8 @@ Use a structured context handoff between modes — pass `input_summary`,
   lowercase `--agent prr`.
 - Treating Gisel as missing because the project registry does not duplicate the
   globally routed `project_hours_tracker_agent`.
+- Treating Vera as missing because the project registry does not duplicate the
+  globally routed `model_governance_card_agent`.
 - Writing any project memory file directly instead of using the canonical
   `negrita_brain.py memory` API.
 
@@ -231,3 +234,5 @@ Use a structured context handoff between modes — pass `input_summary`,
   evidence-first plot interpretation.
 - *"Gisel, update the tracking-hours workbook for this repo"* → **HOURS**,
   `project_hours_tracker_agent`, output `updated_project_hours_tracker`.
+- *"Vera, create the governance card for this rule model"* → **MCARD**,
+  `model_governance_card_agent`, output `model_governance_card_yaml`.

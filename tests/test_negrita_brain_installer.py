@@ -68,6 +68,9 @@ class TestInstaller(unittest.TestCase):
             (self.repo / ".codex" / "skills" / "project-hours-tracking").exists()
         )
         self.assertTrue(
+            (self.repo / ".codex" / "skills" / "model-governance-card").exists()
+        )
+        self.assertTrue(
             (self.repo / ".codex" / "skills" / "local-memory-protocol").exists()
         )
         self.assertTrue((self.repo / ".codex" / "commands" / "brain.md").is_file())
@@ -102,6 +105,7 @@ class TestInstaller(unittest.TestCase):
             "pablo",
             "casilda",
             "casilda-flows",
+            "vera",
         ):
             agent = self.repo / ".codex" / "agents" / f"{agent_name}.toml"
             self.assertTrue(agent.is_symlink(), agent_name)

@@ -34,6 +34,7 @@ Use lowercase aliases in Claude native agent selection:
 --agent td
 --agent qg
 --agent gisel
+--agent vera
 ```
 
 Claude may still receive a prompt that says `PRR: ...`. The selected alias must
@@ -46,6 +47,7 @@ before running config resolution.
 |---|---|---|
 | `LP` | `lp` | `team_lead_ds_agent` |
 | `HOURS` | `gisel` | `project_hours_tracker_agent` |
+| `MCARD` | `vera` | `model_governance_card_agent` |
 | `AE` | `ae` | `tfm_evaluator_agent` |
 | `TD` | `td` | `technical_writer_agent` |
 | `MR` | `mr` | `model_review_agent` |

@@ -14,6 +14,7 @@ duplicate the policy.
 | `terra-reviewer` | GPT-5.6 Terra, high | Material ambiguity, semantics, lineage, multi-stage discrepancies, high-impact review |
 | `sol-integrator` | GPT-5.6 Sol, high | Architecture, contract decisions, disputed results, production-candidate integration |
 | `gisel` | GPT-5.6 Luna, high | Evidence-based project-hours workbook creation and QA |
+| `vera` | GPT-5.6 Terra, high | Evidence-bound ML, analytical-rule, and hybrid model governance cards |
 | `pablo` | GPT-5.6 Luna, high | TepuFlow deployment operations; globally discoverable but scoped to `moneyflowlist` |
 | `casilda` | GPT-5.6 Terra, high | TepuFlow functional QA; globally discoverable but scoped to `moneyflowlist` |
 | `casilda-flows` | GPT-5.6 Terra, high | TepuFlow lifecycle adversarial QA; globally discoverable but scoped to `moneyflowlist` |

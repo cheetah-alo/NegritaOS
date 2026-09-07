@@ -169,6 +169,18 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertIn("project-hours-tracking", contract["skills"])
         self.assertEqual(contract["model_route"]["tier"], "luna_high")
 
+    def test_resolve_that_routes_global_model_governance_card_agent(self) -> None:
+        contract = resolve_session(
+            self.repo, "codex", ["model_governance_card"], ROOT, self.memory
+        )
+
+        self.assertEqual(contract["modes"], ["MCARD"])
+        self.assertEqual(contract["agents"], ["model_governance_card_agent"])
+        self.assertIn("model_governance_card_agent", contract["available_agents"])
+        self.assertIn("model-governance-card", contract["agent_skills"])
+        self.assertIn("model-governance-card", contract["skills"])
+        self.assertEqual(contract["model_route"]["tier"], "terra_high")
+
     def test_resolve_that_escalates_material_semantics_to_terra(self) -> None:
         contract = resolve_session(
             self.repo,

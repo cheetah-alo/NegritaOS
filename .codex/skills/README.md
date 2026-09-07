@@ -55,6 +55,7 @@ MR  -> --agent mr
 QG  -> --agent qg
 LQA -> --agent casilda-flows
 HOURS -> --agent gisel
+MCARD -> --agent vera
 ```
 
 The aliases are generated from `core/orchestration/metaagent_router.yaml` and
@@ -107,6 +108,7 @@ Reusable patterns for common domains:
 | `api-design` | API contract and endpoint design |
 | `data-analytics` | Analytics and pipeline conventions |
 | `project-hours-tracking` | Evidence-based XLSX workload, overtime, Gantt, and project-history tracking through Gisel |
+| `model-governance-card` | Evidence-bound lifecycle cards for ML, analytical-rule, and hybrid models through Vera |
 | `data-contracts` | Dataset schema contracts and validation |
 | `data-loading` | Data ingestion, source resolution, lineage |
 | `jinja-bigquery` | Safe deterministic Jinja rendering for BigQuery GoogleSQL templates and dynamic query variants |

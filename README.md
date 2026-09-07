@@ -119,6 +119,7 @@ Every request is classified into exactly one mode (mixed requests run a pipeline
 | **AE** | Academic Evaluation | `tfm_evaluator_agent` | Thesis / TFM tribunal reviews, methodology critique |
 | **TD** | Technical Documentation | `technical_writer_agent` | Notion / Confluence pages, technical memos, postmortems |
 | **MR** | ML / EDA / Model Review | `model_review_agent` | Model review, EDA, SHAP, leakage, XGBoost / AutoGluon / EBM |
+| **MCARD** | Model Governance Card | `model_governance_card_agent` | Vera creates evidence-bound lifecycle cards for ML, rule, and hybrid models |
 | **CR** | Code / Repository Work | `code_review_agent` | Code review, PRs, refactors, SQL, pipelines, MLflow |
 | **PRR** | Pull Request Risk Review | `pull_request_reviewer_agent` | PR risk, merge gates, CI/check evidence |
 | **QG** | Quality Bar Gauntlet | `quality_gauntlet_agent` | Benchmark-driven builder/critic loops against a named reference |
@@ -166,6 +167,7 @@ All agents are defined in [integrator.yaml](integrator.yaml) with the same shape
 | `tfm_research_advisor_agent` | Ranks differentiated TFM topics using recent papers, legal public data, and proposal comparison. |
 | `tfm_evaluator_agent` | Master's thesis proposals, milestones, tribunal reports. |
 | `model_review_agent` | ML model review with explicit leakage, split-strategy and target-definition checks. |
+| `model_governance_card_agent` | Vera maintains the standard evidence, validation, monitoring, deployment, and lifecycle card for every model. |
 | `code_review_agent` | Python / SQL / pipeline review, MLOps readiness, reproducibility. |
 | `quality_gauntlet_agent` | Benchmarked quality loop with separate builder and critic against a real reference. |
 | `technical_writer_agent` | Notion / Confluence docs with explicit assumptions & next actions. |
@@ -425,6 +427,7 @@ A shorter version works too — the router will still pick the right agent from 
 - `@agent:CR …` for code review
 - `@agent:PRR …` for pull-request risk review
 - `@agent:QG …` for benchmarked quality-bar gauntlets
+- `@agent:Vera …` for ML, rule-model, or hybrid governance cards
 - `@agent:Gisel …` for project-hours tracking and overtime estimates
 - `@agent:DQ …` for data-quality incidents
 - `@agent:EP …` for presentations
@@ -594,7 +597,7 @@ python3 scripts/validate_alignment.py --sibling /abs/path
 ```
 
 Modes (quick recall):
-**LP** lead · **Gisel/HOURS** project hours · **AE** academic · **TD** docs · **MR** model · **CR** code · **PRR** PR risk · **QG** gauntlet · **PA** plots · **EP** present · **DQ** data-quality · **RT** research
+**LP** lead · **Gisel/HOURS** project hours · **AE** academic · **TD** docs · **MR** model · **Vera/MCARD** model card · **CR** code · **PRR** PR risk · **QG** gauntlet · **PA** plots · **EP** present · **DQ** data-quality · **RT** research
 
 ---
 

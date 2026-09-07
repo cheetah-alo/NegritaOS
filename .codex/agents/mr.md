@@ -80,6 +80,7 @@ Do not ask what `MR` means; it is the canonical router mode above.
 - `plot_evidence_contract_is_complete_when_plots_are_used`
 - `processed_vs_not_processed_states_are_not_collapsed`
 - `operational_rules_are_not_overclaimed`
+- `model_governance_card_is_created_or_updated_for_material_model_changes`
 
 ## Fallback When Tools Are Restricted
 

@@ -28,6 +28,10 @@ negrita_brain:
     hours_tracking: HOURS
     workload_estimate: HOURS
     overtime_estimate: HOURS
+    model_governance_card: MCARD
+    model_card: MCARD
+    model_tracking: MCARD
+    rule_model_card: MCARD
     architecture: LP
     documentation: TD
     writeup: TD

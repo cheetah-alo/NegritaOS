@@ -445,6 +445,7 @@ negrita_os:
         - skills/transversal/evidence_framing.md
       codex_skills:
         - .codex/skills/evidence-first-plot-analysis/SKILL.md
+        - .codex/skills/model-governance-card/SKILL.md
         - .codex/skills/cqi-analytical-documentation/SKILL.md
         - .codex/skills/quality-bar-gauntlet/SKILL.md
       rules:
@@ -548,6 +549,48 @@ negrita_os:
         - plot_evidence_contract_is_complete_when_plots_are_used
         - processed_vs_not_processed_states_are_not_collapsed
         - operational_rules_are_not_overclaimed
+        - model_governance_card_is_created_or_updated_for_material_model_changes
+
+    model_governance_card_agent:
+      description: "Vera creates and updates evidence-bound lifecycle cards for ML, analytical-rule, and hybrid models."
+      persona:
+        - model_governance_controller
+        - ml_validation_reviewer
+        - analytical_rule_auditor
+      skills:
+        - skills/ml/model_governance_card.md
+        - skills/ml/model_review.md
+        - skills/engineering/rule_model_documentation.md
+        - skills/transversal/evidence_framing.md
+      codex_skills:
+        - .codex/skills/model-governance-card/SKILL.md
+        - .codex/skills/ml-model-findings/SKILL.md
+        - .codex/skills/rule-model-documentation/SKILL.md
+        - .codex/skills/data-contracts/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/ml/ml_rules.yaml
+        - rules/governance/governance_rules.yaml
+      rubrics:
+        - rubrics/model_governance_card_rubric.yaml
+        - rubrics/model_review_rubric.yaml
+      templates:
+        - templates/model_governance_card_template.yaml
+      output_modes:
+        - model_governance_card_yaml
+        - model_governance_card_markdown
+        - model_governance_card_review
+        - model_lifecycle_hold
+      quality_gate:
+        - model_kind_and_lifecycle_status_are_explicit
+        - evidence_cutoff_revision_runs_hashes_and_artifacts_are_named
+        - source_grain_time_population_and_quality_are_reconciled
+        - ml_or_rule_specific_semantics_are_complete
+        - validation_metrics_include_dataset_threshold_support_baseline_and_evidence
+        - explainability_or_rule_traceability_has_interpretation_and_limits
+        - monitoring_thresholds_have_baseline_owner_cadence_source_and_response
+        - deployment_rollback_retraining_or_change_policy_are_evidenced
+        - no_placeholder_or_unsupported_readiness_claim_remains
 
     code_review_agent:
       description: "Reviews Python, SQL, ML repositories, pipelines, and production-readiness."
@@ -1290,6 +1333,15 @@ negrita_os:
 
       model_analysis:
         use_agent: model_review_agent
+
+      model_governance_card:
+        use_agent: model_governance_card_agent
+
+      model_card:
+        use_agent: model_governance_card_agent
+
+      analytical_rule_model_card:
+        use_agent: model_governance_card_agent
 
       ebm_xgboost_autogluon:
         use_agent: model_review_agent

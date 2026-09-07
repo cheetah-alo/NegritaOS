@@ -268,6 +268,38 @@ metaagent_router:
         - executive_model_summary
         - operational_recommendations
 
+    model_governance_card:
+      id: MCARD
+      native_alias: vera
+      global_agent: true
+      label: "Model Governance Card"
+      agent: model_governance_card_agent
+      trigger_signals:
+        - Vera
+        - model card
+        - model governance card
+        - ficha de modelo
+        - ficha de seguimiento de modelo
+        - production model governance
+        - analytical rule model card
+        - rule model tracking
+        - model lifecycle tracking
+        - retraining governance
+        - model monitoring record
+      input_types:
+        - model configuration
+        - rule catalog
+        - training or backtest run
+        - validation results
+        - monitoring evidence
+        - deployment evidence
+        - prior model governance card
+      output_types:
+        - model_governance_card_yaml
+        - model_governance_card_markdown
+        - model_governance_card_review
+        - model_lifecycle_hold
+
     code_repository_work:
       id: CR
       label: "Code / Repository Work"

@@ -26,6 +26,7 @@ agent:
 
   codex_skills:
     - .codex/skills/evidence-first-plot-analysis/SKILL.md
+    - .codex/skills/model-governance-card/SKILL.md
 
   rules:
     inherit: rules/global/global_rules.yaml
@@ -65,6 +66,7 @@ agent:
     - operational_rules_are_qualified_with_support_metrics
     - model_limitations_are_explicit
     - next_validation_steps_are_recommended
+    - model_governance_card_is_created_or_updated_for_material_model_changes
 
   input_types:
     - classification_report
@@ -87,7 +89,7 @@ agent:
       segmentation: [silhouette, cluster_stability, business_interpretability]
 
   handoff:
-    can_feed_into: [technical_writer_agent, presentation_agent, team_lead_ds_agent]
+    can_feed_into: [model_governance_card_agent, technical_writer_agent, presentation_agent, team_lead_ds_agent]
     context_fields_to_pass:
       - model_verdict
       - leakage_flags

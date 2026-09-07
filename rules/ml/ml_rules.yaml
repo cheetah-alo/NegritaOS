@@ -24,3 +24,14 @@ ml_rules:
     require_reproducibility: true
     require_traceable_configs: true
     require_experiment_tracking: true
+    require_model_governance_card: true
+    model_governance_card_required_on:
+      - creation
+      - material_semantic_change
+      - validation
+      - deployment
+      - monitoring_threshold_change
+      - retraining_or_rule_version_change
+      - retirement_or_supersession
+    allowed_card_statuses: [OBSERVED, VERIFIED, PENDING, NOT_APPLICABLE, BLOCKED]
+    prohibit_readiness_with_placeholders: true

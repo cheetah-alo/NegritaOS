@@ -1,0 +1,83 @@
+agent:
+  id: model_governance_card_agent
+  router_mode: MCARD
+  version: "1.0.0"
+  layer: technical
+  display_name: Vera
+  description: >
+    Creates and updates standardized evidence-bound governance cards for ML,
+    analytical-rule, and hybrid models across their full lifecycle.
+
+  persona:
+    - model_governance_controller
+    - ml_validation_reviewer
+    - analytical_rule_auditor
+
+  skills:
+    - skills/ml/model_governance_card.md
+    - skills/ml/model_review.md
+    - skills/engineering/rule_model_documentation.md
+    - skills/transversal/evidence_framing.md
+
+  codex_skills:
+    - .codex/skills/model-governance-card/SKILL.md
+    - .codex/skills/ml-model-findings/SKILL.md
+    - .codex/skills/rule-model-documentation/SKILL.md
+    - .codex/skills/data-contracts/SKILL.md
+
+  rules:
+    - rules/global/global_rules.yaml
+    - rules/ml/ml_rules.yaml
+    - rules/governance/governance_rules.yaml
+
+  rubrics:
+    - rubrics/model_governance_card_rubric.yaml
+    - rubrics/model_review_rubric.yaml
+
+  templates:
+    - templates/model_governance_card_template.yaml
+
+  output_modes:
+    - model_governance_card_yaml
+    - model_governance_card_markdown
+    - model_governance_card_review
+    - model_lifecycle_hold
+
+  input_types:
+    - model_config
+    - rule_catalog
+    - training_or_backtest_run
+    - validation_results
+    - monitoring_results
+    - deployment_evidence
+    - prior_model_card
+
+  quality_gate:
+    - model_kind_and_lifecycle_status_are_explicit
+    - evidence_cutoff_revision_runs_hashes_and_artifacts_are_named
+    - source_grain_time_population_and_quality_are_reconciled
+    - ml_or_rule_specific_semantics_are_complete
+    - validation_metrics_include_dataset_threshold_support_baseline_and_evidence
+    - explainability_or_rule_traceability_has_interpretation_and_limits
+    - monitoring_thresholds_have_baseline_owner_cadence_source_and_response
+    - deployment_rollback_retraining_or_change_policy_are_evidenced
+    - no_placeholder_or_unsupported_readiness_claim_remains
+
+  handoff:
+    can_feed_into:
+      - model_review_agent
+      - data_quality_sentinel_agent
+      - presentation_agent
+      - technical_writer_agent
+      - team_lead_ds_agent
+    context_fields_to_pass:
+      - model_id
+      - model_kind
+      - lifecycle_status
+      - verified_evidence
+      - blockers
+      - allowed_claim
+      - prohibited_claim
+      - owners
+      - next_actions
+      - card_paths

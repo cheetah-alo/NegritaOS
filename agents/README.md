@@ -23,6 +23,7 @@ For Claude-native aliases, see: `docs/claude-agent-aliases.md`
 | TD | technical_writer_agent | strategic | Technical Documentation | Produces Notion/Confluence-ready technical documentation |
 | MR | model_review_agent | technical | ML / EDA / Model Review | Reviews ML models, EDA, explainability, and operational readiness |
 | MR | eda_reviewer_agent | technical | ML / EDA / Model Review | Focused EDA completeness and correctness review |
+| MCARD | model_governance_card_agent | technical | Model Governance Card | Vera tracks evidence, validation, monitoring, deployment, and lifecycle status for ML and rule models |
 | CR | code_review_agent | technical | Code / Repository Work | Reviews Python, SQL, and ML pipelines for production readiness |
 | CR | software_architect_agent | technical | Code / Repository Work | Designs maintainable modular repo structures with quality score >=80 |
 | PRR | pull_request_reviewer_agent | technical | Pull Request Risk Review | Evaluates CI, risk, security, and verification evidence before merge decisions |
@@ -56,6 +57,7 @@ lowercase markdown aliases generated under `.codex/agents/`.
 | TepuFlow functional QA | select `casilda` or write `@agent:FQA` |
 | TepuFlow lifecycle adversarial QA | select `casilda-flows` or write `@agent:LQA` |
 | Project hours tracker | select `gisel`, write `@agent:Gisel`, or spawn `gisel` in Codex |
+| Model governance card | select `vera`, write `@agent:Vera`, or spawn `vera` in Codex |
 
 Gisel authors and renders XLSX files in Codex Desktop through the Codex app MCP
 workspace dependency loader. In Claude, missing spreadsheet tooling produces a
@@ -85,6 +87,7 @@ justified tier and invoke the corresponding global custom agent:
 | `terra-reviewer` | Terra high | `Spawn terra-reviewer as an independent reviewer ...` |
 | `sol-integrator` | Sol high | `Spawn sol-integrator for final integration ...` |
 | `gisel` | Luna high | `Spawn gisel to update the project-hours tracker ...` |
+| `vera` | Terra high | `Spawn vera to create or update the model governance card ...` |
 | `pablo` | Luna high | `Spawn pablo for TepuFlow deployment preflight ...` |
 | `casilda` | Terra high | `Spawn casilda for TepuFlow functional QA ...` |
 | `casilda-flows` | Terra high | `Spawn casilda-flows for TepuFlow lifecycle QA ...` |
@@ -143,6 +146,7 @@ NEGRITAOS/
 │   ├── data-quality-sentinel/  → data_quality_sentinel_agent
 │   ├── eda-reviewer/           → eda_reviewer_agent
 │   ├── model-reviewer/         → model_review_agent
+│   ├── model-governance-card/  → model_governance_card_agent (Vera)
 │   ├── tepuflow-deployment-operator/ → pablo_deployment_operator_agent
 │   ├── tepuflow-functional-qa/ → casilda_functional_qa_agent
 │   ├── tepuflow-lifecycle-qa/ → casilda_lifecycle_qa_agent
@@ -163,7 +167,7 @@ Every `agent.yaml` contains:
 ```yaml
 agent:
   id:               # Unique agent identifier
-  router_mode:      # Router mode ID (LP / HOURS / AE / TD / MR / CR / PRR / DEP / FQA / LQA / QG / PA / EP / DQ / RT)
+  router_mode:      # Router mode ID (LP / HOURS / AE / TD / MR / MCARD / CR / PRR / DEP / FQA / LQA / QG / PA / EP / DQ / RT)
   version:          # Semantic version
   layer:            # academic / intelligence / strategic / technical
   description:      # What this agent does and what it does NOT do
