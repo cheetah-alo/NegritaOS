@@ -1,5 +1,9 @@
 commit_identity_policies:
   schema_version: 1
+  identity_profiles:
+    jacky_cqi:
+      allowed_emails:
+        - jacky.barraza@cqisense.com
   policies:
     cqi_corporate_only_v1:
       enforcement: strict

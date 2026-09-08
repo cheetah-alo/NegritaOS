@@ -528,6 +528,7 @@ python3 scripts/validate_claude_agent_aliases.py --repo /absolute/path/to/repo
 
 | Script | What it does |
 |---|---|
+| `scripts/negrita_brain.py configure git-identity` | Checks or installs exact local Git identity, backed-up hooks and neutral repository CI; see [Git identity governance](docs/git_identity_governance.md). |
 | [scripts/validate_alignment.py](scripts/validate_alignment.py) | Verifies NegritaOS ↔ every sibling adapter. Modes: default (all), `--only-meta`, `--sibling <path>`. **Run before every commit.** |
 | [scripts/validate_config_resolution.py](scripts/validate_config_resolution.py) | Resolves `.codex/project.yaml` → project registry → profiles/mode map/agents → integrator assets → catalog and wrappers. **Run before answering or committing config changes.** |
 | [scripts/validate_registry_paths.py](scripts/validate_registry_paths.py) | Verifies every path referenced in `integrator.yaml`, rubrics, templates, skills resolves on disk. |

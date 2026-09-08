@@ -18,6 +18,12 @@ engineering_rules:
     - contexts: [code_generation, code_review, pull_request_review, pipeline_review, reproducibility_check, quality_gauntlet_for_code_or_pr]
 
   commit_identity:
+    local_identity: "Exact address from project.local_commit_identity; inspect effective author and committer"
+    install_command: "negrita_brain.py configure git-identity --root <repo> --apply"
+    hook_preservation: "Back up and chain existing hooks; preserve their args, stdin and rejection status"
+    global_git_config_changes: prohibited
+    ci_distribution: "Neutral standalone checker with private provenance hashes; never execute PR-head code"
+    remote_required_check_verification: mandatory_before_claiming_enforcement
     activation: "Only when the resolved project registry declares commit_identity_policy"
     policy_source: core/orchestration/commit_identity_policies.yaml
     inspection_scope: introduced_commits_only

@@ -99,6 +99,13 @@ Hard stops override numeric thresholds.
 
 ## CQI Commit Identity Gate
 
+Read both `commit_identity_policy` and `local_commit_identity`. The latter
+selects the operator's exact email for local author/committer checks. Run
+`scripts/negrita_brain.py configure git-identity --root "$PWD" --check --with-ci`
+and distinguish local installation, introduced-commit compliance, and verified
+remote required-check enforcement. A local PASS is not proof that GitHub rulesets
+prevent bypass. See `docs/git_identity_governance.md` for the neutral CI bundle.
+
 When the resolved project registry declares
 `commit_identity_policy: cqi_corporate_only_v1`, inspect every author and
 committer identity introduced by the PR:

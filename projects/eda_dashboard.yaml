@@ -11,6 +11,7 @@ project:
     primary: "/Users/jackyb-cqi/repos/eda_dashboard"
   memory_home: "~/.negritaos/memory/projects/eda_dashboard"
   commit_identity_policy: cqi_corporate_only_v1
+  local_commit_identity: jacky_cqi
   browser_context:
     routing_policy: governed
     account_scope: personal_cheetah_alo

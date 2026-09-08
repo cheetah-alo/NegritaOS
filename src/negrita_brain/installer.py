@@ -372,7 +372,12 @@ class Installer:
                 actions.append(f"mkdir:{target}")
                 if not dry_run:
                     target.mkdir(parents=True, exist_ok=True)
-        if install_pre_commit and (root / ".git").exists():
+        if context.project.get("local_commit_identity") and (root / ".git").exists():
+            from .git_identity_install import configure
+            identity_result = configure(root, self.negritaos_root, apply=not dry_run)
+            if identity_result.get("changed"):
+                actions.append("configure:git-identity")
+        elif install_pre_commit and (root / ".git").exists():
             hook = root / ".git" / "hooks" / "pre-commit"
             command = (
                 "#!/bin/sh\n"

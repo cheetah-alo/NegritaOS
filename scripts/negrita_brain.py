@@ -250,6 +250,14 @@ def build_parser() -> argparse.ArgumentParser:
     configure_commands = configure.add_subparsers(
         dest="configure_command", required=True
     )
+    git_identity = configure_commands.add_parser("git-identity")
+    _common(git_identity)
+    git_identity.add_argument("--all", action="store_true")
+    git_mode = git_identity.add_mutually_exclusive_group()
+    git_mode.add_argument("--check", action="store_true")
+    git_mode.add_argument("--apply", action="store_true")
+    git_mode.add_argument("--restore", action="store_true")
+    git_identity.add_argument("--with-ci", action="store_true")
     codex = configure_commands.add_parser("codex")
     codex_mode = codex.add_mutually_exclusive_group()
     codex_mode.add_argument("--check", action="store_true")
@@ -278,6 +286,9 @@ def _project_reports(args: argparse.Namespace, operation: Any) -> list[dict[str,
 def execute(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
     """Execute a parsed command and return its JSON result and exit code."""
     if args.command == "configure":
+        if args.configure_command == "git-identity":
+            from negrita_brain.git_identity_install import run_configuration
+            return run_configuration(args)
         result = configure_codex(
             apply=args.apply,
             config_path=args.config_path,

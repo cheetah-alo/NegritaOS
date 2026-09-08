@@ -37,6 +37,13 @@ Use this skill when:
 
 ## Pre-Commit Checklist
 
+For a project with `local_commit_identity`, run the canonical
+`scripts/negrita_brain.py configure git-identity --root "$PWD" --check` before
+committing. The local profile requires the exact personal corporate address;
+the shared contributor policy governs inherited commits. See
+`docs/git_identity_governance.md` for backed-up installation and restoration.
+Never set another contributor's author email to the operator's identity.
+
 - [ ] Branch state was checked with `git status --short --branch`
 - [ ] Pending commit count was checked against the remote base
 - [ ] Branch decision is explicit: continue, create branch, or open PR

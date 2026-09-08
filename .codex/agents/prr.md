@@ -78,6 +78,7 @@ Do not ask what `PRR` means; it is the canonical router mode above.
 - `hard_stops_override_numeric_score`
 - `flake8_pylint_mypy_mccabe_coverage_vulture_are_reported_for_python_prs`
 - `declared_commit_identity_policy_passes_for_author_and_committer_in_the_introduced_pr_range`
+- `exact_local_identity_hooks_and_remote_ci_enforcement_are_distinguished`
 - `auto_approve_allowed_is_false_in_v1`
 
 ## Fallback When Tools Are Restricted

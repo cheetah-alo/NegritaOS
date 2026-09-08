@@ -188,6 +188,14 @@ def doctor_project(
         *_check_materialized(context.work_root, context.negritaos_root, closure.skills),
         *_check_memory_writers(context.work_root),
     ]
+    if context.project.get("local_commit_identity"):
+        from .git_identity_install import audit
+        try:
+            identity_audit = audit(context.work_root, context.negritaos_root)
+            for error in identity_audit.get("issues", []) + identity_audit.get("ci_issues", []):
+                issues.append(_issue("GIT_IDENTITY_DRIFT", "WARN", error))
+        except (OSError, ValueError, RuntimeError) as exc:
+            issues.append(_issue("GIT_IDENTITY_CONFIG", "WARN", str(exc)))
     try:
         browser_config = load_browser_routing_config(context.negritaos_root)
         browser_errors = [

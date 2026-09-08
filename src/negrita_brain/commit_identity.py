@@ -63,6 +63,19 @@ def validate_policy_document(document: Mapping[str, Any]) -> list[str]:
     if not isinstance(policies, Mapping) or not policies:
         errors.append("commit identity policies must be a non-empty mapping")
         return errors
+    profiles = document.get("identity_profiles", {})
+    if not isinstance(profiles, Mapping):
+        errors.append("identity_profiles must be a mapping")
+    else:
+        from .git_identity_core import normalize_email
+        for name, profile in profiles.items():
+            try:
+                emails = profile["allowed_emails"]
+                if not isinstance(emails, list) or len(emails) != 1:
+                    raise ValueError("one email required")
+                normalize_email(emails[0])
+            except (ValueError, TypeError, KeyError, AttributeError):
+                errors.append(f"identity profile {name}: one valid exact email is required")
     for policy_id, value in policies.items():
         if not isinstance(value, Mapping):
             errors.append(f"policy {policy_id}: must be a mapping")
@@ -84,6 +97,12 @@ def validate_policy_document(document: Mapping[str, Any]) -> list[str]:
             for item in domains
         ):
             errors.append(f"policy {policy_id}: allowed_email_domains is invalid")
+        if "ci_allowed_emails" in value:
+            from .git_identity_core import validate_policy
+            try:
+                validate_policy({"allowed_emails": value["ci_allowed_emails"]})
+            except (ValueError, TypeError, AttributeError):
+                errors.append(f"policy {policy_id}: ci_allowed_emails is invalid")
         if not isinstance(value.get("allow_subdomains"), bool):
             errors.append(f"policy {policy_id}: allow_subdomains must be boolean")
         inspect = value.get("inspect")
@@ -146,6 +165,9 @@ def validate_project_policy_references(
         policy_id = project.get("commit_identity_policy")
         if not isinstance(project_id, str) or policy_id is None:
             continue
+        identity = project.get("local_commit_identity")
+        if document.get("identity_profiles") and identity not in document["identity_profiles"]:
+            errors.append(f"project {project_id}: missing or unknown local_commit_identity")
         if not isinstance(policy_id, str) or not policy_id.strip():
             errors.append(
                 f"project {project_id}: commit_identity_policy must be a non-empty string"
@@ -200,6 +222,10 @@ def policy_contract(
     policy_id, policy = resolved
     return {
         "policy": policy_id,
+        "local_identity": project.get("local_commit_identity"),
+        "local_allowed_emails": document.get("identity_profiles", {}).get(
+            project.get("local_commit_identity"), {}
+        ).get("allowed_emails", []),
         "status": "required",
         "enforcement": policy["enforcement"],
         "allowed_email_domains": list(policy["allowed_email_domains"]),
@@ -212,8 +238,11 @@ def policy_contract(
 
 def email_domain(email: str) -> str | None:
     """Return a normalized domain or None for malformed email metadata."""
-    normalized = email.strip().lower()
-    if "@" not in normalized:
+    from .git_identity_core import normalize_email
+
+    try:
+        normalized = normalize_email(email)
+    except ValueError:
         return None
     local, domain = normalized.rsplit("@", maxsplit=1)
     return domain if local and domain else None
@@ -247,8 +276,8 @@ def identity_violations(
     commits: Iterable[CommitIdentity], policy: Mapping[str, Any]
 ) -> tuple[IdentityViolation, ...]:
     """Return violations for every configured author/committer identity."""
-    domains = tuple(str(item) for item in policy["allowed_email_domains"])
-    allow_subdomains = bool(policy["allow_subdomains"])
+    from .git_identity_core import allowed
+
     inspect = set(str(item) for item in policy["inspect"])
     violations: list[IdentityViolation] = []
     for commit in commits:
@@ -258,9 +287,7 @@ def identity_violations(
         }
         for role in ("author", "committer"):
             email = values[role]
-            if role in inspect and not email_is_allowed(
-                email, domains, allow_subdomains
-            ):
+            if role in inspect and not allowed(email, dict(policy)):
                 violations.append(
                     IdentityViolation(
                         sha=commit.sha,

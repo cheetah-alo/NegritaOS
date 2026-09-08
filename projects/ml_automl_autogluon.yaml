@@ -7,6 +7,7 @@ project:
     previous_backup: "/Users/jackyb-cqi/repos/backup_repos/ml_automl_autogluon"
   memory_home: "~/.negritaos/memory/projects/ml_automl_autogluon"
   commit_identity_policy: cqi_corporate_only_v1
+  local_commit_identity: jacky_cqi
   browser_context:
     routing_policy: governed
     account_scope: cqi_work

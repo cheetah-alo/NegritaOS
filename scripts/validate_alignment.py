@@ -284,6 +284,17 @@ def check_commit_identity_policies() -> tuple[bool, str]:
         return _fail(f"commit identity policies could not be validated: {exc}")
     if errors:
         return _fail(f"commit identity policies: {errors[0]}")
+    from negrita_brain.git_identity_install import audit, registered_checkouts
+    drift = []
+    try:
+        for repo in registered_checkouts(REPO_ROOT):
+            report = audit(repo, REPO_ROOT)
+            if report["status"] != "PASS":
+                drift.append(str(repo))
+    except (OSError, ValueError, RuntimeError) as exc:
+        return _warn(f"commit identity installation audit unavailable: {exc}")
+    if drift:
+        return _warn("commit identity installation or CI drift: " + ", ".join(drift))
     policies = document.get("policies", {})
     scoped = sum(
         len(policy.get("project_scope", []))

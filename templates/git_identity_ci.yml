@@ -1,0 +1,47 @@
+name: Commit Identity
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+  push:
+    branches: ['**']
+
+permissions:
+  contents: read
+
+jobs:
+  commit-identity:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Run only the trusted base checker; never execute code from the PR head.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Fetch incoming commit objects
+        env:
+          INCOMING_SHA: ${{ github.event.pull_request.head.sha }}
+        run: git fetch --no-tags origin "$INCOMING_SHA"
+      - name: Check author and committer
+        run: python3 scripts/check_git_identity.py --policy .github/commit-identity-policy.json --github-actions --new-branch-base HEAD
+
+  identity-push-audit:
+    # Post-publication observation only. Never use this as the required PR gate.
+    if: github.event_name == 'push' && github.event.deleted != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ (github.event.before != '0000000000000000000000000000000000000000' && github.event.before) || github.event.repository.default_branch }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Fetch incoming commit objects
+        env:
+          INCOMING_SHA: ${{ github.event.after }}
+        run: git fetch --no-tags origin "$INCOMING_SHA"
+      - name: Audit published identities
+        run: python3 scripts/check_git_identity.py --policy .github/commit-identity-policy.json --github-actions --new-branch-base HEAD
