@@ -26,6 +26,11 @@ model_escalation_policy:
       family_rank: 3
       model: gpt-5.6-sol
       reasoning_effort: high
+    astra_high:
+      rank: 50
+      family_rank: 4
+      model: gpt-6-astra
+      reasoning_effort: high
 
   task_classes:
     repository_exploration: luna_medium
@@ -47,8 +52,11 @@ model_escalation_policy:
     material_semantic_review: terra_high
     architecture_decision: sol_high
     production_integration: sol_high
+    astra_direct_review: astra_high
 
   action_defaults:
+    astra_review: astra_direct_review
+    astral_review: astra_direct_review
     system_audit: focused_code_review
     code_review: focused_code_review
     pull_request_review: focused_code_review
@@ -83,11 +91,19 @@ model_escalation_policy:
     adversarial_lifecycle_qa: bounded_bug_reproduction
 
   task_class_impacts:
+    astra_direct_review: high
     material_semantic_review: high
     architecture_decision: high
     production_integration: production_candidate
 
+  agent_impacts:
+    astra-reviewer: high
+    astra_review_agent: high
+
   escalation_signals:
+    sol_unresolved_debugging: astra_high
+    sol_reviewer_disagreement: astra_high
+    exceptional_cross_domain_complexity: astra_high
     semantic_contract_change: terra_high
     materializing_sql_impact: terra_high
     v10_stateful_behavior: terra_high
@@ -108,6 +124,9 @@ model_escalation_policy:
       escalate_family: 1
 
   signal_impacts:
+    sol_unresolved_debugging: high
+    sol_reviewer_disagreement: high
+    exceptional_cross_domain_complexity: high
     semantic_contract_change: high
     materializing_sql_impact: high
     v10_stateful_behavior: high
@@ -181,6 +200,7 @@ model_escalation_policy:
     - luna-reviewer
     - terra-reviewer
     - sol-integrator
+    - astra-reviewer
     - gisel
     - pablo
     - casilda
@@ -196,6 +216,8 @@ model_escalation_policy:
     luna-reviewer: luna_high
     terra-reviewer: terra_high
     sol-integrator: sol_high
+    astra-reviewer: astra_high
+    astra_review_agent: astra_high
     gisel: luna_high
     project_hours_tracker_agent: luna_high
     pablo: luna_high
@@ -214,6 +236,13 @@ model_escalation_policy:
     human: tier_semantics_only
 
   governance:
+    direct_tier_selection_allowed: true
+    sequential_attempts_required: false
+    explicit_worker_models_required: true
+    runtime_model_availability_check: required_before_spawn
+    unavailable_model_action: BLOCKED_MODEL_ROUTING
+    silent_model_substitution: prohibited
+    unresolved_at_highest_tier: HOLD_for_human_resolution
     missing_required_evidence: HOLD
     skipped_gate: HOLD
     unverified_lineage: HOLD
@@ -225,3 +254,12 @@ model_escalation_policy:
     bounded_work_may_return_to_luna_after_decision: true
     distinguish_observation_inference_recommendation: true
     prohibit_opportunistic_upscaling: true
+
+  evaluation:
+    objective: total_cost_per_validated_result
+    record_template: templates/model_comparison_record.yaml
+    include_failed_attempts_and_all_subagents: true
+    missing_usage_is_unknown_not_zero: true
+    compare_only_matching_contracts_and_evidence: true
+    api_usd_and_codex_credits_are_separate: true
+    automatic_routing_changes_from_unvalidated_benchmarks: prohibited

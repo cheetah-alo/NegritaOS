@@ -678,6 +678,29 @@ negrita_os:
         - exact_local_identity_hooks_and_remote_ci_enforcement_are_distinguished
         - auto_approve_allowed_is_false_in_v1
 
+    astra_review_agent:
+      description: "Astra independent review for exceptional complexity and unresolved Sol-level findings."
+      persona: [independent_reviewer, cross_domain_reviewer]
+      skills:
+        - skills/engineering/reproducibility_review.md
+      codex_skills:
+        - .codex/skills/quality-bar-gauntlet/SKILL.md
+      rules:
+        - rules/global/global_rules.yaml
+        - rules/global/model_escalation_rule.md
+      rubrics:
+        - rubrics/code_quality_rubric.yaml
+      templates:
+        - templates/model_comparison_record.yaml
+      output_modes: [cross_domain_review, disputed_result_assessment, model_comparison_record]
+      quality_gate:
+        - direct_astra_selection_has_explicit_request_or_declared_signal
+        - domain_rules_and_original_evidence_are_loaded
+        - supporting_workers_use_explicit_models
+        - missing_evidence_remains_hold
+        - independent_review_is_not_self_review
+        - cost_claims_include_all_attempts_or_are_marked_unknown
+
     pablo_deployment_operator_agent:
       description: "Deploys an exact TepuFlow commit to an authorized environment and records release evidence before independent QA."
       persona:

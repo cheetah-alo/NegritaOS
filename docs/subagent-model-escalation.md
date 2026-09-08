@@ -13,6 +13,7 @@ duplicate the policy.
 | `luna-reviewer` | GPT-5.6 Luna, high | Focused code/SQL review, reproduction, reconciliation, approved-contract checks |
 | `terra-reviewer` | GPT-5.6 Terra, high | Material ambiguity, semantics, lineage, multi-stage discrepancies, high-impact review |
 | `sol-integrator` | GPT-5.6 Sol, high | Architecture, contract decisions, disputed results, production-candidate integration |
+| `astra-reviewer` | GPT-6 Astra, high | Explicit Astra requests, exceptional cross-domain complexity, unresolved Sol investigations and disagreements |
 | `gisel` | GPT-5.6 Luna, high | Evidence-based project-hours workbook creation and QA |
 | `vera` | GPT-5.6 Terra, high | Evidence-bound ML, analytical-rule, and hybrid model governance cards |
 | `pablo` | GPT-5.6 Luna, high | TepuFlow deployment operations; globally discoverable but scoped to `moneyflowlist` |
@@ -21,6 +22,51 @@ duplicate the policy.
 
 These TOML agents are global defaults and are materialized into every
 NegritaOS adapter. Project-specific agents may have a canonical tier override.
+
+## Astra And Cost Per Result
+
+Use `@agent:Astra` or `@agent:Astral` for mode `ASTRA`, resolved globally to
+`astra_review_agent`. The Codex native subagent is `astra-reviewer`; Claude's
+native wrapper is `astra` and applies the protocol without claiming to run GPT-6.
+
+```bash
+python3 scripts/negrita_brain.py resolve --root "$PWD" --provider codex --action astra_review
+```
+
+For a different domain action, declare `--risk-signal exceptional_cross_domain_complexity`.
+`sol_unresolved_debugging` and `sol_reviewer_disagreement` also select Astra.
+Selection is direct: there is no obligation to try Luna, Terra and Sol first.
+Ordinary production review still has Sol as its minimum; Astra is not mandatory
+for every release. Model selection never substitutes for missing evidence.
+
+Set worker models explicitly even when the parent uses Astra. An unconfigured
+subagent may inherit its parent's model and reasoning effort. Confirm model/effort
+availability in the runtime before spawning. A model can be available while a
+new named profile still requires a fresh session for discovery. Never claim a
+role is hot-loaded or substitute another model without saying so.
+
+Compare actual task totals with `templates/model_comparison_record.yaml`: same
+input hashes, acceptance contract and quality bar; include failures, retries,
+subagents, elapsed time and usage receipts. Missing usage remains null and the
+comparison stays `INSUFFICIENT_EVIDENCE`. A trial that did not achieve a validated
+result is not a cheap successful result. Do not mix API USD and Codex credits.
+No price table is hardcoded into routing; verify the applicable rate card for
+each comparison. No benchmark has been run merely by installing this profile.
+
+Suggested prompt:
+
+```text
+Use astra-reviewer for an independent review of builder session <id>.
+Delegate inventory and mechanical checks to luna-worker explicitly.
+Keep missing evidence as HOLD and report total usage when available.
+```
+
+Official references, checked 2026-09-08:
+[Astra](https://developers.openai.com/api/docs/models/gpt-6-astra),
+[subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents),
+[Codex pricing](https://learn.chatgpt.com/docs/pricing).
+The canonical policy and this guide are owned by NegritaOS maintainers and must
+be updated together when routing, availability or evidence requirements change.
 
 They are also linked into `~/.codex/agents/` so new Codex sessions can discover
 the same roles outside a particular adapter. Run:
@@ -133,5 +179,5 @@ Claude loads the same rule and must follow its evidence and escalation
 semantics. On every user prompt, the hook closes the prior prompt contract and
 creates a prompt-specific contract using only safe action/risk labels; prompt
 text is neither logged nor persisted. Claude cannot claim to be GPT-5.6 Luna,
-Terra, or Sol. When the exact model is required, the work must be delegated to
+Terra, Sol, or GPT-6 Astra. When the exact model is required, the work must be delegated to
 the corresponding Codex custom agent.

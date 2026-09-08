@@ -191,8 +191,11 @@ secrets or full payment details.
 Every delegated Codex task must follow
 `core/orchestration/model_escalation_policy.yaml` and the `model_route` returned
 by Negrita Brain. Luna medium is the default. Escalation to Luna high, Terra,
-or Sol requires an explicit task class, policy signal, impact level, agent
+Sol, or Astra requires an explicit task class, policy signal, impact level, agent
 override, or independent-review minimum. Do not upscale opportunistically.
+An explicit Astra request may route directly to `astra_review_agent`; earlier
+attempts are not mandatory. Keep worker models explicit and compare total cost
+per validated result using `templates/model_comparison_record.yaml`.
 
 An independent review must use a separate provider session and attempt to
 falsify the implementation. High-impact work requires Terra or higher;

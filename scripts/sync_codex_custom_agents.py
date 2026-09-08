@@ -187,12 +187,16 @@ def main() -> int:
     if args.all_projects:
         repos.extend(discover_project_repos(ROOT))
     seen: set[Path] = set()
+    errors: list[str] = []
     for repo in repos:
         resolved = repo.expanduser().resolve()
         if resolved in seen:
             continue
         seen.add(resolved)
-        sync_repo(resolved, ROOT, dry_run=not args.write)
+        try:
+            sync_repo(resolved, ROOT, dry_run=not args.write)
+        except (OSError, ValueError) as exc:
+            errors.append(f"{resolved}: {exc}")
     if args.user_home:
         names = sync_user_home(ROOT, args.codex_home, dry_run=not args.write)
         action = "validated" if not args.write else "materialized"
@@ -201,7 +205,9 @@ def main() -> int:
         print(
             "[OK] no targets selected; pass --repo, --all-projects, or --user-home"
         )
-    return 0
+    for error in errors:
+        print(f"[BLOCKED] {error}")
+    return int(bool(errors))
 
 
 if __name__ == "__main__":

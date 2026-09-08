@@ -12,8 +12,29 @@ Mode: CR
 | T-001 | Harden system audit and skill validation | done | none | CR |
 | T-002 | Install and run extended local quality/security tooling | done | T-001 | CR |
 | T-003 | Clean Brain memory warnings through controlled maintenance | done | T-001 | CR |
+| T-004 | Prevent personal Git identities in CQI checkouts | done_local | none | CR |
+| T-005 | Add direct Astra routing and cost-per-result comparison | done_local | none | CR |
 
 ## Task Log
+
+### T-005 - Astra Routing
+- **What**: add globally routed Astra review while retaining explicit Luna workers and existing Sol production minimum.
+- **How**: extend tier/action/signal/agent-impact mappings, add native Codex and Claude profiles, distribute canonical aliases, add routing and partial-rollout tests, and document comparable usage records.
+- **When**: 2026-09-08, Europe/Madrid.
+- **Lessons learned**: model rank is not task cost; comparison must include failed attempts and subagents. Agent-name selection must carry the same evidence impact as action selection. Runtime model availability and named-profile discovery are separate checks.
+- **Limits**: no price benchmark or savings claim; four OneDrive adapters are OS-permission blocked. Source is versioned on `feature/cqi-git-identity-hooks`; merge to main is a separate step.
+- **Outcome**: `astra-reviewer` and the Claude `astra` alias are available in 18/22 local adapters and the Codex personal profile. A real GPT-6 Astra delegated review completed; its agent-only impact finding was fixed and independently rechecked. The model policy validates 10 global agents, and canonical alignment passes 30/30.
+- **Validation**: 219/219 tests passed; package coverage exceeds 80%; model/registry/catalog validation, Flake8 and diff hygiene passed. Four OneDrive adapters remain unavailable even with elevated filesystem permission.
+
+### T-004 - CQI Git Identity Controls
+- **What**: exact local corporate identity, shared identity hooks, preserved existing hooks, neutral CI bundle and drift checks.
+- **How**: canonical identity profile, repo-local Git configuration, private backups and receipts, real Git commit/push regression tests and independent review.
+- **When**: 2026-09-08T10:41:48+02:00, Europe/Madrid.
+- **Lessons learned**: checking `git config user.email` misses environment overrides and inherited commits; worktrees may have no adapter but still share Git configuration. Local installation and remote enforcement require separate evidence.
+- **Validation**: full suite 208/208, source coverage 82%, Flake8 and diff hygiene pass. The final 17 real-Git integration tests cover overrides, preserved hooks/stdin, pushes, legacy baselines, worktrees, rollback, CI receipts and shallow-history rejection. Local rollout passes on eight registered CQI repositories and two active linked worktrees. Canonical alignment passes 30/30; full alignment cannot read four OneDrive adapters even with elevated permission.
+- **Review**: independent review prompted stable runtime snapshots, rollback of runtime files, sibling-worktree preflight, per-checkout CI hashes and explicit separation of trusted PR verification from advisory push audits.
+- **Certification boundary**: the independent review reported no defect in the final scoped atomic-install correction; no formal SHA-bound independent PASS or remote certification is claimed.
+- **Remaining**: source changes are on `feature/cqi-git-identity-hooks`; publish/merge the neutral repository CI files and verify required remote checks separately. Existing commit histories were not rewritten. Provider-account checks for gh/gcloud remain a separate workstream.
 
 ### T-001 - Harden system audit and skill validation
 - **What**: reviewed and hardened the just-built NegritaOS audit changes, including mode resolution, skill validation, Nate provenance, plotting metadata, macOS `skill-sync`, and audit documentation.

@@ -23,6 +23,8 @@ negrita_brain:
       codex: CODEX_THREAD_ID
       claude: hook.session_id
   default_mode_map:
+    astra_review: ASTRA
+    astral_review: ASTRA
     planning: LP
     tracking_hours: HOURS
     hours_tracking: HOURS

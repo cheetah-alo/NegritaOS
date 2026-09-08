@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate canonical Luna/Terra/Sol routing and global agent coverage."""
+"""Validate canonical Luna/Terra/Sol/Astra routing and global agent coverage."""
 
 from __future__ import annotations
 

@@ -24,6 +24,7 @@ except ImportError:
 MANAGED_MARKER = "<!-- NEGRITAOS_CLAUDE_AGENT_ALIAS:START -->"
 DEFAULT_MODEL = "sonnet"
 MODE_ORDER = [
+    "ASTRA",
     "LP",
     "AE",
     "TD",
@@ -42,6 +43,7 @@ MODE_ORDER = [
     "HOURS",
 ]
 MODE_ACTIONS = {
+    "ASTRA": "astra_review",
     "LP": "planning",
     "AE": "academic_review",
     "TD": "technical_documentation",
@@ -370,13 +372,19 @@ def main() -> int:
     if args.all_projects:
         repos.extend(discover_project_repos(ROOT))
     seen: set[Path] = set()
+    errors: list[str] = []
     for repo in repos:
         resolved = repo.expanduser().resolve()
         if resolved in seen:
             continue
         seen.add(resolved)
-        sync_repo(resolved, ROOT, dry_run, aliases)
-    return 0
+        try:
+            sync_repo(resolved, ROOT, dry_run, aliases)
+        except (OSError, ValueError) as exc:
+            errors.append(f"{resolved}: {exc}")
+    for error in errors:
+        print(f"[BLOCKED] {error}")
+    return int(bool(errors))
 
 
 if __name__ == "__main__":

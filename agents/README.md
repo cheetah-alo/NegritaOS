@@ -27,6 +27,7 @@ For Claude-native aliases, see: `docs/claude-agent-aliases.md`
 | CR | code_review_agent | technical | Code / Repository Work | Reviews Python, SQL, and ML pipelines for production readiness |
 | CR | software_architect_agent | technical | Code / Repository Work | Designs maintainable modular repo structures with quality score >=80 |
 | PRR | pull_request_reviewer_agent | technical | Pull Request Risk Review | Evaluates CI, risk, security, verification, and project-scoped commit identities before merge decisions |
+| ASTRA | astra_review_agent | technical | Astra Cross-Domain Review | Direct exceptional review, unresolved Sol investigations and material disagreements |
 | QG | quality_gauntlet_agent | strategic | Quality Bar Gauntlet | Runs benchmarked builder/critic loops against named reference bars |
 | DEP | pablo_deployment_operator_agent | technical | TepuFlow Deployment Operations | Deploys an approved exact commit and records provider and health evidence |
 | FQA | casilda_functional_qa_agent | technical | TepuFlow Functional Environment QA | Tests a deployed revision independently and returns PASS, HOLD, or BLOCKED |

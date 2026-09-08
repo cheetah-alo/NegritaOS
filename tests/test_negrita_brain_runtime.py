@@ -185,6 +185,21 @@ class TestRuntimeContract(RuntimeFixture):
         self.assertIn("model-governance-card", contract["skills"])
         self.assertEqual(contract["model_route"]["tier"], "terra_high")
 
+    def test_astra_is_globally_routed_with_explicit_model(self) -> None:
+        contract = resolve_session(self.repo, "codex", ["astra_review"], ROOT, self.memory)
+        self.assertEqual(contract["agents"], ["astra_review_agent"])
+        self.assertEqual(contract["modes"], ["ASTRA"])
+        self.assertEqual(contract["model_route"]["model"], "gpt-6-astra")
+        self.assertIn("quality-bar-gauntlet", contract["skills"])
+
+    def test_unresolved_astra_disagreement_blocks_commit_and_pass(self) -> None:
+        resolve_session(self.repo, "codex", ["astra_review"], ROOT, self.memory,
+                        risk_signals=["reviewer_disagreement"])
+        result = gate_action(self.repo, "commit", provider="codex", negritaos_root=ROOT, memory_base=self.memory)
+        self.assertEqual(result["decision"], "BLOCK")
+        with self.assertRaises(SessionError):
+            close_session(self.repo, provider="codex", status="PASS", negritaos_root=ROOT, memory_base=self.memory)
+
     def test_resolve_that_escalates_material_semantics_to_terra(self) -> None:
         contract = resolve_session(
             self.repo,

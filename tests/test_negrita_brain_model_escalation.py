@@ -32,6 +32,40 @@ class TestModelEscalationPolicy(unittest.TestCase):
         self.assertEqual(route["model"], "gpt-5.6-luna")
         self.assertEqual(route["reasoning_effort"], "medium")
 
+    def test_explicit_astra_review_routes_directly_without_prior_attempts(self) -> None:
+        route = resolve_model_route(self.policy, provider="codex", actions=["astra_review"])
+        self.assertEqual(route["model"], "gpt-6-astra")
+        self.assertEqual(route["tier"], "astra_high")
+        self.assertEqual(route["change_impact"], "high")
+        self.assertEqual(route["runtime_model_check"], "required_before_spawn")
+        self.assertTrue(route["evaluation"]["include_failed_attempts_and_all_subagents"])
+
+    def test_sol_disagreement_and_exceptional_complexity_route_to_astra(self) -> None:
+        for signal in ("sol_reviewer_disagreement", "sol_unresolved_debugging", "exceptional_cross_domain_complexity"):
+            route = resolve_model_route(self.policy, provider="codex", risk_signals=[signal])
+            self.assertEqual(route["tier"], "astra_high")
+        route = resolve_model_route(self.policy, provider="codex",
+                                    risk_signals=["architecture_decision", "reviewer_disagreement"])
+        self.assertEqual(route["tier"], "astra_high")
+
+    def test_highest_tier_disagreement_is_not_silently_resolved(self) -> None:
+        route = resolve_model_route(self.policy, provider="codex", actions=["astra_review"],
+                                    risk_signals=["reviewer_disagreement"])
+        self.assertTrue(route["unresolved_at_ceiling"])
+
+    def test_claude_astra_review_does_not_claim_to_execute_gpt6(self) -> None:
+        route = resolve_model_route(self.policy, provider="claude", actions=["astra_review"])
+        self.assertIsNone(route["model"])
+        self.assertEqual(route["recommended_codex_model"], "gpt-6-astra")
+
+    def test_agent_only_astra_selection_cannot_bypass_high_impact_review(self) -> None:
+        for agent in ("astra-reviewer", "astra_review_agent"):
+            route = resolve_model_route(self.policy, provider="codex", selected_agents=[agent])
+            self.assertEqual(route["tier"], "astra_high")
+            self.assertEqual(route["change_impact"], "high")
+            self.assertTrue(route["independent_review"]["required"])
+            self.assertIn("applicable_tests", route["independent_review"]["required_evidence"])
+
     def test_focused_review_uses_luna_high(self) -> None:
         route = resolve_model_route(
             self.policy,
@@ -301,13 +335,13 @@ class TestModelEscalationPolicy(unittest.TestCase):
             with self.assertRaises(ModelRoutingError):
                 load_model_escalation_policy(ROOT)
 
-    def test_disagreement_above_sol_stays_at_sol(self) -> None:
+    def test_disagreement_above_sol_reaches_new_astra_tier(self) -> None:
         route = resolve_model_route(
             self.policy,
             provider="codex",
             risk_signals=["architecture_decision", "reviewer_disagreement"],
         )
-        self.assertEqual(route["tier"], "sol_high")
+        self.assertEqual(route["tier"], "astra_high")
 
     def test_resolver_rejects_an_invalid_policy(self) -> None:
         invalid = copy.deepcopy(self.policy)

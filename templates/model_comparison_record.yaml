@@ -1,0 +1,33 @@
+# Populate from actual usage receipts; a template is not benchmark evidence.
+schema_version: 1
+comparison_id: null
+project_id: null
+task_class: null
+acceptance_contract_sha256: null
+input_evidence_sha256: null
+artifact_type: null  # code, sql, plot, pptx, docx, pdf, research
+trials:
+  - trial_id: null
+    model: null
+    reasoning_effort: null
+    runtime_provider: null
+    rate_card_source: null
+    rate_card_checked_at: null
+    billing_unit: null  # api_usd OR codex_credits; never combine units
+    attempts: []  # Include initial work, retries, failed attempts and every subagent.
+    # Each attempt: id, model, reasoning_effort, parent_attempt_id, elapsed_seconds,
+    # input_tokens, cached_input_tokens, output_tokens, reported_cost, usage_receipt.
+    total_elapsed_seconds: null
+    total_reported_cost: null
+    usage_complete: false
+    validated_result: false
+    validation_evidence: []
+    output_sha256: null
+    review_status: NOT_RUN
+decision:
+  status: INSUFFICIENT_EVIDENCE
+  comparison_basis: equivalent_contract_inputs_quality_and_billing_unit
+  recommended_route: null
+  limitations: []
+  # Never drop failed attempts from the denominator or manufacture unknown usage.
+  # Claims about general model superiority require multiple comparable trials.

@@ -1,0 +1,26 @@
+agent:
+  id: astra_review_agent
+  router_mode: ASTRA
+  version: "1.0.0"
+  layer: technical
+  description: "Exceptional cross-domain review and resolution of material Sol-level disagreements."
+  persona: [independent_reviewer, cross_domain_reviewer]
+  skills:
+    - skills/engineering/reproducibility_review.md
+  codex_skills:
+    - .codex/skills/quality-bar-gauntlet/SKILL.md
+  rules:
+    inherit: rules/global/global_rules.yaml
+    domain: rules/global/model_escalation_rule.md
+  rubrics:
+    - rubrics/code_quality_rubric.yaml
+  templates:
+    comparison: templates/model_comparison_record.yaml
+  output_modes: [cross_domain_review, disputed_result_assessment, model_comparison_record]
+  quality_gate:
+    - direct_astra_selection_has_explicit_request_or_declared_signal
+    - domain_rules_and_original_evidence_are_loaded
+    - supporting_workers_use_explicit_models
+    - missing_evidence_remains_hold
+    - independent_review_is_not_self_review
+    - cost_claims_include_all_attempts_or_are_marked_unknown

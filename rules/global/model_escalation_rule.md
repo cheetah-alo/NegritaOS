@@ -5,7 +5,7 @@ domain: orchestration
 enforcement: strict
 priority: critical
 description: >
-  Routes delegated Codex work to the minimum justified Luna, Terra, or Sol
+  Routes delegated Codex work to the minimum justified Luna, Terra, Sol, or Astra
   tier and requires separate falsification-oriented review for high-impact work.
 version: 1.0.0
 applyTo: [repo, agents, prompts, claude, codex]
@@ -36,9 +36,29 @@ cross-domain evidence, unresolved Terra debugging, high-impact irreversible
 work, production-candidate final integration, disputed PASS/HOLD/FAIL, or
 Terra-level disagreement.
 
+Use Astra (`gpt-6-astra`, high) directly for an explicit Astra review request or
+`exceptional_cross_domain_complexity`. Escalate unresolved Sol debugging and
+Sol-level reviewer disagreements to Astra. Prior attempts with other models
+are not required. At the highest tier, unresolved disagreement remains HOLD
+for human resolution; it never becomes approval merely because no larger
+model is available.
+
+Give supporting subagents explicit model/effort settings. Selecting Astra for
+the parent must not implicitly move mechanical tasks to Astra. Before spawning,
+check that the runtime advertises the selected model/effort. If unavailable,
+report BLOCKED_MODEL_ROUTING rather than silently switching models. Configuration
+validation alone does not prove runtime availability.
+
+Evaluate total cost per validated result, including failed attempts, retries
+and every subagent. Use `templates/model_comparison_record.yaml`. Compare the
+same acceptance contract and input evidence; missing usage is unknown, not zero.
+Keep Codex credits and API USD separate. Token pricing alone cannot determine
+which model is cheaper for a completed task. Benchmarks do not authorize paid
+calls, automatic changes to routing, or relaxing quality gates.
+
 An agent cannot provide the final independent review of its own work. High
 impact requires a separate Terra-or-higher reviewer; production candidates
-require a separate Sol reviewer. The reviewer must try to falsify the
+require a separate Sol-or-higher reviewer. The reviewer must try to falsify the
 implementation. A different alias in the same provider task is not independent.
 The review PASS is bound to a SHA-256 worktree fingerprint and required evidence
 categories. `commit` remains blocked if the review is absent, too weak, open,
@@ -56,7 +76,7 @@ evidence or required user authorization. Once a semantic or architectural
 decision is recorded, bounded implementation may return to Luna.
 
 Claude and CI apply the same tier and evidence semantics but must not claim to
-be a GPT-5.6 Luna, Terra, or Sol model. When exact model execution is required,
+be a GPT-5.6 Luna, Terra, Sol, or GPT-6 Astra model. When exact model execution is required,
 delegate through the corresponding Codex custom agent.
 
 Contracts created before model routing must be refreshed with `resolve` before

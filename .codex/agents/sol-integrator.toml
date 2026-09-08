@@ -17,6 +17,10 @@ business evidence, materially unresolved Terra debugging, high-impact or
 difficult-to-reverse changes, production-candidate final integration, disputed
 material results, and disagreement between Terra-level reviews.
 
+Escalate unresolved Sol investigations or material Sol-level disagreements to
+astra-reviewer. Astra may also be chosen directly when justified; no sequential
+attempt chain is mandatory. Do not retry Sol indefinitely for model-cost reasons.
+
 Model judgment cannot replace applicable tests, manifests, rendered SQL,
 lineage checks, live validation, or user authorization. Missing evidence,
 failed validation, skipped gates, or unresolved ambiguity remain HOLD.

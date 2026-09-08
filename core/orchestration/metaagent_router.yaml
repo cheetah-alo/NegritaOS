@@ -300,6 +300,22 @@ metaagent_router:
         - model_governance_card_review
         - model_lifecycle_hold
 
+    astra_review:
+      id: ASTRA
+      native_alias: astra
+      global_agent: true
+      label: "Astra Cross-Domain Review"
+      agent: astra_review_agent
+      trigger_signals:
+        - "@agent:Astra"
+        - "@agent:Astral"
+        - "Astra review"
+        - "Astral review"
+        - "astra-reviewer"
+        - "Sol reviewer disagreement"
+      input_types: [review_request, technical_evidence, analytical_evidence, document_evidence]
+      output_types: [cross_domain_review, disputed_result_assessment, model_comparison_record]
+
     code_repository_work:
       id: CR
       label: "Code / Repository Work"

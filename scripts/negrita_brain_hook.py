@@ -81,6 +81,8 @@ def _is_git_commit_command(command: str, tokens: list[str]) -> bool:
 
 def _prompt_action(prompt: str) -> str:
     """Return one safe action label for prompt-local routing."""
+    if re.search(r"(?:@agent:\s*|--agent\s+)(?:astra|astral)\b|\bastra-reviewer\b|^(?:astra|astral)\s*:", prompt):
+        return "astra_review"
     if re.search(r"\b(architecture|architectural|arquitectura)\b", prompt):
         return "architecture"
     if re.search(r"\b(pr|pull request|code review|review pr|revisar pr)\b", prompt):

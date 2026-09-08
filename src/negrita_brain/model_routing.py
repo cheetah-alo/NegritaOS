@@ -186,8 +186,9 @@ def _validate_impact_routes(policy: dict[str, Any], errors: list[str]) -> None:
     for mapping_name, source_name in (
         ("task_class_impacts", "task_classes"),
         ("signal_impacts", "escalation_signals"),
+        ("agent_impacts", "custom_agent_tiers"),
     ):
-        mapping = policy.get(mapping_name)
+        mapping = policy.get(mapping_name, {} if mapping_name == "agent_impacts" else None)
         source = policy.get(source_name)
         if not isinstance(mapping, dict):
             errors.append(f"{mapping_name} must be a mapping")
@@ -311,6 +312,9 @@ def validate_model_escalation_policy(policy: dict[str, Any]) -> list[str]:
     _validate_impact_routes(policy, errors)
     _validate_governance(policy, errors)
     _validate_global_agents(policy, errors)
+    evaluation = policy.get("evaluation", {})
+    if not isinstance(evaluation, dict):
+        errors.append("evaluation must be a mapping")
     return errors
 
 
@@ -352,10 +356,18 @@ def _effective_change_impact(
     actions: Iterable[str],
     delegation_class: str | None,
     risk_signals: Iterable[str],
+    selected_agents: Iterable[str] = (),
 ) -> tuple[str, list[str]]:
     """Raise impact from declared task classes and material risk signals."""
     effective = requested
     reasons: list[str] = []
+    for agent in selected_agents:
+        candidate = policy.get("agent_impacts", {}).get(agent)
+        if isinstance(candidate, str):
+            updated = _higher_impact(policy, effective, candidate)
+            if updated != effective:
+                reasons.append(f"agent:{agent}->{candidate}")
+                effective = updated
     action_defaults = policy.get("action_defaults", {})
     task_impacts = policy.get("task_class_impacts", {})
     task_classes = [action_defaults.get(action) for action in actions]
@@ -457,6 +469,10 @@ def _apply_risk_signals(
         else:
             dynamic.append((signal, int(rule["escalate_family"])))
     for signal, steps in dynamic:
+        family = int(policy["tiers"][tier]["family_rank"])
+        maximum = max(int(item["family_rank"]) for item in policy["tiers"].values())
+        if family + steps > maximum:
+            reasons.append(f"escalation_ceiling_reached:{signal}")
         tier = _apply_candidate(
             policy,
             tier,
@@ -503,6 +519,7 @@ def resolve_model_route(
     errors = validate_model_escalation_policy(policy)
     if errors:
         raise ModelRoutingError(errors[0])
+    actions, selected_agents, risk_signals = tuple(actions), tuple(selected_agents), tuple(risk_signals)
     _validate_route_request(
         policy, change_impact, review_role, review_of_session
     )
@@ -512,6 +529,7 @@ def resolve_model_route(
         actions,
         delegation_class,
         risk_signals,
+        selected_agents,
     )
     impact = policy["impact_levels"][effective_impact]
 
@@ -553,6 +571,9 @@ def resolve_model_route(
             provider, "tier_semantics_only"
         ),
         "selection_reasons": reasons,
+        "unresolved_at_ceiling": any(reason.startswith("escalation_ceiling_reached:") for reason in reasons),
+        "runtime_model_check": policy["governance"].get("runtime_model_availability_check", "required_before_spawn"),
+        "evaluation": dict(policy.get("evaluation", {})),
         "delegation_class": delegation_class,
         "risk_signals": normalized_signals,
         "requested_change_impact": change_impact,

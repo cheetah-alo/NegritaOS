@@ -1161,6 +1161,9 @@ def gate_action(
         elif review_route.get("role") != "builder":
             decision = "BLOCK"
             reasons.append("An independent reviewer session cannot commit reviewed changes")
+        elif contract_model_route.get("unresolved_at_ceiling"):
+            decision = "BLOCK"
+            reasons.append("Highest-tier disagreement remains HOLD; obtain human resolution and re-resolve")
         elif review_route.get("required"):
             independent_review = _review_pass_attestation(
                 context, contract, memory_base
@@ -1332,6 +1335,9 @@ def close_session(
     if not legacy_session_id and contract.get("state") != "READY":
         raise SessionError(f"Session is already closed: {contract['session_id']}")
     normalized_status = status.upper()
+    ceiling_route = contract.get("model_route")
+    if normalized_status == "PASS" and isinstance(ceiling_route, dict) and ceiling_route.get("unresolved_at_ceiling"):
+        raise SessionError("Highest-tier disagreement cannot close PASS; human resolution is required")
     evidence_refs_by_category = _parse_evidence_refs(evidence_refs)
     contract_model_route = contract.get("model_route")
     review_route = (

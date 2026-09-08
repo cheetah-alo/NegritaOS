@@ -162,6 +162,14 @@ load `core/orchestration/model_escalation_policy.yaml`.
 - Default bounded work to `luna_medium`.
 - Use `luna_high` for focused review and approved-contract validation.
 - Pass explicit `--risk-signal` values when Terra or Sol criteria are present.
+- Use `--action astra_review` for explicit Astra requests, or declare
+  `exceptional_cross_domain_complexity`, `sol_unresolved_debugging`, or
+  `sol_reviewer_disagreement`. Direct Astra routing does not require earlier
+  failed attempts. Bounded supporting agents retain explicit Luna/Terra models.
+- Check the runtime model catalog before spawning. Missing Astra means
+  `BLOCKED_MODEL_ROUTING`, not silent substitution; highest-tier disagreement
+  remains HOLD. Compare total cost per validated result with the model comparison
+  template, including failed attempts and subagents.
 - Material signals automatically raise `change_impact`; pass an explicit higher
   value when the impact is known before the signal is selected.
 - An independent reviewer must use `--review-role independent_reviewer` and the
@@ -176,7 +184,7 @@ load `core/orchestration/model_escalation_policy.yaml`.
 - Missing evidence stays `HOLD` regardless of model tier.
 
 Claude applies the same escalation semantics but must not claim to execute a
-GPT-5.6 model. Use the canonical Codex agents when the exact Luna/Terra/Sol
+GPT model. Use the canonical Codex agents when the exact Luna/Terra/Sol/Astra
 model is required.
 
 ## Step 6d — Commit identity gate

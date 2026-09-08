@@ -50,6 +50,7 @@ aliases for every canonical mode:
 
 ```text
 PRR -> --agent prr
+ASTRA -> --agent astra (Claude protocol); astra-reviewer (Codex GPT-6 Astra)
 TD  -> --agent td
 MR  -> --agent mr
 QG  -> --agent qg

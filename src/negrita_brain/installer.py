@@ -46,7 +46,7 @@ def managed_agents_block(negritaos_root: Path) -> str:
         "`scripts/open_governed_browser.py`; on ambiguity return "
         "`BLOCKED_BROWSER_PROFILE_RESOLUTION` instead of opening another profile. "
         "For delegated work, use the resolved `model_route`: default to Luna medium, "
-        "escalate only for declared Terra/Sol signals, and require a separate "
+        "select Terra/Sol/Astra only for declared signals or explicit user requests, and require a separate "
         "falsification-oriented reviewer task for high-impact work. Independent PASS "
         "must include SHA-256-bound evidence receipts and match the current worktree "
         "fingerprint at commit time. A larger model never replaces missing evidence or "
