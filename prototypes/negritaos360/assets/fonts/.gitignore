@@ -1,0 +1,2 @@
+# Existing local font binaries are preview assets, not promoted Git artifacts.
+*.ttf

@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {selectCapabilities,selectProjects,catalogMetrics,neighborhood,routeFromHash} from './state.mjs';
+import {capabilities,knowledge,projects} from './data.mjs';
+const base={project:'all',search:'',kind:'Todos'};
+test('skip-content fragment preserves the current route',()=>{assert.equal(routeFromHash('#main','catalog'),'catalog');assert.equal(routeFromHash('#brain','catalog'),'brain');assert.equal(routeFromHash('#invalid','catalog'),'overview');});
+test('project boundary filters capabilities',()=>{assert.equal(selectCapabilities({...base,project:'atlas'}).length,4);assert.ok(selectCapabilities({...base,project:'faro'}).every(c=>c.project==='faro'));});
+test('type and search filters compose',()=>{assert.equal(selectCapabilities({...base,kind:'Skill',search:'contratos de datos'}).length,1);assert.equal(selectCapabilities({...base,kind:'Agent',search:'contratos de datos'}).length,0);});
+test('unknown use does not count as measured zero',()=>{const m=catalogMetrics(capabilities);assert.equal(m.measured,3);assert.equal(m.total,8);assert.equal(m.attention,2);assert.equal(catalogMetrics([{state:'Verificado',use:0}]).measured,1);});
+test('search has an explicit empty result',()=>{assert.deepEqual(selectProjects({...base,search:'nonexistent'}),[]);});
+test('bounded graph walk terminates even with cycles',()=>{const edges=[{from:'a',to:'b'},{from:'b',to:'c'},{from:'c',to:'a'}];assert.deepEqual([...neighborhood('a',edges,1)],['a','b']);assert.deepEqual([...neighborhood('a',edges,3)],['a','b','c']);});
+test('synthetic fixture references resolve without cross-project edges',()=>{const all=[...capabilities,...knowledge];assert.equal(new Set(all.map(i=>i.id)).size,all.length);for(const c of all){assert.ok(projects.some(p=>p.id===c.project));for(const id of c.relations){assert.ok(all.some(x=>x.id===id&&x.project===c.project));}}});

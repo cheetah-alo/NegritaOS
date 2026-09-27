@@ -25,6 +25,7 @@ htmlcov/
 *.pem
 *.key
 .secrets.baseline.local
+.local/
 
 # Generated outputs and scratch material
 outputs/
