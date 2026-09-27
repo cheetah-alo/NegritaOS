@@ -42,7 +42,7 @@ function capabilityCards(items) {
   }).join('');
 }
 
-export function renderLocalAgentView(catalog, filters = {}) {
+export function renderLocalAgentView(catalog, filters = {}, projectNames = {}) {
   if (!catalog || ['loading', 'idle'].includes(catalog.status)) {
     return stateView('Leyendo agentes locales…', 'La lectura ocurre sólo en este equipo.');
   }
@@ -61,23 +61,36 @@ export function renderLocalAgentView(catalog, filters = {}) {
     }
     agents.get(row.id).projects.push(row.project_id);
   }
-  const cards = [...agents.values()].sort((a, b) => a.name.localeCompare(b.name, 'es'));
-  const content = cards.length ? cards.map(agent =>
-    `<article class="panel local-agent-card"><div class="panel-heading"><h2>${esc(agent.name)}</h2>` +
-    `<span class="type-label">${CONFIGURATION_COPY[agent.configuration_state]}</span></div>` +
-    `<p class="local-agent-description">${esc(agent.description || 'Descripción no registrada en integrator.yaml.')}</p>` +
-    `<small class="local-agent-id">ID: ${esc(agent.id)}</small>` +
-    `<div class="local-agent-projects"><span>Proyectos vinculados · ${agent.projects.length}</span>` +
-    agent.projects.map(project => `<button class="project-link" data-project="${esc(project)}">${esc(project)}</button>`).join('') +
-    `</div></article>`).join('') :
+  const directory = [...agents.values()].sort((a, b) => a.name.localeCompare(b.name, 'es'));
+  const missing = directory.filter(agent => !agent.description).length;
+  const content = directory.length ? directory.map((agent, index) => {
+    const description = agent.description || 'Descripción no registrada en integrator.yaml.';
+    const projectCount = agent.projects.length;
+    return `<details class="local-agent-entry" name="local-agent-directory"><summary>` +
+      `<span class="local-agent-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>` +
+      `<span class="local-agent-primary"><strong>${esc(agent.name)}</strong>` +
+      `<small aria-hidden="true">${esc(description)}</small></span>` +
+      `<span class="local-agent-count">${projectCount} ${projectCount === 1 ? 'proyecto' : 'proyectos'}</span>` +
+      `<span class="local-agent-chevron" aria-hidden="true">⌄</span></summary>` +
+      `<div class="local-agent-detail"><div class="local-agent-function">` +
+      `<span class="local-agent-detail-label">FUNCIÓN DECLARADA</span>` +
+      `<p>${esc(description)}</p><span class="type-label">${CONFIGURATION_COPY[agent.configuration_state]}</span>` +
+      `<small class="local-agent-id">ID: ${esc(agent.id)}</small></div>` +
+      `<div class="local-agent-affiliations"><span class="local-agent-detail-label">PROYECTOS VINCULADOS · ${projectCount}</span>` +
+      `<div class="local-agent-projects">` + agent.projects.map(project =>
+        `<button class="project-link" data-project="${esc(project)}" title="Abrir proyecto ${esc(projectNames[project] || project)}">${esc(projectNames[project] || project)}<span aria-hidden="true">↗</span></button>`
+      ).join('') + `</div></div></div></details>`;
+  }).join('') :
     `<div class="local-no-match"><p>Ningún agente coincide con estos filtros.</p>` +
     `<button class="button text" data-local-capabilities-clear>Limpiar filtros</button></div>`;
-  return heading('FUENTE LOCAL · AGENTES', 'Quién hace qué en NegritaOS.',
-    'Nombres y funciones del registro canónico, vinculados sólo a los proyectos permitidos en este equipo.') +
-    `<div class="local-agent-summary">${cards.length} agentes distintos · ${rows.length} relaciones con proyectos</div>` +
-    `<div class="local-agent-grid">${content}</div>` +
+  return heading('FUENTE LOCAL · AGENTES', 'Agentes de tu ecosistema.',
+    'Recorre sus funciones y abre sólo el contexto de proyecto que necesites.') +
+    `<div class="local-agent-summary"><span><strong>${directory.length}</strong> agentes distintos</span>` +
+    `<span><strong>${rows.length}</strong> relaciones con proyectos</span>` +
+    `<span class="${missing ? 'local-agent-summary-attention' : ''}"><strong>${missing}</strong> sin descripción</span></div>` +
+    `<section class="local-agent-directory" aria-label="Directorio de agentes">${content}</section>` +
     `<div class="contract-note"><b>Configuración, no actividad.</b> ` +
-    `La descripción procede de integrator.yaml. La asociación con un proyecto no demuestra uso, ejecución o validación.</div>`;
+    `La descripción original procede de integrator.yaml. La asociación con un proyecto no demuestra uso, ejecución o validación.</div>`;
 }
 
 export function renderLocalCapabilityView(catalog, filters = {}) {

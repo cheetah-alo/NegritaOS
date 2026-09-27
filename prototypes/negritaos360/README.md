@@ -34,7 +34,7 @@ node --test prototypes/negritaos360/*.test.mjs
 
 - Panorama → project → filtered capability catalog → detail drawer → related capability.
 - Capacidades → type/search filters; missing usage is “Sin medir”, never zero.
-- Agentes → unique readable agent names, canonical role descriptions and permitted project associations. Technical IDs remain visible for traceability.
+- Agentes → compact, keyboard-accessible directory. Each row shows a readable name, a short preview of the canonical description, and the project count; expand a row for its full description, technical ID, configuration state, and permitted project names. The project button opens that project's view. Global client, project, and search filters apply before grouping.
 - Conocimiento → capability/knowledge views → depth and zoom → accessible node list → detail.
 - Flujos → individual steps or simulated advance; no executable agent action or approval.
 - Brain y Git → synthetic references only; no claim of live status or deployment.

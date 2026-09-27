@@ -43,7 +43,7 @@ function render(){
  renderFilters();
  document.querySelector('#scenario').value=state.scenario;
  document.querySelector('#scenario').disabled=local.source==='local';
- document.querySelector('#search').placeholder=local.source==='local'?'Buscar proyectos visibles…':
+ document.querySelector('#search').placeholder=local.source==='local'?(state.route==='agents'?'Buscar agentes o funciones…':'Buscar proyectos visibles…'):
   state.route==='tracking'?'Buscar funcionalidades…':'Buscar en la vista…';
  if(local.source==='local'&&['catalog','agents'].includes(state.route)){
   const visibleIds=new Set(local.projects.filter(p=>state.client==='all'||
@@ -51,7 +51,9 @@ function render(){
   const view=state.route==='agents'?renderLocalAgentView:renderLocalCapabilityView;
   main.innerHTML=view({...capability,
    items:capability.items.filter(item=>visibleIds.has(item.project_id))},
-   {project:state.project,kind:capability.kind,search:state.search});
+   {project:state.project,kind:capability.kind,search:state.search},
+   Object.fromEntries(local.projects.filter(project=>visibleIds.has(project.project_id))
+    .map(project=>[project.project_id,project.name])));
  }else main.innerHTML=local.source==='local'?renderLocalView(state.route,local,state):renderView();
 }
 async function loadLocalCapabilities(){

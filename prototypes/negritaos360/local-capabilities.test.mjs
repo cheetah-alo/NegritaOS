@@ -55,13 +55,31 @@ test('agent view groups project relationships and escapes canonical descriptions
     {...item, name: 'Gisel · Project Hours Tracker', description: '<script>bad</script>'},
     {...item, name: 'Gisel · Project Hours Tracker', description: '<script>bad</script>', project_id: 'beta'},
   ]));
-  const html = renderLocalAgentView(catalog);
-  assert.match(html, /1 agentes distintos · 2 relaciones/);
+  const html = renderLocalAgentView(catalog, {}, {alpha: 'Proyecto Alfa', beta: 'Proyecto Beta'});
+  assert.match(html, /<strong>1<\/strong> agentes distintos/);
+  assert.match(html, /<strong>2<\/strong> relaciones con proyectos/);
+  assert.match(html, /<details[^>]+class="local-agent-entry"/);
+  assert.match(html, /<summary>/);
+  assert.match(html, /Proyecto Alfa/);
+  assert.match(html, /Proyecto Beta/);
   assert.match(html, /&lt;script&gt;bad&lt;\/script&gt;/);
   assert.doesNotMatch(html, /<script>/);
   assert.match(html, /data-project="alpha"/);
   assert.match(html, /data-project="beta"/);
-  assert.match(renderLocalAgentView(catalog, {project: 'beta'}), /1 relaciones/);
+  assert.match(renderLocalAgentView(catalog, {project: 'beta'}), /<strong>1<\/strong> relaciones/);
+  assert.doesNotMatch(html, /local-agent-card/);
+});
+
+test('agent directory marks missing descriptions and only includes filtered authorized projects', () => {
+  const catalog = parseLocalCapabilities(response([
+    {...item, description: null},
+    {...item, project_id: 'beta', description: null},
+  ]));
+  const html = renderLocalAgentView(catalog, {project: 'beta'}, {alpha: 'Privado', beta: 'Visible'});
+  assert.match(html, /<strong>1<\/strong> sin descripción/);
+  assert.match(html, /Descripción no registrada/);
+  assert.match(html, /Visible/);
+  assert.doesNotMatch(html, /Privado|data-project="alpha"/);
 });
 
 test('keeps loading, empty, error, and retry states distinct', () => {
