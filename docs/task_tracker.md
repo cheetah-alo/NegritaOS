@@ -18,12 +18,12 @@ Mode: CR
 
 ## Task Log
 
-### T-006 - NegritaOS 360 Capability Catalog And Knowledge Graph
+### T-006 - NegritaOS 360 Capability Catalog, Second Brain And Graph Engineering
 
 - **What**: add the OO contract, typed capability catalog, project coverage matrix and derived knowledge graph for projects, profiles, modes, agents, skills, rules, templates, gates and Brain usage.
-- **Plan**: `docs/negritaos_360_dashboard_architecture_plan__updated_20260927_122000.md`.
-- **Decision**: use immutable Python dataclasses and Protocol-based adapters; keep the graph as a derived read model, with registry files and Brain as sources of truth.
-- **Scope**: planning/documentation only; dashboard read model, API and UI remain pending CAT-001 through CAT-008.
+- **Plan**: `docs/negritaos_360_dashboard_architecture_plan__updated_20260927_124000.md`; previous version remains at `docs/negritaos_360_dashboard_architecture_plan__updated_20260927_122000.md`.
+- **Decision**: separate Capability Graph, Execution Graph and Knowledge Graph. Use immutable Python dataclasses, Protocol-based adapters, a file/read-model maturity path, NetworkX for backend graph analysis and Cytoscape.js for filtered UI exploration.
+- **Scope**: planning/documentation only; catalog, workflow and knowledge implementation remain pending CAT-001 through CAT-008, FLOW-001 through FLOW-003 and KNOW-001 through KNOW-002.
 
 ### T-005 - Astra Routing
 - **What**: add globally routed Astra review while retaining explicit Luna workers and existing Sol production minimum.
