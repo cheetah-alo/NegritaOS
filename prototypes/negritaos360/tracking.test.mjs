@@ -89,12 +89,22 @@ test('foreign project evidence cannot increase progress; empty scope is not zero
   assert.equal(progress(track, track.revisions[0]).done, 0);
   assert.equal(progress(track, { features: [] }).percent, null);
 });
-test('all seven routes render in all five read states', () => {
+test('all eight routes render in all five read states', () => {
   const old = { ...state };
   try {
     for (const [route] of navItems) for (const scenario of ['ready', 'loading', 'empty', 'error', 'stale']) {
       Object.assign(state, { route, scenario, client: 'all', project: 'all', search: '' });
       assert.match(renderView(), /<h1>/);
     }
+  } finally { Object.assign(state, old); }
+});
+test('demo agents route shows only synthetic agent roles', () => {
+  const old = { ...state };
+  try {
+    Object.assign(state, { route: 'agents', scenario: 'ready', client: 'all', project: 'all', search: '' });
+    const html = renderView();
+    assert.match(html, /AGENTES · DEMO/);
+    assert.match(html, /Arquitectura de software/);
+    assert.doesNotMatch(html, /pablo_deployment_operator_agent/);
   } finally { Object.assign(state, old); }
 });

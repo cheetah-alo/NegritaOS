@@ -19,10 +19,32 @@ class LocalCapabilityError(ValueError):
     """Raised when an authorized capability source is malformed or inconsistent."""
 
 
+# Canonical aliases declared by the NegritaOS router and .codex/agents bridge.
+AGENT_ALIASES = {
+    "pablo_deployment_operator_agent": "Pablo",
+    "casilda_functional_qa_agent": "Casilda",
+    "casilda_lifecycle_qa_agent": "Casilda Flows",
+    "project_hours_tracker_agent": "Gisel",
+    "model_governance_card_agent": "Vera",
+}
+DISPLAY_TOKENS = {
+    "ai": "AI",
+    "ds": "DS",
+    "eda": "EDA",
+    "gitbook": "GitBook",
+    "ml": "ML",
+    "moneyflow": "MoneyFlow",
+    "qa": "QA",
+    "tfm": "TFM",
+    "wifi": "WiFi",
+}
+
+
 class LocalCapabilityService:
     """Build a deterministic capability view from authorized local registries."""
 
     def __init__(self, work_root: Path, access_path: Path) -> None:
+        """Keep the canonical work root and local authorization policy path."""
         if not isinstance(work_root, Path) or not isinstance(access_path, Path):
             raise LocalCapabilityError("work_root and access_path must be pathlib.Path values")
         self._work_root = work_root
@@ -66,7 +88,7 @@ class LocalCapabilityService:
             integrator = _load_exact_mapping(self._work_root / "integrator.yaml")
             global_rules = _global_rules(integrator)
             registered_agents = _registered_agents(integrator)
-            items: list[dict[str, str]] = []
+            items: list[dict[str, str | None]] = []
             for project_id in sorted(visible):
                 project = _load_visible_project(self._work_root, project_id, visible[project_id])
                 items.extend(
@@ -96,8 +118,8 @@ def _project_capabilities(
     project_id: str,
     project: Mapping[str, Any],
     skills_catalog: Mapping[str, Any],
-    registered_agents: set[str],
-) -> list[dict[str, str]]:
+    registered_agents: Mapping[str, str | None],
+) -> list[dict[str, str | None]]:
     if "project" in project:
         payload = project["project"]
         if not isinstance(payload, Mapping):
@@ -111,10 +133,7 @@ def _project_capabilities(
         if any(skill_id not in known_skills for skill_id in closure.skills):
             raise LocalCapabilityError("resolved skill is not registered")
         items = [
-            _named_item(
-                project_id, "agent", agent,
-                "REGISTERED" if agent in registered_agents else "DECLARED",
-            )
+            _agent_item(project_id, agent, registered_agents, "REGISTERED")
             for agent in agents
         ]
         items.extend(
@@ -128,13 +147,13 @@ def _project_capabilities(
     payload = project["project_registry"]
     if not isinstance(payload, Mapping):
         raise LocalCapabilityError("legacy project declaration is invalid")
-    items: list[dict[str, str]] = []
+    items: list[dict[str, str | None]] = []
     agents = payload.get("agents", {})
     if not isinstance(agents, Mapping):
         raise LocalCapabilityError("legacy agents declaration is invalid")
     for group in ("primary", "secondary"):
         items.extend(
-            _named_item(project_id, "agent", agent, "DECLARED")
+            _agent_item(project_id, agent, registered_agents, "DECLARED")
             for agent in _list_only(agents.get(group, []), f"agents.{group}")
         )
     skills = payload.get("skills", {})
@@ -223,14 +242,24 @@ def _global_rules(integrator: Mapping[str, Any]) -> list[str]:
     return _list_only(negrita_os.get("global_rules", []), "negrita_os.global_rules")
 
 
-def _registered_agents(integrator: Mapping[str, Any]) -> set[str]:
+def _registered_agents(integrator: Mapping[str, Any]) -> dict[str, str | None]:
     negrita_os = integrator.get("negrita_os")
     if not isinstance(negrita_os, Mapping):
         raise LocalCapabilityError("integrator agents are unavailable")
     agents = negrita_os.get("agents", {})
-    if not isinstance(agents, Mapping) or not all(_valid_id(agent) for agent in agents):
+    if not isinstance(agents, Mapping) or not all(
+        _valid_id(agent) and isinstance(details, Mapping) for agent, details in agents.items()
+    ):
         raise LocalCapabilityError("integrator agents are invalid")
-    return set(agents)
+    descriptions: dict[str, str | None] = {}
+    for agent_id, details in agents.items():
+        description = details.get("description")
+        if description is not None and (
+            not isinstance(description, str) or not description.strip()
+        ):
+            raise LocalCapabilityError("integrator agent description is invalid")
+        descriptions[agent_id] = description.strip() if description else None
+    return descriptions
 
 
 def _string_list(value: Any, label: str) -> list[str]:
@@ -253,7 +282,9 @@ def _list_only(value: Any, label: str) -> list[str]:
     return [item.strip() for item in value]
 
 
-def _named_item(project_id: str, kind: str, name: str, state: str) -> dict[str, str]:
+def _named_item(
+    project_id: str, kind: str, name: str, state: str
+) -> dict[str, str | None]:
     if not _valid_id(name):
         raise LocalCapabilityError("capability name is invalid")
     return {
@@ -261,11 +292,36 @@ def _named_item(project_id: str, kind: str, name: str, state: str) -> dict[str, 
         "project_id": project_id,
         "kind": kind,
         "name": name,
+        "description": None,
         "configuration_state": state,
     }
 
 
-def _legacy_skill_item(project_id: str, reference: str) -> dict[str, str]:
+def _agent_item(
+    project_id: str,
+    agent_id: str,
+    registered_agents: Mapping[str, str | None],
+    registered_state: str,
+) -> dict[str, str | None]:
+    """Expose a readable agent label without changing its stable identifier."""
+    item = _named_item(
+        project_id, "agent", agent_id,
+        registered_state if agent_id in registered_agents else "DECLARED",
+    )
+    role_parts = agent_id.removesuffix("_agent").split("_")
+    alias = AGENT_ALIASES.get(agent_id)
+    if alias and role_parts[0] == alias.split()[0].lower():
+        role_parts = role_parts[1:]
+    role = " ".join(
+        DISPLAY_TOKENS.get(part, part.title())
+        for part in role_parts
+    )
+    item["name"] = f"{alias} · {role}" if alias else role
+    item["description"] = registered_agents.get(agent_id)
+    return item
+
+
+def _legacy_skill_item(project_id: str, reference: str) -> dict[str, str | None]:
     basename = _basename(reference)
     if not basename:
         raise LocalCapabilityError("legacy skill reference is invalid")
@@ -274,11 +330,12 @@ def _legacy_skill_item(project_id: str, reference: str) -> dict[str, str]:
         "project_id": project_id,
         "kind": "skill",
         "name": basename,
+        "description": None,
         "configuration_state": "DECLARED",
     }
 
 
-def _rule_item(project_id: str, reference: str, state: str) -> dict[str, str]:
+def _rule_item(project_id: str, reference: str, state: str) -> dict[str, str | None]:
     if not isinstance(reference, str) or not reference.strip():
         raise LocalCapabilityError("rule reference is invalid")
     value = reference.strip()
@@ -294,6 +351,7 @@ def _rule_item(project_id: str, reference: str, state: str) -> dict[str, str]:
         "project_id": project_id,
         "kind": "rule",
         "name": name,
+        "description": None,
         "configuration_state": state,
     }
 
@@ -308,7 +366,7 @@ def _valid_id(value: Any) -> bool:
     ) and value[0].isalpha()
 
 
-def _response(items: Sequence[dict[str, str]]) -> dict[str, object]:
+def _response(items: Sequence[dict[str, str | None]]) -> dict[str, object]:
     normalized = [dict(item) for item in items]
     digest = hashlib.sha256(
         json.dumps(

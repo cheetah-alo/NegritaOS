@@ -8,7 +8,7 @@ import {esc} from './components.mjs';
 import {fetchLocalCatalog,localClientOptions} from './local-catalog.mjs';
 import {renderLocalView} from './local-view.mjs';
 import {fetchLocalCapabilities} from './local-capabilities.mjs';
-import {renderLocalCapabilityView} from './local-capability-view.mjs';
+import {renderLocalCapabilityView,renderLocalAgentView} from './local-capability-view.mjs';
 
 const main=document.querySelector('#main');
 const local={source:new URLSearchParams(location.search).get('source')==='local'?'local':'demo',
@@ -45,10 +45,11 @@ function render(){
  document.querySelector('#scenario').disabled=local.source==='local';
  document.querySelector('#search').placeholder=local.source==='local'?'Buscar proyectos visibles…':
   state.route==='tracking'?'Buscar funcionalidades…':'Buscar en la vista…';
- if(local.source==='local'&&state.route==='catalog'){
+ if(local.source==='local'&&['catalog','agents'].includes(state.route)){
   const visibleIds=new Set(local.projects.filter(p=>state.client==='all'||
    (state.client==='__unknown__'?p.client_id===null:p.client_id===state.client)).map(p=>p.project_id));
-  main.innerHTML=renderLocalCapabilityView({...capability,
+  const view=state.route==='agents'?renderLocalAgentView:renderLocalCapabilityView;
+  main.innerHTML=view({...capability,
    items:capability.items.filter(item=>visibleIds.has(item.project_id))},
    {project:state.project,kind:capability.kind,search:state.search});
  }else main.innerHTML=local.source==='local'?renderLocalView(state.route,local,state):renderView();
@@ -79,7 +80,7 @@ async function loadLocal(){
   Object.assign(local,{status:'error',projects:[],provenance:null});
  }
  render();
- if(state.route==='catalog'){
+ if(['catalog','agents'].includes(state.route)){
   if(local.status==='READY')void loadLocalCapabilities();
   else{capability.status=local.status==='EMPTY'?'EMPTY':'error';render();}
  }
@@ -95,7 +96,7 @@ function setSource(value){
  if(value==='local')void loadLocal();else render();
 }
 function route(){state.route=routeFromHash(location.hash,state.route);state.kind='Todos';render();
- if(local.source==='local'&&state.route==='catalog'&&local.status==='READY'&&capability.status==='idle')void loadLocalCapabilities();}
+ if(local.source==='local'&&['catalog','agents'].includes(state.route)&&local.status==='READY'&&capability.status==='idle')void loadLocalCapabilities();}
 window.addEventListener('hashchange',route);
 document.querySelector('#search').addEventListener('input',e=>{state.search=e.target.value;if(local.source==='demo'&&state.route==='tracking')tracking.tab='features';render();});
 document.querySelector('#project').addEventListener('change',e=>{state.project=e.target.value;render();});

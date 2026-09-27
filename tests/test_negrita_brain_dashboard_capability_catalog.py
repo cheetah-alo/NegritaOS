@@ -37,7 +37,8 @@ class TestLocalCapabilityService(unittest.TestCase):
         )
         (self.root / "integrator.yaml").write_text(
             "negrita_os:\n  global_rules: [rules/global/global_rules.yaml]\n"
-            "  agents: {agent_a: {}}\n",
+            "  agents: {agent_a: {description: 'Reviews source code.'}, "
+            "project_hours_tracker_agent: {description: 'Gisel tracks hours.'}}\n",
             encoding="utf-8",
         )
 
@@ -69,6 +70,9 @@ class TestLocalCapabilityService(unittest.TestCase):
         )
         result = self._service().read_capabilities()
         self.assertEqual(result["state"], "READY")
+        agent = next(item for item in result["items"] if item["kind"] == "agent")
+        self.assertEqual(agent["name"], "Agent A")
+        self.assertEqual(agent["description"], "Reviews source code.")
         self.assertEqual(
             [(item["kind"], item["id"], item["configuration_state"]) for item in result["items"]],
             [
@@ -93,6 +97,33 @@ class TestLocalCapabilityService(unittest.TestCase):
         )
         items = self._service().read_capabilities(kind="agent")["items"]
         self.assertEqual(items[0]["configuration_state"], "DECLARED")
+        self.assertEqual(items[0]["name"], "Agent B")
+        self.assertIsNone(items[0]["description"])
+
+    def test_known_alias_uses_registered_name_and_description(self) -> None:
+        self._write_policy(("alpha", "client_a"))
+        (self.root / "projects" / "alpha.yaml").write_text(
+            "project:\n  id: alpha\n  name: Alpha\n  metadata: {client_id: client_a}\n"
+            "  agents: [project_hours_tracker_agent]\n",
+            encoding="utf-8",
+        )
+        agent = self._service().read_capabilities(kind="agent")["items"][0]
+        self.assertEqual(agent["name"], "Gisel · Project Hours Tracker")
+        self.assertEqual(agent["description"], "Gisel tracks hours.")
+
+    def test_invalid_description_is_rejected_without_leaking_source(self) -> None:
+        self._write_policy(("alpha", "client_a"))
+        (self.root / "projects" / "alpha.yaml").write_text(
+            "project:\n  id: alpha\n  name: Alpha\n  metadata: {client_id: client_a}\n"
+            "  agents: [agent_a]\n",
+            encoding="utf-8",
+        )
+        (self.root / "integrator.yaml").write_text(
+            "negrita_os: {agents: {agent_a: {description: []}}}", encoding="utf-8"
+        )
+        with self.assertRaises(LocalCapabilityError) as raised:
+            self._service().read_capabilities()
+        self.assertNotIn(str(self.root), str(raised.exception))
 
     def test_legacy_project_redacts_paths_and_declares_duplicate_items_once(self) -> None:
         self.access.write_text(

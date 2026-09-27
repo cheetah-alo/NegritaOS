@@ -30,6 +30,6 @@ export const workflowSteps=[
  {name:"Entregar",role:"Handoff",detail:"Guardar referencias y siguientes pasos, sin replicar contenido privado."},
 ];
 export const navItems=[
- ["overview","Panorama","◉"],["projects","Proyectos","▦"],["tracking","Planes y avance","↗"],["catalog","Capacidades","▤"],
+ ["overview","Panorama","◉"],["projects","Proyectos","▦"],["tracking","Planes y avance","↗"],["agents","Agentes","◈"],["catalog","Capacidades","▤"],
  ["knowledge","Conocimiento","⌘"],["flows","Flujos de trabajo","⇢"],["brain","Brain y Git","◎"],
 ];

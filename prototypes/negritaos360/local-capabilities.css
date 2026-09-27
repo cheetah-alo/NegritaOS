@@ -7,6 +7,15 @@
 .local-capability-group{margin:18px 0}
 .local-capability-name{display:block;font-weight:700}
 .local-capability-group td small{display:block;margin-top:4px}
+.local-agent-description{display:block;line-height:1.5;margin:8px 0;color:var(--muted,#68707d)}
+.local-agent-id{display:block;overflow-wrap:anywhere;color:var(--muted,#68707d)}
+.local-agent-summary{margin:20px 0 8px;color:var(--muted,#68707d);font-size:.85rem}
+.local-agent-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;margin:20px 0}
+.local-agent-card{min-width:0}
+.local-agent-card .panel-heading{align-items:flex-start;gap:12px}
+.local-agent-card h2{overflow-wrap:anywhere}
+.local-agent-projects{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--line,#d8dce2)}
+.local-agent-projects>span{width:100%;font-size:.75rem;color:var(--muted,#68707d)}
 .local-capability-state{display:flex;align-items:center;gap:12px}
 .local-capability-state p{margin:0;flex:1}
 .local-capability-groups .local-no-match{padding:28px;text-align:center;border:1px dashed var(--line,#d8dce2);border-radius:10px}

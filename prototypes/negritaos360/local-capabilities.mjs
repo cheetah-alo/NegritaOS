@@ -1,4 +1,4 @@
-const ITEM_KEYS = ['id', 'project_id', 'kind', 'name', 'configuration_state'];
+const ITEM_KEYS = ['id', 'project_id', 'kind', 'name', 'description', 'configuration_state'];
 const TOP_LEVEL_KEYS = ['state', 'items', 'provenance'];
 const PROVENANCE_KEYS = ['snapshot_id', 'view_sha256'];
 const KINDS = new Set(['agent', 'skill', 'rule']);
@@ -30,6 +30,7 @@ export function parseLocalCapabilities(payload) {
     const identity = `${item?.project_id}\u0000${item?.kind}\u0000${item?.id}`;
     if (!hasExactKeys(item, ITEM_KEYS) || !requiredText(item.id) || seen.has(identity) ||
         !requiredText(item.project_id) || !KINDS.has(item.kind) || !requiredText(item.name) ||
+        !(item.description === null || requiredText(item.description)) ||
         !CONFIGURATION_STATES.has(item.configuration_state)) {
       throw new Error('Elemento de capacidades locales inválido');
     }
@@ -39,6 +40,7 @@ export function parseLocalCapabilities(payload) {
       project_id: item.project_id,
       kind: item.kind,
       name: item.name.trim(),
+      description: item.description === null ? null : item.description.trim(),
       configuration_state: item.configuration_state,
     };
   });
@@ -76,6 +78,6 @@ export function selectLocalCapabilities(items, {project = 'all', kind = 'all', s
   return items.filter(item =>
     (project === 'all' || item.project_id === project) &&
     (kind === 'all' || item.kind === kind) &&
-    [item.id, item.project_id, item.kind, item.name, item.configuration_state]
+    [item.id, item.project_id, item.kind, item.name, item.description || '', item.configuration_state]
       .join(' ').toLocaleLowerCase('es').includes(query));
 }

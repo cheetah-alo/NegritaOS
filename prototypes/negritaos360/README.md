@@ -10,7 +10,7 @@ From this worktree root, launch the integrated server on loopback only:
 PYTHONPATH=src /Users/jackyb-cqi/repos/NegritaOS/.venv-pr-quality/bin/python -m negrita_brain.dashboard_local_server --port 8791 --access-file .local/dashboard-access.json
 ```
 
-Open `http://127.0.0.1:8791/?source=local#projects`. The Fuente selector switches between Demo and Local. The server serves only this prototype directory and `/api/v1/catalog`, with no public network binding. Its local policy file is Git-ignored and must be owned by the current user with mode `0600`. An absent file permits no projects. Never commit client grants or local policy data.
+Open `http://127.0.0.1:8791/?source=local#agents` for the agent inventory, or `#projects` for projects. The Fuente selector switches between Demo and Local. The server serves only this prototype directory, `/api/v1/catalog`, and `/api/v1/capabilities`, with no public network binding. Its local policy file is Git-ignored and must be owned by the current user with mode `0600`. An absent file permits no projects. Never commit client grants or local policy data.
 
 Example synthetic policy schema, with no grants:
 
@@ -34,17 +34,18 @@ node --test prototypes/negritaos360/*.test.mjs
 
 - Panorama → project → filtered capability catalog → detail drawer → related capability.
 - Capacidades → type/search filters; missing usage is “Sin medir”, never zero.
+- Agentes → unique readable agent names, canonical role descriptions and permitted project associations. Technical IDs remain visible for traceability.
 - Conocimiento → capability/knowledge views → depth and zoom → accessible node list → detail.
 - Flujos → individual steps or simulated advance; no executable agent action or approval.
 - Brain y Git → synthetic references only; no claim of live status or deployment.
 - Interface-state selector → loading, empty, read error, stale snapshot; reset restores demo.
-- Local → authorized project catalog on Panorama/Proyectos and configured agents, skills and rules on Capacidades. Filter by project, client, type and search. Other sections explicitly say their local source is not connected yet. Use the source selector to return to Demo.
+- Local → authorized project catalog on Panorama/Proyectos, a dedicated Agentes view, and configured agents, skills and rules on Capacidades. Filter by project, client, type and search. Other sections explicitly say their local source is not connected yet. Use the source selector to return to Demo.
 
 ## Source boundaries
 
 `data.mjs`: synthetic Demo fixtures. `state.mjs`: Demo selectors. `components.mjs`: reusable controls. `graph.mjs`: bounded synthetic SVG. `views.mjs`: Demo views. `local-catalog.mjs` and `local-capabilities.mjs`: same-origin API validation and authorized-result filters. `local-view.mjs` and `local-capability-view.mjs`: Local presentation. `app.mjs`: source switching and event wiring. The CSS files keep visual layers separate. The backend source adapters and APIs live in `src/negrita_brain/dashboard_local_server.py`, `dashboard_local_service.py`, and `dashboard_capability_catalog.py`.
 
-Demo short display statuses are illustrative labels, **not** the domain contract. Python dataclasses and read-only local project/capability catalogs now exist, but there is no connected plan activation, Brain/Git usage, goal outcome measurement or production API. Local capability states describe registry configuration only; they do not prove use, evidence validity or a healthy runtime. The Local project count is the number of entries visible under the local policy. Cytoscape.js and NetworkX remain future candidates, not dependencies here.
+Demo short display statuses are illustrative labels, **not** the domain contract. Python dataclasses and read-only local project/capability catalogs now exist, but there is no connected plan activation, Brain/Git usage, goal outcome measurement or production API. Agent IDs and descriptions come from permitted project registries and `integrator.yaml`; known human aliases come from the canonical router/agent bridge (Pablo, Casilda, Gisel, Vera). Names without aliases are generated from stable IDs. Missing descriptions are shown explicitly, not inferred. Local capability states describe registry configuration only; they do not prove use, evidence validity or a healthy runtime. The Local project count is the number of entries visible under the local policy. Cytoscape.js and NetworkX remain future candidates, not dependencies here.
 
 See the [plan review and UX decision](../../docs/negritaos_360_ux_plan_review__updated_20260927_134112.md) for the Astra findings, proposed contracts and traceable next tasks. Audience: the NegritaOS owner and implementation team. Frontend owns this prototype; update it when the user changes the visual direction or an interaction contract changes.
 
