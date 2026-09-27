@@ -1,6 +1,6 @@
 # NegritaOS 360 — interactive design prototype
 
-Local NegritaOS 360 interface in the accepted Tepulume visual style. **Demo** uses only synthetic fixtures: Atlas, Brisa and Faro do not represent real client projects. **Local** reads the explicitly allowed project catalog from the local Python service. Neither mode reads Brain, Git, analytics, remote fonts or paid services.
+Local NegritaOS 360 interface in the accepted Tepulume visual style. **Demo** uses only synthetic fixtures: Atlas, Brisa and Faro do not represent real client projects. **Local** reads explicitly allowed projects and their configured agents, skills and rules from the local Python service. Neither mode reads Brain sessions, Git activity, analytics, remote fonts or paid services.
 
 ## Run
 
@@ -27,7 +27,7 @@ python3 -m http.server 8790 --bind 127.0.0.1 --directory prototypes/negritaos360
 The static preview cannot serve Local mode and will show a read error if it is selected.
 
 ```sh
-node --test prototypes/negritaos360/state.test.mjs prototypes/negritaos360/tracking.test.mjs prototypes/negritaos360/local-catalog.test.mjs
+node --test prototypes/negritaos360/*.test.mjs
 ```
 
 ## Review paths
@@ -38,13 +38,13 @@ node --test prototypes/negritaos360/state.test.mjs prototypes/negritaos360/track
 - Flujos → individual steps or simulated advance; no executable agent action or approval.
 - Brain y Git → synthetic references only; no claim of live status or deployment.
 - Interface-state selector → loading, empty, read error, stale snapshot; reset restores demo.
-- Local → only project catalog on Panorama and Proyectos. Other sections explicitly say their local source is not connected yet. Use the source selector to return to Demo.
+- Local → authorized project catalog on Panorama/Proyectos and configured agents, skills and rules on Capacidades. Filter by project, client, type and search. Other sections explicitly say their local source is not connected yet. Use the source selector to return to Demo.
 
 ## Source boundaries
 
-`data.mjs`: synthetic Demo fixtures. `state.mjs`: Demo selectors. `components.mjs`: reusable controls. `graph.mjs`: bounded synthetic SVG. `views.mjs`: Demo views. `local-catalog.mjs`: same-origin API validation and authorized-result filters. `local-view.mjs`: Local presentation. `app.mjs`: source switching and event wiring. `styles.css`, `tracking.css`, `tepulume-theme.css`, `local.css`: visual layers. The backend API and file boundary live in `src/negrita_brain/dashboard_local_server.py` and `dashboard_local_service.py`.
+`data.mjs`: synthetic Demo fixtures. `state.mjs`: Demo selectors. `components.mjs`: reusable controls. `graph.mjs`: bounded synthetic SVG. `views.mjs`: Demo views. `local-catalog.mjs` and `local-capabilities.mjs`: same-origin API validation and authorized-result filters. `local-view.mjs` and `local-capability-view.mjs`: Local presentation. `app.mjs`: source switching and event wiring. The CSS files keep visual layers separate. The backend source adapters and APIs live in `src/negrita_brain/dashboard_local_server.py`, `dashboard_local_service.py`, and `dashboard_capability_catalog.py`.
 
-Demo short display statuses are illustrative labels, **not** the domain contract. Python dataclasses and the read-only local project catalog now exist, but there is no connected plan activation, Brain/Git usage, goal outcome measurement or production API. The Local project count is the number of entries visible under the local policy; it says nothing about project health or utilization. Cytoscape.js and NetworkX remain future candidates, not dependencies here.
+Demo short display statuses are illustrative labels, **not** the domain contract. Python dataclasses and read-only local project/capability catalogs now exist, but there is no connected plan activation, Brain/Git usage, goal outcome measurement or production API. Local capability states describe registry configuration only; they do not prove use, evidence validity or a healthy runtime. The Local project count is the number of entries visible under the local policy. Cytoscape.js and NetworkX remain future candidates, not dependencies here.
 
 See the [plan review and UX decision](../../docs/negritaos_360_ux_plan_review__updated_20260927_134112.md) for the Astra findings, proposed contracts and traceable next tasks. Audience: the NegritaOS owner and implementation team. Frontend owns this prototype; update it when the user changes the visual direction or an interaction contract changes.
 

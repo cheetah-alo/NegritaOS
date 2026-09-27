@@ -46,18 +46,24 @@ class ProjectCatalogEntry:
 def parse_project_registry(registry: Mapping[str, Any]) -> ProjectCatalogEntry:
     """Map one registry document to a safe project catalog entry.
 
-    Only ``project.id``, ``project.name``, and ``project.metadata.client_id``
-    are allowlisted. Client identity is never inferred from names, paths,
-    repository metadata, organization fields, or the current user identity.
+    Canonical ``project`` and legacy ``project_registry`` are separate,
+    explicit project formats. Only their ID, name, and optional
+    ``metadata.client_id`` are allowlisted. Client identity is never inferred
+    from names, paths, owner labels, or the current user identity.
     """
-    project = registry.get("project")
+    if "project" in registry and "project_registry" in registry:
+        raise RegistryAdapterError("Registry has ambiguous project schemas")
+    legacy = "project_registry" in registry
+    project = registry.get("project_registry" if legacy else "project")
     if not isinstance(project, Mapping):
         raise RegistryAdapterError("Registry must contain a project mapping")
 
-    project_id = _required_text(project, "id", "project.id")
+    id_key = "project_id" if legacy else "id"
+    name_key = "project_name" if legacy else "name"
+    project_id = _required_text(project, id_key, f"project.{id_key}")
     if not STABLE_ID.fullmatch(project_id):
         raise RegistryAdapterError("project.id must be a stable lowercase identifier")
-    name = _required_text(project, "name", "project.name")
+    name = _required_text(project, name_key, f"project.{name_key}")
     metadata = project.get("metadata", {})
     if metadata is None:
         metadata = {}

@@ -7,10 +7,13 @@ import {handleTrackingClick,bindTrackingForms} from './tracking-controller.mjs';
 import {esc} from './components.mjs';
 import {fetchLocalCatalog,localClientOptions} from './local-catalog.mjs';
 import {renderLocalView} from './local-view.mjs';
+import {fetchLocalCapabilities} from './local-capabilities.mjs';
+import {renderLocalCapabilityView} from './local-capability-view.mjs';
 
 const main=document.querySelector('#main');
 const local={source:new URLSearchParams(location.search).get('source')==='local'?'local':'demo',
  status:'idle',projects:[],provenance:null,requestId:0};
+const capability={status:'idle',items:[],provenance:null,requestId:0,kind:'all'};
 document.querySelector('#client').insertAdjacentHTML('beforeend',clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join(''));
 function renderFilters(){
  const clientSelect=document.querySelector('#client'),projectSelect=document.querySelector('#project');
@@ -34,7 +37,7 @@ function render(){
  document.querySelector('#source').value=local.source;
  document.querySelector('#source-notice-title').textContent=local.source==='local'?'Catálogo local · lectura':'Prototipo interactivo';
  document.querySelector('#source-notice-text').textContent=local.source==='local'?
-  'Sólo proyectos permitidos en este equipo. Otras secciones aún no están conectadas.':
+  'Proyectos y capacidades permitidos en este equipo. Planes, Brain y Git siguen pendientes.':
   'Datos simulados. Sin conexión a Brain ni a repositorios.';
  document.querySelector('#reset').textContent=local.source==='local'?'Actualizar vista local ↺':'Restablecer demo ↺';
  renderFilters();
@@ -42,10 +45,30 @@ function render(){
  document.querySelector('#scenario').disabled=local.source==='local';
  document.querySelector('#search').placeholder=local.source==='local'?'Buscar proyectos visibles…':
   state.route==='tracking'?'Buscar funcionalidades…':'Buscar en la vista…';
- main.innerHTML=local.source==='local'?renderLocalView(state.route,local,state):renderView();
+ if(local.source==='local'&&state.route==='catalog'){
+  const visibleIds=new Set(local.projects.filter(p=>state.client==='all'||
+   (state.client==='__unknown__'?p.client_id===null:p.client_id===state.client)).map(p=>p.project_id));
+  main.innerHTML=renderLocalCapabilityView({...capability,
+   items:capability.items.filter(item=>visibleIds.has(item.project_id))},
+   {project:state.project,kind:capability.kind,search:state.search});
+ }else main.innerHTML=local.source==='local'?renderLocalView(state.route,local,state):renderView();
+}
+async function loadLocalCapabilities(){
+ const request=++capability.requestId;
+ capability.status='loading';render();
+ try{
+  const result=await fetchLocalCapabilities();
+  if(request!==capability.requestId||local.source!=='local')return;
+  Object.assign(capability,{status:result.state,items:result.items,provenance:result.provenance});
+ }catch{
+  if(request!==capability.requestId||local.source!=='local')return;
+  Object.assign(capability,{status:'error',items:[],provenance:null});
+ }
+ render();
 }
 async function loadLocal(){
  const request=++local.requestId;
+ capability.requestId++;Object.assign(capability,{status:'idle',items:[],provenance:null});
  local.status='loading';render();
  try{
   const catalog=await fetchLocalCatalog();
@@ -56,9 +79,14 @@ async function loadLocal(){
   Object.assign(local,{status:'error',projects:[],provenance:null});
  }
  render();
+ if(state.route==='catalog'){
+  if(local.status==='READY')void loadLocalCapabilities();
+  else{capability.status=local.status==='EMPTY'?'EMPTY':'error';render();}
+ }
 }
 function setSource(value){
- local.source=value;local.requestId++;
+ local.source=value;local.requestId++;capability.requestId++;
+ Object.assign(capability,{status:'idle',items:[],provenance:null,kind:'all'});
  Object.assign(state,{client:'all',project:'all',search:'',scenario:'ready'});
  document.querySelector('#search').value='';
  const url=new URL(location.href);
@@ -66,7 +94,8 @@ function setSource(value){
  history.replaceState(null,'',url.pathname+url.search+url.hash);
  if(value==='local')void loadLocal();else render();
 }
-function route(){state.route=routeFromHash(location.hash,state.route);state.kind='Todos';render();}
+function route(){state.route=routeFromHash(location.hash,state.route);state.kind='Todos';render();
+ if(local.source==='local'&&state.route==='catalog'&&local.status==='READY'&&capability.status==='idle')void loadLocalCapabilities();}
 window.addEventListener('hashchange',route);
 document.querySelector('#search').addEventListener('input',e=>{state.search=e.target.value;if(local.source==='demo'&&state.route==='tracking')tracking.tab='features';render();});
 document.querySelector('#project').addEventListener('change',e=>{state.project=e.target.value;render();});
@@ -74,8 +103,9 @@ document.querySelector('#client').addEventListener('change',e=>{state.client=e.t
 document.querySelector('#source').addEventListener('change',e=>setSource(e.target.value));
 document.querySelector('#design').addEventListener('change',e=>{document.body.dataset.design=e.target.value;document.querySelector('#design-name').textContent=e.target.value==='tepulume'?'DISEÑO 02 / TEPULUME':'DISEÑO 01 / OBSERVATORIO';});
 document.querySelector('#scenario').addEventListener('change',e=>{if(local.source==='demo'){state.scenario=e.target.value;render();}});
-document.addEventListener('change',e=>{if(e.target.id==='depth'){state.depth=Number(e.target.value);render();}});
-function reset(){Object.assign(state,{client:'all',project:'all',search:'',kind:'Todos',scenario:'ready',depth:3,zoom:1,step:0,graphMode:'capability'});document.querySelector('#search').value='';if(local.source==='local')void loadLocal();else{resetTracking();render();}}
+document.addEventListener('change',e=>{if(e.target.id==='depth'){state.depth=Number(e.target.value);render();}
+ if(e.target.matches('[data-kind-selector]')){capability.kind=e.target.value;render();}});
+function reset(){Object.assign(state,{client:'all',project:'all',search:'',kind:'Todos',scenario:'ready',depth:3,zoom:1,step:0,graphMode:'capability'});capability.kind='all';document.querySelector('#search').value='';if(local.source==='local')void loadLocal();else{resetTracking();render();}}
 document.querySelector('#reset').addEventListener('click',reset);
 document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();document.querySelector('#search').focus();}});
 document.addEventListener('click',e=>{
@@ -83,6 +113,8 @@ document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
  if(local.source==='local'){
   if(b.hasAttribute('data-local-retry')){void loadLocal();return;}
+  if(b.hasAttribute('data-local-capabilities-retry')){void loadLocalCapabilities();return;}
+  if(b.hasAttribute('data-local-capabilities-clear')){Object.assign(state,{client:'all',project:'all',search:''});capability.kind='all';document.querySelector('#search').value='';render();return;}
   if(b.hasAttribute('data-switch-demo')){setSource('demo');return;}
   if(b.hasAttribute('data-local-clear')){Object.assign(state,{client:'all',project:'all',search:''});document.querySelector('#search').value='';render();return;}
   if(b.dataset.route){location.hash=b.dataset.route;return;}

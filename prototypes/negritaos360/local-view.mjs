@@ -51,7 +51,8 @@ export function renderLocalView(route, catalog, filters = {}) {
     <tbody>${projectRows(projects)}</tbody></table></div>` :
     `<div class="local-no-match">Ningún proyecto coincide con estos filtros.
       <button class="button text" data-local-clear>Limpiar filtros</button></div>`;
-  return heading('FUENTE LOCAL · PROYECTOS', title, subtitle) +
+  return heading('FUENTE LOCAL · PROYECTOS', title, subtitle,
+    '<button class="button primary" data-route="catalog">Ver capacidades →</button>') +
     `<div class="local-summary">
       <article class="metric"><span>PROYECTOS EN ESTA VISTA</span><strong>${projects.length}</strong>
         <small>Filtro aplicado al ámbito autorizado</small></article>

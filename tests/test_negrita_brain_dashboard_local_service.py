@@ -89,6 +89,20 @@ class TestLocalCatalogService(unittest.TestCase):
         self.assertEqual(result.state, CatalogReadState.READY)
         self.assertIsNone(result.projects[0].client_id)
 
+    def test_legacy_project_registry_is_read_with_unknown_client(self) -> None:
+        self._write_policy(unknown=["legacy_project"])
+        (self.projects / "legacy_project.yaml").write_text(
+            "project_registry:\n"
+            "  project_id: legacy_project\n"
+            "  project_name: Legacy Project\n"
+            "  owner:\n"
+            "    client: Private Example Organization\n",
+            encoding="utf-8",
+        )
+        result = self._service().read_catalog()
+        self.assertEqual(result.projects[0].project_id, "legacy_project")
+        self.assertIsNone(result.projects[0].client_id)
+
     def test_missing_source_is_typed_and_does_not_expose_path_or_client(self) -> None:
         self._write_policy([("alpha", "secret_client")])
         with self.assertRaises(LocalCatalogError) as raised:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import stat
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -13,6 +14,7 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from .dashboard_local_service import LocalCatalogError, LocalCatalogService
+from .dashboard_capability_catalog import LocalCapabilityError, LocalCapabilityService
 
 
 _SUPPORTED_TYPES = {
@@ -25,6 +27,7 @@ _SUPPORTED_TYPES = {
     ".woff": "font/woff",
     ".woff2": "font/woff2",
 }
+_PROJECT_ID = re.compile(r"^[a-z][a-z0-9_-]*$")
 _CSP = (
     "default-src 'self'; script-src 'self'; connect-src 'self'; font-src 'self'; "
     "img-src 'self'; style-src 'self' 'unsafe-inline'"
@@ -57,13 +60,16 @@ def create_local_server(
         raise ValueError("port must be between 0 and 65535")
 
     service = LocalCatalogService(work_root, access_path)
+    capability_service = LocalCapabilityService(work_root, access_path)
     static_root = work_root / "prototypes" / "negritaos360"
-    handler = _make_handler(service, static_root)
+    handler = _make_handler(service, capability_service, static_root)
     return _LocalHTTPServer(("127.0.0.1", port), handler)
 
 
 def _make_handler(
-    service: LocalCatalogService, static_root: Path
+    service: LocalCatalogService,
+    capability_service: LocalCapabilityService,
+    static_root: Path,
 ) -> type[BaseHTTPRequestHandler]:
     class LocalHandler(BaseHTTPRequestHandler):
         """Serve only the versioned API and the local prototype."""
@@ -85,6 +91,9 @@ def _make_handler(
                 return
             if parsed.path == "/api/v1/catalog":
                 self._serve_catalog(parsed.query)
+                return
+            if parsed.path == "/api/v1/capabilities":
+                self._serve_capabilities(parsed.query)
                 return
             if parsed.path == "/" or parsed.path.startswith("/"):
                 self._serve_static(parsed)
@@ -121,6 +130,28 @@ def _make_handler(
                 client_id = _single_param(params, "client_id")
                 payload = service.read_catalog(project_id, client_id).to_dict()
             except (LocalCatalogError, OSError):
+                self._send_error(HTTPStatus.SERVICE_UNAVAILABLE, "UNAVAILABLE")
+                return
+            except (ValueError, UnicodeError):
+                self._send_error(HTTPStatus.BAD_REQUEST, "INVALID_REQUEST")
+                return
+            self._send_json(HTTPStatus.OK, payload)
+
+        def _serve_capabilities(self, query: str) -> None:
+            try:
+                params = parse_qs(query, keep_blank_values=True, strict_parsing=True)
+                if set(params) - {"project_id", "kind"}:
+                    raise ValueError
+                if any(len(values) != 1 for values in params.values()):
+                    raise ValueError
+                project_id = _single_param(params, "project_id")
+                kind = _single_param(params, "kind")
+                if project_id is not None and not _PROJECT_ID.fullmatch(project_id):
+                    raise ValueError
+                if kind is not None and kind not in {"agent", "skill", "rule"}:
+                    raise ValueError
+                payload = capability_service.read_capabilities(project_id, kind)
+            except (LocalCapabilityError, OSError):
                 self._send_error(HTTPStatus.SERVICE_UNAVAILABLE, "UNAVAILABLE")
                 return
             except (ValueError, UnicodeError):

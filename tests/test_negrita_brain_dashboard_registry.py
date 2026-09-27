@@ -96,6 +96,26 @@ class TestDashboardRegistryAdapter(unittest.TestCase):
         self.assertEqual(entry.client_classification, ClientClassification.UNKNOWN)
         self.assertNotIn("Example Organization", entry.to_display_dict().values())
 
+    def test_legacy_project_registry_is_a_project_without_inferred_client(self) -> None:
+        entry = parse_project_registry({
+            "project_registry": {
+                "project_id": "legacy_project",
+                "project_name": "Legacy Project",
+                "owner": {"client": "Private Example Organization"},
+                "repository": {"location": "/private/example/location"},
+            }
+        })
+        self.assertEqual(entry.project_id, "legacy_project")
+        self.assertEqual(entry.name, "Legacy Project")
+        self.assertIsNone(entry.client_id)
+
+    def test_ambiguous_project_schemas_are_rejected(self) -> None:
+        with self.assertRaises(RegistryAdapterError):
+            parse_project_registry({
+                "project": {"id": "alpha", "name": "Alpha"},
+                "project_registry": {"project_id": "alpha", "project_name": "Alpha"},
+            })
+
     def test_duplicate_project_ids_are_rejected(self) -> None:
         registries = [
             {"project": {"id": "same", "name": "First"}},

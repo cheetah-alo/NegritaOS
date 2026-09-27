@@ -102,6 +102,62 @@ class TestDashboardLocalServer(unittest.TestCase):
         self.assertEqual(dict(headers)["Content-Type"], "application/json; charset=utf-8")
         self.assertEqual(json.loads(body)["state"], "EMPTY")
 
+    def test_capabilities_that_return_empty_without_policy_or_global_scan(self) -> None:
+        self.access.unlink()
+        status, _, body = self._request("/api/v1/capabilities")
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(body)["items"], [])
+
+    def test_capabilities_that_return_scoped_items_and_filters(self) -> None:
+        self.access.write_text(json.dumps({
+            "schema_version": 1,
+            "project_client_grants": [],
+            "unknown_client_projects": ["alpha"],
+        }), encoding="utf-8")
+        (self.root / "projects" / "alpha.yaml").write_text(
+            "project:\n  id: alpha\n  name: Alpha\n"
+            "  agents: [agent_a]\n  skill_profiles: [base]\n",
+            encoding="utf-8",
+        )
+        (self.root / "skills").mkdir()
+        (self.root / "skills" / "catalog.yaml").write_text(
+            "defaults: {profiles: []}\nprofiles: {base: {skills: [skill_a]}}\n"
+            "skills: [{id: skill_a}]\n",
+            encoding="utf-8",
+        )
+        (self.root / "integrator.yaml").write_text(
+            "negrita_os:\n  agents: {agent_a: {}}\n"
+            "  global_rules: [rules/global/global_rules.yaml]\n",
+            encoding="utf-8",
+        )
+        status, _, body = self._request("/api/v1/capabilities?project_id=alpha&kind=skill")
+        payload = json.loads(body)
+        self.assertEqual(status, 200)
+        self.assertEqual([(item["kind"], item["id"]) for item in payload["items"]], [("skill", "skill_a")])
+        self.assertEqual(set(payload["provenance"]), {"snapshot_id", "view_sha256"})
+
+    def test_capabilities_that_reject_invalid_filters_as_json_400(self) -> None:
+        status, _, body = self._request("/api/v1/capabilities?kind=used")
+        self.assertEqual(status, 400)
+        self.assertEqual(json.loads(body), {"error": {"code": "INVALID_REQUEST"}})
+
+    def test_capabilities_that_return_json_503_when_global_catalog_is_malformed(self) -> None:
+        self.access.write_text(json.dumps({
+            "schema_version": 1,
+            "project_client_grants": [],
+            "unknown_client_projects": ["alpha"],
+        }), encoding="utf-8")
+        (self.root / "projects" / "alpha.yaml").write_text(
+            "project:\n  id: alpha\n  name: Alpha\n", encoding="utf-8"
+        )
+        (self.root / "skills").mkdir()
+        (self.root / "skills" / "catalog.yaml").write_text(
+            "profiles: [unterminated", encoding="utf-8"
+        )
+        status, _, body = self._request("/api/v1/capabilities")
+        self.assertEqual(status, 503)
+        self.assertEqual(json.loads(body), {"error": {"code": "UNAVAILABLE"}})
+
     def test_catalog_that_rejects_unknown_or_duplicate_query_parameters(self) -> None:
         status, _, body = self._request("/api/v1/catalog?other=x")
         self.assertEqual(status, 400)

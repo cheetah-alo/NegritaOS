@@ -40,6 +40,7 @@ test('local view escapes names and never renders synthetic metrics',()=>{
  const payload=response([{...known,name:'<script>alert(1)</script>'}]);
  const html=renderLocalView('overview',{...parseLocalCatalog(payload),status:'READY'},{});
  assert.match(html,/&lt;script&gt;/);
+ assert.match(html,/data-route="catalog"/);
  assert.doesNotMatch(html,/<script>|8 observaciones|Atlas/);
   assert.match(
     renderLocalView('tracking',{status:'READY',projects:[],provenance:{snapshot_id:'view-a'}},{}),
