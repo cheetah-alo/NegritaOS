@@ -14,8 +14,16 @@ Mode: CR
 | T-003 | Clean Brain memory warnings through controlled maintenance | done | T-001 | CR |
 | T-004 | Prevent personal Git identities in CQI checkouts | done_local | none | CR |
 | T-005 | Add direct Astra routing and cost-per-result comparison | done_local | none | CR |
+| T-006 | Define NegritaOS 360 capability catalog and knowledge graph | planned | T-005 | LP/CR |
 
 ## Task Log
+
+### T-006 - NegritaOS 360 Capability Catalog And Knowledge Graph
+
+- **What**: add the OO contract, typed capability catalog, project coverage matrix and derived knowledge graph for projects, profiles, modes, agents, skills, rules, templates, gates and Brain usage.
+- **Plan**: `docs/negritaos_360_dashboard_architecture_plan__updated_20260927_122000.md`.
+- **Decision**: use immutable Python dataclasses and Protocol-based adapters; keep the graph as a derived read model, with registry files and Brain as sources of truth.
+- **Scope**: planning/documentation only; dashboard read model, API and UI remain pending CAT-001 through CAT-008.
 
 ### T-005 - Astra Routing
 - **What**: add globally routed Astra review while retaining explicit Luna workers and existing Sol production minimum.
