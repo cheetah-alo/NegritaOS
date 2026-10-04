@@ -1,0 +1,77 @@
+project:
+  id: hot_diamond_report
+  name: "hot_diamond_report"
+  version: "1.0.0"
+  description: >
+    HOT Diamond Report EDA workspace for evaluating proactive intervention
+    effectiveness, churn-risk segments, reached and not-reached groups,
+    control-group benchmarks, and global-account context from local extracts
+    and reproducible Python notebooks.
+  local_paths:
+    primary: "/Users/jackyb-cqi/repos/hot_diamond_report"
+  memory_home: "~/.negritaos/memory/projects/hot_diamond_report"
+  browser_context:
+    routing_policy: governed
+    account_scope: cqi_work
+    default_profile: cqi_technical
+  archetypes:
+    - eda_analytics
+    - data_quality
+    - executive_delivery
+  capabilities:
+    - technical_documentation
+    - data_analytics
+    - plots
+    - local_files
+    - gcs_extracts
+    - diamond_report_analysis
+    - churn_analysis
+    - control_group_evaluation
+    - hourly_segmentation
+    - model_review
+    - executive_summary
+    - data_quality_audit
+  integration_branch: dev
+  skill_profiles:
+    - document-delivery
+    - analytical-eda
+  agents:
+    - consulting_delivery_controller_agent
+    - code_review_agent
+    - pull_request_reviewer_agent
+    - model_review_agent
+    - data_quality_sentinel_agent
+    - technical_writer_agent
+    - team_lead_ds_agent
+    - presentation_agent
+    - plot_analysis_agent
+    - decision_support_agent
+  mode_map:
+    planning: LP
+    writeup: TD
+    deck: EP
+    data_quality_audit: DQ
+    eda: MR
+    model_review: MR
+    churn_analysis: MR
+    control_group_evaluation: MR
+    implementation: CR
+  expected_outputs:
+    - diamond_report_evaluation
+    - analytical_report
+    - data_quality_report
+    - model_readiness_review
+    - executive_summary
+    - executive_presentation
+    - task_register
+  notes:
+    - "This is a separate EDA workspace from hotmobile-diamond-report; do not merge their registries or evidence lineages."
+    - "Existing README.md, input extracts, notebooks, pyproject.toml, and src/ are preserved as current local work."
+    - "Diamond Report groups must remain explicit: DR reached, DR not reached, control group, and global accounts."
+    - "The report hour is a publication or first-detection hour, not automatically the call hour; preserve timezone and grain in every analysis."
+    - "Local CSV/GCS extracts are evidence inputs, not proof of live BigQuery coverage or production performance."
+    - "New reports, decks, PDFs, DOCX, HTML, and controlled Markdown deliverables require an explicit output path under the active documents route with timestamped versions."
+  preservation:
+    backup_required_before_migration: true
+    repo_codex_status: "adapter_local"
+    canonical_memory_outside_repo: true

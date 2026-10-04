@@ -32,7 +32,7 @@ project:
     - csv_files
     - optional_bigquery
     - dashboard_qa
-  integration_branch: feature/bar_plot_dashboard
+  integration_branch: dev
   skill_profiles:
     - document-delivery
     - analytical-eda
